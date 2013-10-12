@@ -124,7 +124,32 @@
   hardness_text.setOffsetX(hardness_text.getWidth() / 2 );
   layer.add(hardness_text);
 
- // add the layer to the stage
- stage.add(layer);
+  // Add a handle to control surface layer hardness.
+  // This handle can only move horizontally
+  var surf_handle = new Kinetic.Rect({
+    x: graph_center_x,
+    y: 4,
+    width: 8,
+    height: 8,
+    fill: '#000',
+    draggable: true,
+    dragBoundFunc: function(pos) {
+      return{
+        x: pos.x,
+        y: 4
+      }
+    }
+  });
+  // Style the cursor for the handle
+  surf_handle.on('mouseover', function() {
+    document.body.style.cursor = 'pointer';
+  });
+  surf_handle.on('mouseout', function() {
+    document.body.style.cursor = 'default';
+  });
+  layer.add(surf_handle);
+
+  // add the layer to the stage
+  stage.add(layer);
 </script>
 </body> </html>
