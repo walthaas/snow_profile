@@ -10,65 +10,80 @@
 <div id="snow_profile_diagram"></div>
 <script src="kinetic-v4.7.2.min.js"></script>
 <script defer="defer">
-  var stage = new Kinetic.Stage({
-    container: 'snow_profile_diagram',
-    width: 500,
-    height: 500
-  });
+  /**
+   * Vertical height in pixels of the hardness (horizontal) axis label.
+   * @const
+   */
+  var HARD_LABEL_HT = 40;
 
-  // Vertical height in pixels of the hardness (horizontal) axis label
-  var hard_label_ht = 40;
+  /**
+   * Horizontal width in pixels of the depth (vertical) axis label.
+   * @const
+   */
+  var DEPTH_LABEL_WD = 40;
 
-  // Horizontal width in pixels of the depth (vertical) axis label
-  var depth_label_wd = 40;
+  /**
+   * Width in pixels available for plotting data.
+   * @const
+   */
+  var GRAPH_WIDTH = 500;
 
-  // Width available for plotting data
-  var graph_width = stage.getWidth() - depth_label_wd - 1;
+  /**
+   * Height in pixels available for plotting data.
+   * @const
+   */
+  var GRAPH_HEIGHT = 500;
 
-  // Center x of the data plotting area
-  var graph_center_x = depth_label_wd + 1 + (graph_width / 2);
+  /**
+   * Size in pixels of the handle square
+   * @const
+   */
+  var HANDLE_SIZE = 7;
 
-  // Height available for plotting data
-  var graph_height = stage.getHeight() - hard_label_ht - 1;
+  /**
+   * Color of the labels and axis lines
+   * @const
+   */
+  var LABEL_COLOR = '#003390';
 
-  // Center y of the data plotting area
-  var graph_center_y = (graph_height / 2);
+  /**
+   * Color of the chart background grid
+   * @const
+   */
+  var GRID_COLOR = '#69768C';
 
-  var layer = new Kinetic.Layer();
+  /**
+   * Central x of the data plotting area.
+   * @const
+   */
+  var GRAPH_CENTER_X = DEPTH_LABEL_WD + 1 + (GRAPH_WIDTH / 2);
 
-  // Draw and label the depth (vertical) axis
-  layer.add(new Kinetic.Line({
-    points: [depth_label_wd, 0, depth_label_wd, graph_height + 1],
-    stroke: '#000'
-  }));
-  for (var j = 0; j < graph_height; j += 50) {
-    layer.add(new Kinetic.Text({
-      x: 10,
-      y: j,
-      text: j/2.5,
-      fontSize: 12,
-      fontStyle: 'bold',
-      fontFamily: 'sans-serif',
-      fill: '#000',
-      align: 'right'
-    }));
-    if (j) {
-      layer.add(new Kinetic.Line({
-        points: [depth_label_wd + 1, j + 1, stage.getWidth(), j],
-        stroke: '#ddd'
-      }));
-    }
-  }
+  /**
+   * Central y of the data plotting area
+   * @const
+   */
+  var GRAPH_CENTER_Y = (GRAPH_HEIGHT / 2);
 
-  // Draw and label the hardness (horizontal) axis
-  layer.add(new Kinetic.Line({
-    points: [depth_label_wd, graph_height + 1,
-             stage.getWidth(), graph_height + 1],
-    stroke: '#000'
-  }));
+  /**
+   * Maximum x value allowed for a handle (hardness 'I').
+   * @const
+   */
+  var HANDLE_MAX_X = DEPTH_LABEL_WD + 1 + GRAPH_WIDTH - HANDLE_SIZE;
 
-  // Table of CAAML hardness values (HardnessBaseEnumType)
-  var caaml_hard = [
+  /**
+   * Minimum x value allowed for a handle (hardness 'F-').
+   * @const
+   */
+  var HANDLE_MIN_X = DEPTH_LABEL_WD + 1;
+
+  /**
+   * Table of CAAML hardness values (HardnessBaseEnumType).
+   *
+   * CAAML_HARD[i][0] is the alpha string defined by CAAML 5.0.
+   * CAAML_HARD[i][1] is a boolean; whether to draw a line here.
+   * @const
+   */
+  var CAAML_HARD = [
     ['F-',    0],
     ['F',     1],
     ['F+',    0],
@@ -91,34 +106,89 @@
     ['K-I',   0],
     ['I',     1],
   ];
-  var hard_band_width = graph_width/caaml_hard.length;
-  for (var i = 0; i < caaml_hard.length; i++) {
-    var x = depth_label_wd + 1 + (hard_band_width / 2) + (hard_band_width * i);
-    if (caaml_hard[i][1]) {
+
+  /**
+   * Vertical height in pixels of the KineticJS stage
+   * @const
+   */
+  var STAGE_HT = GRAPH_HEIGHT + HARD_LABEL_HT + 1;
+
+  /**
+   * Horizontal width in pixels of the KineticJS stage
+   * @const
+   */
+  var STAGE_WD = DEPTH_LABEL_WD + 1 + GRAPH_WIDTH;
+
+  var stage = new Kinetic.Stage({
+    container: 'snow_profile_diagram',
+    width: STAGE_WD,
+    height: STAGE_HT
+  });
+
+  var layer = new Kinetic.Layer();
+
+  // Draw and label the depth (vertical) axis
+  layer.add(new Kinetic.Line({
+    points: [DEPTH_LABEL_WD, 0, DEPTH_LABEL_WD, GRAPH_HEIGHT + 1],
+    stroke: LABEL_COLOR,
+    strokeWidth: 1
+  }));
+  for (var j = 0; j < GRAPH_HEIGHT; j += 50) {
+    layer.add(new Kinetic.Text({
+      x: 10,
+      y: j,
+      text: j/2.5,
+      fontSize: 12,
+      fontStyle: 'bold',
+      fontFamily: 'sans-serif',
+      fill: LABEL_COLOR,
+      align: 'right'
+    }));
+    if (j) {
       layer.add(new Kinetic.Line({
-        points: [x, 0, x, stage.getHeight() - hard_label_ht - 1],
-        stroke: '#ddd'
+        points: [DEPTH_LABEL_WD + 1, j + 1, STAGE_WD, j],
+        stroke: GRID_COLOR,
+        strokeWidth: 1
+      }));
+    }
+  }
+
+  // Draw and label the hardness (horizontal) axis
+  layer.add(new Kinetic.Line({
+    points: [DEPTH_LABEL_WD, GRAPH_HEIGHT + 1,
+             STAGE_WD, GRAPH_HEIGHT + 1],
+    stroke: LABEL_COLOR,
+    strokeWidth: 1
+  }));
+  var hard_band_width = (GRAPH_WIDTH - HANDLE_SIZE)/(CAAML_HARD.length-1);
+  for (var i = 0; i < CAAML_HARD.length; i++) {
+    var x = DEPTH_LABEL_WD + 1 + (hard_band_width * i) + (HANDLE_SIZE/2);
+    if (CAAML_HARD[i][1]) {
+      layer.add(new Kinetic.Line({
+        points: [x, 0, x, STAGE_HT - HARD_LABEL_HT - 1],
+        stroke: GRID_COLOR,
+        strokeWidth: 1
       }));
       layer.add(new Kinetic.Text({
         x: x,
-        y: stage.getHeight() - hard_label_ht + 10,
-        text: caaml_hard[i][0],
+        y: STAGE_HT - HARD_LABEL_HT + 10,
+        text: CAAML_HARD[i][0],
         fontSize: 12,
         fontStyle: 'bold',
         fontFamily: 'sans-serif',
-        fill: '#000',
+        fill: LABEL_COLOR,
         align: 'center'
       }));
     };
   }
   var hardness_text = new Kinetic.Text({
-    x: graph_center_x,
-    y: stage.getHeight() - 14,
+    x: GRAPH_CENTER_X,
+    y: STAGE_HT - 14,
     text: 'Hardness',
     fontSize: 18,
     fontStyle: 'bold',
     fontFamily: 'sans-serif',
-    fill: '#000',
+    fill: LABEL_COLOR,
     align: 'center'
   });
   hardness_text.setOffsetX(hardness_text.getWidth() / 2 );
@@ -127,16 +197,23 @@
   // Add a handle to control surface layer hardness.
   // This handle can only move horizontally
   var surf_handle = new Kinetic.Rect({
-    x: graph_center_x,
-    y: 4,
-    width: 8,
-    height: 8,
+    x: GRAPH_CENTER_X,
+    y: 0,
+    width: HANDLE_SIZE,
+    height: HANDLE_SIZE,
     fill: '#000',
     draggable: true,
     dragBoundFunc: function(pos) {
+      var newX = pos.x;
+      if (pos.x < HANDLE_MIN_X) {
+        newX = HANDLE_MIN_X;
+      }
+      else if (pos.x > HANDLE_MAX_X) {
+        newX = HANDLE_MAX_X;
+      }
       return{
-        x: pos.x,
-        y: 4
+        x: newX,
+        y: 0
       }
     }
   });
@@ -148,6 +225,17 @@
     document.body.style.cursor = 'default';
   });
   layer.add(surf_handle);
+
+  // Add a line to show surface layer hardness
+  var surf_line = new Kinetic.Line({
+    points: [[DEPTH_LABEL_WD + 1, Math.floor(HANDLE_SIZE / 2)],
+             [surf_handle.getX(), Math.floor(HANDLE_SIZE / 2)]],
+    stroke: '#000'
+  });
+  layer.add(surf_line);
+  surf_handle.on('dragmove', function() {
+    surf_line.setPoints([DEPTH_LABEL_WD + 1, 3, surf_handle.getX(), 3]);
+  });
 
   // add the layer to the stage
   stage.add(layer);
