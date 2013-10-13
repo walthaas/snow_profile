@@ -41,6 +41,12 @@
   var HANDLE_SIZE = 7;
 
   /**
+   * Width in pixels of the right sidebar
+   * const
+   */
+  var RIGHT_SIDE_WD = 100;
+
+  /**
    * Color of the labels and axis lines
    * @const
    */
@@ -77,34 +83,44 @@
   var HANDLE_MIN_X = DEPTH_LABEL_WD + 1;
 
   /**
+   * Width in pixels of one hardness band in the CAAML_HARD table
+   *
+   * Calculation depends on knowing there are 21 entries in the table
+   * @const
+   */
+  var HARD_BAND_WD = (GRAPH_WIDTH - HANDLE_SIZE) / 20;
+
+  /**
    * Table of CAAML hardness values (HardnessBaseEnumType).
    *
    * CAAML_HARD[i][0] is the alpha string defined by CAAML 5.0.
    * CAAML_HARD[i][1] is a boolean; whether to draw a line here.
+   * CAAML_HARD[i][2] minimum x value having this hardness.  The maximum x
+   *   value for this hardness is one less than the minimum for the next row.
    * @const
    */
   var CAAML_HARD = [
-    ['F-',    0],
-    ['F',     1],
-    ['F+',    0],
-    ['F-4F',  0],
-    ['4F-',   0],
-    ['4F',    1],
-    ['4F+',   0],
-    ['4F-1F', 0],
-    ['1F-',   0],
-    ['1F',    1],
-    ['1F+',   0],
-    ['1F-P',  0],
-    ['P-',    0],
-    ['P',     1],
-    ['P+',    0],
-    ['P-K',   0],
-    ['K-',    0],
-    ['K',     1],
-    ['K+',    0],
-    ['K-I',   0],
-    ['I',     1],
+    ['F-',    0, HANDLE_MIN_X],
+    ['F',     1, HANDLE_MIN_X + HARD_BAND_WD * 0.5],
+    ['F+',    0, HANDLE_MIN_X + HARD_BAND_WD * 1.5],
+    ['F-4F',  0, HANDLE_MIN_X + HARD_BAND_WD * 2.5],
+    ['4F-',   0, HANDLE_MIN_X + HARD_BAND_WD * 3.5],
+    ['4F',    1, HANDLE_MIN_X + HARD_BAND_WD * 4.5],
+    ['4F+',   0, HANDLE_MIN_X + HARD_BAND_WD * 5.5],
+    ['4F-1F', 0, HANDLE_MIN_X + HARD_BAND_WD * 6.5],
+    ['1F-',   0, HANDLE_MIN_X + HARD_BAND_WD * 7.5],
+    ['1F',    1, HANDLE_MIN_X + HARD_BAND_WD * 8.5],
+    ['1F+',   0, HANDLE_MIN_X + HARD_BAND_WD * 9.5],
+    ['1F-P',  0, HANDLE_MIN_X + HARD_BAND_WD * 10.5],
+    ['P-',    0, HANDLE_MIN_X + HARD_BAND_WD * 11.5],
+    ['P',     1, HANDLE_MIN_X + HARD_BAND_WD * 12.5],
+    ['P+',    0, HANDLE_MIN_X + HARD_BAND_WD * 13.5],
+    ['P-K',   0, HANDLE_MIN_X + HARD_BAND_WD * 14.5],
+    ['K-',    0, HANDLE_MIN_X + HARD_BAND_WD * 15.5],
+    ['K',     1, HANDLE_MIN_X + HARD_BAND_WD * 16.5],
+    ['K+',    0, HANDLE_MIN_X + HARD_BAND_WD * 17.5],
+    ['K-I',   0, HANDLE_MIN_X + HARD_BAND_WD * 18.5],
+    ['I',     1, HANDLE_MIN_X + HARD_BAND_WD * 19.5],
   ];
 
   /**
@@ -117,7 +133,7 @@
    * Horizontal width in pixels of the KineticJS stage
    * @const
    */
-  var STAGE_WD = DEPTH_LABEL_WD + 1 + GRAPH_WIDTH;
+  var STAGE_WD = DEPTH_LABEL_WD + 1 + GRAPH_WIDTH + RIGHT_SIDE_WD;
 
   var stage = new Kinetic.Stage({
     container: 'snow_profile_diagram',
@@ -146,7 +162,10 @@
     }));
     if (j) {
       layer.add(new Kinetic.Line({
-        points: [DEPTH_LABEL_WD + 1, j + 1, STAGE_WD, j],
+        points: [
+          [DEPTH_LABEL_WD + 1, j + 1],
+          [DEPTH_LABEL_WD + 1 + GRAPH_WIDTH, j]
+        ],
         stroke: GRID_COLOR,
         strokeWidth: 1
       }));
@@ -155,23 +174,32 @@
 
   // Draw and label the hardness (horizontal) axis
   layer.add(new Kinetic.Line({
-    points: [DEPTH_LABEL_WD, GRAPH_HEIGHT + 1,
-             STAGE_WD, GRAPH_HEIGHT + 1],
+    points: [
+      [DEPTH_LABEL_WD, GRAPH_HEIGHT + 1],
+      [DEPTH_LABEL_WD + GRAPH_WIDTH, GRAPH_HEIGHT + 1]
+    ],
     stroke: LABEL_COLOR,
     strokeWidth: 1
   }));
-  var hard_band_width = (GRAPH_WIDTH - HANDLE_SIZE)/(CAAML_HARD.length-1);
+
+  // Iterate through the table of CAAML hardness codes to
+  // build the hardness (horizontal) scale for the graph area
   for (var i = 0; i < CAAML_HARD.length; i++) {
-    var x = DEPTH_LABEL_WD + 1 + (hard_band_width * i) + (HANDLE_SIZE/2);
+    var x = DEPTH_LABEL_WD + 1 + (HARD_BAND_WD * i) + (HANDLE_SIZE / 2);
     if (CAAML_HARD[i][1]) {
+
+      // Add a vertical line to show this hardness value
       layer.add(new Kinetic.Line({
-        points: [x, 0, x, STAGE_HT - HARD_LABEL_HT - 1],
+        points: [
+          [x, 0],
+          [x, GRAPH_HEIGHT]
+        ],
         stroke: GRID_COLOR,
         strokeWidth: 1
       }));
       layer.add(new Kinetic.Text({
         x: x,
-        y: STAGE_HT - HARD_LABEL_HT + 10,
+        y: GRAPH_HEIGHT + 10,
         text: CAAML_HARD[i][0],
         fontSize: 12,
         fontStyle: 'bold',
@@ -217,14 +245,32 @@
       }
     }
   });
+
   // Style the cursor for the handle
   surf_handle.on('mouseover', function() {
     document.body.style.cursor = 'pointer';
+    surf_handle_loc.setVisible(1);
+    stage.draw();
   });
   surf_handle.on('mouseout', function() {
     document.body.style.cursor = 'default';
+    surf_handle_loc.setVisible(0);
+    stage.draw();
   });
   layer.add(surf_handle);
+
+  // Add text to show current surface handle location.
+  surf_handle_loc = new Kinetic.Text({
+        x: DEPTH_LABEL_WD + 1 + GRAPH_WIDTH + 10,
+        y: 0,
+        fontSize: 12,
+        fontStyle: 'bold',
+        fontFamily: 'sans-serif',
+        fill: LABEL_COLOR,
+        align: 'left',
+        visible: 0
+  });
+  layer.add(surf_handle_loc);
 
   // Add a line to show surface layer hardness
   var surf_line = new Kinetic.Line({
@@ -235,9 +281,21 @@
   layer.add(surf_line);
   surf_handle.on('dragmove', function() {
     surf_line.setPoints([DEPTH_LABEL_WD + 1, 3, surf_handle.getX(), 3]);
+    var hard_code = 'I';
+    for (var i = 0; i < CAAML_HARD.length - 1; i++) {
+      if ((surf_handle.getX() >= (CAAML_HARD[i][2])
+          && (surf_handle.getX() < (CAAML_HARD[i+1][2])))) {
+        hard_code = CAAML_HARD[i][0];
+        break;
+      }
+    }
+    surf_handle_loc.setText( '(0,' + hard_code + ')');
   });
 
   // add the layer to the stage
   stage.add(layer);
+  //stage.on('contentMousemove', function() {
+  //  layer.batchDraw();
+  //});
 </script>
 </body> </html>
