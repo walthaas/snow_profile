@@ -149,39 +149,42 @@
 
     // The last object in the list
     this.last = null;
-  }
 
-  // Insert an object before a member of a list
-  Dlist.prototype.insertBefore = function(member, beforeThis) {
+    // Insert an object before a member of a list
+    this.insertBefore = function(member, beforeThis) {
       // FIXME
-  };
+    };
 
-  // Insert an object after a member of a list
-  Dlist.prototype.insertAfter = function(member, afterThis) {
+    // Insert an object after a member of a list
+    this.insertAfter = function(member, afterThis) {
       // FIXME
-  };
+    };
 
-  // Add an object to the tail of the list
-  Dlist.prototype.append = function(member) {
-    "use strict";
-    if (this.first === null) {
+    // Add an object to the tail of the list
+    this.append = function(member) {
+      "use strict";
+      if (this.first === null) {
 
-      // The list is now empty so this object is both first and last.
-      this.first = this.last = member;
-    }
-    else {
+        // The list is now empty so this object is both first and last.
+        this.first = this.last = member;
+      }
+      else {
 
-      // The list is not empty.  Add this object to the tail of the list.
-      var oldTail = this.tail;
-      this.tail = member;
-      member.before = oldTail;
-      member.after = null;
-    }
-  };
+        // The list is not empty.  Add this object to the tail of the list.
+        var oldTail = this.last;
+        if (oldTail !== null) {
+          oldTail.after = member;
+        }
+        this.last = member;
+        member.before = oldTail;
+        member.after = null;
+      }
+    };
 
-  // Delete an object from the list
-  Dlist.prototype.delete = function(member) {
+    // Delete an object from the list
+    this.delete = function(member) {
       // FIXME
+    };
   };
 
   /**
@@ -204,15 +207,15 @@
     // Reference this object inside an event handler
     var thisObj = this;
 
-    // The layer object before (above) this one.
+    // The SnowProfileLayer object before this one (above in the snow pack).
     // Points to a SnowProfileLayer or is null.
     this.before = null;
 
-    // The layer object after (below) this one.
+    // The SnowProfileLayer object after this one (below in the snow pack).
     // Points to a SnowProfileLayer or is null.
     this.after = null;
 
-    // Depth of the top of this layer in cm from the snow surface.
+    // Depth of the top of this SnowProfileLayer in cm from the snow surface.
     // A non-negative number.
     this.depth = depth;
 
@@ -230,6 +233,8 @@
       fill: '#000',
       draggable: true,
       dragBoundFunc: function(pos) {
+
+        // X (hardness) position is bound by the edges of the graph.
         var newX = pos.x;
         if (pos.x < HANDLE_MIN_X) {
           newX = HANDLE_MIN_X;
@@ -237,6 +242,9 @@
         else if (pos.x > HANDLE_MAX_X) {
           newX = HANDLE_MAX_X;
         }
+
+        // Y (depth) position is limited by the depth of the snow layers
+        // above and below in the snow pack, or by air and ground.
         var newY = pos.y;
         if (thisObj.before === null) {
 
@@ -251,15 +259,20 @@
           if (pos.y > (GRAPH_HEIGHT - HANDLE_SIZE)) {
             newY = GRAPH_HEIGHT - HANDLE_SIZE;
           }
-          else if (pos.y < 1) {
-            newY = 1;
+          else if (pos.y <= thisObj.before.handleGetY()) {
+            newY = thisObj.before.handleGetY() + 1;
           }
         }
         else {
 
           // This layer is below the surface and above the bottom.
-          // The handle depth is contstrained between layers above and below.
-          // FIXME          
+          // The handle depth is constrained between layers above and below.
+            if (pos.y >= thisObj.after.handleGetY()) {
+              newY = thisObj.after.handleGetY() - 1;
+            }
+            else if (pos.y <= thisObj.before.handleGetY()) {
+              newY = thisObj.before.handleGetY() + 1;
+            }
         }
         thisObj.depth = thisObj.y2depth(newY);
         return{
@@ -269,7 +282,17 @@
       }
     });
 
-    // Add text to show current surface handle location.
+    // Return the current X position of the handle
+    this.handleGetX = function() {
+      return thisObj.handle.getX();
+    }
+
+    // Return the current Y position of the handle
+    this.handleGetY = function() {
+      return thisObj.handle.getY();
+    }
+
+    // Add text to show current handle location.
     this.handle_loc = new Kinetic.Text({
       x: DEPTH_LABEL_WD + 1 + GRAPH_WIDTH + 10,
       y: thisObj.depth2y(thisObj.depth),
@@ -294,27 +317,72 @@
     });
     layer.add(this.handle);
 
+    // Points for a horizontal line from the Y axis to or through the handle.
+    // The horizontal line extends from the left edge of the graph right to
+    // the maximum of (X of this, X of snow layer above).
+    this.horiz_line_pts = function() {
+      var x = thisObj.handle.getX();
+      if (thisObj.before !== null) {
+          x = Math.max(x, thisObj.before.handleGetX());
+      }
+      return  [
+        [DEPTH_LABEL_WD + 1,
+         thisObj.depth2y(thisObj.depth) + Math.floor(HANDLE_SIZE / 2)],
+        [x,
+          thisObj.depth2y(thisObj.depth) + Math.floor(HANDLE_SIZE / 2)]
+      ]
+    }
+
     // Add a horizontal line at the top of the layer
     this.horiz_line = new Kinetic.Line({
-      points: [[DEPTH_LABEL_WD + 1,
-                thisObj.depth2y(thisObj.depth) + Math.floor(HANDLE_SIZE / 2)],
-               [this.handle.getX(),
-                thisObj.depth2y(thisObj.depth) + Math.floor(HANDLE_SIZE / 2)]],
+      points: thisObj.horiz_line_pts(),
       stroke: '#000'
     });
     layer.add(this.horiz_line);
 
-    // Add a vertical line to show hardness of the layer
-    // FIXME
+    // Points for vertical line from the handle down to the top of the layer
+    // below in the snow pack, or the graph bottom if this is lowest layer.
+    this.vert_line_pts = function() {
+      var x = thisObj.handle.getX();
+      var topY = thisObj.handle.getY();
+      var bottomY = GRAPH_HEIGHT;
+      if (thisObj.after !== null) {
+        bottomY = thisObj.after.handleGetY();
+      }
+      return [[x, topY],[x, bottomY]];
+    }
+
+    // Add a vertical line to show hardness of the layer.  This line extends
+    // from the handle down to the top of the layer below or graph bottom.
+    this.vert_line = new Kinetic.Line({
+      points: thisObj.vert_line_pts(),
+      stroke: '#000'
+    });
+    layer.add(this.vert_line);
 
     // When the handle moves, recalculate the hardness value displayed
+    // and redraw the lines connected to the handle
     this.handle.on('dragmove', function() {
-      thisObj.horiz_line.setPoints([
-        [DEPTH_LABEL_WD + 1,
-          thisObj.depth2y(thisObj.depth) + Math.floor(HANDLE_SIZE / 2)],
-        [thisObj.handle.getX(),
-         thisObj.depth2y(thisObj.depth) + Math.floor(HANDLE_SIZE / 2)]
-      ]);
+
+      // Adjust the horizontal line
+      thisObj.horiz_line.setPoints(thisObj.horiz_line_pts());
+
+      // Adjust the vertical line
+      thisObj.vert_line.setPoints(thisObj.vert_line_pts());
+
+      // Adjust the horizontal line of the layer below, if any
+      if (thisObj.after !== null) {
+        var after = thisObj.after;
+        after.horiz_line.setPoints(after.horiz_line_pts());
+      }
+
+      // Adjust the vertical line of the layer above, if any
+      if (thisObj.before !== null) {
+        var before = thisObj.before;
+        before.vert_line.setPoints(before.vert_line_pts());
+      }
+ 
+     // Set the text information floating to the right of the graph
       var mm = Math.round(thisObj.depth * 10) / 10;
       thisObj.handle_loc.setText( '(' + mm + ', ' +
         thisObj.x2code(thisObj.handle.getX()) + ')');
@@ -474,10 +542,6 @@
   snow_profile_init();
   snow_profile_layers.append(new SnowProfileLayer(0, '4F'));
   snow_profile_layers.append(new SnowProfileLayer(25, '1F'));
+  snow_profile_layers.append(new SnowProfileLayer(50, 'P'));
   // add the layer to the stage
   snow_profile_stage.add(layer);
-
-// Configure Emacs for Drupal JavaScript coding standards
-// Local variables:
-// mode: js2-mode
-// End:
