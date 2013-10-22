@@ -30,7 +30,7 @@
 
   /**
    * Width in pixels of the right sidebar
-   * const
+   * @const
    */
   var RIGHT_SIDE_WD = 100;
 
@@ -56,13 +56,13 @@
    * Maximum x value allowed for a handle (hardness 'I').
    * @const
    */
-  var HANDLE_MAX_X = DEPTH_LABEL_WD + 1 + GRAPH_WIDTH - HANDLE_SIZE;
+  var HANDLE_MAX_X = DEPTH_LABEL_WD + 1 + GRAPH_WIDTH - (HANDLE_SIZE / 2);
 
   /**
    * Minimum x value allowed for a handle (hardness 'F-').
    * @const
    */
-  var HANDLE_MIN_X = DEPTH_LABEL_WD + 1;
+  var HANDLE_MIN_X = DEPTH_LABEL_WD + 1 + (HANDLE_SIZE / 2);
 
   /**
    * Width in pixels of one hardness band in the CAAML_HARD table
@@ -170,13 +170,16 @@
       else {
 
         // The list is not empty.  Add this object to the tail of the list.
-        var oldTail = this.last;
-        if (oldTail !== null) {
-          oldTail.after = member;
+        var oldLast = this.last;
+        if (oldLast !== null) {
+          oldLast.after = member;
         }
         this.last = member;
-        member.before = oldTail;
+        member.before = oldLast;
         member.after = null;
+        if (member.appended) {
+          member.appended();
+        }
       }
     };
 
@@ -311,6 +314,8 @@
     this.handle.on('mouseout', function() {
       document.body.style.cursor = 'default';
     });
+
+    // When the handle is in use, show its location to the right.
     this.handle.on('mousedown', function() {
       thisObj.handle_loc.setVisible(1);
       snow_profile_stage.draw();
@@ -363,6 +368,15 @@
       stroke: '#000'
     });
     layer.add(this.vert_line);
+
+    // When another snow layer is appended to this layer, adjust the length
+    // of the vertical line down from the handle of the layer above.
+    this.appended = function() {
+      if (thisObj.before !== null) {
+        var before = thisObj.before;
+        before.vert_line.setPoints(before.vert_line_pts());
+      }
+    }
 
     // When the handle moves, recalculate the hardness value displayed
     // and redraw the lines connected to the handle
