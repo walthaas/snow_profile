@@ -162,7 +162,6 @@
 
     // Add an object to the tail of the list
     this.append = function(member) {
-      "use strict";
       if (this.first === null) {
 
         // The list is now empty so this object is both first and last.
@@ -185,7 +184,7 @@
     this.delete = function(member) {
       // FIXME
     };
-  };
+  }
 
   /**
    * Snow stratigraphy snow layers
@@ -230,6 +229,7 @@
       y: thisObj.depth2y(thisObj.depth),
       width: HANDLE_SIZE,
       height: HANDLE_SIZE,
+      offsetX: HANDLE_SIZE / 2,
       fill: '#000',
       draggable: true,
       dragBoundFunc: function(pos) {
@@ -285,12 +285,12 @@
     // Return the current X position of the handle
     this.handleGetX = function() {
       return thisObj.handle.getX();
-    }
+    };
 
     // Return the current Y position of the handle
     this.handleGetY = function() {
       return thisObj.handle.getY();
-    }
+    };
 
     // Add text to show current handle location.
     this.handle_loc = new Kinetic.Text({
@@ -307,11 +307,15 @@
     // Style the cursor for the handle
     this.handle.on('mouseover', function() {
       document.body.style.cursor = 'pointer';
-      thisObj.handle_loc.setVisible(1);
-      snow_profile_stage.draw();
     });
     this.handle.on('mouseout', function() {
       document.body.style.cursor = 'default';
+    });
+    this.handle.on('mousedown', function() {
+      thisObj.handle_loc.setVisible(1);
+      snow_profile_stage.draw();
+    });
+    this.handle.on('mouseup', function() {
       thisObj.handle_loc.setVisible(0);
       snow_profile_stage.draw();
     });
@@ -330,8 +334,8 @@
          thisObj.depth2y(thisObj.depth) + Math.floor(HANDLE_SIZE / 2)],
         [x,
           thisObj.depth2y(thisObj.depth) + Math.floor(HANDLE_SIZE / 2)]
-      ]
-    }
+      ];
+    };
 
     // Add a horizontal line at the top of the layer
     this.horiz_line = new Kinetic.Line({
@@ -347,10 +351,10 @@
       var topY = thisObj.handle.getY();
       var bottomY = GRAPH_HEIGHT;
       if (thisObj.after !== null) {
-        bottomY = thisObj.after.handleGetY();
+        bottomY = thisObj.after.handleGetY() + HANDLE_SIZE / 2;
       }
       return [[x, topY],[x, bottomY]];
-    }
+    };
 
     // Add a vertical line to show hardness of the layer.  This line extends
     // from the handle down to the top of the layer below or graph bottom.
@@ -381,7 +385,7 @@
         var before = thisObj.before;
         before.vert_line.setPoints(before.vert_line_pts());
       }
- 
+
      // Set the text information floating to the right of the graph
       var mm = Math.round(thisObj.depth * 10) / 10;
       thisObj.handle_loc.setText( '(' + mm + ', ' +
@@ -545,3 +549,11 @@
   snow_profile_layers.append(new SnowProfileLayer(50, 'P'));
   // add the layer to the stage
   snow_profile_stage.add(layer);
+
+// Configure Emacs for Drupal JavaScript coding standards
+// Local Variables:
+// c-basic-offset: 2
+// indent-tabs-mode: nil
+// fill-column: 78
+// show-trailing-whitespace: t
+// End:
