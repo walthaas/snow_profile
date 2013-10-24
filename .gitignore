@@ -1,0 +1,17 @@
+# Ignore emacs temp files
+*~
+\#*\#
+
+# Ignore documents
+*.pdf
+docs/*
+NOTES
+TODO
+*.JPG
+
+# Ignore XML
+*.xml
+*.xsd
+
+# Ignore library
+kinetic*
