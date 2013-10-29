@@ -1,6 +1,7 @@
 # Ignore emacs temp files
 *~
 \#*\#
+TAGS
 
 # Ignore documents
 *.pdf
@@ -8,10 +9,12 @@ docs/*
 NOTES
 TODO
 *.JPG
+AAA/*
 
 # Ignore XML
 *.xml
 *.xsd
 
-# Ignore library
+# Ignore libraries
+jquery.js
 kinetic*

@@ -1,8 +1,17 @@
   /**
-   * Vertical height in pixels of the hardness (horizontal) axis label.
-   * @const
+   * Layout of the snow profile Kinetic stage:
+   *
+   *       | Temperature |
+   *       | Label       |
+   * ___________________________________________________________________
+   *       |             |
+   * Depth |             |
+   * Label | Graph       | Controls
+   *       |             |
+   *____________________________________________________________________
+   *       | Hardness    |
+   *       | Label       |
    */
-  var HARD_LABEL_HT = 40;
 
   /**
    * Horizontal width in pixels of the depth (vertical) axis label.
@@ -17,22 +26,34 @@
   var GRAPH_WIDTH = 500;
 
   /**
+   * Width in pixels of the connector (diagonal line) area
+   * @const
+   */
+  var CTRLS_WD = 500;
+
+  /**
+   * Vertical height in pixels of the temperature (horizontal) axis label.
+   * @const
+   */
+  var TEMP_LABEL_HT = 40;
+
+  /**
    * Height in pixels available for plotting data.
    * @const
    */
   var GRAPH_HEIGHT = 500;
 
   /**
+   * Vertical height in pixels of the hardness (horizontal) axis label.
+   * @const
+   */
+  var HARD_LABEL_HT = 40;
+
+  /**
    * Size in pixels of the handle square
    * @const
    */
-  var HANDLE_SIZE = 7;
-
-  /**
-   * Width in pixels of the right sidebar
-   * @const
-   */
-  var RIGHT_SIDE_WD = 100;
+  var HANDLE_SIZE = 9;
 
   /**
    * Color of the labels and axis lines
@@ -63,6 +84,18 @@
    * @const
    */
   var HANDLE_MIN_X = DEPTH_LABEL_WD + 1 + (HANDLE_SIZE / 2);
+
+  /**
+   * Minimum Y value allowed for a handle (top of graph area)
+   * @const
+   */
+  var HANDLE_MIN_Y = TEMP_LABEL_HT + 1;
+
+  /**
+   * Maximum Y value allowed for any handle (bottom of graph area)
+   * @const
+   */
+  var HANDLE_MAX_Y = TEMP_LABEL_HT + 1 + GRAPH_HEIGHT;
 
   /**
    * Width in pixels of one hardness band in the CAAML_HARD table
@@ -109,18 +142,13 @@
    * Vertical height in pixels of the KineticJS stage
    * @const
    */
-  var STAGE_HT = GRAPH_HEIGHT + HARD_LABEL_HT + 1;
+  var STAGE_HT = TEMP_LABEL_HT + 1 + GRAPH_HEIGHT + 1 + HARD_LABEL_HT;
 
   /**
    * Horizontal width in pixels of the KineticJS stage
    * @const
    */
-  var STAGE_WD = DEPTH_LABEL_WD + 1 + GRAPH_WIDTH + RIGHT_SIDE_WD;
-
-  /**
-   * KineticJS stage object for the whole program
-   */
-  var snow_profile_stage;
+  var STAGE_WD = DEPTH_LABEL_WD + 1 + GRAPH_WIDTH + 1 + CTRLS_WD;
 
   /**
    * Maximum snow depth in cm that can be plotted on the graph
@@ -128,7 +156,17 @@
    * Snow depth in cm that corresponds to GRAPH_HEIGHT pixels.
    * Zero depth always corresponds to zero graph pixels.
    */
-  var snow_profile_max_depth = 200;
+  var MAX_DEPTH = 200;
+
+  /**
+   * Depth scale in pixels per cm
+   */
+  var DEPTH_SCALE = GRAPH_HEIGHT / MAX_DEPTH;
+
+  /**
+   * KineticJS stage object for the whole program
+   */
+  var snow_profile_stage;
 
   /**
    * Object to manage a doubly-linked list
@@ -177,15 +215,35 @@
         this.last = member;
         member.before = oldLast;
         member.after = null;
-        if (member.appended) {
-          member.appended();
-        }
       }
+      if (member.addedToList) {
+        member.addedToList();
+      }
+    };
+
+    // Prepend an object in front of the first element in the list
+    this.prepend = function() {
+      // FIXME
     };
 
     // Delete an object from the list
     this.delete = function(member) {
-      // FIXME
+      if (member.before === null) {
+
+        // Deleting the first object in the list
+        this.first = member.after;
+      }
+      else {
+         member.before.after = member.after;
+      }
+      if (member.after === null) {
+
+        // Deleting the last object in the list
+        this.last = member.before;
+      }
+      else {
+         member.after.before = member.before;
+      }
     };
   }
 
@@ -253,14 +311,14 @@
 
           // This is the top (snow surface) layer.
           // Handle stays on the surface.
-          newY = 0;
+          newY = HANDLE_MIN_Y;
         }
         else if (thisObj.after === null) {
 
           // This is the bottom layer.  The handle depth is constrained
           // between the layer above and GRAPH_HEIGHT.
-          if (pos.y > (GRAPH_HEIGHT - HANDLE_SIZE)) {
-            newY = GRAPH_HEIGHT - HANDLE_SIZE;
+          if (pos.y > (HANDLE_MAX_Y)) {
+            newY = HANDLE_MAX_Y;
           }
           else if (pos.y <= thisObj.before.handleGetY()) {
             newY = thisObj.before.handleGetY() + 1;
@@ -354,7 +412,7 @@
     this.vert_line_pts = function() {
       var x = thisObj.handle.getX();
       var topY = thisObj.handle.getY();
-      var bottomY = GRAPH_HEIGHT;
+      var bottomY = HANDLE_MAX_Y + (HANDLE_SIZE / 2);
       if (thisObj.after !== null) {
         bottomY = thisObj.after.handleGetY() + HANDLE_SIZE / 2;
       }
@@ -369,14 +427,27 @@
     });
     layer.add(this.vert_line);
 
-    // When another snow layer is appended to this layer, adjust the length
-    // of the vertical line down from the handle of the layer above.
-    this.appended = function() {
+    // This layer has been added to the list.  Create a row for it
+    // in the controls table.
+    this.addedToList = function() {
       if (thisObj.before !== null) {
         var before = thisObj.before;
         before.vert_line.setPoints(before.vert_line_pts());
       }
-    }
+      // Count the number of layers above this in the snow pack
+      var position = 0;
+      var layer = snow_profile_layers.first;
+      while (layer !== thisObj) {
+        position++;
+        layer = layer.after;
+      }
+      // FIXME put it in the right place not at the end.
+      $("#snow_profile_ctrls tbody").append("<tr>" +
+        "<td><button>insert above</button></td>" +
+        "<td><button>insert below</button></td>" +
+        "<td><button>delete</button></td>" +
+        "</tr>");
+    };
 
     // When the handle moves, recalculate the hardness value displayed
     // and redraw the lines connected to the handle
@@ -444,11 +515,10 @@
    * Convert a depth in cm to a Y axis position
    *
    * Y axis scale is max depth of snow / graph height in pixels
-   * NB: assumes snow surface at Y == 0.
    */
   SnowProfileLayer.prototype.depth2y = function(depth) {
     "use strict";
-    return depth * (GRAPH_HEIGHT / snow_profile_max_depth);
+    return (depth * (GRAPH_HEIGHT / MAX_DEPTH)) + HANDLE_MIN_Y;
   };
 
   /**
@@ -457,7 +527,7 @@
    */
   SnowProfileLayer.prototype.y2depth = function(y) {
     "use strict";
-    return (y / GRAPH_HEIGHT) * snow_profile_max_depth;
+    return ((y - HANDLE_MIN_Y) / GRAPH_HEIGHT) * MAX_DEPTH;
   };
 
   /**
@@ -474,28 +544,37 @@
     // Create the reference grid layer
     layer = new Kinetic.Layer();
 
-    // Draw and label the depth (vertical) axis
+      // Draw the vertical line along the left edge
     layer.add(new Kinetic.Line({
-      points: [DEPTH_LABEL_WD, 0, DEPTH_LABEL_WD, GRAPH_HEIGHT + 1],
+      points: [
+        [DEPTH_LABEL_WD, HANDLE_MIN_Y - 1 + (HANDLE_SIZE / 2)],
+        [DEPTH_LABEL_WD, HANDLE_MAX_Y + (HANDLE_SIZE / 2)]
+      ],
       stroke: LABEL_COLOR,
       strokeWidth: 1
     }));
-    for (var j = 0; j < GRAPH_HEIGHT; j += 50) {
+
+    // Add text every 20 cm to the depth label area
+    for (var cm = 0; cm <= MAX_DEPTH; cm += 20) {
       layer.add(new Kinetic.Text({
         x: 10,
-        y: j,
-        text: j/2.5,
+        y: HANDLE_MIN_Y + cm * DEPTH_SCALE,
+        text: cm,
         fontSize: 12,
         fontStyle: 'bold',
         fontFamily: 'sans-serif',
         fill: LABEL_COLOR,
         align: 'right'
       }));
-      if (j) {
+
+      // Draw a horizontal line every 20 cm as a depth scale
+      if (cm != MAX_DEPTH) {
         layer.add(new Kinetic.Line({
           points: [
-            [DEPTH_LABEL_WD + 1, j + 1],
-            [DEPTH_LABEL_WD + 1 + GRAPH_WIDTH, j]
+            [DEPTH_LABEL_WD + 1,
+              HANDLE_MIN_Y + (HANDLE_SIZE / 2) + (cm * DEPTH_SCALE)],
+            [DEPTH_LABEL_WD + 1 + GRAPH_WIDTH - HANDLE_SIZE / 2,
+              HANDLE_MIN_Y + (HANDLE_SIZE / 2) + (cm * DEPTH_SCALE)]
           ],
           stroke: GRID_COLOR,
           strokeWidth: 1
@@ -506,8 +585,10 @@
     // Draw and label the hardness (horizontal) axis
     layer.add(new Kinetic.Line({
       points: [
-        [DEPTH_LABEL_WD, GRAPH_HEIGHT + 1],
-        [DEPTH_LABEL_WD + GRAPH_WIDTH, GRAPH_HEIGHT + 1]
+        [DEPTH_LABEL_WD,
+          HANDLE_MAX_Y + (HANDLE_SIZE / 2)],
+        [DEPTH_LABEL_WD + GRAPH_WIDTH +1 - HANDLE_SIZE / 2,
+          HANDLE_MAX_Y + (HANDLE_SIZE / 2)]
       ],
       stroke: LABEL_COLOR,
       strokeWidth: 1
@@ -522,15 +603,15 @@
         // Add a vertical line to show this hardness value
         layer.add(new Kinetic.Line({
           points: [
-            [x, 0],
-            [x, GRAPH_HEIGHT]
+            [x, HANDLE_MIN_Y + (HANDLE_SIZE / 2)],
+            [x, HANDLE_MAX_Y + (HANDLE_SIZE / 2)]
           ],
           stroke: GRID_COLOR,
           strokeWidth: 1
         }));
         layer.add(new Kinetic.Text({
           x: x,
-          y: GRAPH_HEIGHT + 10,
+          y: HANDLE_MAX_Y + 10,
           text: CAAML_HARD[i][0],
           fontSize: 12,
           fontStyle: 'bold',

@@ -1,14 +1,32 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Snow Pit Data</title>
+<style type="text/css">
+#snow_profile_container {
+  position: relative;
+  display: inline-block;
+}
+#snow_profile_ctrls {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+div.kineticjs-content {
+/*  background-color: yellow; */
+}
+</style>
 </head>
 
 <body>
 <h1>Snow Pit Data</h1>
+<div id="snow_profile_container">
 <div id="snow_profile_diagram"></div>
+<table id="snow_profile_ctrls"><tbody></tbody></table>
+</div>
 <script src="kinetic-v4.7.2.min.js"></script>
+<script src="jquery.js"></script>
 <script src="snow_profile.js" defer="defer"></script>
 </body>
 </html>

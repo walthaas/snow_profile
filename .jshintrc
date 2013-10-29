@@ -15,6 +15,7 @@
     "drupalSettings",
     "domready",
     "jQuery",
+    "$",
     "_",
     "matchMedia",
     "Backbone",
