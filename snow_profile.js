@@ -188,9 +188,80 @@
     // The last object in the list
     this.last = null;
 
-    // Insert an object before a member of a list
-    this.insertBefore = function(member, beforeThis) {
-      // FIXME
+    // Insert an object before a member of this list
+    this.insertBefore = function(object, beforeThis) {
+      console.log("insertBefore called");
+      var foundPlace = false;
+      if (this.first === null) {
+
+        // The list is now empty so this object is both first and last.
+        this.first = this.last = object;
+        foundPlace = true;
+      }
+      else if (this.first === beforeThis) {
+
+        // Inserting before the first element in the list
+        console.log("inserting before 1st element");
+        object.after = this.first;
+        object.before = null;
+        this.first = object;
+        foundPlace = true;
+      }
+      else {
+
+        // Inserting before some element farther in list
+        var current = this.first;
+        var next = current.after;
+        while (next !== null) {
+          if (next === beforeThis) {
+
+            // Inserting before the next member of the list
+            object.after = next;
+            object.before = next.before;
+            next.before = object;
+            foundPlace = true;
+            break;
+          }
+          current = next;
+          next = current.after;
+        }
+      }
+      if (foundPlace ) {
+        if (object.addedToList) {
+          console.log("calling addedToList");
+          object.addedToList();
+        }
+      }
+      else {
+
+        // Fell off end of list without finding requested location
+        console.error("Dlist.insertBefore failed to find requested location");
+      }
+    };
+
+    // Find an object in the list by its sequential position in the list.
+    // Returns an object, or -1 if no such object.
+    this.get = function(pos) {
+
+      // Check that argument is a positive integer, return -1 if not
+      if ((typeof pos !== "number") || (pos < 0)) {
+         console.error("Dlist.get() called with invalid argument " + pos);
+         return -1;
+      }
+
+      // Follow the list
+      // NB: jshint doesn't seem to know about var in a for statement
+      var index;
+      var item;
+      for (index = 0, item = this.first;
+        item !== null;  index++, item = item.after) {
+        if (index === pos) {
+          return item;
+        }
+      }
+      // Off the end of the list without finding the requested object
+      console.error("Dlist.get() can't find " + pos + " in list");
+      return -1;
     };
 
     // Insert an object after a member of a list
@@ -219,6 +290,7 @@
       if (member.addedToList) {
         member.addedToList();
       }
+//      console.debug("appended layer to list");
     };
 
     // Prepend an object in front of the first element in the list
@@ -282,6 +354,9 @@
     // Hardness of this snow layer.
     // A string code from the CAAML_HARD table above.
     this.hardness = hardness;
+
+    // Whether the user has touched the handle since layer was created
+    this.handleTouched = false;
 
     // Handle for the line at the top of the layer.
     // The user drags and drops this handle to adjust depth and hardness.
@@ -376,6 +451,7 @@
     // When the handle is in use, show its location to the right.
     this.handle.on('mousedown', function() {
       thisObj.handle_loc.setVisible(1);
+      thisObj.handleTouched = true;
       snow_profile_stage.draw();
     });
     this.handle.on('mouseup', function() {
@@ -383,6 +459,7 @@
       snow_profile_stage.draw();
     });
     layer.add(this.handle);
+//    console.debug("added handle to layer");
 
     // Points for a horizontal line from the Y axis to or through the handle.
     // The horizontal line extends from the left edge of the graph right to
@@ -406,12 +483,13 @@
       stroke: '#000'
     });
     layer.add(this.horiz_line);
+//    console.debug("added horiz_line to layer");
 
     // Points for vertical line from the handle down to the top of the layer
     // below in the snow pack, or the graph bottom if this is lowest layer.
     this.vert_line_pts = function() {
       var x = thisObj.handle.getX();
-      var topY = thisObj.handle.getY();
+      var topY = thisObj.handle.getY() + (HANDLE_SIZE / 2);
       var bottomY = HANDLE_MAX_Y + (HANDLE_SIZE / 2);
       if (thisObj.after !== null) {
         bottomY = thisObj.after.handleGetY() + HANDLE_SIZE / 2;
@@ -426,6 +504,7 @@
       stroke: '#000'
     });
     layer.add(this.vert_line);
+//    console.debug("added vert_line to layer");
 
     // This layer has been added to the list.  Create a row for it
     // in the controls table.
@@ -434,6 +513,7 @@
         var before = thisObj.before;
         before.vert_line.setPoints(before.vert_line_pts());
       }
+      // FIXME make room by moving layers above and below
       // Count the number of layers above this in the snow pack
       var position = 0;
       var layer = snow_profile_layers.first;
@@ -441,12 +521,27 @@
         position++;
         layer = layer.after;
       }
+//      console.debug("added at position " + position);
       // FIXME put it in the right place not at the end.
       $("#snow_profile_ctrls tbody").append("<tr>" +
-        "<td><button>insert above</button></td>" +
-        "<td><button>insert below</button></td>" +
-        "<td><button>delete</button></td>" +
-        "</tr>");
+        "<td><button name=\"ia\">insert above</button></td>" +
+        "<td><button name=\"ib\">insert below</button></td>" +
+        "<td><button name=\"del\">delete</button></td>" +
+        "</tr>"
+      );
+      snow_profile_stage.draw();
+    };
+
+    // Set handle visibility, if it is untouched
+    this.setHandleVisible = function(visible) {
+//      console.debug("handleTouched=" + thisObj.handleTouched);
+      if (!thisObj.handleTouched) {
+
+        // The user hasn't touched this handle since it was inited, so blink
+//        console.debug("set handle visible to "+visible);
+        thisObj.handle.setVisible(visible);
+        snow_profile_stage.draw();
+      }
     };
 
     // When the handle moves, recalculate the hardness value displayed
@@ -568,7 +663,7 @@
       }));
 
       // Draw a horizontal line every 20 cm as a depth scale
-      if (cm != MAX_DEPTH) {
+      if (cm !== MAX_DEPTH) {
         layer.add(new Kinetic.Line({
           points: [
             [DEPTH_LABEL_WD + 1,
@@ -633,17 +728,73 @@
     });
     hardness_text.setOffsetX(hardness_text.getWidth() / 2 );
     layer.add(hardness_text);
-  }  // function snow_profile_init();
+
+    // add the layer to the stage
+    snow_profile_stage.add(layer);
+//      console.debug("added layer to stage");
+
+    // Create an animation
+    var anim = new Kinetic.Animation(function(frame) {
+      //console.debug("time="+(frame.time % 000));
+      this.showHandle = (frame.time % 1000) > 500;
+      if (this.oldShowHandle === undefined) {
+          this.oldShowHandle = this.showHandle;
+//          console.debug("defining oldShowHandle");
+      }
+      else {
+        if (this.showHandle !== this.oldShowHandle) {
+//          console.debug("showhandle changed to "+this.showHandle);
+          this.oldShowHandle = this.showHandle;
+
+          // For each snow layer, if handle untouched, blink
+          var current = snow_profile_layers.first;
+          while (current !== null) {
+            current.setHandleVisible(this.showHandle);
+            current = current.after;
+          }
+        }
+      }
+
+
+    });
+    anim.start();
+
+    // Listen to all buttons now and future in the controls table
+    $("#snow_profile_ctrls").delegate("button", "click",
+      function(){
+        var row = $("#snow_profile_ctrls tr").index(this.parentNode.parentNode);
+        var item = snow_profile_layers.get(row);
+        if (item === -1) {
+          return;
+        }
+        var name = this.name;
+        console.log("clicked " + name + " in row " + row);
+          switch (name) {
+          case "ia":
+  //          snow_profile_layers.insertBefore(new SnowProfileLayer(40,"F"),
+  //            item);
+            break;
+
+          case "ib":
+//            snow_profile_layers.insertAfter(new SnowProfileLayer(40,"F"),
+//              item);
+            break;
+
+          case "del":
+            snow_profile_layers.delete(item);
+            break;
+
+          default:
+            console.error("click from button with unknown name " + name);
+          }
+      });
+}  // function snow_profile_init();
 
   /**
    * Main program
    */
   snow_profile_init();
   snow_profile_layers.append(new SnowProfileLayer(0, '4F'));
-  snow_profile_layers.append(new SnowProfileLayer(25, '1F'));
-  snow_profile_layers.append(new SnowProfileLayer(50, 'P'));
-  // add the layer to the stage
-  snow_profile_stage.add(layer);
 
 // Configure Emacs for Drupal JavaScript coding standards
 // Local Variables:

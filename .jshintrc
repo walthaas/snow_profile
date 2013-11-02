@@ -11,6 +11,7 @@
   "undef"     : true,
   "unused"    : "vars",
   "predef"    : [
+    "console",
     "Drupal",
     "drupalSettings",
     "domready",
