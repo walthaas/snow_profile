@@ -190,7 +190,6 @@
 
     // Insert an object before a member of this list
     this.insertBefore = function(object, beforeThis) {
-      console.log("insertBefore called");
       var foundPlace = false;
       if (this.first === null) {
 
@@ -201,7 +200,6 @@
       else if (this.first === beforeThis) {
 
         // Inserting before the first element in the list
-        console.log("inserting before 1st element");
         object.after = this.first;
         object.before = null;
         this.first = object;
@@ -228,7 +226,6 @@
       }
       if (foundPlace ) {
         if (object.addedToList) {
-          console.log("calling addedToList");
           object.addedToList();
         }
       }
@@ -266,7 +263,6 @@
 
     // Insert an object after a member of a list
     this.insertAfter = function(object, afterThis) {
-      console.log("insertAfter called");
       var foundPlace = false;
       if (this.first === null) {
 
@@ -295,7 +291,6 @@
       }
       if (foundPlace ) {
         if (object.addedToList) {
-          console.log("calling addedToList");
           object.addedToList();
         }
       }
@@ -327,7 +322,6 @@
       if (member.addedToList) {
         member.addedToList();
       }
-//      console.debug("appended layer to list");
     };
 
     // Prepend an object in front of the first element in the list
@@ -496,7 +490,6 @@
       snow_profile_stage.draw();
     });
     layer.add(this.handle);
-//    console.debug("added handle to layer");
 
     // Points for a horizontal line from the Y axis to or through the handle.
     // The horizontal line extends from the left edge of the graph right to
@@ -520,7 +513,6 @@
       stroke: '#000'
     });
     layer.add(this.horiz_line);
-//    console.debug("added horiz_line to layer");
 
     // Points for vertical line from the handle down to the top of the layer
     // below in the snow pack, or the graph bottom if this is lowest layer.
@@ -541,7 +533,6 @@
       stroke: '#000'
     });
     layer.add(this.vert_line);
-//    console.debug("added vert_line to layer");
 
     // This layer has been added to the list.  Create a row for it
     // in the controls table.
@@ -550,24 +541,36 @@
         var before = thisObj.before;
         before.vert_line.setPoints(before.vert_line_pts());
       }
-      // FIXME make room by moving layers above and below
-      // Count the number of layers above this in the snow pack
-      var position = 0;
-      var layer = snow_profile_layers.first;
-      while (layer !== thisObj) {
-        position++;
-        layer = layer.after;
-      }
-      console.debug("added at position " + position);
-      // FIXME put it in the right place not at the end.
-      $("#snow_profile_ctrls tbody").append("<tr>" +
+      var ctrls_html = "<tr>" +
         "<td><button name=\"ia\">insert above</button></td>" +
         "<td><button name=\"ib\">insert below</button></td>" +
         "<td><button name=\"del\">delete</button></td>" +
-        "</tr>"
-      );
-      snow_profile_stage.draw();
+        "</tr>";
+      if (thisObj === snow_profile_layers.first) {
+
+        // This layer is the new top of the snow pack
+        $("#snow_profile_ctrls tbody:first-child").prepend(ctrls_html);
+
+      } else if (thisObj === snow_profile_layers.last) {
+
+        // This layer is the new lowest layer in the snow pack
+        $("#snow_profile_ctrls tbody:last-child").append(ctrls_html);
+      } else {
+
+        // Count the number of layers above this in the snow pack
+        var n = 0;
+        var layer = snow_profile_layers.first;
+        while (layer !== thisObj) {
+          n++;
+          layer = layer.after;
+        }
+
+        // This layer is the new nth layer in the snow pack.
+        // The former nth layer is now the n+1st layer
+        $("#snow_profile_ctrls tr").eq(n).before(ctrls_html);
+      }
     };
+    snow_profile_stage.draw();
 
     // Set handle visibility, if it is untouched
     this.setHandleVisible = function(visible) {
@@ -771,19 +774,15 @@
 
     // add the layer to the stage
     snow_profile_stage.add(layer);
-//      console.debug("added layer to stage");
 
     // Create an animation
     var anim = new Kinetic.Animation(function(frame) {
-      //console.debug("time="+(frame.time % 000));
       this.showHandle = (frame.time % 1000) > 500;
       if (this.oldShowHandle === undefined) {
           this.oldShowHandle = this.showHandle;
-//          console.debug("defining oldShowHandle");
       }
       else {
         if (this.showHandle !== this.oldShowHandle) {
-//          console.debug("showhandle changed to "+this.showHandle);
           this.oldShowHandle = this.showHandle;
 
           // For each snow layer, if handle untouched, blink
@@ -808,7 +807,6 @@
           return;
         }
         var name = this.name;
-        console.log("clicked " + name + " in row " + row);
           switch (name) {
           case "ia":
             snow_profile_layers.insertBefore(new SnowProfileLayer(40),
