@@ -265,8 +265,45 @@
     };
 
     // Insert an object after a member of a list
-    this.insertAfter = function(member, afterThis) {
-      // FIXME
+    this.insertAfter = function(object, afterThis) {
+      console.log("insertAfter called");
+      var foundPlace = false;
+      if (this.first === null) {
+
+        // The list is now empty so this object is both first and last.
+        this.first = this.last = object;
+        foundPlace = true;
+      }
+      else if (afterThis === this.last) {
+
+        // Adding to end of list
+        afterThis.after = object;
+        object.after = null;
+        object.before = afterThis;
+        this.last = object;
+        foundPlace = true;
+      }
+      else {
+
+        // Inserting object in the middle of the list
+        var oldAfter = afterThis.after;
+        object.after = oldAfter;
+        afterThis.after = object;
+        object.before = afterThis;
+        oldAfter.before = object;
+        foundPlace = true;
+      }
+      if (foundPlace ) {
+        if (object.addedToList) {
+          console.log("calling addedToList");
+          object.addedToList();
+        }
+      }
+      else {
+
+        // Fell off end of list without finding requested location
+        console.error("Dlist.insertAfter failed to find requested location");
+      }
     };
 
     // Add an object to the tail of the list
@@ -333,7 +370,7 @@
    * Object describing a single snow stratigraphy layer
    * @constructor
    */
-  function SnowProfileLayer(depth, hardness) {
+  function SnowProfileLayer(depth) {
     "use strict";
 
     // Reference this object inside an event handler
@@ -353,7 +390,7 @@
 
     // Hardness of this snow layer.
     // A string code from the CAAML_HARD table above.
-    this.hardness = hardness;
+    this.hardness = "F-";
 
     // Whether the user has touched the handle since layer was created
     this.handleTouched = false;
@@ -361,7 +398,7 @@
     // Handle for the line at the top of the layer.
     // The user drags and drops this handle to adjust depth and hardness.
     this.handle = new Kinetic.Rect({
-      x: thisObj.code2x(thisObj.hardness),
+      x: HANDLE_MIN_X,
       y: thisObj.depth2y(thisObj.depth),
       width: HANDLE_SIZE,
       height: HANDLE_SIZE,
@@ -521,7 +558,7 @@
         position++;
         layer = layer.after;
       }
-//      console.debug("added at position " + position);
+      console.debug("added at position " + position);
       // FIXME put it in the right place not at the end.
       $("#snow_profile_ctrls tbody").append("<tr>" +
         "<td><button name=\"ia\">insert above</button></td>" +
@@ -534,14 +571,17 @@
 
     // Set handle visibility, if it is untouched
     this.setHandleVisible = function(visible) {
-//      console.debug("handleTouched=" + thisObj.handleTouched);
       if (!thisObj.handleTouched) {
 
         // The user hasn't touched this handle since it was inited, so blink
-//        console.debug("set handle visible to "+visible);
-        thisObj.handle.setVisible(visible);
-        snow_profile_stage.draw();
+        thisObj.handle.setStroke(visible ? "#000" : "#FFF");
       }
+      else {
+
+        // The use has touched the handle so make it always visible
+        thisObj.handle.setStroke("#000");
+      }
+      snow_profile_stage.draw();
     };
 
     // When the handle moves, recalculate the hardness value displayed
@@ -771,13 +811,13 @@
         console.log("clicked " + name + " in row " + row);
           switch (name) {
           case "ia":
-  //          snow_profile_layers.insertBefore(new SnowProfileLayer(40,"F"),
-  //            item);
+            snow_profile_layers.insertBefore(new SnowProfileLayer(40),
+              item);
             break;
 
           case "ib":
-//            snow_profile_layers.insertAfter(new SnowProfileLayer(40,"F"),
-//              item);
+            snow_profile_layers.insertAfter(new SnowProfileLayer(40),
+              item);
             break;
 
           case "del":
@@ -794,7 +834,7 @@
    * Main program
    */
   snow_profile_init();
-  snow_profile_layers.append(new SnowProfileLayer(0, '4F'));
+  snow_profile_layers.append(new SnowProfileLayer(0));
 
 // Configure Emacs for Drupal JavaScript coding standards
 // Local Variables:
