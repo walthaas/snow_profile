@@ -190,6 +190,7 @@
 
     // Insert an object before a member of this list
     this.insertBefore = function(object, beforeThis) {
+      //console.debug("insertBefore has been called");
       var foundPlace = false;
       if (this.first === null) {
 
@@ -208,8 +209,10 @@
       else {
 
         // Inserting before some element farther in list
+        //console.debug("insertBefore layer at "+beforeThis.depth);
         var current = this.first;
         var next = current.after;
+        var n = 0;
         while (next !== null) {
           if (next === beforeThis) {
 
@@ -217,20 +220,32 @@
             object.after = next;
             object.before = next.before;
             next.before = object;
+            current.after = object;
             foundPlace = true;
+            //console.debug("found match at layer " + n);
             break;
           }
           current = next;
           next = current.after;
+          n++;
         }
       }
       if (foundPlace ) {
+        //console.debug("leaving insertBefore.  List is now:");
+        //var layer = this.first;
+        //if (layer === null) {
+        //    console.debug(" empty");
+        //}
+        //else do {
+        //  console.debug(" "+layer.depth);
+        //  layer = layer.after;
+        //} while (layer !== null);
+
         if (object.addedToList) {
           object.addedToList();
         }
       }
       else {
-
         // Fell off end of list without finding requested location
         console.error("Dlist.insertBefore failed to find requested location");
       }
@@ -550,11 +565,13 @@
 
         // This layer is the new top of the snow pack
         $("#snow_profile_ctrls tbody:first-child").prepend(ctrls_html);
+        //console.debug("new layer is new top");
 
       } else if (thisObj === snow_profile_layers.last) {
 
         // This layer is the new lowest layer in the snow pack
         $("#snow_profile_ctrls tbody:last-child").append(ctrls_html);
+        //console.debug("new layer is new bottom");
       } else {
 
         // Count the number of layers above this in the snow pack
@@ -562,9 +579,19 @@
         var layer = snow_profile_layers.first;
         while (layer !== thisObj) {
           n++;
-          layer = layer.after;
+          if (layer !== null) {
+            layer = layer.after;
+          }
+          else {
+            break;
+          }
         }
-
+        if (layer === thisObj) {
+          //console.debug("new layer is number "+n);
+        }
+        else {
+          //console.debug("new layer not found");
+        }
         // This layer is the new nth layer in the snow pack.
         // The former nth layer is now the n+1st layer
         $("#snow_profile_ctrls tr").eq(n).before(ctrls_html);
