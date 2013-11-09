@@ -231,16 +231,6 @@
         }
       }
       if (foundPlace ) {
-        //console.debug("leaving insertBefore.  List is now:");
-        //var layer = this.first;
-        //if (layer === null) {
-        //    console.debug(" empty");
-        //}
-        //else do {
-        //  console.debug(" "+layer.depth);
-        //  layer = layer.after;
-        //} while (layer !== null);
-
         if (object.addedToList) {
           object.addedToList();
         }
@@ -317,25 +307,27 @@
     };
 
     // Add an object to the tail of the list
-    this.append = function(member) {
+    this.append = function(object) {
       if (this.first === null) {
 
         // The list is now empty so this object is both first and last.
-        this.first = this.last = member;
+        this.first = this.last = object;
       }
       else {
 
         // The list is not empty.  Add this object to the tail of the list.
         var oldLast = this.last;
         if (oldLast !== null) {
-          oldLast.after = member;
+          oldLast.after = object;
         }
-        this.last = member;
-        member.before = oldLast;
-        member.after = null;
+        this.last = object;
+        object.before = oldLast;
+        object.after = null;
       }
-      if (member.addedToList) {
-        member.addedToList();
+
+      // Let the object know it has been added to the list
+      if (object.addedToList) {
+        object.addedToList();
       }
     };
 
@@ -345,22 +337,29 @@
     };
 
     // Delete an object from the list
-    this.delete = function(member) {
-      if (member.before === null) {
+    this.delete = function(object) {
+      //console.debug("delete() called");
+      // Let the object know it will be deleted from the list
+      if (object.deleteFromList) {
+        object.deleteFromList();
+      }
+      if (object.before === null) {
 
         // Deleting the first object in the list
-        this.first = member.after;
+        //console.debug("deleting first object");
+        this.first = object.after;
       }
       else {
-         member.before.after = member.after;
+         object.before.after = object.after;
       }
-      if (member.after === null) {
+      if (object.after === null) {
 
         // Deleting the last object in the list
-        this.last = member.before;
+        //console.debug("deleting last object");
+        this.last = object.before;
       }
       else {
-         member.after.before = member.before;
+        object.after.before = object.before;
       }
     };
   }
@@ -377,13 +376,18 @@
 
   /**
    * Object describing a single snow stratigraphy layer
+   *
+   * Note that drawing the snow layer depends on knowing the layers above
+   * and below in the snow pack.  In the constructor we don't know this,
+   * so we need to wait until the layer is added to the snow_layer_list
+   * before we can draw it.
    * @constructor
    */
   function SnowProfileLayer(depth) {
     "use strict";
 
     // Reference this object inside an event handler
-    var thisObj = this;
+    var that = this;
 
     // The SnowProfileLayer object before this one (above in the snow pack).
     // Points to a SnowProfileLayer or is null.
@@ -408,7 +412,7 @@
     // The user drags and drops this handle to adjust depth and hardness.
     this.handle = new Kinetic.Rect({
       x: HANDLE_MIN_X,
-      y: thisObj.depth2y(thisObj.depth),
+      y: that.depth2y(that.depth),
       width: HANDLE_SIZE,
       height: HANDLE_SIZE,
       offsetX: HANDLE_SIZE / 2,
@@ -428,35 +432,35 @@
         // Y (depth) position is limited by the depth of the snow layers
         // above and below in the snow pack, or by air and ground.
         var newY = pos.y;
-        if (thisObj.before === null) {
+        if (that.before === null) {
 
           // This is the top (snow surface) layer.
           // Handle stays on the surface.
           newY = HANDLE_MIN_Y;
         }
-        else if (thisObj.after === null) {
+        else if (that.after === null) {
 
           // This is the bottom layer.  The handle depth is constrained
           // between the layer above and GRAPH_HEIGHT.
           if (pos.y > (HANDLE_MAX_Y)) {
             newY = HANDLE_MAX_Y;
           }
-          else if (pos.y <= thisObj.before.handleGetY()) {
-            newY = thisObj.before.handleGetY() + 1;
+          else if (pos.y <= that.before.handleGetY()) {
+            newY = that.before.handleGetY() + 1;
           }
         }
         else {
 
           // This layer is below the surface and above the bottom.
           // The handle depth is constrained between layers above and below.
-            if (pos.y >= thisObj.after.handleGetY()) {
-              newY = thisObj.after.handleGetY() - 1;
+            if (pos.y >= that.after.handleGetY()) {
+              newY = that.after.handleGetY() - 1;
             }
-            else if (pos.y <= thisObj.before.handleGetY()) {
-              newY = thisObj.before.handleGetY() + 1;
+            else if (pos.y <= that.before.handleGetY()) {
+              newY = that.before.handleGetY() + 1;
             }
         }
-        thisObj.depth = thisObj.y2depth(newY);
+        that.depth = that.y2depth(newY);
         return{
           x: newX,
           y: newY
@@ -466,18 +470,18 @@
 
     // Return the current X position of the handle
     this.handleGetX = function() {
-      return thisObj.handle.getX();
+      return that.handle.getX();
     };
 
     // Return the current Y position of the handle
     this.handleGetY = function() {
-      return thisObj.handle.getY();
+      return that.handle.getY();
     };
 
     // Add text to show current handle location.
     this.handle_loc = new Kinetic.Text({
       x: DEPTH_LABEL_WD + 1 + GRAPH_WIDTH + 10,
-      y: thisObj.depth2y(thisObj.depth),
+      y: that.depth2y(that.depth),
       fontSize: 12,
       fontStyle: 'bold',
       fontFamily: 'sans-serif',
@@ -485,6 +489,7 @@
       align: 'left',
       visible: 0
     });
+    layer.add(this.handle_loc);
 
     // Style the cursor for the handle
     this.handle.on('mouseover', function() {
@@ -496,12 +501,12 @@
 
     // When the handle is in use, show its location to the right.
     this.handle.on('mousedown', function() {
-      thisObj.handle_loc.setVisible(1);
-      thisObj.handleTouched = true;
+      that.handle_loc.setVisible(1);
+      that.handleTouched = true;
       snow_profile_stage.draw();
     });
     this.handle.on('mouseup', function() {
-      thisObj.handle_loc.setVisible(0);
+      that.handle_loc.setVisible(0);
       snow_profile_stage.draw();
     });
     layer.add(this.handle);
@@ -510,21 +515,21 @@
     // The horizontal line extends from the left edge of the graph right to
     // the maximum of (X of this, X of snow layer above).
     this.horiz_line_pts = function() {
-      var x = thisObj.handle.getX();
-      if (thisObj.before !== null) {
-          x = Math.max(x, thisObj.before.handleGetX());
+      var x = that.handle.getX();
+      if (that.before !== null) {
+          x = Math.max(x, that.before.handleGetX());
       }
       return  [
         [DEPTH_LABEL_WD + 1,
-         thisObj.depth2y(thisObj.depth) + Math.floor(HANDLE_SIZE / 2)],
+         that.depth2y(that.depth) + Math.floor(HANDLE_SIZE / 2)],
         [x,
-          thisObj.depth2y(thisObj.depth) + Math.floor(HANDLE_SIZE / 2)]
+          that.depth2y(that.depth) + Math.floor(HANDLE_SIZE / 2)]
       ];
     };
 
     // Add a horizontal line at the top of the layer
     this.horiz_line = new Kinetic.Line({
-      points: thisObj.horiz_line_pts(),
+      points: that.horiz_line_pts(),
       stroke: '#000'
     });
     layer.add(this.horiz_line);
@@ -532,11 +537,11 @@
     // Points for vertical line from the handle down to the top of the layer
     // below in the snow pack, or the graph bottom if this is lowest layer.
     this.vert_line_pts = function() {
-      var x = thisObj.handle.getX();
-      var topY = thisObj.handle.getY() + (HANDLE_SIZE / 2);
+      var x = that.handle.getX();
+      var topY = that.handle.getY() + (HANDLE_SIZE / 2);
       var bottomY = HANDLE_MAX_Y + (HANDLE_SIZE / 2);
-      if (thisObj.after !== null) {
-        bottomY = thisObj.after.handleGetY() + HANDLE_SIZE / 2;
+      if (that.after !== null) {
+        bottomY = that.after.handleGetY() + HANDLE_SIZE / 2;
       }
       return [[x, topY],[x, bottomY]];
     };
@@ -544,7 +549,7 @@
     // Add a vertical line to show hardness of the layer.  This line extends
     // from the handle down to the top of the layer below or graph bottom.
     this.vert_line = new Kinetic.Line({
-      points: thisObj.vert_line_pts(),
+      points: that.vert_line_pts(),
       stroke: '#000'
     });
     layer.add(this.vert_line);
@@ -552,8 +557,8 @@
     // This layer has been added to the list.  Create a row for it
     // in the controls table.
     this.addedToList = function() {
-      if (thisObj.before !== null) {
-        var before = thisObj.before;
+      if (that.before !== null) {
+        var before = that.before;
         before.vert_line.setPoints(before.vert_line_pts());
       }
       var ctrls_html = "<tr>" +
@@ -561,13 +566,13 @@
         "<td><button name=\"ib\">insert below</button></td>" +
         "<td><button name=\"del\">delete</button></td>" +
         "</tr>";
-      if (thisObj === snow_profile_layers.first) {
+      if (that === snow_profile_layers.first) {
 
         // This layer is the new top of the snow pack
         $("#snow_profile_ctrls tbody:first-child").prepend(ctrls_html);
         //console.debug("new layer is new top");
 
-      } else if (thisObj === snow_profile_layers.last) {
+      } else if (that === snow_profile_layers.last) {
 
         // This layer is the new lowest layer in the snow pack
         $("#snow_profile_ctrls tbody:last-child").append(ctrls_html);
@@ -576,73 +581,144 @@
 
         // Count the number of layers above this in the snow pack
         var n = 0;
-        var layer = snow_profile_layers.first;
-        while (layer !== thisObj) {
+        var snowLayer = snow_profile_layers.first;
+        while (snowLayer !== that) {
           n++;
-          if (layer !== null) {
-            layer = layer.after;
+          if (snowLayer !== null) {
+            snowLayer = snowLayer.after;
           }
           else {
             break;
           }
         }
-        if (layer === thisObj) {
-          //console.debug("new layer is number "+n);
+        // FIXME deal with layer not found situation
+      }
+      snow_profile_stage.draw();
+    };
+
+    // This object will be deleted from the list.  Delete its row from the
+    // controls table.  If only one object remains on the list, disable that
+    // object's delete button.
+    this.deleteFromList = function() {
+      //console.debug("deleteFromList() called");
+      // Count the number of layers above this in the snow pack
+      var n = 0;
+      var snowLayer = snow_profile_layers.first;
+      while (snowLayer !== that) {
+        n++;
+        if (snowLayer !== null) {
+          snowLayer = snowLayer.after;
         }
         else {
-          //console.debug("new layer not found");
+          break;
         }
-        // This layer is the new nth layer in the snow pack.
-        // The former nth layer is now the n+1st layer
-        $("#snow_profile_ctrls tr").eq(n).before(ctrls_html);
       }
+      if (snowLayer !== that) {
+        console.error("deleteFromList can't find this object in the list");
+      }
+      else {
+        $("#snow_profile_ctrls tr").eq(n).remove();
+        if (snowLayer === snow_profile_layers.first) {
+          // We're deleting the top layer, so the next layer is now top
+          //console.debug("deleting top layer so layer after gets depth = 0");
+          that.after.setDepth(0);
+        }
+      }
+
+      // Destroy the object and its components
+      that.handle.destroy();
+        delete that.handle;
+      that.handle_loc.destroy();
+        delete that.handle_loc;
+      that.vert_line.destroy();
+        delete that.vert_line;
+      that.horiz_line.destroy();
+        delete that.horiz_line;
+      layer.clearCache();
     };
-    snow_profile_stage.draw();
+
+    // Draw the layer from depth and hardness values and adjacent layers
+    this.draw = function() {
+
+      // Set handle X from hardness
+      //console.debug("setting handle x from "+that.hardness);
+      //console.debug("new x = "+that.code2x(that.hardness));
+      that.handle.setX(that.code2x(that.hardness));
+
+      // Set handle Y from depth
+      that.handle.setY(that.depth2y(that.depth));
+
+      // Adjust the horizontal line
+      that.horiz_line.setPoints(that.horiz_line_pts());
+
+      // Adjust the vertical line
+      that.vert_line.setPoints(that.vert_line_pts());
+
+      // Adjust the horizontal line of the layer below, if any
+      if (that.after !== null) {
+        var after = that.after;
+        after.horiz_line.setPoints(after.horiz_line_pts());
+      }
+
+      // Adjust the vertical line of the layer above, if any
+      if (that.before !== null) {
+        var before = that.before;
+        before.vert_line.setPoints(before.vert_line_pts());
+      }
+      snow_profile_stage.draw();
+    };
+
+    // Set the depth of the layer and draw
+    this.setDepth = function(depth) {
+      that.depth = depth;
+      that.draw();
+    };
 
     // Set handle visibility, if it is untouched
     this.setHandleVisible = function(visible) {
-      if (!thisObj.handleTouched) {
+      if (!that.handleTouched) {
 
         // The user hasn't touched this handle since it was inited, so blink
-        thisObj.handle.setStroke(visible ? "#000" : "#FFF");
+        that.handle.setStroke(visible ? "#000" : "#FFF");
       }
       else {
 
         // The use has touched the handle so make it always visible
-        thisObj.handle.setStroke("#000");
+        that.handle.setStroke("#000");
       }
       snow_profile_stage.draw();
     };
 
     // When the handle moves, recalculate the hardness value displayed
-    // and redraw the lines connected to the handle
+    // and draw the lines connected to the handle
     this.handle.on('dragmove', function() {
 
-      // Adjust the horizontal line
-      thisObj.horiz_line.setPoints(thisObj.horiz_line_pts());
+      // Adjust the horizontal (hardness) position
+      that.hardness = that.x2code(that.handle.getX());
+      that.horiz_line.setPoints(that.horiz_line_pts());
 
-      // Adjust the vertical line
-      thisObj.vert_line.setPoints(thisObj.vert_line_pts());
+      // Adjust the vertical (depth) position
+      that.depth = that.y2depth(that.handle.getY());
+      that.vert_line.setPoints(that.vert_line_pts());
 
       // Adjust the horizontal line of the layer below, if any
-      if (thisObj.after !== null) {
-        var after = thisObj.after;
+      if (that.after !== null) {
+        var after = that.after;
         after.horiz_line.setPoints(after.horiz_line_pts());
       }
 
       // Adjust the vertical line of the layer above, if any
-      if (thisObj.before !== null) {
-        var before = thisObj.before;
+      if (that.before !== null) {
+        var before = that.before;
         before.vert_line.setPoints(before.vert_line_pts());
       }
 
      // Set the text information floating to the right of the graph
-      var mm = Math.round(thisObj.depth * 10) / 10;
-      thisObj.handle_loc.setText( '(' + mm + ', ' +
-        thisObj.x2code(thisObj.handle.getX()) + ')');
-      thisObj.handle_loc.setY(thisObj.depth2y(thisObj.depth));
+      var mm = Math.round(that.depth * 10) / 10;
+      that.handle_loc.setText( '(' + mm + ', ' +
+        that.x2code(that.handle.getX()) + ')');
+      that.handle_loc.setY(that.depth2y(that.depth));
     });
-    layer.add(this.handle_loc);
   } // function SnowProfileLayer()
 
   /**
@@ -834,19 +910,37 @@
           return;
         }
         var name = this.name;
+        var newLayer = new SnowProfileLayer(40);
           switch (name) {
           case "ia":
-            snow_profile_layers.insertBefore(new SnowProfileLayer(40),
-              item);
+            snow_profile_layers.insertBefore(newLayer, item);
+            newLayer.draw();
             break;
 
           case "ib":
-            snow_profile_layers.insertAfter(new SnowProfileLayer(40),
-              item);
+            snow_profile_layers.insertAfter(newLayer, item);
+            newLayer.draw();
             break;
 
           case "del":
+            //console.debug("delete row "+row);
+            var before = item.before;
+            var after = item.after;
             snow_profile_layers.delete(item);
+            if (before !== null) {
+              before.draw();
+            }
+            if (after !== null) {
+              after.draw();
+            }
+            item = null;
+
+            // Check how many layers remain in the list.  If there is only one
+            // remaining, we can't allow it to be deleted
+            if (snow_profile_layers.first.after === null) {
+              $("#snow_profile_ctrls button[name=\"del\"]").attr("disabled", "disabled");
+            }
+            snow_profile_stage.draw();
             break;
 
           default:
