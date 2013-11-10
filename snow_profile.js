@@ -1,3 +1,8 @@
+/**
+ * @namespace SnowProfile
+ */
+var SnowProfile = {};
+
   /**
    * Layout of the snow profile Kinetic stage:
    *
@@ -13,89 +18,107 @@
    *       | Label       |
    */
 
-  /**
-   * Horizontal width in pixels of the depth (vertical) axis label.
-   * @const
-   */
-  var DEPTH_LABEL_WD = 40;
+(function() {
+  "use strict";
+  SnowProfile = {
 
-  /**
-   * Width in pixels available for plotting data.
-   * @const
-   */
-  var GRAPH_WIDTH = 500;
+    /**
+     * Horizontal width in pixels of the depth (vertical) axis label.
+     * @const
+     */
+    DEPTH_LABEL_WD: 40,
 
-  /**
-   * Width in pixels of the connector (diagonal line) area
-   * @const
-   */
-  var CTRLS_WD = 500;
+    /**
+     * Width in pixels available for plotting data.
+     * @const
+     */
+    GRAPH_WIDTH: 500,
 
-  /**
-   * Vertical height in pixels of the temperature (horizontal) axis label.
-   * @const
-   */
-  var TEMP_LABEL_HT = 40;
+    /**
+     * Width in pixels of the connector (diagonal line) area
+     * @const
+     */
+    CTRLS_WD: 500,
 
-  /**
-   * Height in pixels available for plotting data.
-   * @const
-   */
-  var GRAPH_HEIGHT = 500;
+    /**
+     * Vertical height in pixels of the temperature (horizontal) axis label.
+     * @const
+     */
+    TEMP_LABEL_HT: 40,
 
-  /**
-   * Vertical height in pixels of the hardness (horizontal) axis label.
-   * @const
-   */
-  var HARD_LABEL_HT = 40;
+    /**
+     * Height in pixels available for plotting data.
+     * @const
+     */
+    GRAPH_HEIGHT: 500,
 
-  /**
-   * Size in pixels of the handle square
-   * @const
-   */
-  var HANDLE_SIZE = 9;
+    /**
+     * Vertical height in pixels of the hardness (horizontal) axis label.
+     * @const
+     */
+    HARD_LABEL_HT: 40,
 
-  /**
-   * Color of the labels and axis lines
-   * @const
-   */
-  var LABEL_COLOR = '#003390';
+    /**
+     * Size in pixels of the handle square
+     * @const
+     */
+    HANDLE_SIZE: 9,
 
-  /**
-   * Color of the chart background grid
-   * @const
-   */
-  var GRID_COLOR = '#69768C';
+    /**
+     * Color of the labels and axis lines
+     * @const
+     */
+     LABEL_COLOR: '#003390',
+
+    /**
+     * Color of the chart background grid
+     * @const
+     */
+    GRID_COLOR: '#69768C',
+
+    /**
+     * Maximum snow depth in cm that can be plotted on the graph.
+     *
+     * Snow depth in cm that corresponds to GRAPH_HEIGHT pixels.
+     * Zero depth always corresponds to zero graph pixels.
+     * @const
+     */
+    MAX_DEPTH:  200
+  };
 
   /**
    * Central x of the data plotting area.
    * @const
    */
-  var GRAPH_CENTER_X = DEPTH_LABEL_WD + 1 + (GRAPH_WIDTH / 2);
+  SnowProfile.GRAPH_CENTER_X = SnowProfile.DEPTH_LABEL_WD + 1 +
+    (SnowProfile.GRAPH_WIDTH / 2);
 
   /**
    * Maximum x value allowed for a handle (hardness 'I').
    * @const
    */
-  var HANDLE_MAX_X = DEPTH_LABEL_WD + 1 + GRAPH_WIDTH - (HANDLE_SIZE / 2);
+  SnowProfile.HANDLE_MAX_X = SnowProfile.DEPTH_LABEL_WD + 1 +
+    SnowProfile.GRAPH_WIDTH - (SnowProfile.HANDLE_SIZE / 2);
 
   /**
    * Minimum x value allowed for a handle (hardness 'F-').
    * @const
    */
-  var HANDLE_MIN_X = DEPTH_LABEL_WD + 1 + (HANDLE_SIZE / 2);
+  SnowProfile.HANDLE_MIN_X = SnowProfile.DEPTH_LABEL_WD + 1 +
+    (SnowProfile.HANDLE_SIZE / 2);
 
   /**
    * Minimum Y value allowed for a handle (top of graph area)
    * @const
    */
-  var HANDLE_MIN_Y = TEMP_LABEL_HT + 1;
+  SnowProfile.HANDLE_MIN_Y = SnowProfile.TEMP_LABEL_HT + 1;
 
   /**
    * Maximum Y value allowed for any handle (bottom of graph area)
    * @const
    */
-  var HANDLE_MAX_Y = TEMP_LABEL_HT + 1 + GRAPH_HEIGHT;
+  SnowProfile.HANDLE_MAX_Y = SnowProfile.TEMP_LABEL_HT + 1 +
+    SnowProfile.GRAPH_HEIGHT;
 
   /**
    * Width in pixels of one hardness band in the CAAML_HARD table
@@ -103,65 +126,63 @@
    * Calculation depends on knowing there are 21 entries in the table
    * @const
    */
-  var HARD_BAND_WD = (GRAPH_WIDTH - HANDLE_SIZE) / 20;
+  SnowProfile.HARD_BAND_WD = (SnowProfile.GRAPH_WIDTH -
+    SnowProfile.HANDLE_SIZE) / 20;
 
   /**
    * Table of CAAML hardness values (HardnessBaseEnumType).
    *
    * CAAML_HARD[i][0] is the alpha string defined by CAAML 5.0.
    * CAAML_HARD[i][1] is a boolean; whether to draw a line here.
-   * CAAML_HARD[i][2] minimum x value having this hardness.  The maximum x
-   *   value for this hardness is one less than the minimum for the next row.
+   * CAAML_HARD[i][2] minimum x value having SnowProfile hardness.  The
+   * maximum x value for SnowProfile hardness is one less than the minimum for
+   * the next row.
    * @const
    */
-  var CAAML_HARD = [
-    ['F-',    0, HANDLE_MIN_X],
-    ['F',     1, HANDLE_MIN_X + HARD_BAND_WD * 0.5],
-    ['F+',    0, HANDLE_MIN_X + HARD_BAND_WD * 1.5],
-    ['F-4F',  0, HANDLE_MIN_X + HARD_BAND_WD * 2.5],
-    ['4F-',   0, HANDLE_MIN_X + HARD_BAND_WD * 3.5],
-    ['4F',    1, HANDLE_MIN_X + HARD_BAND_WD * 4.5],
-    ['4F+',   0, HANDLE_MIN_X + HARD_BAND_WD * 5.5],
-    ['4F-1F', 0, HANDLE_MIN_X + HARD_BAND_WD * 6.5],
-    ['1F-',   0, HANDLE_MIN_X + HARD_BAND_WD * 7.5],
-    ['1F',    1, HANDLE_MIN_X + HARD_BAND_WD * 8.5],
-    ['1F+',   0, HANDLE_MIN_X + HARD_BAND_WD * 9.5],
-    ['1F-P',  0, HANDLE_MIN_X + HARD_BAND_WD * 10.5],
-    ['P-',    0, HANDLE_MIN_X + HARD_BAND_WD * 11.5],
-    ['P',     1, HANDLE_MIN_X + HARD_BAND_WD * 12.5],
-    ['P+',    0, HANDLE_MIN_X + HARD_BAND_WD * 13.5],
-    ['P-K',   0, HANDLE_MIN_X + HARD_BAND_WD * 14.5],
-    ['K-',    0, HANDLE_MIN_X + HARD_BAND_WD * 15.5],
-    ['K',     1, HANDLE_MIN_X + HARD_BAND_WD * 16.5],
-    ['K+',    0, HANDLE_MIN_X + HARD_BAND_WD * 17.5],
-    ['K-I',   0, HANDLE_MIN_X + HARD_BAND_WD * 18.5],
-    ['I',     1, HANDLE_MIN_X + HARD_BAND_WD * 19.5],
+  SnowProfile.CAAML_HARD = [
+    ['F-',    0, SnowProfile.HANDLE_MIN_X],
+    ['F',     1, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 0.5],
+    ['F+',    0, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 1.5],
+    ['F-4F',  0, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 2.5],
+    ['4F-',   0, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 3.5],
+    ['4F',    1, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 4.5],
+    ['4F+',   0, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 5.5],
+    ['4F-1F', 0, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 6.5],
+    ['1F-',   0, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 7.5],
+    ['1F',    1, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 8.5],
+    ['1F+',   0, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 9.5],
+    ['1F-P',  0, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 10.5],
+    ['P-',    0, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 11.5],
+    ['P',     1, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 12.5],
+    ['P+',    0, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 13.5],
+    ['P-K',   0, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 14.5],
+    ['K-',    0, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 15.5],
+    ['K',     1, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 16.5],
+    ['K+',    0, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 17.5],
+    ['K-I',   0, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 18.5],
+    ['I',     1, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 19.5],
   ];
 
   /**
    * Vertical height in pixels of the KineticJS stage
    * @const
    */
-  var STAGE_HT = TEMP_LABEL_HT + 1 + GRAPH_HEIGHT + 1 + HARD_LABEL_HT;
+   SnowProfile.STAGE_HT =  SnowProfile.TEMP_LABEL_HT + 1 +
+     SnowProfile.GRAPH_HEIGHT + 1 + SnowProfile.HARD_LABEL_HT;
 
   /**
    * Horizontal width in pixels of the KineticJS stage
    * @const
    */
-  var STAGE_WD = DEPTH_LABEL_WD + 1 + GRAPH_WIDTH + 1 + CTRLS_WD;
-
-  /**
-   * Maximum snow depth in cm that can be plotted on the graph
-   *
-   * Snow depth in cm that corresponds to GRAPH_HEIGHT pixels.
-   * Zero depth always corresponds to zero graph pixels.
-   */
-  var MAX_DEPTH = 200;
+   SnowProfile.STAGE_WD = SnowProfile.DEPTH_LABEL_WD + 1 +
+     SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD;
 
   /**
    * Depth scale in pixels per cm
+   * @const
    */
-  var DEPTH_SCALE = GRAPH_HEIGHT / MAX_DEPTH;
+  SnowProfile.DEPTH_SCALE = SnowProfile.GRAPH_HEIGHT / SnowProfile.MAX_DEPTH;
+})();
 
   /**
    * KineticJS stage object for the whole program
@@ -188,17 +209,17 @@
     // The last object in the list
     this.last = null;
 
-    // Insert an object before a member of this list
-    this.insertBefore = function(object, beforeThis) {
+    // Insert an object before a member of SnowProfile list
+    this.insertBefore = function(object, beforeSnowProfile) {
       //console.debug("insertBefore has been called");
       var foundPlace = false;
       if (this.first === null) {
 
-        // The list is now empty so this object is both first and last.
+        // The list is now empty so SnowProfile object is both first and last.
         this.first = this.last = object;
         foundPlace = true;
       }
-      else if (this.first === beforeThis) {
+      else if (this.first === beforeSnowProfile) {
 
         // Inserting before the first element in the list
         object.after = this.first;
@@ -209,12 +230,12 @@
       else {
 
         // Inserting before some element farther in list
-        //console.debug("insertBefore layer at "+beforeThis.depth);
+        //console.debug("insertBefore layer at "+beforethis.depth);
         var current = this.first;
         var next = current.after;
         var n = 0;
         while (next !== null) {
-          if (next === beforeThis) {
+          if (next === beforeSnowProfile) {
 
             // Inserting before the next member of the list
             object.after = next;
@@ -271,7 +292,7 @@
       var foundPlace = false;
       if (this.first === null) {
 
-        // The list is now empty so this object is both first and last.
+        // The list is now empty so SnowProfile object is both first and last.
         this.first = this.last = object;
         foundPlace = true;
       }
@@ -310,12 +331,12 @@
     this.append = function(object) {
       if (this.first === null) {
 
-        // The list is now empty so this object is both first and last.
+        // The list is now empty so SnowProfile object is both first and last.
         this.first = this.last = object;
       }
       else {
 
-        // The list is not empty.  Add this object to the tail of the list.
+        // The list is not empty.  Add SnowProfile object to the tail of the list.
         var oldLast = this.last;
         if (oldLast !== null) {
           oldLast.after = object;
@@ -371,14 +392,14 @@
    */
   var snow_profile_layers = new Dlist();
 
-  // only KineticJS layer at this moment
+  // only KineticJS layer at SnowProfile moment
   var layer;
 
   /**
    * Object describing a single snow stratigraphy layer
    *
    * Note that drawing the snow layer depends on knowing the layers above
-   * and below in the snow pack.  In the constructor we don't know this,
+   * and below in the snow pack.  In the constructor we don't know SnowProfile,
    * so we need to wait until the layer is added to the snow_layer_list
    * before we can draw it.
    * @constructor
@@ -386,10 +407,10 @@
   function SnowProfileLayer(depth) {
     "use strict";
 
-    // Reference this object inside an event handler
+    // Reference SnowProfile object inside an event handler
     var that = this;
 
-    // The SnowProfileLayer object before this one (above in the snow pack).
+    // The SnowProfileLayer object before SnowProfile one (above in the snow pack).
     // Points to a SnowProfileLayer or is null.
     this.before = null;
 
@@ -401,7 +422,7 @@
     // A non-negative number.
     this.depth = depth;
 
-    // Hardness of this snow layer.
+    // Hardness of SnowProfile snow layer.
     // A string code from the CAAML_HARD table above.
     this.hardness = "F-";
 
@@ -409,24 +430,24 @@
     this.handleTouched = false;
 
     // Handle for the line at the top of the layer.
-    // The user drags and drops this handle to adjust depth and hardness.
+    // The user drags and drops SnowProfile handle to adjust depth and hardness.
     this.handle = new Kinetic.Rect({
-      x: HANDLE_MIN_X,
+      x: SnowProfile.HANDLE_MIN_X,
       y: that.depth2y(that.depth),
-      width: HANDLE_SIZE,
-      height: HANDLE_SIZE,
-      offsetX: HANDLE_SIZE / 2,
+      width: SnowProfile.HANDLE_SIZE,
+      height: SnowProfile.HANDLE_SIZE,
+      offsetX: SnowProfile.HANDLE_SIZE / 2,
       fill: '#000',
       draggable: true,
       dragBoundFunc: function(pos) {
 
         // X (hardness) position is bound by the edges of the graph.
         var newX = pos.x;
-        if (pos.x < HANDLE_MIN_X) {
-          newX = HANDLE_MIN_X;
+        if (pos.x < SnowProfile.HANDLE_MIN_X) {
+          newX = SnowProfile.HANDLE_MIN_X;
         }
-        else if (pos.x > HANDLE_MAX_X) {
-          newX = HANDLE_MAX_X;
+        else if (pos.x > SnowProfile.HANDLE_MAX_X) {
+          newX = SnowProfile.HANDLE_MAX_X;
         }
 
         // Y (depth) position is limited by the depth of the snow layers
@@ -434,16 +455,16 @@
         var newY = pos.y;
         if (that.before === null) {
 
-          // This is the top (snow surface) layer.
+          // SnowProfile is the top (snow surface) layer.
           // Handle stays on the surface.
-          newY = HANDLE_MIN_Y;
+          newY = SnowProfile.HANDLE_MIN_Y;
         }
         else if (that.after === null) {
 
-          // This is the bottom layer.  The handle depth is constrained
+          // SnowProfile is the bottom layer.  The handle depth is constrained
           // between the layer above and GRAPH_HEIGHT.
-          if (pos.y > (HANDLE_MAX_Y)) {
-            newY = HANDLE_MAX_Y;
+          if (pos.y > (SnowProfile.HANDLE_MAX_Y)) {
+            newY = SnowProfile.HANDLE_MAX_Y;
           }
           else if (pos.y <= that.before.handleGetY()) {
             newY = that.before.handleGetY() + 1;
@@ -451,7 +472,7 @@
         }
         else {
 
-          // This layer is below the surface and above the bottom.
+          // SnowProfile layer is below the surface and above the bottom.
           // The handle depth is constrained between layers above and below.
             if (pos.y >= that.after.handleGetY()) {
               newY = that.after.handleGetY() - 1;
@@ -480,12 +501,12 @@
 
     // Add text to show current handle location.
     this.handle_loc = new Kinetic.Text({
-      x: DEPTH_LABEL_WD + 1 + GRAPH_WIDTH + 10,
+      x: SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH + 10,
       y: that.depth2y(that.depth),
       fontSize: 12,
       fontStyle: 'bold',
       fontFamily: 'sans-serif',
-      fill: LABEL_COLOR,
+      fill: SnowProfile.LABEL_COLOR,
       align: 'left',
       visible: 0
     });
@@ -513,17 +534,17 @@
 
     // Points for a horizontal line from the Y axis to or through the handle.
     // The horizontal line extends from the left edge of the graph right to
-    // the maximum of (X of this, X of snow layer above).
+    // the maximum of (X of SnowProfile, X of snow layer above).
     this.horiz_line_pts = function() {
       var x = that.handle.getX();
       if (that.before !== null) {
           x = Math.max(x, that.before.handleGetX());
       }
       return  [
-        [DEPTH_LABEL_WD + 1,
-         that.depth2y(that.depth) + Math.floor(HANDLE_SIZE / 2)],
+        [SnowProfile.DEPTH_LABEL_WD + 1,
+         that.depth2y(that.depth) + Math.floor(SnowProfile.HANDLE_SIZE / 2)],
         [x,
-          that.depth2y(that.depth) + Math.floor(HANDLE_SIZE / 2)]
+          that.depth2y(that.depth) + Math.floor(SnowProfile.HANDLE_SIZE / 2)]
       ];
     };
 
@@ -535,18 +556,18 @@
     layer.add(this.horiz_line);
 
     // Points for vertical line from the handle down to the top of the layer
-    // below in the snow pack, or the graph bottom if this is lowest layer.
+    // below in the snow pack, or the graph bottom if SnowProfile is lowest layer.
     this.vert_line_pts = function() {
       var x = that.handle.getX();
-      var topY = that.handle.getY() + (HANDLE_SIZE / 2);
-      var bottomY = HANDLE_MAX_Y + (HANDLE_SIZE / 2);
+      var topY = that.handle.getY() + (SnowProfile.HANDLE_SIZE / 2);
+      var bottomY = SnowProfile.HANDLE_MAX_Y + (SnowProfile.HANDLE_SIZE / 2);
       if (that.after !== null) {
-        bottomY = that.after.handleGetY() + HANDLE_SIZE / 2;
+        bottomY = that.after.handleGetY() + SnowProfile.HANDLE_SIZE / 2;
       }
       return [[x, topY],[x, bottomY]];
     };
 
-    // Add a vertical line to show hardness of the layer.  This line extends
+    // Add a vertical line to show hardness of the layer.  SnowProfile line extends
     // from the handle down to the top of the layer below or graph bottom.
     this.vert_line = new Kinetic.Line({
       points: that.vert_line_pts(),
@@ -554,7 +575,7 @@
     });
     layer.add(this.vert_line);
 
-    // This layer has been added to the list.  Create a row for it
+    // SnowProfile layer has been added to the list.  Create a row for it
     // in the controls table.
     this.addedToList = function() {
       if (that.before !== null) {
@@ -568,18 +589,18 @@
         "</tr>";
       if (that === snow_profile_layers.first) {
 
-        // This layer is the new top of the snow pack
+        // SnowProfile layer is the new top of the snow pack
         $("#snow_profile_ctrls tbody:first-child").prepend(ctrls_html);
         //console.debug("new layer is new top");
 
       } else if (that === snow_profile_layers.last) {
 
-        // This layer is the new lowest layer in the snow pack
+        // SnowProfile layer is the new lowest layer in the snow pack
         $("#snow_profile_ctrls tbody:last-child").append(ctrls_html);
         //console.debug("new layer is new bottom");
       } else {
 
-        // Count the number of layers above this in the snow pack
+        // Count the number of layers above SnowProfile in the snow pack
         var n = 0;
         var snowLayer = snow_profile_layers.first;
         while (snowLayer !== that) {
@@ -596,12 +617,12 @@
       snow_profile_stage.draw();
     };
 
-    // This object will be deleted from the list.  Delete its row from the
+    // SnowProfile object will be deleted from the list.  Delete its row from the
     // controls table.  If only one object remains on the list, disable that
     // object's delete button.
     this.deleteFromList = function() {
       //console.debug("deleteFromList() called");
-      // Count the number of layers above this in the snow pack
+      // Count the number of layers above SnowProfile in the snow pack
       var n = 0;
       var snowLayer = snow_profile_layers.first;
       while (snowLayer !== that) {
@@ -614,7 +635,7 @@
         }
       }
       if (snowLayer !== that) {
-        console.error("deleteFromList can't find this object in the list");
+        console.error("deleteFromList can't find SnowProfile object in the list");
       }
       else {
         $("#snow_profile_ctrls tr").eq(n).remove();
@@ -678,7 +699,7 @@
     this.setHandleVisible = function(visible) {
       if (!that.handleTouched) {
 
-        // The user hasn't touched this handle since it was inited, so blink
+        // The user hasn't touched SnowProfile handle since it was inited, so blink
         that.handle.setStroke(visible ? "#000" : "#FFF");
       }
       else {
@@ -726,10 +747,10 @@
    */
   SnowProfileLayer.prototype.code2x = function(code) {
     "use strict";
-    var x = HANDLE_MIN_X;
-    for (var i = 0; i < CAAML_HARD.length; i++) {
-      if (code === CAAML_HARD[i][0]) {
-        x = CAAML_HARD[i][2] + HARD_BAND_WD * 0.5;
+    var x = SnowProfile.HANDLE_MIN_X;
+    for (var i = 0; i < SnowProfile.CAAML_HARD.length; i++) {
+      if (code === SnowProfile.CAAML_HARD[i][0]) {
+        x = SnowProfile.CAAML_HARD[i][2] + SnowProfile.HARD_BAND_WD * 0.5;
         break;
       }
     }
@@ -742,10 +763,10 @@
   SnowProfileLayer.prototype.x2code = function(x) {
     "use strict";
     var code = 'I';
-    for (var i = 0; i < CAAML_HARD.length - 1; i++) {
-      if ((x >= (CAAML_HARD[i][2]) &&
-        (x < (CAAML_HARD[i+1][2])))) {
-        code = CAAML_HARD[i][0];
+    for (var i = 0; i < SnowProfile.CAAML_HARD.length - 1; i++) {
+      if ((x >= (SnowProfile.CAAML_HARD[i][2]) &&
+        (x < (SnowProfile.CAAML_HARD[i+1][2])))) {
+        code = SnowProfile.CAAML_HARD[i][0];
         break;
       }
     }
@@ -759,7 +780,7 @@
    */
   SnowProfileLayer.prototype.depth2y = function(depth) {
     "use strict";
-    return (depth * (GRAPH_HEIGHT / MAX_DEPTH)) + HANDLE_MIN_Y;
+    return (depth * (SnowProfile.GRAPH_HEIGHT / SnowProfile.MAX_DEPTH)) + SnowProfile.HANDLE_MIN_Y;
   };
 
   /**
@@ -768,7 +789,7 @@
    */
   SnowProfileLayer.prototype.y2depth = function(y) {
     "use strict";
-    return ((y - HANDLE_MIN_Y) / GRAPH_HEIGHT) * MAX_DEPTH;
+    return ((y - SnowProfile.HANDLE_MIN_Y) / SnowProfile.GRAPH_HEIGHT) * SnowProfile.MAX_DEPTH;
   };
 
   /**
@@ -778,8 +799,8 @@
     "use strict";
     snow_profile_stage = new Kinetic.Stage({
       container: 'snow_profile_diagram',
-      width: STAGE_WD,
-      height: STAGE_HT
+      width: SnowProfile.STAGE_WD,
+      height: SnowProfile.STAGE_HT
     });
 
     // Create the reference grid layer
@@ -788,36 +809,36 @@
       // Draw the vertical line along the left edge
     layer.add(new Kinetic.Line({
       points: [
-        [DEPTH_LABEL_WD, HANDLE_MIN_Y - 1 + (HANDLE_SIZE / 2)],
-        [DEPTH_LABEL_WD, HANDLE_MAX_Y + (HANDLE_SIZE / 2)]
+        [SnowProfile.DEPTH_LABEL_WD, SnowProfile.HANDLE_MIN_Y - 1 + (SnowProfile.HANDLE_SIZE / 2)],
+        [SnowProfile.DEPTH_LABEL_WD, SnowProfile.HANDLE_MAX_Y + (SnowProfile.HANDLE_SIZE / 2)]
       ],
-      stroke: LABEL_COLOR,
+      stroke: SnowProfile.LABEL_COLOR,
       strokeWidth: 1
     }));
 
     // Add text every 20 cm to the depth label area
-    for (var cm = 0; cm <= MAX_DEPTH; cm += 20) {
+    for (var cm = 0; cm <= SnowProfile.MAX_DEPTH; cm += 20) {
       layer.add(new Kinetic.Text({
         x: 10,
-        y: HANDLE_MIN_Y + cm * DEPTH_SCALE,
+        y: SnowProfile.HANDLE_MIN_Y + cm * SnowProfile.DEPTH_SCALE,
         text: cm,
         fontSize: 12,
         fontStyle: 'bold',
         fontFamily: 'sans-serif',
-        fill: LABEL_COLOR,
+        fill: SnowProfile.LABEL_COLOR,
         align: 'right'
       }));
 
       // Draw a horizontal line every 20 cm as a depth scale
-      if (cm !== MAX_DEPTH) {
+      if (cm !== SnowProfile.MAX_DEPTH) {
         layer.add(new Kinetic.Line({
           points: [
-            [DEPTH_LABEL_WD + 1,
-              HANDLE_MIN_Y + (HANDLE_SIZE / 2) + (cm * DEPTH_SCALE)],
-            [DEPTH_LABEL_WD + 1 + GRAPH_WIDTH - HANDLE_SIZE / 2,
-              HANDLE_MIN_Y + (HANDLE_SIZE / 2) + (cm * DEPTH_SCALE)]
+            [SnowProfile.DEPTH_LABEL_WD + 1,
+              SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2) + (cm * SnowProfile.DEPTH_SCALE)],
+            [SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH - SnowProfile.HANDLE_SIZE / 2,
+              SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2) + (cm * SnowProfile.DEPTH_SCALE)]
           ],
-          stroke: GRID_COLOR,
+          stroke: SnowProfile.GRID_COLOR,
           strokeWidth: 1
         }));
       }
@@ -826,50 +847,50 @@
     // Draw and label the hardness (horizontal) axis
     layer.add(new Kinetic.Line({
       points: [
-        [DEPTH_LABEL_WD,
-          HANDLE_MAX_Y + (HANDLE_SIZE / 2)],
-        [DEPTH_LABEL_WD + GRAPH_WIDTH +1 - HANDLE_SIZE / 2,
-          HANDLE_MAX_Y + (HANDLE_SIZE / 2)]
+        [SnowProfile.DEPTH_LABEL_WD,
+          SnowProfile.HANDLE_MAX_Y + (SnowProfile.HANDLE_SIZE / 2)],
+        [SnowProfile.DEPTH_LABEL_WD + SnowProfile.GRAPH_WIDTH +1 - SnowProfile.HANDLE_SIZE / 2,
+          SnowProfile.HANDLE_MAX_Y + (SnowProfile.HANDLE_SIZE / 2)]
       ],
-      stroke: LABEL_COLOR,
+      stroke: SnowProfile.LABEL_COLOR,
       strokeWidth: 1
     }));
 
     // Iterate through the table of CAAML hardness codes to
     // build the hardness (horizontal) scale for the graph area
-    for (var i = 0; i < CAAML_HARD.length; i++) {
-      var x = DEPTH_LABEL_WD + 1 + (HARD_BAND_WD * i) + (HANDLE_SIZE / 2);
-      if (CAAML_HARD[i][1]) {
+    for (var i = 0; i < SnowProfile.CAAML_HARD.length; i++) {
+      var x = SnowProfile.DEPTH_LABEL_WD + 1 + (SnowProfile.HARD_BAND_WD * i) + (SnowProfile.HANDLE_SIZE / 2);
+      if (SnowProfile.CAAML_HARD[i][1]) {
 
-        // Add a vertical line to show this hardness value
+        // Add a vertical line to show SnowProfile hardness value
         layer.add(new Kinetic.Line({
           points: [
-            [x, HANDLE_MIN_Y + (HANDLE_SIZE / 2)],
-            [x, HANDLE_MAX_Y + (HANDLE_SIZE / 2)]
+            [x, SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2)],
+            [x, SnowProfile.HANDLE_MAX_Y + (SnowProfile.HANDLE_SIZE / 2)]
           ],
-          stroke: GRID_COLOR,
+          stroke: SnowProfile.GRID_COLOR,
           strokeWidth: 1
         }));
         layer.add(new Kinetic.Text({
           x: x,
-          y: HANDLE_MAX_Y + 10,
-          text: CAAML_HARD[i][0],
+          y: SnowProfile.HANDLE_MAX_Y + 10,
+          text: SnowProfile.CAAML_HARD[i][0],
           fontSize: 12,
           fontStyle: 'bold',
           fontFamily: 'sans-serif',
-          fill: LABEL_COLOR,
+          fill: SnowProfile.LABEL_COLOR,
           align: 'center'
         }));
       }
     }
     var hardness_text = new Kinetic.Text({
-      x: GRAPH_CENTER_X,
-      y: STAGE_HT - 14,
+      x: SnowProfile.GRAPH_CENTER_X,
+      y: SnowProfile.STAGE_HT - 14,
       text: 'Hardness',
       fontSize: 18,
       fontStyle: 'bold',
       fontFamily: 'sans-serif',
-      fill: LABEL_COLOR,
+      fill: SnowProfile.LABEL_COLOR,
       align: 'center'
     });
     hardness_text.setOffsetX(hardness_text.getWidth() / 2 );
