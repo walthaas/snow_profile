@@ -3,7 +3,7 @@
         "allowUnknownTags": true
     },
     "source": {
-        "include": ["snow_profile.js"],
+        "include": ["snow_profile.js"]
     },
     "plugins": [ "plugins/markdown" ],
     "templates": {

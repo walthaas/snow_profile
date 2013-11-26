@@ -93,7 +93,14 @@ var SnowProfile = {};
     /**
      * only KineticJS layer at this moment
      */
-    kineticJSLayer: null
+    kineticJSLayer: null,
+
+    /**
+     * Snow stratigraphy snow layers
+     * NB: The KineticJS library refers to a visual layer of the diagram
+     *     as a "layer" so be careful which type of layer is meant!
+     */
+    snowLayers: null
   };
 
   /**
@@ -412,20 +419,15 @@ var SnowProfile = {};
     };
   }
 
-  /**
-   * Snow stratigraphy snow layers
-   * NB: The KineticJS library refers to a visual layer of the diagram
-   *     as a "layer" so be careful which type of layer is meant!
-   */
-  var snow_profile_layers = new Dlist();
-  //console.log("layers=", snow_profile_layers);
+  SnowProfile.snowLayers = new Dlist();
+  //console.log("layers=", SnowProfile.snowLayers);
 
   /**
    * Object describing a single snow stratigraphy layer
    *
    * Note that drawing the snow layer depends on knowing the layers above
    * and below in the snow pack.  In the constructor we don't know this,
-   * so we need to wait until the layer is added to the snow_profile_layers
+   * so we need to wait until the layer is added to the SnowProfile.snowLayers
    * list before we can draw it.
    * @constructor
    */
@@ -614,13 +616,13 @@ var SnowProfile = {};
         "<td><button name=\"ib\">insert below</button></td>" +
         "<td><button name=\"del\">delete</button></td>" +
         "</tr>";
-      if (that === snow_profile_layers.first) {
+      if (that === SnowProfile.snowLayers.first) {
 
         // SnowProfile layer is the new top of the snow pack
         $("#snow_profile_ctrls tbody:first-child").prepend(ctrls_html);
         //console.debug("new layer is new top");
 
-      } else if (that === snow_profile_layers.last) {
+      } else if (that === SnowProfile.snowLayers.last) {
 
         // SnowProfile layer is the new lowest layer in the snow pack
         $("#snow_profile_ctrls tbody:last-child").append(ctrls_html);
@@ -629,7 +631,7 @@ var SnowProfile = {};
 
         // Count the number of layers above SnowProfile in the snow pack
         var n = 0;
-        var snowLayer = snow_profile_layers.first;
+        var snowLayer = SnowProfile.snowLayers.first;
         while (snowLayer !== that) {
           n++;
           if (snowLayer !== null) {
@@ -651,7 +653,7 @@ var SnowProfile = {};
       //console.debug("deleteFromList() called");
       // Count the number of layers above SnowProfile in the snow pack
       var n = 0;
-      var snowLayer = snow_profile_layers.first;
+      var snowLayer = SnowProfile.snowLayers.first;
       while (snowLayer !== that) {
         n++;
         if (snowLayer !== null) {
@@ -666,7 +668,7 @@ var SnowProfile = {};
       }
       else {
         $("#snow_profile_ctrls tr").eq(n).remove();
-        if (snowLayer === snow_profile_layers.first) {
+        if (snowLayer === SnowProfile.snowLayers.first) {
           // We're deleting the top layer, so the next layer is now top
           //console.debug("deleting top layer so layer after gets depth = 0");
           that.after.setDepth(0);
@@ -950,7 +952,7 @@ var SnowProfile = {};
           this.oldShowHandle = this.showHandle;
 
           // For each snow layer, if handle untouched, blink
-          var current = snow_profile_layers.first;
+          var current = SnowProfile.snowLayers.first;
           while (current !== null) {
             current.setHandleVisible(this.showHandle);
             current = current.after;
@@ -966,7 +968,7 @@ var SnowProfile = {};
     $("#snow_profile_ctrls").delegate("button", "click",
       function(){
         var row = $("#snow_profile_ctrls tr").index(this.parentNode.parentNode);
-        var item = snow_profile_layers.get(row);
+        var item = SnowProfile.snowLayers.get(row);
         if (item === -1) {
           return;
         }
@@ -974,12 +976,12 @@ var SnowProfile = {};
         var newLayer = new SnowProfile.Layer(40);
         switch (name) {
           case "ia":
-            snow_profile_layers.insertBefore(newLayer, item);
+            SnowProfile.snowLayers.insertBefore(newLayer, item);
             newLayer.draw();
             break;
 
           case "ib":
-            snow_profile_layers.insertAfter(newLayer, item);
+            SnowProfile.snowLayers.insertAfter(newLayer, item);
             newLayer.draw();
             break;
 
@@ -987,7 +989,7 @@ var SnowProfile = {};
             //console.debug("delete row "+row);
             var before = item.before;
             var after = item.after;
-            snow_profile_layers.delete(item);
+            SnowProfile.snowLayers.delete(item);
             if (before !== null) {
               before.draw();
             }
@@ -997,7 +999,7 @@ var SnowProfile = {};
 
             // Check how many layers remain in the list.  If there is only one
             // remaining, we can't allow it to be deleted
-            if (snow_profile_layers.first.after === null) {
+            if (SnowProfile.snowLayers.first.after === null) {
               $("#snow_profile_ctrls button[name=\"del\"]").attr("disabled", "disabled");
             }
             SnowProfile.stage.draw();
@@ -1006,7 +1008,7 @@ var SnowProfile = {};
           default:
             console.error("click from button with unknown name " + name);
           }
-         // console.log("layers=%o",snow_profile_layers);
+         // console.log("layers=%o",SnowProfile.snowLayers);
       });
 }  // function snow_profile_init();
 
@@ -1014,7 +1016,7 @@ var SnowProfile = {};
    * Main program
    */
   snow_profile_init();
-  snow_profile_layers.append(new SnowProfile.Layer(0));
+  SnowProfile.snowLayers.append(new SnowProfile.Layer(0));
 
 // Configure Emacs for Drupal JavaScript coding standards
 // Local Variables:
