@@ -418,7 +418,7 @@ var SnowProfile = {};
    *     as a "layer" so be careful which type of layer is meant!
    */
   var snow_profile_layers = new Dlist();
-  console.log("layers=", snow_profile_layers);
+  //console.log("layers=", snow_profile_layers);
 
   /**
    * Object describing a single snow stratigraphy layer
@@ -429,7 +429,7 @@ var SnowProfile = {};
    * list before we can draw it.
    * @constructor
    */
-  function SnowProfileLayer(depth) {
+  SnowProfile.Layer = function(depth) {
     "use strict";
 
     // Reference SnowProfile object inside an event handler
@@ -746,9 +746,9 @@ var SnowProfile = {};
     // and draw the lines connected to the handle
     this.handle.on('dragmove', function() {
 
-      if ((that.before === null) && (that.after === null)) {
-        console.error("dragging a layer that is not on list");
-      }
+      //if ((that.before === null) && (that.after === null)) {
+      //  console.error("dragging a layer that is not on list");
+      //}
       // Adjust the horizontal (hardness) position
       that.hardness = that.x2code(that.handle.getX());
       that.horiz_line.setPoints(that.horiz_line_pts());
@@ -775,14 +775,14 @@ var SnowProfile = {};
         that.x2code(that.handle.getX()) + ')');
       that.handle_loc.setY(that.depth2y(that.depth));
     });
-  } // function SnowProfileLayer()
+  } // function SnowProfile.Layer()
 
   /**
     Convert a hardness code to an X axis position.
     @param {string} code A CAAML hardness code from the CAAML_HARD table.
     @returns {number} X axis position
    */
-  SnowProfileLayer.prototype.code2x = function(code) {
+  SnowProfile.Layer.prototype.code2x = function(code) {
     "use strict";
     var x = SnowProfile.HANDLE_MIN_X;
     for (var i = 0; i < SnowProfile.CAAML_HARD.length; i++) {
@@ -799,7 +799,7 @@ var SnowProfile = {};
     @param {number} x X axis position.
     @returns {string} CAAML hardness code.
    */
-  SnowProfileLayer.prototype.x2code = function(x) {
+  SnowProfile.Layer.prototype.x2code = function(x) {
     "use strict";
     var code = 'I';
     for (var i = 0; i < SnowProfile.CAAML_HARD.length - 1; i++) {
@@ -817,7 +817,7 @@ var SnowProfile = {};
     @param {number} depth Depth of the top of this layer in cm.
     @returns {number} Y position of the layer.
    */
-  SnowProfileLayer.prototype.depth2y = function(depth) {
+  SnowProfile.Layer.prototype.depth2y = function(depth) {
     "use strict";
     return (depth * (SnowProfile.GRAPH_HEIGHT / SnowProfile.MAX_DEPTH)) + SnowProfile.HANDLE_MIN_Y;
   };
@@ -827,7 +827,7 @@ var SnowProfile = {};
     @param {number} y Y axis position.
     @return {number} Depth of this layer in cm.
    */
-  SnowProfileLayer.prototype.y2depth = function(y) {
+  SnowProfile.Layer.prototype.y2depth = function(y) {
     "use strict";
     return ((y - SnowProfile.HANDLE_MIN_Y) / SnowProfile.GRAPH_HEIGHT) * SnowProfile.MAX_DEPTH;
   };
@@ -971,7 +971,7 @@ var SnowProfile = {};
           return;
         }
         var name = this.name;
-        var newLayer = new SnowProfileLayer(40);
+        var newLayer = new SnowProfile.Layer(40);
         switch (name) {
           case "ia":
             snow_profile_layers.insertBefore(newLayer, item);
@@ -1006,7 +1006,7 @@ var SnowProfile = {};
           default:
             console.error("click from button with unknown name " + name);
           }
-          console.log("layers=%o",snow_profile_layers);
+         // console.log("layers=%o",snow_profile_layers);
       });
 }  // function snow_profile_init();
 
@@ -1014,7 +1014,7 @@ var SnowProfile = {};
    * Main program
    */
   snow_profile_init();
-  snow_profile_layers.append(new SnowProfileLayer(0));
+  snow_profile_layers.append(new SnowProfile.Layer(0));
 
 // Configure Emacs for Drupal JavaScript coding standards
 // Local Variables:
