@@ -837,7 +837,7 @@ var SnowProfile = {};
   /**
    * Initialize the container and the grid layer
    */
-  function snow_profile_init() {
+  SnowProfile.init = function() {
     "use strict";
     SnowProfile.stage = new Kinetic.Stage({
       container: 'snow_profile_diagram',
@@ -1010,12 +1010,12 @@ var SnowProfile = {};
           }
          // console.log("layers=%o",SnowProfile.snowLayers);
       });
-}  // function snow_profile_init();
+  }  // function SnowProfile.init();
 
   /**
    * Main program
    */
-  snow_profile_init();
+  SnowProfile.init();
   SnowProfile.snowLayers.append(new SnowProfile.Layer(0));
 
 // Configure Emacs for Drupal JavaScript coding standards
