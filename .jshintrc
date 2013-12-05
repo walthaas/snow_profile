@@ -11,6 +11,7 @@
   "undef"     : true,
   "unused"    : "vars",
   "predef"    : [
+    "alert",
     "console",
     "Drupal",
     "drupalSettings",
