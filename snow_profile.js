@@ -264,7 +264,7 @@ var SnowProfile = {};
     "use strict";
     //console.debug("SnowProfile.Layer(%d)", depth);
     // Reference SnowProfile object inside an event handler
-    var that = this;
+    var self = this;
 
     // Insert this Layer in the appropriate place in the snow pack.
     var i;
@@ -288,7 +288,7 @@ var SnowProfile = {};
       @type {string}
      */
     this.hardness = null;
-    //console.debug("hardness set to %s", that.hardness);
+    //console.debug("hardness set to %s", self.hardness);
     // Insert this layer above the first layer that is deeper
     for (i = 0; i<numLayers; i++) {
       if (SnowProfile.snowLayers[i].getDepth() >= depth) {
@@ -329,7 +329,7 @@ var SnowProfile = {};
      */
     this.handle = new Kinetic.Rect({
       x: SnowProfile.HANDLE_MIN_X,
-      y: that.depth2y(that.depth),
+      y: self.depth2y(self.depth),
       width: SnowProfile.HANDLE_SIZE,
       height: SnowProfile.HANDLE_SIZE,
       offsetX: SnowProfile.HANDLE_SIZE / 2,
@@ -349,7 +349,7 @@ var SnowProfile = {};
         // Y (depth) position is limited by the depth of the snow layers
         // above and below in the snow pack, or by air and ground.
         var newY = pos.y;
-        var i = that.getIndex();
+        var i = self.getIndex();
         var numLayers = SnowProfile.snowLayers.length;
         if (i === 0) {
 
@@ -379,7 +379,7 @@ var SnowProfile = {};
               newY = SnowProfile.snowLayers[i - 1].handleGetY() + 1;
             }
         }
-        that.depth = that.y2depth(newY);
+        self.depth = self.y2depth(newY);
         return{
           x: newX,
           y: newY
@@ -391,11 +391,11 @@ var SnowProfile = {};
       Remove and destroy all KineticJS objects belonging to this snow layer
      */
     this.destroy = function() {
-      that.handle.off('mouseup mousedown dragmove mouseover mouseout');
-      that.handle.destroy();
-      that.handle_loc.destroy();
-      that.horiz_line.destroy();
-      that.vert_line.destroy();
+      self.handle.off('mouseup mousedown dragmove mouseover mouseout');
+      self.handle.destroy();
+      self.handleLoc.destroy();
+      self.horizLine.destroy();
+      self.vertLine.destroy();
     };
 
     /**
@@ -403,7 +403,7 @@ var SnowProfile = {};
       @returns {number} Depth of top of this layer in cm below surface
      */
     this.getDepth = function() {
-      return that.depth;
+      return self.depth;
     };
 
     /**
@@ -414,7 +414,7 @@ var SnowProfile = {};
       var i;
       var numLayers = SnowProfile.snowLayers.length;
       for (i = 0; i < numLayers; i++) {
-        if (SnowProfile.snowLayers[i] === that) {
+        if (SnowProfile.snowLayers[i] === self) {
           return i;
         }
       }
@@ -426,7 +426,7 @@ var SnowProfile = {};
       @returns {number}
      */
     this.handleGetX = function() {
-      return that.handle.getX();
+      return self.handle.getX();
     };
 
     /**
@@ -434,15 +434,15 @@ var SnowProfile = {};
       @returns {number}
      */
     this.handleGetY = function() {
-      return that.handle.getY();
+      return self.handle.getY();
     };
 
     /**
       Add text to show current handle location.
      */
-    this.handle_loc = new Kinetic.Text({
+    this.handleLoc = new Kinetic.Text({
       x: SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH + 10,
-      y: that.depth2y(that.depth),
+      y: self.depth2y(self.depth),
       fontSize: 12,
       fontStyle: 'bold',
       fontFamily: 'sans-serif',
@@ -450,7 +450,7 @@ var SnowProfile = {};
       align: 'left',
       visible: 0
     });
-    SnowProfile.kineticJSLayer.add(this.handle_loc);
+    SnowProfile.kineticJSLayer.add(this.handleLoc);
 
     /**
       Style the cursor for the handle
@@ -473,8 +473,8 @@ var SnowProfile = {};
       @callback
      */
     this.handle.on('mousedown', function() {
-      that.handle_loc.setVisible(1);
-      that.handleTouched = true;
+      self.handleLoc.setVisible(1);
+      self.handleTouched = true;
       SnowProfile.stage.draw();
     });
 
@@ -483,7 +483,7 @@ var SnowProfile = {};
       @callback
      */
     this.handle.on('mouseup', function() {
-      that.handle_loc.setVisible(0);
+      self.handleLoc.setVisible(0);
       SnowProfile.stage.draw();
     });
     SnowProfile.kineticJSLayer.add(this.handle);
@@ -493,20 +493,20 @@ var SnowProfile = {};
 
       The horizontal line extends from the left edge of the graph right to
       the maximum of (X of SnowProfile, X of snow layer above).
-      @returns {Array} Two-dimensional array of numbers of the starting and
+      @returns {number[]} Two-dimensional array of numbers of the starting and
       ending points for the horizontal line.
      */
-    this.horiz_line_pts = function() {
-      var x = that.handle.getX();
-      var i = that.getIndex();
+    this.horizLinePts = function() {
+      var x = self.handle.getX();
+      var i = self.getIndex();
         if (i !== 0) {
           x = Math.max(x, SnowProfile.snowLayers[i-1].handleGetX());
       }
       return  [
         [SnowProfile.DEPTH_LABEL_WD + 1,
-         that.depth2y(that.depth) + Math.floor(SnowProfile.HANDLE_SIZE / 2)],
+         self.depth2y(self.depth) + Math.floor(SnowProfile.HANDLE_SIZE / 2)],
         [x,
-          that.depth2y(that.depth) + Math.floor(SnowProfile.HANDLE_SIZE / 2)]
+          self.depth2y(self.depth) + Math.floor(SnowProfile.HANDLE_SIZE / 2)]
       ];
     };
 
@@ -514,11 +514,11 @@ var SnowProfile = {};
       Draw a horizontal line at the top of the layer
       @type {Object}
      */
-    this.horiz_line = new Kinetic.Line({
-      points: that.horiz_line_pts(),
+    this.horizLine = new Kinetic.Line({
+      points: self.horizLinePts(),
       stroke: '#000'
     });
-    SnowProfile.kineticJSLayer.add(this.horiz_line);
+    SnowProfile.kineticJSLayer.add(this.horizLine);
 
     /**
       Define vertical line from the handle down to the top of the layer
@@ -527,12 +527,12 @@ var SnowProfile = {};
       @returns {number[]} Two-dimensional array of numbers of the starting
       and ending points for the vertical line.
      */
-    this.vert_line_pts = function() {
-      //console.debug("vert_line_pts() called");
-      var x = that.handle.getX();
-      var topY = that.handle.getY() + (SnowProfile.HANDLE_SIZE / 2);
+    this.vertLinePts = function() {
+      //console.debug("vertLinePts() called");
+      var x = self.handle.getX();
+      var topY = self.handle.getY() + (SnowProfile.HANDLE_SIZE / 2);
       var bottomY = SnowProfile.HANDLE_MAX_Y + (SnowProfile.HANDLE_SIZE / 2);
-      var i = that.getIndex();
+      var i = self.getIndex();
       var numLayers = SnowProfile.snowLayers.length;
       //console.debug("i=%d  numLayers=%d", i, numLayers);
 
@@ -550,44 +550,44 @@ var SnowProfile = {};
       below, or graph bottom if this is the lowest layer.
       @type {Object}
      */
-    this.vert_line = new Kinetic.Line({
-      points: that.vert_line_pts(),
+    this.vertLine = new Kinetic.Line({
+      points: self.vertLinePts(),
       stroke: '#000'
     });
-    SnowProfile.kineticJSLayer.add(this.vert_line);
+    SnowProfile.kineticJSLayer.add(this.vertLine);
     //console.debug("vertical line added");
 
     /**
       Draw this layer from depth and hardness values and adjacent layers.
      */
     this.draw = function() {
-      var i = that.getIndex();
+      var i = self.getIndex();
       var numLayers = SnowProfile.snowLayers.length;
 
       // Set handle X from hardness
-      //console.debug("setting handle x from "+that.hardness);
-      //console.debug("new x = "+that.code2x(that.hardness));
-      that.handle.setX(that.code2x(that.hardness));
+      //console.debug("setting handle x from "+self.hardness);
+      //console.debug("new x = "+self.code2x(self.hardness));
+      self.handle.setX(self.code2x(self.hardness));
 
       // Set handle Y from depth
-      that.handle.setY(that.depth2y(that.depth));
+      self.handle.setY(self.depth2y(self.depth));
 
       // Adjust the horizontal line
-      that.horiz_line.setPoints(that.horiz_line_pts());
+      self.horizLine.setPoints(self.horizLinePts());
 
       // Adjust the vertical line
-      that.vert_line.setPoints(that.vert_line_pts());
+      self.vertLine.setPoints(self.vertLinePts());
 
       // Adjust the horizontal line of the layer below, if any
       if (i !== (numLayers - 1)) {
-        SnowProfile.snowLayers[i + 1].horiz_line.setPoints(
-          SnowProfile.snowLayers[i + 1].horiz_line_pts());
+        SnowProfile.snowLayers[i + 1].horizLine.setPoints(
+          SnowProfile.snowLayers[i + 1].horizLinePts());
       }
 
       // Adjust the vertical line of the layer above, if any
       if (i !== 0) {
-        SnowProfile.snowLayers[i - 1].vert_line.setPoints(
-          SnowProfile.snowLayers[i - 1].vert_line_pts());
+        SnowProfile.snowLayers[i - 1].vertLine.setPoints(
+          SnowProfile.snowLayers[i - 1].vertLinePts());
       }
       SnowProfile.stage.draw();
     };
@@ -596,7 +596,9 @@ var SnowProfile = {};
       Push this layer down to make room to insert a layer above
      */
     this.pushDown = function() {
-      var i = that.getIndex();
+      // FIXME to support cascading pushdowns we need to pass a parameter
+      // that says to push down even if there is room below
+      var i = self.getIndex();
       var numLayers = SnowProfile.snowLayers.length;
       var spaceBelow;
 
@@ -606,7 +608,7 @@ var SnowProfile = {};
         // This isn't the bottom layer so we need to check distance
         // from this layer to the next lower layer
         spaceBelow = SnowProfile.snowLayers[i + 1].getDepth() -
-          that.depth;
+          self.depth;
         if (spaceBelow < SnowProfile.INS_INCR) {
 
           // Push the layer below down to make space
@@ -616,8 +618,8 @@ var SnowProfile = {};
 
       // Now that we know there is space below this layer we can push
       // it down by the normal insertion increment.
-      that.depth += SnowProfile.INS_INCR;
-      that.draw();
+      self.depth += SnowProfile.INS_INCR;
+      self.draw();
     };
 
     /**
@@ -625,8 +627,8 @@ var SnowProfile = {};
       @param {number} depth Depth in centimeters of the top of this layer.
      */
     this.setDepth = function(depth) {
-      that.depth = depth;
-      that.draw();
+      self.depth = depth;
+      self.draw();
     };
 
     /**
@@ -634,15 +636,15 @@ var SnowProfile = {};
       @param {boolean} visible Make the handle visible?
      */
     this.setHandleVisible = function(visible) {
-      if (!that.handleTouched) {
+      if (!self.handleTouched) {
 
         // The user hasn't this handle since it was inited, so blink
-        that.handle.setStroke(visible ? "#000" : "#FFF");
+        self.handle.setStroke(visible ? "#000" : "#FFF");
       }
       else {
 
         // The use has touched the handle so make it always visible
-        that.handle.setStroke("#000");
+        self.handle.setStroke("#000");
       }
       SnowProfile.stage.draw();
     };
@@ -650,35 +652,35 @@ var SnowProfile = {};
     // When the handle moves, recalculate the hardness value displayed
     // and draw the lines connected to the handle
     this.handle.on('dragmove', function() {
-      var i = that.getIndex();
+      var i = self.getIndex();
       var numLayers = SnowProfile.snowLayers.length;
 
       // Adjust the horizontal (hardness) position
-      that.hardness = that.x2code(that.handle.getX());
-      //console.debug("hardness set to %s", that.hardness);
-      that.horiz_line.setPoints(that.horiz_line_pts());
+      self.hardness = self.x2code(self.handle.getX());
+      //console.debug("hardness set to %s", self.hardness);
+      self.horizLine.setPoints(self.horizLinePts());
 
       // Adjust the vertical (depth) position
-      that.depth = that.y2depth(that.handle.getY());
-      that.vert_line.setPoints(that.vert_line_pts());
+      self.depth = self.y2depth(self.handle.getY());
+      self.vertLine.setPoints(self.vertLinePts());
 
       // Adjust the horizontal line of the layer below, if any
       if (i !== (numLayers - 1)) {
-        SnowProfile.snowLayers[i + 1].horiz_line.setPoints(
-          SnowProfile.snowLayers[i + 1].horiz_line_pts());
+        SnowProfile.snowLayers[i + 1].horizLine.setPoints(
+          SnowProfile.snowLayers[i + 1].horizLinePts());
       }
 
       // Adjust the vertical line of the layer above, if any
       if (i !== 0) {
-        SnowProfile.snowLayers[i - 1].vert_line.setPoints(
-          SnowProfile.snowLayers[i - 1].vert_line_pts());
+        SnowProfile.snowLayers[i - 1].vertLine.setPoints(
+          SnowProfile.snowLayers[i - 1].vertLinePts());
       }
 
       // Set the text information floating to the right of the graph
-      var mm = Math.round(that.depth * 10) / 10;
-      that.handle_loc.setText( '(' + mm + ', ' +
-        that.x2code(that.handle.getX()) + ')');
-      that.handle_loc.setY(that.depth2y(that.depth));
+      var mm = Math.round(self.depth * 10) / 10;
+      self.handleLoc.setText( '(' + mm + ', ' +
+        self.x2code(self.handle.getX()) + ')');
+      self.handleLoc.setY(self.depth2y(self.depth));
     });
   }; // function SnowProfile.Layer()
 
