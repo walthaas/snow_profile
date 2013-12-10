@@ -499,8 +499,8 @@ var SnowProfile = {};
     this.horizLinePts = function() {
       var x = self.handle.getX();
       var i = self.getIndex();
-        if (i !== 0) {
-          x = Math.max(x, SnowProfile.snowLayers[i-1].handleGetX());
+      if (i !== 0) {
+        x = Math.max(x, SnowProfile.snowLayers[i-1].handleGetX());
       }
       return  [
         [SnowProfile.DEPTH_LABEL_WD + 1,
@@ -594,31 +594,26 @@ var SnowProfile = {};
 
     /**
       Push this layer down to make room to insert a layer above
+
+      Add an increment to the depth of this layer and all layers below
+      to the bottom
      */
     this.pushDown = function() {
-      // FIXME to support cascading pushdowns we need to pass a parameter
-      // that says to push down even if there is room below
       var i = self.getIndex();
       var numLayers = SnowProfile.snowLayers.length;
-      var spaceBelow;
-
-      // How much room is there below this layer?
+      //console.debug("Layer.pushDown() i=%d  numLayers=%d depth=%d",
+      //  i, numLayers, self.depth);
+      // Is this the bottom layer?
       if (i !== (numLayers - 1)) {
 
-        // This isn't the bottom layer so we need to check distance
-        // from this layer to the next lower layer
-        spaceBelow = SnowProfile.snowLayers[i + 1].getDepth() -
-          self.depth;
-        if (spaceBelow < SnowProfile.INS_INCR) {
-
-          // Push the layer below down to make space
-          SnowProfile.snowLayers[i + 1].pushDown();
-        }
+        // This isn't the bottom layer so push the layer below down
+        SnowProfile.snowLayers[i + 1].pushDown();
       }
 
-      // Now that we know there is space below this layer we can push
-      // it down by the normal insertion increment.
+      // Add the insertion increment to this layer
       self.depth += SnowProfile.INS_INCR;
+      //console.debug("exit Layer.pushDown() i=%d  numLayers=%d depth=%d",
+      //  i, numLayers, self.depth);
       self.draw();
     };
 
@@ -888,22 +883,27 @@ var SnowProfile = {};
         //row$.css("background-color", "yellow").show("fast");
         var numLayers = SnowProfile.snowLayers.length;
         var layer = SnowProfile.snowLayers[i];
-        var newLayer;
+        var newDepth;
         //console.debug("button=%s  i=%d  layer=%o", this.name, i, layer);
         //console.dir(SnowProfile.snowLayers);
         var name = this.name;
         switch (name) {
           case "ia":
-            if (i === 0) {
 
-              // Special case of inserting above top layer
-              layer.pushDown();
-              //console.debug("new Layer(0)");
-              newLayer = new SnowProfile.Layer(0);
-              //console.debug("back from constructor");
-            }
-            else {
-              alert("not implemented");
+            // New layer will be at same depth as this layer
+            newDepth = layer.getDepth();
+
+            // Push down on this layer and all layers below it
+            layer.pushDown();
+            //console.debug("new Layer(%d)", newDepth);
+            new SnowProfile.Layer(newDepth);
+
+            // Redraw the layer below the new layer
+            SnowProfile.snowLayers[i+1].draw();
+            if (i !== 0) {
+
+              // New layer is not the top layer so redraw layer above
+              SnowProfile.snowLayers[i-1].draw();
             }
             break;
 
@@ -946,12 +946,13 @@ var SnowProfile = {};
               $("#snow_profile_ctrls button[name=\"del\"]").attr(
                 "disabled", "disabled");
             }
-            SnowProfile.stage.draw();
             break;
 
           default:
             console.error("click from button with unknown name " + name);
-          }
+        }
+        //console.debug("calling SnowProfile.stage.draw()");
+        //SnowProfile.stage.draw();
         //console.dir(SnowProfile.snowLayers);
       });
   };  // function SnowProfile.init();
