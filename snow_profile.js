@@ -281,36 +281,27 @@ var SnowProfile = {};
     this.depth = depth;
 
     /**
-      Hardness of this snow layer.
-
-      A string code from the SnowProfile.CAAML_HARD table above.
-      Initial null means the handle is untouched.
-      @type {string}
+      Return depth in cm of this snow layer
+      @returns {number} Depth of top of this layer in cm below surface
      */
-    this.hardness = null;
-    //console.debug("hardness set to %s", self.hardness);
-    // Insert this layer above the first layer that is deeper
-    for (i = 0; i<numLayers; i++) {
-      if (SnowProfile.snowLayers[i].getDepth() >= depth) {
-        SnowProfile.snowLayers.splice(i, 0, this);
-        inserted = true;
-        //console.debug("layer %d inserted", i);
-        break;
+    this.getDepth = function() {
+      return self.depth;
+    };
+
+    /**
+      Get index of this object in snowLayers[]
+      @returns {number} Integer index into snowLayers[]
+     */
+    this.getIndex = function() {
+      var i;
+      var numLayers = SnowProfile.snowLayers.length;
+      for (i = 0; i < numLayers; i++) {
+        if (SnowProfile.snowLayers[i] === self) {
+          return i;
+        }
       }
-    }
-
-    // If no deeper layer was found, add this layer at the bottom.
-    // This also handles the initial case where there were no layers.
-    if (!inserted) {
-      SnowProfile.snowLayers.push(this);
-    }
-    // Enable all delete buttons
-    $("#snow_profile_ctrls button[name=\"del\"]").removeAttr("disabled");
-
-    // Add one more row of buttons
-    $("#snow_profile_ctrls tbody:last-child").append(
-      SnowProfile.ctrls_html);
-    //console.dir(SnowProfile.snowLayers);
+      console.error("Object not found in snowLayers[]");
+    };
 
     /**
       Has the user touched the handle since this layer was created?
@@ -322,11 +313,38 @@ var SnowProfile = {};
     this.handleTouched = false;
 
     /**
+      Hardness of this snow layer.
+
+      A string code from the SnowProfile.CAAML_HARD table above.
+      Initial null means the handle is untouched.
+      @type {string}
+     */
+    this.hardness = null;
+
+    //console.debug("starting construction of Layer");
+    // Insert this layer above the first layer that is deeper
+    for (i = 0; i<numLayers; i++) {
+      if (SnowProfile.snowLayers[i].getDepth() >= depth) {
+        SnowProfile.snowLayers.splice(i, 0, this);
+        inserted = true;
+        break;
+      }
+    }
+
+    // If no deeper layer was found, add this layer at the bottom.
+    // This also handles the initial case where there were no layers.
+    if (!inserted) {
+      SnowProfile.snowLayers.push(this);
+    }
+    //console.debug("layer %d inserted", i);
+
+    /**
       Handle for the line at the top of the layer.
 
       The user drags and drops this handle to adjust depth and hardness.
       @type {Object}
      */
+    //console.debug("creating handle");
     this.handle = new Kinetic.Rect({
       x: SnowProfile.HANDLE_MIN_X,
       y: self.depth2y(self.depth),
@@ -336,7 +354,7 @@ var SnowProfile = {};
       fill: '#000',
       draggable: true,
       dragBoundFunc: function(pos) {
-
+        //console.debug("handle.dragBoundFunc() called");
         // X (hardness) position is bound by the edges of the graph.
         var newX = pos.x;
         if (pos.x < SnowProfile.HANDLE_MIN_X) {
@@ -386,6 +404,7 @@ var SnowProfile = {};
         };
       }
     });
+    //console.debug("done creating handle");
 
     /**
       Remove and destroy all KineticJS objects belonging to this snow layer
@@ -396,29 +415,6 @@ var SnowProfile = {};
       self.handleLoc.destroy();
       self.horizLine.destroy();
       self.vertLine.destroy();
-    };
-
-    /**
-      Return depth in cm of this snow layer
-      @returns {number} Depth of top of this layer in cm below surface
-     */
-    this.getDepth = function() {
-      return self.depth;
-    };
-
-    /**
-      Get index of this object in snowLayers[]
-      @returns {number} Integer index into snowLayers[]
-     */
-    this.getIndex = function() {
-      var i;
-      var numLayers = SnowProfile.snowLayers.length;
-      for (i = 0; i < numLayers; i++) {
-        if (SnowProfile.snowLayers[i] === self) {
-          return i;
-        }
-      }
-      console.error("Object not found in snowLayers[]");
     };
 
     /**
@@ -496,7 +492,9 @@ var SnowProfile = {};
       @returns {number[]} Two-dimensional array of numbers of the starting and
       ending points for the horizontal line.
      */
+    //console.debug("defining horizLinePts()");
     this.horizLinePts = function() {
+      //console.debug("horizLinePts() called");
       var x = self.handle.getX();
       var i = self.getIndex();
       if (i !== 0) {
@@ -514,6 +512,7 @@ var SnowProfile = {};
       Draw a horizontal line at the top of the layer
       @type {Object}
      */
+    //console.debug("defining horizLine()");
     this.horizLine = new Kinetic.Line({
       points: self.horizLinePts(),
       stroke: '#000'
@@ -527,6 +526,7 @@ var SnowProfile = {};
       @returns {number[]} Two-dimensional array of numbers of the starting
       and ending points for the vertical line.
      */
+    //console.debug("defining vertLinePts()");
     this.vertLinePts = function() {
       //console.debug("vertLinePts() called");
       var x = self.handle.getX();
@@ -677,6 +677,27 @@ var SnowProfile = {};
         self.x2code(self.handle.getX()) + ')');
       self.handleLoc.setY(self.depth2y(self.depth));
     });
+
+    // Draw the layer
+    self.draw();
+
+    // If the new layer is not the top, re-draw the layer above.
+    if (i !== 0) {
+      SnowProfile.snowLayers[i - 1].draw();
+    }
+
+    // If the new layer is not the bottom, re-draw the layer below.
+    if (i !== numLayers) {
+      SnowProfile.snowLayers[i + 1].draw();
+    }
+
+    // Enable all delete buttons
+    $("#snow_profile_ctrls button[name=\"del\"]").removeAttr("disabled");
+
+    // Add one more row of buttons
+    $("#snow_profile_ctrls tbody:last-child").append(
+      SnowProfile.ctrls_html);
+    //console.dir(SnowProfile.snowLayers);
   }; // function SnowProfile.Layer()
 
   /**
@@ -884,8 +905,9 @@ var SnowProfile = {};
         var numLayers = SnowProfile.snowLayers.length;
         var layer = SnowProfile.snowLayers[i];
         var newDepth;
-        //console.debug("button=%s  i=%d  layer=%o", this.name, i, layer);
-        //console.dir(SnowProfile.snowLayers);
+        // console.debug("button=%s  i=%d  numLayers=%d  layer=%o",
+        //   this.name, i, numLayers, layer);
+        // console.dir(SnowProfile.snowLayers);
         var name = this.name;
         switch (name) {
           case "ia":
@@ -897,18 +919,19 @@ var SnowProfile = {};
             layer.pushDown();
             //console.debug("new Layer(%d)", newDepth);
             new SnowProfile.Layer(newDepth);
-
-            // Redraw the layer below the new layer
-            SnowProfile.snowLayers[i+1].draw();
-            if (i !== 0) {
-
-              // New layer is not the top layer so redraw layer above
-              SnowProfile.snowLayers[i-1].draw();
-            }
             break;
 
           case "ib":
-            alert("not implemented");
+
+            // New layer will be an increment below this layer
+            newDepth = layer.getDepth() + SnowProfile.INS_INCR;
+
+            // If this is not the bottom layer, push down
+            // the layers below this layer.
+            if (i !== (numLayers - 1)) {
+              SnowProfile.snowLayers[i + 1].pushDown();
+            }
+            new SnowProfile.Layer(newDepth);
             break;
 
           case "del":
@@ -951,6 +974,9 @@ var SnowProfile = {};
           default:
             console.error("click from button with unknown name " + name);
         }
+        //console.debug("after change:");
+        //console.dir(SnowProfile.snowLayers);
+
         //console.debug("calling SnowProfile.stage.draw()");
         //SnowProfile.stage.draw();
         //console.dir(SnowProfile.snowLayers);
