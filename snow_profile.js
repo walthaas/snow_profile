@@ -98,7 +98,7 @@ var SnowProfile = {};
       @const
       @type {string}
      */
-    ctrls_html: "<tr>" +
+    CTRLS_HTML: "<tr>" +
       "<td><button name=\"ia\">insert above</button></td>" +
       "<td><button name=\"ib\">insert below</button></td>" +
       "<td><button name=\"del\">delete</button></td>" +
@@ -696,7 +696,7 @@ var SnowProfile = {};
 
     // Add one more row of buttons
     $("#snow_profile_ctrls tbody:last-child").append(
-      SnowProfile.ctrls_html);
+      SnowProfile.CTRLS_HTML);
     //console.dir(SnowProfile.snowLayers);
   }; // function SnowProfile.Layer()
 
@@ -858,7 +858,7 @@ var SnowProfile = {};
         }));
       }
     }
-    var hardness_text = new Kinetic.Text({
+    var hardnessText = new Kinetic.Text({
       x: SnowProfile.GRAPH_CENTER_X,
       y: SnowProfile.STAGE_HT - 14,
       text: 'Hardness',
@@ -868,8 +868,8 @@ var SnowProfile = {};
       fill: SnowProfile.LABEL_COLOR,
       align: 'center'
     });
-    hardness_text.setOffsetX(hardness_text.getWidth() / 2 );
-    SnowProfile.kineticJSLayer.add(hardness_text);
+    hardnessText.setOffsetX(hardnessText.getWidth() / 2 );
+    SnowProfile.kineticJSLayer.add(hardnessText);
 
     // add the KineticJS layer to the stage
     SnowProfile.stage.add(SnowProfile.kineticJSLayer);
@@ -894,6 +894,10 @@ var SnowProfile = {};
       }
     });
     anim.start();
+
+    // Top align the control buttons to the graph.
+      $("#snow_profile_ctrls").css("paddingTop",
+        SnowProfile.TEMP_LABEL_HT);
 
     // Listen to all buttons now and future in the controls table
     $("#snow_profile_ctrls").delegate("button", "click",
