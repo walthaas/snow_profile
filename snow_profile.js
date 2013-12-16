@@ -35,8 +35,9 @@ var SnowProfile = {};
     GRAPH_WIDTH: 500,
 
     /**
-     * Width in pixels of the connector (diagonal line) area
-     * @const
+      Width in pixels of the area used by buttons and
+      connectors (diagonal lines).
+      @const
      */
     CTRLS_WD: 500,
 
@@ -62,7 +63,7 @@ var SnowProfile = {};
      * Size in pixels of the handle square
      * @const
      */
-    HANDLE_SIZE: 9,
+    HANDLE_SIZE: 11,
 
     /**
      * Color of the labels and axis lines
@@ -231,25 +232,25 @@ var SnowProfile = {};
   ];
 
   /**
-   * Vertical height in pixels of the KineticJS stage
-   * @const
-     @memberof SnowProfile
+    Vertical height in pixels of the KineticJS stage
+    @const
+    @memberof SnowProfile
    */
    SnowProfile.STAGE_HT =  SnowProfile.TEMP_LABEL_HT + 1 +
      SnowProfile.GRAPH_HEIGHT + 1 + SnowProfile.HARD_LABEL_HT;
 
   /**
-   * Horizontal width in pixels of the KineticJS stage
-   * @const
-     @memberof SnowProfile
+    Horizontal width in pixels of the KineticJS stage
+    @const
+    @memberof SnowProfile
    */
    SnowProfile.STAGE_WD = SnowProfile.DEPTH_LABEL_WD + 1 +
      SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD;
 
   /**
-   * Depth scale in pixels per cm
-   * @const
-     @memberof SnowProfile
+    Depth scale in pixels per cm
+    @const
+    @memberof SnowProfile
    */
   SnowProfile.DEPTH_SCALE = SnowProfile.GRAPH_HEIGHT / SnowProfile.MAX_DEPTH;
 })();
@@ -263,7 +264,7 @@ var SnowProfile = {};
   SnowProfile.Layer = function(depth) {
     "use strict";
     //console.debug("SnowProfile.Layer(%d)", depth);
-    // Reference SnowProfile object inside an event handler
+    // Reference this object inside an event handler
     var self = this;
 
     // Insert this Layer in the appropriate place in the snow pack.
@@ -272,7 +273,7 @@ var SnowProfile = {};
     var inserted = false;
     //console.debug("SnowProfile.Layer(%d).  old numLayers=%d",
     //  depth, numLayers);
-    //console.debug(SnowProfile.snowLayers);
+    //console.dir(SnowProfile.snowLayers);
 
     /**
       Depth of the top of this SnowProfileLayer in cm from the snow surface.
@@ -326,6 +327,13 @@ var SnowProfile = {};
     for (i = 0; i<numLayers; i++) {
       if (SnowProfile.snowLayers[i].getDepth() >= depth) {
         SnowProfile.snowLayers.splice(i, 0, this);
+
+        // Insert a row of buttons
+        //console.debug("ctrls[] before:");
+        //console.dir($("#snow_profile_ctrls tr").toArray());
+        $("#snow_profile_ctrls tr").eq(i).before(SnowProfile.CTRLS_HTML);
+        //console.debug("ctrls[] after:");
+        //console.dir($("#snow_profile_ctrls tr").toArray());
         inserted = true;
         break;
       }
@@ -335,8 +343,13 @@ var SnowProfile = {};
     // This also handles the initial case where there were no layers.
     if (!inserted) {
       SnowProfile.snowLayers.push(this);
+
+      // Add a row of buttons
+      $("#snow_profile_ctrls tbody:last-child").append(
+        SnowProfile.CTRLS_HTML);
     }
     //console.debug("layer %d inserted", i);
+
 
     /**
       Handle for the line at the top of the layer.
@@ -371,13 +384,13 @@ var SnowProfile = {};
         var numLayers = SnowProfile.snowLayers.length;
         if (i === 0) {
 
-          // SnowProfile is the top (snow surface) layer.
+          // This is the top (snow surface) layer.
           // Handle stays on the surface.
           newY = SnowProfile.HANDLE_MIN_Y;
         }
         else if (i === (numLayers - 1)) {
 
-          // SnowProfile is the bottom layer.  The handle depth is constrained
+          // This is the bottom layer.  The handle depth is constrained
           // between the layer above and GRAPH_HEIGHT.
           if (pos.y > (SnowProfile.HANDLE_MAX_Y)) {
             newY = SnowProfile.HANDLE_MAX_Y;
@@ -388,7 +401,7 @@ var SnowProfile = {};
         }
         else {
 
-          // SnowProfile layer is below the surface and above the bottom.
+          // This layer is below the surface and above the bottom.
           // The handle depth is constrained between layers above and below.
             if (pos.y > SnowProfile.snowLayers[i + 1].handleGetY()) {
               newY = SnowProfile.snowLayers[i + 1].handleGetY() - 1;
@@ -415,6 +428,7 @@ var SnowProfile = {};
       self.handleLoc.destroy();
       self.horizLine.destroy();
       self.vertLine.destroy();
+      self.diagLine.destroy();
     };
 
     /**
@@ -461,6 +475,8 @@ var SnowProfile = {};
       @callback
      */
     this.handle.on('mouseout', function() {
+      self.handleLoc.setVisible(0);
+      SnowProfile.stage.draw();
       document.body.style.cursor = 'default';
     });
 
@@ -485,7 +501,7 @@ var SnowProfile = {};
     SnowProfile.kineticJSLayer.add(this.handle);
 
     /**
-      Define horizontal line from the Y axis to the handle.
+      Define end points of horizontal line from the Y axis to the handle.
 
       The horizontal line extends from the left edge of the graph right to
       the maximum of (X of SnowProfile, X of snow layer above).
@@ -509,7 +525,7 @@ var SnowProfile = {};
     };
 
     /**
-      Draw a horizontal line at the top of the layer
+      Define a horizontal line at the top of the layer.
       @type {Object}
      */
     //console.debug("defining horizLine()");
@@ -520,8 +536,8 @@ var SnowProfile = {};
     SnowProfile.kineticJSLayer.add(this.horizLine);
 
     /**
-      Define vertical line from the handle down to the top of the layer
-      below in the snow pack, or the graph bottom if this is lowest
+      Define end points of a vertical line from the handle down to the top of
+      the layer below in the snow pack, or the graph bottom if this is lowest
       layer.
       @returns {number[]} Two-dimensional array of numbers of the starting
       and ending points for the vertical line.
@@ -546,7 +562,7 @@ var SnowProfile = {};
     };
 
     /**
-      Draw a vertical line from the handle down to the top of the layer
+      Define a vertical line from the handle down to the top of the layer
       below, or graph bottom if this is the lowest layer.
       @type {Object}
      */
@@ -558,9 +574,51 @@ var SnowProfile = {};
     //console.debug("vertical line added");
 
     /**
+      Define end points of a diagonal line from the handle to the top of
+      the row of buttons controlling the layer.
+      @returns {number[]} Two-dimensional array of numbers of the starting
+      and ending points for the diagonal line.
+     */
+    //console.debug("defining diagLinePts()");
+    this.diagLinePts = function() {
+      //console.debug("diagLinePts() called");
+      var i = self.getIndex();
+
+      // y dimension of the left end is the y of the handle
+      var yLeft = self.handle.getY() + SnowProfile.HANDLE_SIZE / 2;
+
+      // x dimension of the left end is the right edge of the graph
+      var xLeft = SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH;
+
+      var buttons = $("#snow_profile_ctrls tr").eq(i).offset();
+      //console.debug("buttons=%o",buttons);
+      var diagram = $("#snow_profile_diagram").offset();
+      //console.debug("diagram=%o",diagram);
+      var yRight = buttons.top - diagram.top;
+      var xRight = buttons.left - diagram.left;
+      var points = [[xLeft, yLeft], [xRight, yRight]];
+      //console.debug("diagLinePts() returns %o", points);
+      return points;
+    };
+
+    /**
+      Define a diagonal line from the handle right to the top of the
+      row of buttons that control the layr
+      @type {Object}
+     */
+    this.diagLine = new Kinetic.Line({
+      points: self.diagLinePts(),
+      stroke: SnowProfile.GRID_COLOR,
+      strokeWidth: 1
+    });
+    SnowProfile.kineticJSLayer.add(this.diagLine);
+    //console.debug("diagonal line added");
+
+    /**
       Draw this layer from depth and hardness values and adjacent layers.
      */
     this.draw = function() {
+      //console.debug("draw() called");
       var i = self.getIndex();
       var numLayers = SnowProfile.snowLayers.length;
 
@@ -578,6 +636,9 @@ var SnowProfile = {};
       // Adjust the vertical line
       self.vertLine.setPoints(self.vertLinePts());
 
+      // Adjust the diagonal line
+      self.diagLine.setPoints(self.diagLinePts());
+
       // Adjust the horizontal line of the layer below, if any
       if (i !== (numLayers - 1)) {
         SnowProfile.snowLayers[i + 1].horizLine.setPoints(
@@ -589,6 +650,7 @@ var SnowProfile = {};
         SnowProfile.snowLayers[i - 1].vertLine.setPoints(
           SnowProfile.snowLayers[i - 1].vertLinePts());
       }
+
       SnowProfile.stage.draw();
     };
 
@@ -638,7 +700,7 @@ var SnowProfile = {};
       }
       else {
 
-        // The use has touched the handle so make it always visible
+        // The user has touched the handle so make it always visible
         self.handle.setStroke("#000");
       }
       SnowProfile.stage.draw();
@@ -659,6 +721,9 @@ var SnowProfile = {};
       self.depth = self.y2depth(self.handle.getY());
       self.vertLine.setPoints(self.vertLinePts());
 
+      // Adjust the diagonal line (to buttons) position
+      self.diagLine.setPoints(self.diagLinePts());
+
       // Adjust the horizontal line of the layer below, if any
       if (i !== (numLayers - 1)) {
         SnowProfile.snowLayers[i + 1].horizLine.setPoints(
@@ -678,6 +743,9 @@ var SnowProfile = {};
       self.handleLoc.setY(self.depth2y(self.depth));
     });
 
+    // Add the diagonal connector line from the handle x position
+    // to the relevant row of buttons
+
     // Draw the layer
     self.draw();
 
@@ -693,10 +761,6 @@ var SnowProfile = {};
 
     // Enable all delete buttons
     $("#snow_profile_ctrls button[name=\"del\"]").removeAttr("disabled");
-
-    // Add one more row of buttons
-    $("#snow_profile_ctrls tbody:last-child").append(
-      SnowProfile.CTRLS_HTML);
     //console.dir(SnowProfile.snowLayers);
   }; // function SnowProfile.Layer()
 
@@ -895,9 +959,20 @@ var SnowProfile = {};
     });
     anim.start();
 
+    // Find location of canvas, controls
+    //var diagram = $("#snow_profile_diagram");
+    //console.debug("diagram.offset()=%o",diagram.offset());
+    //console.debug("diagram.width()=%o",diagram.width());
+    //console.debug("diagram.height()=%o",diagram.height());
+    //var buttons = $("#snow_profile_ctrls");
+    //console.debug("buttons.offset()=%o",buttons.offset());
+    //console.debug("buttons.width()=%o",buttons.width());
+    //console.debug("buttons.height()=%o",buttons.height());
+
     // Top align the control buttons to the graph.
-      $("#snow_profile_ctrls").css("paddingTop",
-        SnowProfile.TEMP_LABEL_HT);
+    $("#snow_profile_ctrls").css("paddingTop",
+      SnowProfile.TEMP_LABEL_HT);
+    //console.debug("buttons offset=%o",buttons.offset());
 
     // Listen to all buttons now and future in the controls table
     $("#snow_profile_ctrls").delegate("button", "click",
@@ -980,6 +1055,11 @@ var SnowProfile = {};
         }
         //console.debug("after change:");
         //console.dir(SnowProfile.snowLayers);
+        //var ctrls = $("#snow_profile_ctrls tr");
+        //console.debug("found %d trs", ctrls.length);
+        //ctrls.each(function (idx) {
+        //  console.debug("tr %d offset=%o", idx, $(this).offset());
+        //});
 
         //console.debug("calling SnowProfile.stage.draw()");
         //SnowProfile.stage.draw();
