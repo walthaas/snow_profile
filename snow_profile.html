@@ -28,5 +28,9 @@ div.kineticjs-content {
 <script src="kinetic-v4.7.2.js"></script>
 <script src="jquery.js"></script>
 <script src="snow_profile.js" defer="defer"></script>
+<button onclick="javascript:
+  var canvas = $('#snow_profile_diagram canvas').toArray()[0];
+  window.open(canvas.toDataURL(), 'new_window',
+    'width=SnowProfile.GRAPH_WIDTH,height=SnowProfile.GRAPH_HEIGHT');">Preview</button>
 </body>
 </html>
