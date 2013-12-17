@@ -419,6 +419,16 @@ var SnowProfile = {};
     });
     //console.debug("done creating handle");
 
+    this.handleVisible = function() {
+      self.handle.setVisible(true);
+      self.draw();
+    };
+
+    this.handleInvisible = function() {
+      self.handle.setVisible(false);
+      self.draw();
+    };
+
     /**
       Remove and destroy all KineticJS objects belonging to this snow layer
      */
@@ -924,7 +934,7 @@ var SnowProfile = {};
     }
     var hardnessText = new Kinetic.Text({
       x: SnowProfile.GRAPH_CENTER_X,
-      y: SnowProfile.STAGE_HT - 14,
+      y: SnowProfile.STAGE_HT - 16,
       text: 'Hardness',
       fontSize: 18,
       fontStyle: 'bold',
