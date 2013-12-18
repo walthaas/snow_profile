@@ -30,6 +30,46 @@ div.kineticjs-content {
 <div id="snow_profile_diagram"></div>
 <table id="snow_profile_ctrls"><tbody></tbody></table>
 </div>
+<!--
+  Form to edit snow layer description.  Pops up as a modal window.
+-->
+<div id="snow_profile_descr" title="Description" class="ui-helper-hidden">
+<p>Form to edit the snow layer description</p>
+<h4>Grain Shape</h4>
+<select>
+  <option value=""></option>
+  <option value="PP">Precipitation Particles</option>
+  <option value="MM">Machine Made</option>
+  <option value="DF">Decomposing/Fragmented</option>
+  <option value="RG">Rounded Grains</option>
+  <option value="FC">Faceted Crystals</option>
+  <option value="DH">Depth Hoar</option>
+  <option value="SF">Surface Hoar</option>
+  <option value="MF">Melt Forms</option>
+  <option value="IF">Ice Formations</option>
+</select>
+<h4>Grain Size</h4>
+<select>
+  <option value="" selected="selected"></option>
+  <option value="very fine">&lt;0.2 mm</option>
+  <option value="fine">0.2 - 0.5 mm</option>
+  <option value="medium">0.5 - 1.0 mm</option>
+  <option value="coarse">1.0 - 2.0 mm</option>
+  <option value="very coarse">2.0 - 5.0 mm</option>
+  <option value="extreme">&gt; 5.0 mm</option>
+</select>
+<h4>Liquid Water Content</h4>
+<select>
+  <option value="" selected="selected"></option>
+  <option value="D">Dry</option>
+  <option value="M">Moist</option>
+  <option value="W">Wet</option>
+  <option value="V">Very Wet</option>
+  <option value="S">Soaked</option>
+</select>
+<h4>Comments</h4>
+<textarea></textarea>
+</div>
 <script src="kinetic-v4.7.2.js"></script>
 <script src="jquery.js"></script>
 <script src="jquery.ui.core.min.js"></script>
@@ -41,14 +81,6 @@ div.kineticjs-content {
 <script src="jquery.ui.position.min.js"></script>
 <script src="jquery.ui.resizeable.min.js"></script>
 <script src="snow_profile.js" defer="defer"></script>
-<script>
-  $(function() {
-    $( "#dialog" ).dialog({height: 140, modal: true});
-  });
-</script>
-<div id="dialog" title="Basic dialog">
-<p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
-</div>
 <button onclick="javascript:
   var i;
   for (i = 0; i < SnowProfile.snowLayers.length; i++) {
