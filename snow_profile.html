@@ -17,6 +17,11 @@ div.kineticjs-content {
 /*  background-color: yellow; */
 }
 </style>
+<link rel="stylesheet" type="text/css" href="jquery.ui.theme.css" />
+<link rel="stylesheet" type="text/css" href="jquery.ui.core.css" />
+<link rel="stylesheet" type="text/css" href="jquery.ui.button.css" />
+<link rel="stylesheet" type="text/css" href="jquery.ui.dialog.css" />
+<link rel="stylesheet" type="text/css" href="jquery.ui.resizeable.css" />
 </head>
 
 <body>
@@ -27,7 +32,23 @@ div.kineticjs-content {
 </div>
 <script src="kinetic-v4.7.2.js"></script>
 <script src="jquery.js"></script>
+<script src="jquery.ui.core.min.js"></script>
+<script src="jquery.ui.widget.min.js"></script>
+<script src="jquery.ui.mouse.min.js"></script>
+<script src="jquery.ui.button.min.js"></script>
+<script src="jquery.ui.dialog.min.js"></script>
+<script src="jquery.ui.draggable.min.js"></script>
+<script src="jquery.ui.position.min.js"></script>
+<script src="jquery.ui.resizeable.min.js"></script>
 <script src="snow_profile.js" defer="defer"></script>
+<script>
+  $(function() {
+    $( "#dialog" ).dialog({height: 140, modal: true});
+  });
+</script>
+<div id="dialog" title="Basic dialog">
+<p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
+</div>
 <button onclick="javascript:
   var i;
   for (i = 0; i < SnowProfile.snowLayers.length; i++) {
