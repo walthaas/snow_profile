@@ -33,42 +33,31 @@ div.kineticjs-content {
 <!--
   Form to edit snow layer description.  Pops up as a modal window.
 -->
-<div id="snow_profile_descr" title="Description" class="ui-helper-hidden">
-<p>Form to edit the snow layer description</p>
-<h4>Grain Shape</h4>
-<select>
+<div id="snow_profile_descr" title="Snow Layer Description" class="ui-helper-hidden">
+<form>
+<p>
+<label for="snow_profile_grain_shape">Grain Shape:</label>
+<select id="snow_profile_grain_shape">
   <option value=""></option>
-  <option value="PP">Precipitation Particles</option>
-  <option value="MM">Machine Made</option>
-  <option value="DF">Decomposing/Fragmented</option>
-  <option value="RG">Rounded Grains</option>
-  <option value="FC">Faceted Crystals</option>
-  <option value="DH">Depth Hoar</option>
-  <option value="SF">Surface Hoar</option>
-  <option value="MF">Melt Forms</option>
-  <option value="IF">Ice Formations</option>
 </select>
-<h4>Grain Size</h4>
-<select>
+</p>
+<p>
+<label for="snow_profile_grain_size">Grain Size:</label>
+<select id="snow_profile_grain_size">
   <option value="" selected="selected"></option>
-  <option value="very fine">&lt;0.2 mm</option>
-  <option value="fine">0.2 - 0.5 mm</option>
-  <option value="medium">0.5 - 1.0 mm</option>
-  <option value="coarse">1.0 - 2.0 mm</option>
-  <option value="very coarse">2.0 - 5.0 mm</option>
-  <option value="extreme">&gt; 5.0 mm</option>
 </select>
-<h4>Liquid Water Content</h4>
-<select>
+</p>
+<p>
+<label for="snow_profile_lwc">Liquid Water Content:</label>
+<select id="snow_profile_lwc">
   <option value="" selected="selected"></option>
-  <option value="D">Dry</option>
-  <option value="M">Moist</option>
-  <option value="W">Wet</option>
-  <option value="V">Very Wet</option>
-  <option value="S">Soaked</option>
 </select>
-<h4>Comments</h4>
-<textarea></textarea>
+</p>
+<p>
+<label for="snow_profile_comment">Comment:</label><br />
+<textarea id="snow_profile_comment" columns="30" rows="5"></textarea>
+</p>
+</form>
 </div>
 <script src="kinetic-v4.7.2.js"></script>
 <script src="jquery.js"></script>

@@ -102,7 +102,7 @@ var SnowProfile = {};
     CTRLS_HTML: "<tr>" +
       "<td><button name=\"ia\">insert above</button></td>" +
       "<td><button name=\"ib\">insert below</button></td>" +
-      "<td><button name=\"del\">delete</button></td>" +
+      "<td><button name=\"edit\">Edit</button></td>" +
       "</tr>",
 
     /**
@@ -139,7 +139,57 @@ var SnowProfile = {};
       Previous state of showHandle
       @type {boolean}
      */
-    oldShowHandle: null
+    oldShowHandle: null,
+
+    /**
+      Table of CAAML grain shapes.
+      CAAML_SHAPE[*][0] is the code value to store
+      CAAML_SHAPE[*][1] is the humanly-readable description
+      @type {string[]}
+      @const
+     */
+    CAAML_SHAPE: [
+     ["PP", "Precipitation Particles"],
+     ["MM", "Machine Made"],
+     ["DF", "Decomposing/Fragmented"],
+     ["RG", "Rounded Grains"],
+     ["FC", "Faceted Crystals"],
+     ["DH", "Depth Hoar"],
+     ["SF", "Surface Hoar"],
+     ["MF", "Melt Forms"],
+     ["IF", "Ice Formations"]
+    ],
+
+    /**
+      Table of CAAML grain sizes.
+      CAAML_SHAPE[*][0] is the code value to store
+      CAAML_SHAPE[*][1] is the humanly-readable description
+      @type {string[]}
+      @const
+     */
+    CAAML_SIZE: [
+      ["very fine", "< 0.2 mm"],
+      ["fine", "0.2 - 0.5 mm"],
+      ["medium", "0.5 - 1.0 mm"],
+      ["coarse", "1.0 - 2.0 mm"],
+      ["very coarse", "2.0 - 5.0 mm"],
+      ["extreme", "> 5.0 mm"]
+    ],
+
+    /**
+      Table of CAAML liquid water contents.
+      CAAML_LWC[*][0] is the code value to store
+      CAAML_LWC[*][1] is the humanly-readable description
+      @type {string[]}
+      @const
+     */
+    CAAML_LWC: [
+      ["D", "Dry"],
+      ["M", "Moist"],
+      ["W", "Wet"],
+      ["V", "Very Wet"],
+      ["S", "Soaked"]
+    ]
   };
 
   /**
@@ -268,9 +318,9 @@ var SnowProfile = {};
     var self = this;
 
     // Insert this Layer in the appropriate place in the snow pack.
-    var i;
-    var numLayers = SnowProfile.snowLayers.length;
-    var inserted = false;
+    var i,
+      numLayers = SnowProfile.snowLayers.length,
+      inserted = false;
     //console.debug("SnowProfile.Layer(%d).  old numLayers=%d",
     //  depth, numLayers);
     //console.dir(SnowProfile.snowLayers);
@@ -280,6 +330,30 @@ var SnowProfile = {};
       @type {number}
      */
     this.depth = depth;
+
+   /**
+     Grain shape of this layer
+     @type {string}
+    */
+   this.grainShape = null;
+
+   /**
+     Grain size of this layer
+     @type {string}
+    */
+   this.grainSize = null;
+
+   /**
+     Liquid water content this layer
+     @type {string}
+    */
+   this.lwc = null;
+
+   /**
+     Comment about this layer
+     @type {string}
+    */
+   this.comment = null;
 
     /**
       Return depth in cm of this snow layer
@@ -839,6 +913,9 @@ var SnowProfile = {};
    */
   SnowProfile.init = function() {
     "use strict";
+
+    var cm, i, numLayers, x;
+
     SnowProfile.stage = new Kinetic.Stage({
       container: 'snow_profile_diagram',
       width: SnowProfile.STAGE_WD,
@@ -861,7 +938,7 @@ var SnowProfile = {};
     }));
 
     // Add text every 20 cm to the depth label area
-    for (var cm = 0; cm <= SnowProfile.MAX_DEPTH; cm += 20) {
+    for (cm = 0; cm <= SnowProfile.MAX_DEPTH; cm += 20) {
       SnowProfile.kineticJSLayer.add(new Kinetic.Text({
         x: 10,
         y: SnowProfile.HANDLE_MIN_Y + cm * SnowProfile.DEPTH_SCALE,
@@ -906,8 +983,8 @@ var SnowProfile = {};
 
     // Iterate through the table of CAAML hardness codes to
     // build the hardness (horizontal) scale for the graph area
-    for (var i = 0; i < SnowProfile.CAAML_HARD.length; i++) {
-      var x = SnowProfile.DEPTH_LABEL_WD + 1 + (SnowProfile.HARD_BAND_WD * i) +
+    for (i = 0; i < SnowProfile.CAAML_HARD.length; i++) {
+      x = SnowProfile.DEPTH_LABEL_WD + 1 + (SnowProfile.HARD_BAND_WD * i) +
         (SnowProfile.HANDLE_SIZE / 2);
       if (SnowProfile.CAAML_HARD[i][1]) {
 
@@ -959,8 +1036,7 @@ var SnowProfile = {};
           SnowProfile.oldShowHandle = SnowProfile.showHandle;
 
           // For each snow layer, if handle untouched, blink
-          var i;
-          var numLayers = SnowProfile.snowLayers.length;
+          numLayers = SnowProfile.snowLayers.length;
           for (i = 0; i < numLayers; i++) {
             SnowProfile.snowLayers[i].setHandleVisible(SnowProfile.showHandle);
           }
@@ -983,6 +1059,28 @@ var SnowProfile = {};
     $("#snow_profile_ctrls").css("paddingTop",
       SnowProfile.TEMP_LABEL_HT);
     //console.debug("buttons offset=%o",buttons.offset());
+
+    // Populate the grain shape selector in the layer description pop-up
+    for (i = 0; i < SnowProfile.CAAML_SHAPE.length; i++) {
+      $("#snow_profile_grain_shape").append("<option val=\"" +
+        SnowProfile.CAAML_SHAPE[i][0] + "\">" +
+        SnowProfile.CAAML_SHAPE[i][1] + "</option>");
+    }
+
+    // Populate the grain size selector in the layer description pop-up
+    for (i = 0; i < SnowProfile.CAAML_SIZE.length; i++) {
+      $("#snow_profile_grain_size").append("<option val=\"" +
+        SnowProfile.CAAML_SIZE[i][0] + "\">" +
+        SnowProfile.CAAML_SIZE[i][1] + "</option>");
+    }
+
+    // Populate the liquid water selector in the layer description pop-up
+    for (i = 0; i < SnowProfile.CAAML_LWC.length; i++) {
+      //console.debug("i=%d  LWC=%o", i, SnowProfile.CAAML_LWC[i]);
+      $("#snow_profile_lwc").append("<option val=\"" +
+        SnowProfile.CAAML_LWC[i][0] + "\">" +
+        SnowProfile.CAAML_LWC[i][1] + "</option>");
+    }
 
     // Listen to all buttons now and future in the controls table
     $("#snow_profile_ctrls").delegate("button", "click",
@@ -1021,6 +1119,43 @@ var SnowProfile = {};
               SnowProfile.snowLayers[i + 1].pushDown();
             }
             new SnowProfile.Layer(newDepth);
+            break;
+
+          case "edit":
+            //console.debug("Edit button i=%d", i);
+            // Modal dialog pop-up to edit description of snow layer
+            //console.debug("layer.grainShape=%s", layer.grainShape);
+            $("#snow_profile_grain_shape").val(layer.grainShape);
+            $("#snow_profile_grain_size").val(layer.grainSize);
+            $("#snow_profile_lwc").val(layer.lwc);
+            $("#snow_profile_comment").val(layer.comment);
+            $("#snow_profile_descr").dialog({
+                modal: true,
+                width: 400,
+                height: 600,
+                buttons: [
+                  {
+                    // Done button on description pop-up saves values from
+                    // the pop-up form into the layer description
+                    text: "Done",
+                    click: function() {
+                      //console.debug("grain shape=%s",
+                      //   $("#snow_profile_grain_shape").val());
+                      layer.grainShape = $("#snow_profile_grain_shape").val();
+                      layer.grainSize = $("#snow_profile_grain_size").val();
+                      layer.lwc = $("#snow_profile_lwc").val();
+                      layer.comment = $("#snow_profile_comment").val();
+                      $(this).dialog("close");
+                    }
+                  },
+                  {
+                    // Cancel button on description pop-up throws away changes
+                    text: "Cancel",
+                    click: function() {$(this).dialog("close");}
+                  },
+                  {text: "Delete"}
+                ]
+            });
             break;
 
           case "del":
