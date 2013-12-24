@@ -50,7 +50,7 @@ var SnowProfile = {};
       Width in pixels of the area used by snow liquid water description
       @const
      */
-    LWC_WD: 100,
+    LWC_WD: 70,
 
     /**
       Width in pixels of the area used by snow layer comment
@@ -318,8 +318,9 @@ var SnowProfile = {};
     @memberof SnowProfile
    */
    SnowProfile.STAGE_WD = SnowProfile.DEPTH_LABEL_WD + 1 +
-     SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD +
-     SnowProfile.GRAIN_WD + SnowProfile.LWC_WD + SnowProfile.COMMENT_WD;
+     SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD + 1 +
+     SnowProfile.GRAIN_WD + 1 + SnowProfile.LWC_WD + 1 +
+     SnowProfile.COMMENT_WD;
 
   /**
     X position of the left edge of the Grains text area
@@ -479,8 +480,9 @@ var SnowProfile = {};
      */
     this.grainDescr = new Kinetic.Text({
       x: SnowProfile.GRAIN_LEFT,
-      y: SnowProfile.TOP_LABEL_HT +
+      y: SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2) + 3 +
         (self.getIndex() * SnowProfile.DESCR_HEIGHT),
+      width: SnowProfile.GRAIN_WD,
       fontSize: 12,
       fontFamily: 'sans-serif',
       fill: "#000",
@@ -493,8 +495,9 @@ var SnowProfile = {};
      */
     this.LWCDescr = new Kinetic.Text({
       x: SnowProfile.LWC_LEFT,
-      y: SnowProfile.TOP_LABEL_HT +
+      y: SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2) + 3 +
         (self.getIndex() * SnowProfile.DESCR_HEIGHT),
+      width: SnowProfile.LWC_WD,
       fontSize: 12,
       fontFamily: 'sans-serif',
       fill: "#000",
@@ -507,8 +510,9 @@ var SnowProfile = {};
      */
     this.commentDescr = new Kinetic.Text({
       x: SnowProfile.COMMENT_LEFT,
-      y: SnowProfile.TOP_LABEL_HT +
+      y: SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2) + 3 +
         (self.getIndex() * SnowProfile.DESCR_HEIGHT),
+      width: SnowProfile.COMMENT_WD,
       fontSize: 12,
       fontFamily: 'sans-serif',
       fill: "#000",
@@ -767,13 +771,10 @@ var SnowProfile = {};
 
       // x dimension of the left end is the right edge of the graph
       var xLeft = SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH;
-
-      var buttons = $("#snow_profile_ctrls tr").eq(i).offset();
-      //console.debug("buttons=%o",buttons);
-      var diagram = $("#snow_profile_diagram").offset();
-      //console.debug("diagram=%o",diagram);
-      var yRight = buttons.top - diagram.top;
-      var xRight = buttons.left - diagram.left;
+      var yRight = SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2) +
+        (SnowProfile.DESCR_HEIGHT * i);
+      var xRight = SnowProfile.DEPTH_LABEL_WD + 1 +
+        SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD - 3;
       var points = [[xLeft, yLeft], [xRight, yRight]];
       //console.debug("diagLinePts() returns %o", points);
       return points;
@@ -781,7 +782,8 @@ var SnowProfile = {};
 
     /**
       Define a diagonal line from the handle right to the top of the
-      row of buttons that control the layr
+      row of buttons that control the layer
+      FIXME: Don't want this for the top layer.
       @type {Object}
      */
     this.diagLine = new Kinetic.Line({
@@ -1019,7 +1021,7 @@ var SnowProfile = {};
     // Create the reference grid layer
     SnowProfile.kineticJSLayer = new Kinetic.Layer();
 
-      // Draw the vertical line along the left edge
+    // Draw the vertical line along the left edge
     SnowProfile.kineticJSLayer.add(new Kinetic.Line({
       points: [
         [SnowProfile.DEPTH_LABEL_WD, SnowProfile.HANDLE_MIN_Y - 1 +
@@ -1042,6 +1044,18 @@ var SnowProfile = {};
         fontFamily: 'sans-serif',
         fill: SnowProfile.LABEL_COLOR,
         align: 'right'
+      }));
+
+      // Draw a horizontal line across the top of the description area
+      SnowProfile.kineticJSLayer.add(new Kinetic.Line({
+        points: [
+          [SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH,
+            SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2)],
+          [SnowProfile.STAGE_WD - 3,
+            SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2)]
+        ],
+        stroke: SnowProfile.GRID_COLOR,
+        strokeWidth: 1
       }));
 
       // Draw a horizontal line every 20 cm as a depth scale
@@ -1119,13 +1133,12 @@ var SnowProfile = {};
     // Add the label to the Grain Type column
     var grainText = new Kinetic.Text({
       x: SnowProfile.GRAIN_LEFT,
-      y: 2,
+      y: 25,
       text: 'Grain Type',
       fontSize: 18,
       fontStyle: 'bold',
       fontFamily: 'sans-serif',
       fill: SnowProfile.LABEL_COLOR,
-      padding: 3,
       align: "left"
     });
     SnowProfile.kineticJSLayer.add(grainText);
@@ -1133,13 +1146,12 @@ var SnowProfile = {};
     // Add the label to the Water column
     var waterText = new Kinetic.Text({
       x: SnowProfile.LWC_LEFT,
-      y: 2,
+      y: 25,
       text: 'Water',
       fontSize: 18,
       fontStyle: 'bold',
       fontFamily: 'sans-serif',
       fill: SnowProfile.LABEL_COLOR,
-      padding: 3,
       align: "left"
     });
     SnowProfile.kineticJSLayer.add(waterText);
@@ -1147,13 +1159,12 @@ var SnowProfile = {};
     // Add the label to the Comment column
     var commentText = new Kinetic.Text({
       x: SnowProfile.COMMENT_LEFT,
-      y: 2,
+      y: 25,
       text: 'Comment',
       fontSize: 18,
       fontStyle: 'bold',
       fontFamily: 'sans-serif',
       fill: SnowProfile.LABEL_COLOR,
-      padding: 3,
       align: "left"
     });
     SnowProfile.kineticJSLayer.add(commentText);
@@ -1281,7 +1292,8 @@ var SnowProfile = {};
                       //  $("#snow_profile_grain_shape").val());
                       layer.grainShape = $("#snow_profile_grain_shape").val();
                       layer.grainSize = $("#snow_profile_grain_size").val();
-                      if ((layer.grainShape == "") && (layer.grainSize =="")) {
+                      if ((layer.grainShape === "") &&
+                        (layer.grainSize === "")) {
 
                         // No information about grains
                         layer.grainDescr.setText("");
@@ -1290,11 +1302,11 @@ var SnowProfile = {};
 
                         // Build a text description from what we have
                         var text = "";
-                        if (layer.grainShape != "") {
+                        if (layer.grainShape !== "") {
                           text += SnowProfile.CAAML_SHAPE[layer.grainShape] +
                             "\nsome second line\n";
                         }
-                        if (layer.grainSize != "") {
+                        if (layer.grainSize !== "") {
                           text += SnowProfile.CAAML_SIZE[layer.grainSize];
                         }
                         layer.grainDescr.setText(text);
@@ -1302,7 +1314,7 @@ var SnowProfile = {};
 
                       // Liquid water content description
                       layer.lwc = $("#snow_profile_lwc").val();
-                      if (layer.lwc == "") {
+                      if (layer.lwc === "") {
                         layer.LWCDescr.setText("");
                       }
                       else {
@@ -1312,7 +1324,7 @@ var SnowProfile = {};
 
                       // Comment description
                       layer.comment = $("#snow_profile_comment").val();
-                      if (layer.comment == "") {
+                      if (layer.comment === "") {
                         layer.commentDescr.setText("");
                       }
                       else {
