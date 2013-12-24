@@ -6,13 +6,12 @@ var SnowProfile = {};
   /**
    * Layout of the snow profile Kinetic stage:
    *
-   *       | Temperature |
-   *       | Label       |
+   *       | Top Labels
    * ___________________________________________________________________
-   *       |             |
-   * Depth |             |
-   * Label | Graph       | Controls
-   *       |             |
+   *       |             |          |        |       |
+   * Depth |             |          |        |       |
+   * Label | Graph       | Controls | Grains | Water | Comment
+   *       |             |          |        |       |
    *____________________________________________________________________
    *       | Hardness    |
    *       | Label       |
@@ -32,26 +31,50 @@ var SnowProfile = {};
      * Width in pixels available for plotting data.
      * @const
      */
-    GRAPH_WIDTH: 500,
+    GRAPH_WIDTH: 350,
 
     /**
       Width in pixels of the area used by buttons and
       connectors (diagonal lines).
       @const
      */
-    CTRLS_WD: 500,
+    CTRLS_WD: 200,
+
+    /**
+      Width in pixels of the area used by snow grain description
+      @const
+     */
+    GRAIN_WD: 180,
+
+    /**
+      Width in pixels of the area used by snow liquid water description
+      @const
+     */
+    LWC_WD: 100,
+
+    /**
+      Width in pixels of the area used by snow layer comment
+      @const
+     */
+    COMMENT_WD: 200,
 
     /**
      * Vertical height in pixels of the temperature (horizontal) axis label.
      * @const
      */
-    TEMP_LABEL_HT: 40,
+    TOP_LABEL_HT: 40,
 
     /**
      * Height in pixels available for plotting data.
      * @const
      */
     GRAPH_HEIGHT: 500,
+
+    /**
+      Height in pixels of the text description area for one snow layer
+      @const
+     */
+    DESCR_HEIGHT: 40,
 
     /**
      * Vertical height in pixels of the hardness (horizontal) axis label.
@@ -143,53 +166,53 @@ var SnowProfile = {};
 
     /**
       Table of CAAML grain shapes.
-      CAAML_SHAPE[*][0] is the code value to store
-      CAAML_SHAPE[*][1] is the humanly-readable description
-      @type {string[]}
+      Property name is the code value to store
+      Property value is the humanly-readable description
+      @type {Object}
       @const
      */
-    CAAML_SHAPE: [
-     ["PP", "Precipitation Particles"],
-     ["MM", "Machine Made"],
-     ["DF", "Decomposing/Fragmented"],
-     ["RG", "Rounded Grains"],
-     ["FC", "Faceted Crystals"],
-     ["DH", "Depth Hoar"],
-     ["SF", "Surface Hoar"],
-     ["MF", "Melt Forms"],
-     ["IF", "Ice Formations"]
-    ],
+    CAAML_SHAPE: {
+      PP: "Precipitation Particles",
+      MM: "Machine Made",
+      DF: "Decomposing/Fragmented",
+      RG: "Rounded Grains",
+      FC: "Faceted Crystals",
+      DH: "Depth Hoar",
+      SF: "Surface Hoar",
+      MF: "Melt Forms",
+      IF: "Ice Formations"
+    },
 
     /**
       Table of CAAML grain sizes.
-      CAAML_SHAPE[*][0] is the code value to store
-      CAAML_SHAPE[*][1] is the humanly-readable description
-      @type {string[]}
+      Property name is the code value to store
+      Property value is the humanly-readable description
+      @type {Object}
       @const
      */
-    CAAML_SIZE: [
-      ["very fine", "< 0.2 mm"],
-      ["fine", "0.2 - 0.5 mm"],
-      ["medium", "0.5 - 1.0 mm"],
-      ["coarse", "1.0 - 2.0 mm"],
-      ["very coarse", "2.0 - 5.0 mm"],
-      ["extreme", "> 5.0 mm"]
-    ],
+    CAAML_SIZE: {
+      "very fine": "< 0.2 mm",
+      "fine": "0.2 - 0.5 mm",
+      "medium": "0.5 - 1.0 mm",
+      "coarse": "1.0 - 2.0 mm",
+      "very coarse": "2.0 - 5.0 mm",
+      "extreme": "> 5.0 mm"
+    },
 
     /**
       Table of CAAML liquid water contents.
-      CAAML_LWC[*][0] is the code value to store
-      CAAML_LWC[*][1] is the humanly-readable description
-      @type {string[]}
+      Property name is the code value to store
+      Property value is the humanly-readable description
+      @type {Object}
       @const
      */
-    CAAML_LWC: [
-      ["D", "Dry"],
-      ["M", "Moist"],
-      ["W", "Wet"],
-      ["V", "Very Wet"],
-      ["S", "Soaked"]
-    ]
+    CAAML_LWC: {
+      D: "Dry",
+      M: "Moist",
+      W: "Wet",
+      V: "Very Wet",
+      S: "Soaked"
+    }
   };
 
   /**
@@ -224,7 +247,7 @@ var SnowProfile = {};
    * @const
      @memberof SnowProfile
    */
-  SnowProfile.HANDLE_MIN_Y = SnowProfile.TEMP_LABEL_HT + 1;
+  SnowProfile.HANDLE_MIN_Y = SnowProfile.TOP_LABEL_HT + 1;
 
   /**
     Maximum Y value allowed for any handle (bottom of graph area)
@@ -232,7 +255,7 @@ var SnowProfile = {};
     @type {number}
     @memberof SnowProfile
    */
-  SnowProfile.HANDLE_MAX_Y = SnowProfile.TEMP_LABEL_HT + 1 +
+  SnowProfile.HANDLE_MAX_Y = SnowProfile.TOP_LABEL_HT + 1 +
     SnowProfile.GRAPH_HEIGHT;
 
   /**
@@ -286,7 +309,7 @@ var SnowProfile = {};
     @const
     @memberof SnowProfile
    */
-   SnowProfile.STAGE_HT =  SnowProfile.TEMP_LABEL_HT + 1 +
+   SnowProfile.STAGE_HT =  SnowProfile.TOP_LABEL_HT + 1 +
      SnowProfile.GRAPH_HEIGHT + 1 + SnowProfile.HARD_LABEL_HT;
 
   /**
@@ -295,7 +318,34 @@ var SnowProfile = {};
     @memberof SnowProfile
    */
    SnowProfile.STAGE_WD = SnowProfile.DEPTH_LABEL_WD + 1 +
-     SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD;
+     SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD +
+     SnowProfile.GRAIN_WD + SnowProfile.LWC_WD + SnowProfile.COMMENT_WD;
+
+  /**
+    X position of the left edge of the Grains text area
+    @const
+    @memberof SnowProfile
+   */
+  SnowProfile.GRAIN_LEFT = SnowProfile.DEPTH_LABEL_WD + 1 +
+    SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD;
+
+  /**
+    X position of the left edge of the Water text area
+    @const
+    @memberof SnowProfile
+   */
+  SnowProfile.LWC_LEFT = SnowProfile.DEPTH_LABEL_WD + 1 +
+    SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD +
+    SnowProfile.GRAIN_WD;
+
+  /**
+    X position of the left edge of the Comment text area
+    @const
+    @memberof SnowProfile
+   */
+  SnowProfile.COMMENT_LEFT = SnowProfile.DEPTH_LABEL_WD + 1 +
+    SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD +
+    SnowProfile.GRAIN_WD + SnowProfile.LWC_WD;
 
   /**
     Depth scale in pixels per cm
@@ -424,6 +474,47 @@ var SnowProfile = {};
     }
     //console.debug("layer %d inserted", i);
 
+    /**
+      Add text for the grain description
+     */
+    this.grainDescr = new Kinetic.Text({
+      x: SnowProfile.GRAIN_LEFT,
+      y: SnowProfile.TOP_LABEL_HT +
+        (self.getIndex() * SnowProfile.DESCR_HEIGHT),
+      fontSize: 12,
+      fontFamily: 'sans-serif',
+      fill: "#000",
+      align: 'left'
+    });
+    SnowProfile.kineticJSLayer.add(this.grainDescr);
+
+    /**
+      Add text for the liquid water content
+     */
+    this.LWCDescr = new Kinetic.Text({
+      x: SnowProfile.LWC_LEFT,
+      y: SnowProfile.TOP_LABEL_HT +
+        (self.getIndex() * SnowProfile.DESCR_HEIGHT),
+      fontSize: 12,
+      fontFamily: 'sans-serif',
+      fill: "#000",
+      align: 'left'
+    });
+    SnowProfile.kineticJSLayer.add(this.LWCDescr);
+
+    /**
+      Add text for the comment
+     */
+    this.commentDescr = new Kinetic.Text({
+      x: SnowProfile.COMMENT_LEFT,
+      y: SnowProfile.TOP_LABEL_HT +
+        (self.getIndex() * SnowProfile.DESCR_HEIGHT),
+      fontSize: 12,
+      fontFamily: 'sans-serif',
+      fill: "#000",
+      align: 'left'
+    });
+    SnowProfile.kineticJSLayer.add(this.commentDescr);
 
     /**
       Handle for the line at the top of the layer.
@@ -509,6 +600,9 @@ var SnowProfile = {};
     this.destroy = function() {
       self.handle.off('mouseup mousedown dragmove mouseover mouseout');
       self.handle.destroy();
+      self.grainDescr.destroy();
+      self.LWCDescr.destroy();
+      self.commentDescr.destroy();
       self.handleLoc.destroy();
       self.horizLine.destroy();
       self.vertLine.destroy();
@@ -1017,10 +1111,52 @@ var SnowProfile = {};
       fontStyle: 'bold',
       fontFamily: 'sans-serif',
       fill: SnowProfile.LABEL_COLOR,
-      align: 'center'
+      align: "center"
     });
     hardnessText.setOffsetX(hardnessText.getWidth() / 2 );
     SnowProfile.kineticJSLayer.add(hardnessText);
+
+    // Add the label to the Grain Type column
+    var grainText = new Kinetic.Text({
+      x: SnowProfile.GRAIN_LEFT,
+      y: 2,
+      text: 'Grain Type',
+      fontSize: 18,
+      fontStyle: 'bold',
+      fontFamily: 'sans-serif',
+      fill: SnowProfile.LABEL_COLOR,
+      padding: 3,
+      align: "left"
+    });
+    SnowProfile.kineticJSLayer.add(grainText);
+
+    // Add the label to the Water column
+    var waterText = new Kinetic.Text({
+      x: SnowProfile.LWC_LEFT,
+      y: 2,
+      text: 'Water',
+      fontSize: 18,
+      fontStyle: 'bold',
+      fontFamily: 'sans-serif',
+      fill: SnowProfile.LABEL_COLOR,
+      padding: 3,
+      align: "left"
+    });
+    SnowProfile.kineticJSLayer.add(waterText);
+
+    // Add the label to the Comment column
+    var commentText = new Kinetic.Text({
+      x: SnowProfile.COMMENT_LEFT,
+      y: 2,
+      text: 'Comment',
+      fontSize: 18,
+      fontStyle: 'bold',
+      fontFamily: 'sans-serif',
+      fill: SnowProfile.LABEL_COLOR,
+      padding: 3,
+      align: "left"
+    });
+    SnowProfile.kineticJSLayer.add(commentText);
 
     // add the KineticJS layer to the stage
     SnowProfile.stage.add(SnowProfile.kineticJSLayer);
@@ -1057,30 +1193,32 @@ var SnowProfile = {};
 
     // Top align the control buttons to the graph.
     $("#snow_profile_ctrls").css("paddingTop",
-      SnowProfile.TEMP_LABEL_HT);
+      SnowProfile.TOP_LABEL_HT);
     //console.debug("buttons offset=%o",buttons.offset());
 
     // Populate the grain shape selector in the layer description pop-up
-    for (i = 0; i < SnowProfile.CAAML_SHAPE.length; i++) {
-      $("#snow_profile_grain_shape").append("<option val=\"" +
-        SnowProfile.CAAML_SHAPE[i][0] + "\">" +
-        SnowProfile.CAAML_SHAPE[i][1] + "</option>");
+    for (var code in SnowProfile.CAAML_SHAPE) {
+      $("#snow_profile_grain_shape").append("<option value=\"" + code +
+        "\">" + SnowProfile.CAAML_SHAPE[code] + "</option>");
     }
+    //console.debug("grain shape selector:");
+    //console.debug("%o", $("#snow_profile_grain_shape").toArray());
 
     // Populate the grain size selector in the layer description pop-up
-    for (i = 0; i < SnowProfile.CAAML_SIZE.length; i++) {
-      $("#snow_profile_grain_size").append("<option val=\"" +
-        SnowProfile.CAAML_SIZE[i][0] + "\">" +
-        SnowProfile.CAAML_SIZE[i][1] + "</option>");
+    for (code in SnowProfile.CAAML_SIZE) {
+      $("#snow_profile_grain_size").append("<option value=\"" + code +
+        "\">" + SnowProfile.CAAML_SIZE[code] + "</option>");
     }
+    //console.debug("grain size selector:");
+    //console.debug("%o", $("#snow_profile_grain_size").toArray());
 
     // Populate the liquid water selector in the layer description pop-up
-    for (i = 0; i < SnowProfile.CAAML_LWC.length; i++) {
-      //console.debug("i=%d  LWC=%o", i, SnowProfile.CAAML_LWC[i]);
-      $("#snow_profile_lwc").append("<option val=\"" +
-        SnowProfile.CAAML_LWC[i][0] + "\">" +
-        SnowProfile.CAAML_LWC[i][1] + "</option>");
+    for (code in SnowProfile.CAAML_LWC) {
+      $("#snow_profile_lwc").append("<option value=\"" + code +
+        "\">" + SnowProfile.CAAML_LWC[code] + "</option>");
     }
+    //console.debug("LWC selector:");
+    //console.debug("%o", $("#snow_profile_lwc").toArray());
 
     // Listen to all buttons now and future in the controls table
     $("#snow_profile_ctrls").delegate("button", "click",
@@ -1140,20 +1278,59 @@ var SnowProfile = {};
                     text: "Done",
                     click: function() {
                       //console.debug("grain shape=%s",
-                      //   $("#snow_profile_grain_shape").val());
+                      //  $("#snow_profile_grain_shape").val());
                       layer.grainShape = $("#snow_profile_grain_shape").val();
                       layer.grainSize = $("#snow_profile_grain_size").val();
+                      if ((layer.grainShape == "") && (layer.grainSize =="")) {
+
+                        // No information about grains
+                        layer.grainDescr.setText("");
+                      }
+                      else {
+
+                        // Build a text description from what we have
+                        var text = "";
+                        if (layer.grainShape != "") {
+                          text += SnowProfile.CAAML_SHAPE[layer.grainShape] +
+                            "\nsome second line\n";
+                        }
+                        if (layer.grainSize != "") {
+                          text += SnowProfile.CAAML_SIZE[layer.grainSize];
+                        }
+                        layer.grainDescr.setText(text);
+                      }
+
+                      // Liquid water content description
                       layer.lwc = $("#snow_profile_lwc").val();
+                      if (layer.lwc == "") {
+                        layer.LWCDescr.setText("");
+                      }
+                      else {
+                        layer.LWCDescr.setText(
+                          SnowProfile.CAAML_LWC[layer.lwc]);
+                      }
+
+                      // Comment description
                       layer.comment = $("#snow_profile_comment").val();
+                      if (layer.comment == "") {
+                        layer.commentDescr.setText("");
+                      }
+                      else {
+                        layer.commentDescr.setText(layer.comment);
+                      }
                       $(this).dialog("close");
                     }
                   },
                   {
                     // Cancel button on description pop-up throws away changes
                     text: "Cancel",
+                    tabindex: -1,
                     click: function() {$(this).dialog("close");}
                   },
-                  {text: "Delete"}
+                  {
+                    text: "Delete",
+                    tabindex: -1
+                  }
                 ]
             });
             break;
