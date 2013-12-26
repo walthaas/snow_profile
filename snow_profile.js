@@ -1209,24 +1209,30 @@ var SnowProfile = {};
 
     // Populate the grain shape selector in the layer description pop-up
     for (var code in SnowProfile.CAAML_SHAPE) {
-      $("#snow_profile_grain_shape").append("<option value=\"" + code +
-        "\">" + SnowProfile.CAAML_SHAPE[code] + "</option>");
+      if (SnowProfile.CAAML_SHAPE.hasOwnProperty(code)) {
+        $("#snow_profile_grain_shape").append("<option value=\"" + code +
+          "\">" + SnowProfile.CAAML_SHAPE[code] + "</option>");
+      }
     }
     //console.debug("grain shape selector:");
     //console.debug("%o", $("#snow_profile_grain_shape").toArray());
 
     // Populate the grain size selector in the layer description pop-up
     for (code in SnowProfile.CAAML_SIZE) {
-      $("#snow_profile_grain_size").append("<option value=\"" + code +
-        "\">" + SnowProfile.CAAML_SIZE[code] + "</option>");
+      if (SnowProfile.CAAML_SIZE.hasOwnProperty(code)) {
+        $("#snow_profile_grain_size").append("<option value=\"" + code +
+          "\">" + SnowProfile.CAAML_SIZE[code] + "</option>");
+      }
     }
     //console.debug("grain size selector:");
     //console.debug("%o", $("#snow_profile_grain_size").toArray());
 
     // Populate the liquid water selector in the layer description pop-up
     for (code in SnowProfile.CAAML_LWC) {
-      $("#snow_profile_lwc").append("<option value=\"" + code +
-        "\">" + SnowProfile.CAAML_LWC[code] + "</option>");
+      if (SnowProfile.CAAML_LWC.hasOwnProperty(code)) {
+        $("#snow_profile_lwc").append("<option value=\"" + code +
+          "\">" + SnowProfile.CAAML_LWC[code] + "</option>");
+      }
     }
     //console.debug("LWC selector:");
     //console.debug("%o", $("#snow_profile_lwc").toArray());
@@ -1278,110 +1284,117 @@ var SnowProfile = {};
             $("#snow_profile_grain_size").val(layer.grainSize);
             $("#snow_profile_lwc").val(layer.lwc);
             $("#snow_profile_comment").val(layer.comment);
-            $("#snow_profile_descr").dialog({
-                modal: true,
-                width: 400,
-                height: 600,
-                buttons: [
-                  {
-                    // Done button on description pop-up saves values from
-                    // the pop-up form into the layer description
-                    text: "Done",
-                    click: function() {
-                      //console.debug("grain shape=%s",
-                      //  $("#snow_profile_grain_shape").val());
-                      layer.grainShape = $("#snow_profile_grain_shape").val();
-                      layer.grainSize = $("#snow_profile_grain_size").val();
-                      if ((layer.grainShape === "") &&
-                        (layer.grainSize === "")) {
+            var editArgs = {
+              modal: true,
+              width: 400,
+              height: 600,
+              buttons: [
+                {
+                  // Done button on description pop-up saves values from
+                  // the pop-up form into the layer description
+                  text: "Done",
+                  click: function() {
+                    //console.debug("grain shape=%s",
+                    //  $("#snow_profile_grain_shape").val());
+                    layer.grainShape = $("#snow_profile_grain_shape").val();
+                    layer.grainSize = $("#snow_profile_grain_size").val();
+                    if ((layer.grainShape === "") &&
+                      (layer.grainSize === "")) {
 
-                        // No information about grains
-                        layer.grainDescr.setText("");
-                      }
-                      else {
-
-                        // Build a text description from what we have
-                        var text = "";
-                        if (layer.grainShape !== "") {
-                          text += SnowProfile.CAAML_SHAPE[layer.grainShape] +
-                            "\nsome second line\n";
-                        }
-                        if (layer.grainSize !== "") {
-                          text += SnowProfile.CAAML_SIZE[layer.grainSize];
-                        }
-                        layer.grainDescr.setText(text);
-                      }
-
-                      // Liquid water content description
-                      layer.lwc = $("#snow_profile_lwc").val();
-                      if (layer.lwc === "") {
-                        layer.LWCDescr.setText("");
-                      }
-                      else {
-                        layer.LWCDescr.setText(
-                          SnowProfile.CAAML_LWC[layer.lwc]);
-                      }
-
-                      // Comment description
-                      layer.comment = $("#snow_profile_comment").val();
-                      if (layer.comment === "") {
-                        layer.commentDescr.setText("");
-                      }
-                      else {
-                        layer.commentDescr.setText(layer.comment);
-                      }
-                      $(this).dialog("close");
+                      // No information about grains
+                      layer.grainDescr.setText("");
                     }
-                  },
-                  {
-                    // Cancel button on description pop-up throws away changes
-                    text: "Cancel",
-                    tabindex: -1,
-                    click: function() {$(this).dialog("close");}
-                  },
-                  {
-                    text: "Delete",
-                    tabindex: -1
+                    else {
+
+                      // Build a text description from what we have
+                      var text = "";
+                      if (layer.grainShape !== "") {
+                        text += SnowProfile.CAAML_SHAPE[layer.grainShape] +
+                          "\nsome second line\n";
+                      }
+                      if (layer.grainSize !== "") {
+                        text += SnowProfile.CAAML_SIZE[layer.grainSize];
+                      }
+                      layer.grainDescr.setText(text);
+                    }
+
+                    // Liquid water content description
+                    layer.lwc = $("#snow_profile_lwc").val();
+                    if (layer.lwc === "") {
+                      layer.LWCDescr.setText("");
+                    }
+                    else {
+                      layer.LWCDescr.setText(
+                        SnowProfile.CAAML_LWC[layer.lwc]);
+                    }
+
+                    // Comment description
+                    layer.comment = $("#snow_profile_comment").val();
+                    if (layer.comment === "") {
+                      layer.commentDescr.setText("");
+                    }
+                    else {
+                      layer.commentDescr.setText(layer.comment);
+                    }
+                    $(this).dialog("close");
                   }
-                ]
-            });
-            break;
+                },
+                {
+                  // Cancel button on description pop-up throws away changes
+                  text: "Cancel",
+                  tabindex: -1,
+                  click: function() {$(this).dialog("close");}
+                }
+              ]
+            };
+            if (numLayers > 1) {
+              editArgs.buttons.push(
+                {
+                  text: "Delete",
+                  tabindex: -1,
+                  click: function() {
 
-          case "del":
-            // Remove this Layer from the snowLayers array
-            SnowProfile.snowLayers.splice(i, 1);
+                    //console.debug("Delete button");
+                    // Remove this Layer from the snowLayers array
+                    SnowProfile.snowLayers.splice(i, 1);
 
-            // Destroy KineticJS object of this layer
-            layer.destroy();
+                    // Destroy KineticJS object of this layer
+                    layer.destroy();
 
-            // If the layer we just removed was not the top layer,
-            // tell the layer above to adjust itself.
-            if (i > 0) {
-              SnowProfile.snowLayers[i-1].draw();
+                    // If the layer we just removed was not the top layer,
+                    // tell the layer above to adjust itself.
+                    if (i > 0) {
+                      SnowProfile.snowLayers[i-1].draw();
+                    }
+                    else {
+
+                      // We just removed the top layer.  The layer that was
+                      // below it is the new top layer so set its depth.
+                      SnowProfile.snowLayers[0].setDepth(0);
+                    }
+
+                    // If the layer we just removed was not the bottom layer,
+                    // tell the layer below to adjust itself.
+                    if (i !== (numLayers - 1)) {
+                      SnowProfile.snowLayers[i].draw();
+                    }
+                    numLayers--;
+
+                    // Remove row of buttons for this layer
+                    $("#snow_profile_ctrls tr").eq(i).remove();
+
+                    // Check how many layers remain.  If there is only one
+                    // remaining, we can't allow it to be deleted
+                    if (numLayers === 1) {
+                      $("#snow_profile_ctrls button[name=\"del\"]").attr(
+                        "disabled", "disabled");
+                    }
+                    $(this).dialog("close");
+                  }
+                }
+              );
             }
-            else {
-
-              // We just removed the top layer.  The layer that was
-              // below it is the new top layer so set its depth.
-              SnowProfile.snowLayers[0].setDepth(0);
-            }
-
-            // If the layer we just removed was not the bottom layer,
-            // tell the layer below to adjust itself.
-            if (i !== (numLayers - 1)) {
-              SnowProfile.snowLayers[i].draw();
-            }
-            numLayers--;
-
-            // Remove row of buttons for this layer
-            $("#snow_profile_ctrls tr").eq(i).remove();
-
-            // Check how many layers remain in the list.  If there is only one
-            // remaining, we can't allow it to be deleted
-            if (numLayers === 1) {
-              $("#snow_profile_ctrls button[name=\"del\"]").attr(
-                "disabled", "disabled");
-            }
+            $("#snow_profile_descr").dialog(editArgs);
             break;
 
           default:
