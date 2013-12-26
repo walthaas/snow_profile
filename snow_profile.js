@@ -178,9 +178,70 @@ var SnowProfile = {};
       RG: "Rounded Grains",
       FC: "Faceted Crystals",
       DH: "Depth Hoar",
-      SF: "Surface Hoar",
+      SH: "Surface Hoar",
       MF: "Melt Forms",
       IF: "Ice Formations"
+    },
+
+    /**
+      Table of CAAML sub-shapes
+     */
+    CAAML_SUBSHAPE: {
+      PP: {
+        PPco: "Prismatic",
+        PPnd: "Needles",
+        PPpl: "Plates",
+        PPsd: "Stellars",
+        PPir: "Irregular",
+        PPgp: "Graupel",
+        PPhl: "Hail",
+        PPip: "Ice pellets",
+        PPrm: "Rimed"
+      },
+      MM: {
+        MMrp: "Round polycrystalline",
+        MMci: "Crushed ice"
+      },
+      DF: {
+        DFdc: "Partly decomposed",
+        DFbk: "Wind-broken"
+      },
+      RG: {
+        RGsr: "Small rounded",
+        RGlr: "Large rounded",
+        RGwp: "Wind packed",
+        RGxf: "Faceted rounded"
+      },
+      FC: {
+        FCso: "Solid faceted",
+        FCsf: "Near surface",
+        FCxr: "Rounded faceted"
+      },
+      DH: {
+        DHcp: "Hollow cups",
+        DHpr: "Hollow prisms",
+        DHch: "Chains of depth hoar",
+        DHla: "Large striated",
+        DHxr: "Rounding depth hoar"
+      },
+      SH: {
+        SHsu: "Surface hoar",
+        SHcv: "Cavity hoar",
+        SHxr: "Rounding surface hoar"
+      },
+      MF: {
+        MFcl: "Clustered rounded",
+        MFpc: "Rounded polycrystals",
+        MFsl: "Slush",
+        MFcr: "Melt-freeze crust"
+      },
+      IF: {
+        IFil: "Ice layer",
+        IFic: "Ice column",
+        IFbi: "Basal ice",
+        IFrc: "Rain crust",
+        IFsc: "Sun crust"
+      }
     },
 
     /**
