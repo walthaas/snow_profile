@@ -538,6 +538,7 @@ var SnowProfile = {};
 
     /**
       Add text for the grain description
+      @type {Object}
      */
     this.grainDescr = new Kinetic.Text({
       x: SnowProfile.GRAIN_LEFT,
@@ -553,6 +554,7 @@ var SnowProfile = {};
 
     /**
       Add text for the liquid water content
+      @type {Object}
      */
     this.LWCDescr = new Kinetic.Text({
       x: SnowProfile.LWC_LEFT,
@@ -568,6 +570,7 @@ var SnowProfile = {};
 
     /**
       Add text for the comment
+      @type {Object}
      */
     this.commentDescr = new Kinetic.Text({
       x: SnowProfile.COMMENT_LEFT,
@@ -580,6 +583,38 @@ var SnowProfile = {};
       align: 'left'
     });
     SnowProfile.kineticJSLayer.add(this.commentDescr);
+
+    /**
+      Define end points for the line below the description of the layer
+      @returns {number[]} Two-dimensional array of numbers of the starting
+      and ending points for the line.
+     */
+    this.lineBelowPts = function() {
+    var i = self.getIndex();
+    return  [
+      [SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH + 1 +
+        SnowProfile.CTRLS_WD - 3,
+       SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2) +
+         ((i + 1) * SnowProfile.DESCR_HEIGHT)],
+      [SnowProfile.STAGE_WD - 3,
+       SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2) +
+         ((i + 1) * SnowProfile.DESCR_HEIGHT)]
+      ];
+    };
+
+    /**
+      Add a horizontal line below the description
+      FIXME: if inserting between existing layers we need to adjust
+      the line below the other layers
+      @type {Object}
+     */
+    console.debug("adding line below.  i=%d", i);
+    this.lineBelow = new Kinetic.Line({
+      points: self.lineBelowPts(),
+      stroke: SnowProfile.GRID_COLOR,
+      strokeWidth: 1
+    });
+    SnowProfile.kineticJSLayer.add(this.lineBelow);
 
     /**
       Handle for the line at the top of the layer.
@@ -668,6 +703,7 @@ var SnowProfile = {};
       self.grainDescr.destroy();
       self.LWCDescr.destroy();
       self.commentDescr.destroy();
+      self.lineBelow.destroy();
       self.handleLoc.destroy();
       self.horizLine.destroy();
       self.vertLine.destroy();
@@ -879,6 +915,9 @@ var SnowProfile = {};
 
       // Adjust the diagonal line
       self.diagLine.setPoints(self.diagLinePts());
+
+      // Adjust the line below the description
+      self.lineBelow.setPoints(self.lineBelowPts());
 
       // Adjust the horizontal line of the layer below, if any
       if (i !== (numLayers - 1)) {
