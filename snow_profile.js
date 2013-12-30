@@ -443,6 +443,7 @@ var SnowProfile = {};
       var i,
         numLayers = SnowProfile.snowLayers.length;
       for (i = 0; i < numLayers; i++) {
+        //console.debug("calling setIndexPosition[%d]", i);
         SnowProfile.snowLayers[i].setIndexPosition();
       }
     };
@@ -580,6 +581,9 @@ var SnowProfile = {};
       align: 'left'
     });
     SnowProfile.kineticJSLayer.add(this.grainDescr);
+    //console.debug("grainDescr: text=%s  x=%d y=%d isVisible=%d",
+    //  this.grainDescr.getText(), this.grainDescr.getX(),
+    //  this.grainDescr.getY(), this.grainDescr.isVisible());
 
     /**
       Add text for the liquid water content
@@ -609,8 +613,6 @@ var SnowProfile = {};
 
     /**
       Add a horizontal line below the description
-      FIXME: if inserting between existing layers we need to adjust
-      the line below the other layers
       @type {Object}
      */
     this.lineBelow = new Kinetic.Line({
@@ -1036,20 +1038,28 @@ var SnowProfile = {};
      */
     this.setIndexPosition = function() {
       var i = self.getIndex();
-      self.grainDescr.setOffset([SnowProfile.GRAIN_LEFT,
-        SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2) + 3 +
-        (1 * SnowProfile.DESCR_HEIGHT)]);
-      self.LWCDescr.setOffset([SnowProfile.LWC_LEFT,
-        SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2) + 3 +
-        (i * SnowProfile.DESCR_HEIGHT)]);
-      self.commentDescr.setOffset([SnowProfile.COMMENT_LEFT,
-        SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2) + 3 +
-        (i * SnowProfile.DESCR_HEIGHT)]);
+      //console.debug("setIndexPosition i=%d", i);
+      self.grainDescr.setX(SnowProfile.GRAIN_LEFT);
+      self.grainDescr.setY(SnowProfile.HANDLE_MIN_Y +
+        (SnowProfile.HANDLE_SIZE / 2) + 3 +
+        (i * SnowProfile.DESCR_HEIGHT));
+      self.LWCDescr.setX(SnowProfile.LWC_LEFT);
+      self.LWCDescr.setY(SnowProfile.HANDLE_MIN_Y +
+        (SnowProfile.HANDLE_SIZE / 2) + 3 +
+        (i * SnowProfile.DESCR_HEIGHT));
+      self.commentDescr.setX(SnowProfile.COMMENT_LEFT);
+      self.commentDescr.setY(SnowProfile.HANDLE_MIN_Y +
+        (SnowProfile.HANDLE_SIZE / 2) + 3 +
+        (i * SnowProfile.DESCR_HEIGHT));
       self.lineBelow.setPoints([
         [SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH + 1 +
           SnowProfile.CTRLS_WD - 3, SnowProfile.lineBelowY(i)],
           [SnowProfile.STAGE_WD - 3, SnowProfile.lineBelowY(i)]
       ]);
+      // console.debug("exiting setIndexPosition");
+      // console.debug("grainDescr: text=%s  x=%d y=%d isVisible=%d",
+      //   self.grainDescr.getText(), self.grainDescr.getX(),
+      //   self.grainDescr.getY(), self.grainDescr.isVisible());
     };
 
     // Draw the layer
@@ -1057,6 +1067,7 @@ var SnowProfile = {};
 
     // Set the location of KineticJS objects dependent on index of layer
     // for all layers, since inserting a layer disarranged those objects.
+    //console.debug("calling setIndexPositions");
     SnowProfile.setIndexPositions();
     //console.debug("exiting SnowProfile.Layer()");
     //console.dir(SnowProfile.snowLayers);
@@ -1494,6 +1505,12 @@ var SnowProfile = {};
                       layer.commentDescr.setText(layer.comment);
                     }
                     $(this).dialog("close");
+                    // console.debug("grainDescr: text=%s  x=%d y=%d isVisible=%d",
+                    //   layer.grainDescr.getText(), layer.grainDescr.getX(),
+                    //   layer.grainDescr.getY(), layer.grainDescr.isVisible());
+                    // console.debug("lineBelow: points=%o",
+                    //   layer.lineBelow.getPoints());
+                    SnowProfile.stage.draw();
                   }
                 },
                 {
@@ -1549,6 +1566,7 @@ var SnowProfile = {};
 
                     // Update location of KineticJS objects whose position
                     // depends on the index of the layer
+                    //console.debug("calling setIndexPositions");
                     SnowProfile.setIndexPositions();
 
                     // Update the diagonal line from the lower right corner
