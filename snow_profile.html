@@ -2,33 +2,53 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Snow Pit Data</title>
+<title>Snow Profile Editor</title>
 <style type="text/css">
+body {
+  font-family: sans-serif;
+}
+
+h1 {
+  text-align: center;
+}
+
 #snow_profile_container {
   position: relative;
   display: inline-block;
 }
-#snow_profile_ctrls {
-  position: absolute;
-  top: 0;
-  right: 0;
-}
+
 div.kineticjs-content {
-/*  background-color: yellow; */
+  background-color: #eef;
+  border-style: solid;
+  border-width: 1px;
+  border-color: black;
+  margin: 1em;
 }
 </style>
 <link rel="stylesheet" type="text/css" href="jquery.ui.theme.css" />
 <link rel="stylesheet" type="text/css" href="jquery.ui.core.css" />
 <link rel="stylesheet" type="text/css" href="jquery.ui.button.css" />
 <link rel="stylesheet" type="text/css" href="jquery.ui.dialog.css" />
-<link rel="stylesheet" type="text/css" href="jquery.ui.resizeable.css" />
+<link rel="stylesheet" type="text/css" href="jquery.ui.resizable.css" />
 </head>
 
 <body>
-<h1>Snow Pit Data</h1>
 <div id="snow_profile_container">
+<h1>Snow Profile Editor</h1>
+<h2>Instructions</h2>
+<p>
+  Use your mouse to drag the handle (black square) to indicate the depth
+  and hardness of each layer.  The (depth, hardness) values will appear to
+  the right of the chart when you click on the handle.
+</p><p>
+  Click an Insert button to insert another layer at that point.
+</p><p>
+  Click the Edit button in a layer to edit the description of a layer or
+  delete the layer.
+</p><p>
+  Click the Preview button to see how the diagram will look.
+</p>
 <div id="snow_profile_diagram"></div>
-<table id="snow_profile_ctrls"><tbody></tbody></table>
 </div>
 <!--
   Form to edit snow layer description.  Pops up as a modal window.
@@ -38,6 +58,9 @@ div.kineticjs-content {
 <p>
 <label for="snow_profile_grain_shape">Grain Shape:</label>
 <select id="snow_profile_grain_shape">
+  <option value=""></option>
+</select>
+<select id="snow_profile_grain_subshape">
   <option value=""></option>
 </select>
 </p>
@@ -68,18 +91,11 @@ div.kineticjs-content {
 <script src="jquery.ui.dialog.min.js"></script>
 <script src="jquery.ui.draggable.min.js"></script>
 <script src="jquery.ui.position.min.js"></script>
-<script src="jquery.ui.resizeable.min.js"></script>
-<script src="snow_profile.js" defer="defer"></script>
-<button onclick="javascript:
-  var i;
-  for (i = 0; i < SnowProfile.snowLayers.length; i++) {
-    SnowProfile.snowLayers[i].handleInvisible();
-  }
-  var canvas = $('#snow_profile_diagram canvas').toArray()[0];
-  window.open(canvas.toDataURL(), 'new_window',
-    'width=SnowProfile.STAGE_WD,height=SnowProfile.STAGE_HT');
-  for (i = 0; i < SnowProfile.snowLayers.length; i++) {
-    SnowProfile.snowLayers[i].handleVisible();
-  }">Preview</button>
+<script src="jquery.ui.resizable.min.js"></script>
+<script src="snow_profile.js"></script>
+<script src="snow_profile_button.js"></script>
+<script src="snow_profile_layer.js"></script>
+<script src="snow_profile_main.js"></script>
+<button id="snow_profile_preview">Preview</button>
 </body>
 </html>

@@ -1,5 +1,8 @@
 /**
- * @namespace SnowProfile
+  @file Defines the namespace and configuration for the snow profile editor.
+  @copyright Walt Haas <haas@xmission.com>
+  @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPVv2}
+  @namespace SnowProfile
  */
 var SnowProfile = {};
 
@@ -116,17 +119,6 @@ var SnowProfile = {};
       @type {number}
      */
     INS_INCR: 5,
-
-    /**
-      HTML for edit buttons for a snow layer
-      @const
-      @type {string}
-     */
-    CTRLS_HTML: "<tr>" +
-      "<td><button name=\"ia\">insert above</button></td>" +
-      "<td><button name=\"ib\">insert below</button></td>" +
-      "<td><button name=\"edit\">Edit</button></td>" +
-      "</tr>",
 
     /**
      * KineticJS stage object for the whole program
@@ -283,7 +275,7 @@ var SnowProfile = {};
       V: "Very Wet",
       S: "Soaked"
     }
-  };
+  }; // SnowProfile = {
 
   /**
     Central x of the data plotting area.
@@ -439,699 +431,14 @@ var SnowProfile = {};
     Recalculate the Y axis positions of all KineticJS objects whose position
     depends on the index of the layer in the snowpack.
    */
-    SnowProfile.setIndexPositions = function() {
-      var i,
-        numLayers = SnowProfile.snowLayers.length;
-      for (i = 0; i < numLayers; i++) {
-        //console.debug("calling setIndexPosition[%d]", i);
-        SnowProfile.snowLayers[i].setIndexPosition();
-      }
-    };
-  } // SnowProfile = {
-)();
-
-  /**
-    Object describing a single snow stratigraphy layer.
-    @param {number} depth Initial depth in cm of this layer from the top
-    of the snow pack.
-    @constructor
-   */
-  SnowProfile.Layer = function(depth) {
-    "use strict";
-    //console.debug("SnowProfile.Layer(%d)", depth);
-    // Reference this object inside an event handler
-    var self = this;
-
-    // Insert this Layer in the appropriate place in the snow pack.
+  SnowProfile.setIndexPositions = function() {
     var i,
-      numLayers = SnowProfile.snowLayers.length,
-      inserted = false;
-    //console.debug("SnowProfile.Layer(%d).  old numLayers=%d",
-    //  depth, numLayers);
-    //console.dir(SnowProfile.snowLayers);
-
-    /**
-      Depth of the top of this SnowProfileLayer in cm from the snow surface.
-      @type {number}
-     */
-    this.depth = depth;
-
-   /**
-     Grain shape of this layer
-     @type {string}
-    */
-   this.grainShape = null;
-
-   /**
-     Grain size of this snow layer
-     @type {string}
-    */
-   this.grainSize = null;
-
-   /**
-     Liquid water content of this snow layer
-     @type {string}
-    */
-   this.lwc = null;
-
-   /**
-     User's comment about this snow layer
-     @type {string}
-    */
-   this.comment = null;
-
-    /**
-      Return depth in cm of this snow layer
-      @returns {number} Depth of top of this layer in cm below surface
-     */
-    this.getDepth = function() {
-      return self.depth;
-    };
-
-    /**
-      Get index of this object in snowLayers[]
-      @returns {number} Integer index into snowLayers[]
-     */
-    this.getIndex = function() {
-      var i;
-      var numLayers = SnowProfile.snowLayers.length;
-      for (i = 0; i < numLayers; i++) {
-        if (SnowProfile.snowLayers[i] === self) {
-          return i;
-        }
-      }
-      console.error("Object not found in snowLayers[]");
-    };
-
-    /**
-      Has the user touched the handle since this layer was created?
-
-      Used to make an untouched handle throb visibly, to draw the user's
-      attention to the need to set the handle position.
-      @type {boolean}
-     */
-    this.handleTouched = false;
-
-    /**
-      Hardness of this snow layer.
-
-      A string code from the SnowProfile.CAAML_HARD table above.
-      Initial null means the handle is untouched.
-      @type {string}
-     */
-    this.hardness = null;
-
-    //console.debug("starting construction of Layer");
-    // Insert this layer above the first layer that is deeper
-    for (i = 0; i<numLayers; i++) {
-      if (SnowProfile.snowLayers[i].getDepth() >= depth) {
-        SnowProfile.snowLayers.splice(i, 0, this);
-
-        // Insert a row of buttons
-        //console.debug("ctrls[] before:");
-        //console.dir($("#snow_profile_ctrls tr").toArray());
-        $("#snow_profile_ctrls tr").eq(i).before(SnowProfile.CTRLS_HTML);
-        //console.debug("ctrls[] after:");
-        //console.dir($("#snow_profile_ctrls tr").toArray());
-        inserted = true;
-        break;
-      }
+      numLayers = SnowProfile.snowLayers.length;
+    for (i = 0; i < numLayers; i++) {
+      SnowProfile.snowLayers[i].setIndexPosition();
     }
-
-    // If no deeper layer was found, add this layer at the bottom.
-    // This also handles the initial case where there were no layers.
-    if (!inserted) {
-      SnowProfile.snowLayers.push(this);
-
-      // Add a row of buttons
-      $("#snow_profile_ctrls tbody:last-child").append(
-        SnowProfile.CTRLS_HTML);
-    }
-    //console.debug("layer %d inserted", i);
-
-    /**
-      Add text for the grain description
-      @type {Object}
-     */
-    this.grainDescr = new Kinetic.Text({
-      width: SnowProfile.GRAIN_WD,
-      fontSize: 12,
-      fontFamily: 'sans-serif',
-      fill: "#000",
-      align: 'left'
-    });
-    SnowProfile.kineticJSLayer.add(this.grainDescr);
-    //console.debug("grainDescr: text=%s  x=%d y=%d isVisible=%d",
-    //  this.grainDescr.getText(), this.grainDescr.getX(),
-    //  this.grainDescr.getY(), this.grainDescr.isVisible());
-
-    /**
-      Add text for the liquid water content
-      @type {Object}
-     */
-    this.LWCDescr = new Kinetic.Text({
-      width: SnowProfile.LWC_WD,
-      fontSize: 12,
-      fontFamily: 'sans-serif',
-      fill: "#000",
-      align: 'left'
-    });
-    SnowProfile.kineticJSLayer.add(this.LWCDescr);
-
-    /**
-      Add text for the comment
-      @type {Object}
-     */
-    this.commentDescr = new Kinetic.Text({
-      width: SnowProfile.COMMENT_WD,
-      fontSize: 12,
-      fontFamily: 'sans-serif',
-      fill: "#000",
-      align: 'left'
-    });
-    SnowProfile.kineticJSLayer.add(this.commentDescr);
-
-    /**
-      Add a horizontal line below the description
-      @type {Object}
-     */
-    this.lineBelow = new Kinetic.Line({
-      points: [0, 0, 0, 0],
-      stroke: SnowProfile.GRID_COLOR,
-      strokeWidth: 1
-    });
-    SnowProfile.kineticJSLayer.add(this.lineBelow);
-    SnowProfile.updateBottomDiag();
-
-    /**
-      Handle for the line at the top of the layer.
-
-      The user drags and drops this handle to adjust depth and hardness.
-      @type {Object}
-     */
-    this.handle = new Kinetic.Rect({
-      x: SnowProfile.HANDLE_MIN_X,
-      y: self.depth2y(self.depth),
-      width: SnowProfile.HANDLE_SIZE,
-      height: SnowProfile.HANDLE_SIZE,
-      offsetX: SnowProfile.HANDLE_SIZE / 2,
-      fill: '#000',
-      draggable: true,
-      dragBoundFunc: function(pos) {
-        //console.debug("handle.dragBoundFunc() called");
-        // X (hardness) position is bound by the edges of the graph.
-        var newX = pos.x;
-        if (pos.x < SnowProfile.HANDLE_MIN_X) {
-          newX = SnowProfile.HANDLE_MIN_X;
-        }
-        else if (pos.x > SnowProfile.HANDLE_MAX_X) {
-          newX = SnowProfile.HANDLE_MAX_X;
-        }
-
-        // Y (depth) position is limited by the depth of the snow layers
-        // above and below in the snow pack, or by air and ground.
-        var newY = pos.y;
-        var i = self.getIndex();
-        var numLayers = SnowProfile.snowLayers.length;
-        if (i === 0) {
-
-          // This is the top (snow surface) layer.
-          // Handle stays on the surface.
-          newY = SnowProfile.HANDLE_MIN_Y;
-        }
-        else if (i === (numLayers - 1)) {
-
-          // This is the bottom layer.  The handle depth is constrained
-          // between the layer above and GRAPH_HEIGHT.
-          if (pos.y > (SnowProfile.HANDLE_MAX_Y)) {
-            newY = SnowProfile.HANDLE_MAX_Y;
-          }
-          else if (pos.y < SnowProfile.snowLayers[i - 1].handleGetY()) {
-            newY = SnowProfile.snowLayers[i - 1].handleGetY() + 1;
-          }
-        }
-        else {
-
-          // This layer is below the surface and above the bottom.
-          // The handle depth is constrained between layers above and below.
-            if (pos.y > SnowProfile.snowLayers[i + 1].handleGetY()) {
-              newY = SnowProfile.snowLayers[i + 1].handleGetY() - 1;
-            }
-            else if (pos.y < SnowProfile.snowLayers[i - 1].handleGetY()) {
-              newY = SnowProfile.snowLayers[i - 1].handleGetY() + 1;
-            }
-        }
-        self.depth = self.y2depth(newY);
-        return{
-          x: newX,
-          y: newY
-        };
-      }
-    }); // this.handle = new Kinetic.Rect({
-
-    /**
-      Make the handle visible
-     */
-    this.handleVisible = function() {
-      self.handle.setVisible(true);
-      self.draw();
-    };
-
-    /**
-      Make the handle invisible
-     */
-    this.handleInvisible = function() {
-      self.handle.setVisible(false);
-      self.draw();
-    };
-
-    /**
-      Remove and destroy all KineticJS objects belonging to this snow layer
-     */
-    this.destroy = function() {
-      self.handle.off('mouseup mousedown dragmove mouseover mouseout');
-      self.handle.destroy();
-      self.grainDescr.destroy();
-      self.LWCDescr.destroy();
-      self.commentDescr.destroy();
-      self.lineBelow.destroy();
-      self.handleLoc.destroy();
-      self.horizLine.destroy();
-      self.vertLine.destroy();
-      self.diagLine.destroy();
-    };
-
-    /**
-      Return the current X position of the handle
-      @returns {number}
-     */
-    this.handleGetX = function() {
-      return self.handle.getX();
-    };
-
-    /**
-      Return the current Y position of the handle
-      @returns {number}
-     */
-    this.handleGetY = function() {
-      return self.handle.getY();
-    };
-
-    /**
-      Add text to show current handle location.
-     */
-    this.handleLoc = new Kinetic.Text({
-      x: SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH + 10,
-      y: self.depth2y(self.depth),
-      fontSize: 12,
-      fontStyle: 'bold',
-      fontFamily: 'sans-serif',
-      fill: SnowProfile.LABEL_COLOR,
-      align: 'left',
-      visible: 0
-    });
-    SnowProfile.kineticJSLayer.add(this.handleLoc);
-
-    /**
-      Style the cursor for the handle
-      @callback
-     */
-    this.handle.on('mouseover', function() {
-      document.body.style.cursor = 'pointer';
-    });
-
-    /**
-      Style the cursor for the handle
-      @callback
-     */
-    this.handle.on('mouseout', function() {
-      self.handleLoc.setVisible(0);
-      SnowProfile.stage.draw();
-      document.body.style.cursor = 'default';
-    });
-
-    /**
-      When the handle is in use, show its location to the right.
-      @callback
-     */
-    this.handle.on('mousedown', function() {
-      self.handleLoc.setVisible(1);
-      self.handleTouched = true;
-      SnowProfile.stage.draw();
-    });
-
-    /**
-      When the mouse releases the handle, stop showing its location.
-      @callback
-     */
-    this.handle.on('mouseup', function() {
-      self.handleLoc.setVisible(0);
-      SnowProfile.stage.draw();
-    });
-    SnowProfile.kineticJSLayer.add(this.handle);
-
-    /**
-      Define end points of horizontal line from the Y axis to the handle.
-
-      The horizontal line extends from the left edge of the graph right to
-      the maximum of (X of SnowProfile, X of snow layer above).
-      @returns {number[]} Two-dimensional array of numbers of the starting and
-      ending points for the horizontal line.
-     */
-    this.horizLinePts = function() {
-      //console.debug("horizLinePts() called");
-      var x = self.handle.getX();
-      var i = self.getIndex();
-      if (i !== 0) {
-        x = Math.max(x, SnowProfile.snowLayers[i-1].handleGetX());
-      }
-      return  [
-        [SnowProfile.DEPTH_LABEL_WD + 1,
-         self.depth2y(self.depth) + Math.floor(SnowProfile.HANDLE_SIZE / 2)],
-        [x,
-          self.depth2y(self.depth) + Math.floor(SnowProfile.HANDLE_SIZE / 2)]
-      ];
-    }; // this.horizLinePts = function() {
-
-    /**
-      Define a horizontal line at the top of the layer.
-      @type {Object}
-     */
-    this.horizLine = new Kinetic.Line({
-      points: self.horizLinePts(),
-      stroke: '#000'
-    });
-    SnowProfile.kineticJSLayer.add(this.horizLine);
-
-    /**
-      Define end points of a vertical line from the handle down to the top of
-      the layer below in the snow pack, or the graph bottom if this is lowest
-      layer.
-      @returns {number[]} Two-dimensional array of numbers of the starting
-      and ending points for the vertical line.
-     */
-    this.vertLinePts = function() {
-      //console.debug("vertLinePts() called");
-      var x = self.handle.getX();
-      var topY = self.handle.getY() + (SnowProfile.HANDLE_SIZE / 2);
-      var bottomY = SnowProfile.HANDLE_MAX_Y + (SnowProfile.HANDLE_SIZE / 2);
-      var i = self.getIndex();
-      var numLayers = SnowProfile.snowLayers.length;
-      //console.debug("i=%d  numLayers=%d", i, numLayers);
-
-      // If this layer is not the lowest layer in the snowpack, bottom
-      // Y is the top of the layer below.
-      if (i !== numLayers - 1) {
-        bottomY = SnowProfile.snowLayers[i + 1].handleGetY() +
-          SnowProfile.HANDLE_SIZE / 2;
-      }
-      return [[x, topY],[x, bottomY]];
-    }; // this.vertLinePts = function() {
-
-    /**
-      Define a vertical line from the handle down to the top of the layer
-      below, or graph bottom if this is the lowest layer.
-      @type {Object}
-     */
-    this.vertLine = new Kinetic.Line({
-      points: self.vertLinePts(),
-      stroke: '#000'
-    });
-    SnowProfile.kineticJSLayer.add(this.vertLine);
-    //console.debug("vertical line added");
-
-    /**
-      Define end points of a diagonal line from the handle of the layer below
-      this layer to the line below the description of this layer.
-      @returns {number[]} Two-dimensional array of numbers of the starting
-      and ending points for the diagonal line.
-     */
-    this.diagLinePts = function() {
-      //console.debug("diagLinePts() called");
-      var i = self.getIndex();
-      var xLeft,
-        yLeft,
-        xRight,
-        yRight,
-        points;
-      //console.debug("i=%d  numLayers=%d", i, numLayers);
-
-      // Y dimension of the left end is the Y of the handle.
-      if (i === 0) {
-        yLeft = yRight = SnowProfile.HANDLE_MIN_Y +
-          (SnowProfile.HANDLE_SIZE / 2);
-      }
-      else {
-        yLeft = self.handle.getY() + SnowProfile.HANDLE_SIZE / 2;
-        yRight = SnowProfile.lineBelowY(i - 1);
-      }
-
-      // x dimension of the left end is the right edge of the graph
-      xLeft = SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH;
-      xRight = SnowProfile.DEPTH_LABEL_WD + 1 +
-        SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD - 3;
-      points = [[xLeft, yLeft], [xRight, yRight]];
-      //console.debug("diagLinePts() returns %o", points);
-      return points;
-    }; // this.diagLinePts = function() {
-
-    /**
-      Define a diagonal line from the handle right to the top of the
-      row of buttons that control the layer
-      FIXME: Don't want this for the top layer.
-      @type {Object}
-     */
-    this.diagLine = new Kinetic.Line({
-      points: self.diagLinePts(),
-      stroke: SnowProfile.GRID_COLOR,
-      strokeWidth: 1
-    });
-    SnowProfile.kineticJSLayer.add(this.diagLine);
-    //console.debug("diagonal line added");
-
-    /**
-      Draw this layer from depth and hardness values and adjacent layers.
-
-      This function redraws as necessary to respond to movement of the
-      handle at the top of this layer.
-     */
-    this.draw = function() {
-      //console.debug("draw() called");
-      var i = self.getIndex();
-      var numLayers = SnowProfile.snowLayers.length;
-
-      // Set handle X from hardness
-      //console.debug("setting handle x from "+self.hardness);
-      //console.debug("new x = "+self.code2x(self.hardness));
-      self.handle.setX(self.code2x(self.hardness));
-
-      // Set handle Y from depth
-      self.handle.setY(self.depth2y(self.depth));
-
-      // Adjust the horizontal line defining this layer
-      self.horizLine.setPoints(self.horizLinePts());
-
-      // Adjust the vertical line defining this layer
-      self.vertLine.setPoints(self.vertLinePts());
-
-      // Adjust the diagonal line to the description area
-      self.diagLine.setPoints(self.diagLinePts());
-
-      // Adjust the horizontal line of the layer below, if any.
-      // That line should extend to its own handle or to the vertical line
-      // dropping from the handle of this layer, whichever is greater.
-      if (i !== (numLayers - 1)) {
-        SnowProfile.snowLayers[i + 1].horizLine.setPoints(
-          SnowProfile.snowLayers[i + 1].horizLinePts());
-      }
-
-      // Adjust the vertical line of the layer above, if any
-      // That line should extend to the top of this layer.
-      if (i !== 0) {
-        SnowProfile.snowLayers[i - 1].vertLine.setPoints(
-          SnowProfile.snowLayers[i - 1].vertLinePts());
-      }
-      SnowProfile.stage.draw();
-    }; // this.draw = function() {
-
-    /**
-      Push this layer down to make room to insert a layer above
-
-      Add an increment to the depth of this layer and all layers below
-      to the bottom
-     */
-    this.pushDown = function() {
-      var i = self.getIndex();
-      var numLayers = SnowProfile.snowLayers.length;
-      //console.debug("Layer.pushDown() i=%d  numLayers=%d depth=%d",
-      //  i, numLayers, self.depth);
-      // Is this the bottom layer?
-      if (i !== (numLayers - 1)) {
-
-        // This isn't the bottom layer so push the layer below down
-        SnowProfile.snowLayers[i + 1].pushDown();
-      }
-
-      // Add the insertion increment to this layer
-      self.depth += SnowProfile.INS_INCR;
-      //console.debug("exit Layer.pushDown() i=%d  numLayers=%d depth=%d",
-      //  i, numLayers, self.depth);
-      self.draw();
-    }; // this.pushDown = function() {
-
-    /**
-      Set the depth of the layer and draw.
-      @param {number} depth Depth in centimeters of the top of this layer.
-     */
-    this.setDepth = function(depth) {
-      self.depth = depth;
-      self.draw();
-    };
-
-    /**
-      Set handle visibility, if it is untouched
-      @param {boolean} visible Make the handle visible?
-     */
-    this.setHandleVisible = function(visible) {
-      if (!self.handleTouched) {
-
-        // The user hasn't this handle since it was inited, so blink
-        self.handle.setStroke(visible ? "#000" : "#FFF");
-      }
-      else {
-
-        // The user has touched the handle so make it always visible
-        self.handle.setStroke("#000");
-      }
-      SnowProfile.stage.draw();
-    }; // this.setHandleVisible = function(visible) {
-
-    /**
-      When the handle moves, recalculate the hardness value displayed
-      and draw the lines connected to the handle
-      @callback
-     */
-    this.handle.on('dragmove', function() {
-
-      // Adjust the horizontal (hardness) position
-      self.hardness = self.x2code(self.handle.getX());
-      //console.debug("hardness set to %s", self.hardness);
-      self.horizLine.setPoints(self.horizLinePts());
-
-      // Adjust the vertical (depth) position
-      self.depth = self.y2depth(self.handle.getY());
-
-      // Set the text information floating to the right of the graph
-      var mm = Math.round(self.depth * 10) / 10;
-      self.handleLoc.setText( '(' + mm + ', ' +
-        self.x2code(self.handle.getX()) + ')');
-      self.handleLoc.setY(self.depth2y(self.depth));
-
-      // Draw the layer
-      self.draw();
-    }); // this.handle.on('dragmove', function() {
-
-    /**
-      Set the Y position of those parts of the layer whose Y position
-      depends on the index of the snow layer in snowpack not its depth.
-      This is needed when a layer is inserted or deleted.
-     */
-    this.setIndexPosition = function() {
-      var i = self.getIndex();
-      //console.debug("setIndexPosition i=%d", i);
-      self.grainDescr.setX(SnowProfile.GRAIN_LEFT);
-      self.grainDescr.setY(SnowProfile.HANDLE_MIN_Y +
-        (SnowProfile.HANDLE_SIZE / 2) + 3 +
-        (i * SnowProfile.DESCR_HEIGHT));
-      self.LWCDescr.setX(SnowProfile.LWC_LEFT);
-      self.LWCDescr.setY(SnowProfile.HANDLE_MIN_Y +
-        (SnowProfile.HANDLE_SIZE / 2) + 3 +
-        (i * SnowProfile.DESCR_HEIGHT));
-      self.commentDescr.setX(SnowProfile.COMMENT_LEFT);
-      self.commentDescr.setY(SnowProfile.HANDLE_MIN_Y +
-        (SnowProfile.HANDLE_SIZE / 2) + 3 +
-        (i * SnowProfile.DESCR_HEIGHT));
-      self.lineBelow.setPoints([
-        [SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH + 1 +
-          SnowProfile.CTRLS_WD - 3, SnowProfile.lineBelowY(i)],
-          [SnowProfile.STAGE_WD - 3, SnowProfile.lineBelowY(i)]
-      ]);
-      // console.debug("exiting setIndexPosition");
-      // console.debug("grainDescr: text=%s  x=%d y=%d isVisible=%d",
-      //   self.grainDescr.getText(), self.grainDescr.getX(),
-      //   self.grainDescr.getY(), self.grainDescr.isVisible());
-    };
-
-    // Draw the layer
-    self.draw();
-
-    // Set the location of KineticJS objects dependent on index of layer
-    // for all layers, since inserting a layer disarranged those objects.
-    //console.debug("calling setIndexPositions");
-    SnowProfile.setIndexPositions();
-    //console.debug("exiting SnowProfile.Layer()");
-    //console.dir(SnowProfile.snowLayers);
-  }; // function SnowProfile.Layer()
-
-  /**
-    Convert a hardness code to an X axis position.
-    @param {string} code A CAAML hardness code from the CAAML_HARD table.
-    @returns {number} X axis position
-   */
-  SnowProfile.Layer.prototype.code2x = function(code) {
-    "use strict";
-    var x = SnowProfile.HANDLE_MIN_X;
-    if (code !== null) {
-      for (var i = 0; i < SnowProfile.CAAML_HARD.length; i++) {
-        if (code === SnowProfile.CAAML_HARD[i][0]) {
-          x = SnowProfile.CAAML_HARD[i][2] + SnowProfile.HARD_BAND_WD * 0.5;
-          break;
-        }
-      }
-    }
-    //console.debug("hardness %s to x %d", code, x);
-    return x;
   };
-
-  /**
-    Convert an X axis position to a hardness code
-    @param {number} x X axis position.
-    @returns {string} CAAML hardness code.
-   */
-  SnowProfile.Layer.prototype.x2code = function(x) {
-    "use strict";
-    var code = 'I';
-    for (var i = 0; i < SnowProfile.CAAML_HARD.length - 1; i++) {
-      if ((x >= (SnowProfile.CAAML_HARD[i][2]) &&
-        (x < (SnowProfile.CAAML_HARD[i+1][2])))) {
-        code = SnowProfile.CAAML_HARD[i][0];
-        break;
-      }
-    }
-    return code;
-  };
-
-  /**
-    Convert a depth in cm to a Y axis position.
-    @param {number} depth Depth of the top of this layer in cm.
-    @returns {number} Y position of the layer.
-   */
-  SnowProfile.Layer.prototype.depth2y = function(depth) {
-    "use strict";
-    return (depth * (SnowProfile.GRAPH_HEIGHT / SnowProfile.MAX_DEPTH)) +
-      SnowProfile.HANDLE_MIN_Y;
-  };
-
-  /**
-    Convert a Y axis position to a depth in cm.
-    @param {number} y Y axis position.
-    @return {number} Depth of this layer in cm.
-   */
-  SnowProfile.Layer.prototype.y2depth = function(y) {
-    "use strict";
-    return ((y - SnowProfile.HANDLE_MIN_Y) / SnowProfile.GRAPH_HEIGHT) *
-      SnowProfile.MAX_DEPTH;
-  };
+})();
 
   /**
    * Initialize the container and the grid layer
@@ -1140,6 +447,18 @@ var SnowProfile = {};
     "use strict";
 
     var cm, i, numLayers, x;
+
+ // onclick="javascript:
+ //  var i;
+ //  for (i = 0; i < SnowProfile.snowLayers.length; i++) {
+ //    SnowProfile.snowLayers[i].handleInvisible();
+ //  }
+ //  var canvas = $('#snow_profile_diagram canvas').toArray()[0];
+ //  window.open(canvas.toDataURL(), 'new_window',
+ //    'width=SnowProfile.STAGE_WD,height=SnowProfile.STAGE_HT');
+ //  for (i = 0; i < SnowProfile.snowLayers.length; i++) {
+ //    SnowProfile.snowLayers[i].handleVisible();
+ //  }"
 
     SnowProfile.stage = new Kinetic.Stage({
       container: 'snow_profile_diagram',
@@ -1360,21 +679,6 @@ var SnowProfile = {};
     });
     anim.start();
 
-    // Find location of canvas, controls
-    //var diagram = $("#snow_profile_diagram");
-    //console.debug("diagram.offset()=%o",diagram.offset());
-    //console.debug("diagram.width()=%o",diagram.width());
-    //console.debug("diagram.height()=%o",diagram.height());
-    //var buttons = $("#snow_profile_ctrls");
-    //console.debug("buttons.offset()=%o",buttons.offset());
-    //console.debug("buttons.width()=%o",buttons.width());
-    //console.debug("buttons.height()=%o",buttons.height());
-
-    // Top align the control buttons to the graph.
-    $("#snow_profile_ctrls").css("paddingTop",
-      SnowProfile.TOP_LABEL_HT);
-    //console.debug("buttons offset=%o",buttons.offset());
-
     // Populate the grain shape selector in the layer description pop-up
     for (var code in SnowProfile.CAAML_SHAPE) {
       if (SnowProfile.CAAML_SHAPE.hasOwnProperty(code)) {
@@ -1382,8 +686,6 @@ var SnowProfile = {};
           "\">" + SnowProfile.CAAML_SHAPE[code] + "</option>");
       }
     }
-    //console.debug("grain shape selector:");
-    //console.debug("%o", $("#snow_profile_grain_shape").toArray());
 
     // Populate the grain size selector in the layer description pop-up
     for (code in SnowProfile.CAAML_SIZE) {
@@ -1392,8 +694,6 @@ var SnowProfile = {};
           "\">" + SnowProfile.CAAML_SIZE[code] + "</option>");
       }
     }
-    //console.debug("grain size selector:");
-    //console.debug("%o", $("#snow_profile_grain_size").toArray());
 
     // Populate the liquid water selector in the layer description pop-up
     for (code in SnowProfile.CAAML_LWC) {
@@ -1402,212 +702,189 @@ var SnowProfile = {};
           "\">" + SnowProfile.CAAML_LWC[code] + "</option>");
       }
     }
-    //console.debug("LWC selector:");
-    //console.debug("%o", $("#snow_profile_lwc").toArray());
+
+    /**
+      When the "Preview" button is clicked, generate a preview
+     */
+    $(document).ready(function() {
+      $("#snow_profile_preview").click(function() {
+
+        // Hide the controls so they won't show in the PNG
+        $.event.trigger("SnowProfileHideControls");
+
+        // Open a new window and show the PNG in it
+        var canvas = $('#snow_profile_diagram canvas').toArray()[0];
+        window.open(canvas.toDataURL(), 'new_window',
+          'width=SnowProfile.STAGE_WD,height=SnowProfile.STAGE_HT');
+
+        // The PNG has been generated so we can show controls again
+        $.event.trigger("SnowProfileShowControls");
+      });
+    });
 
     // Listen to all buttons now and future in the controls table
-    $("#snow_profile_ctrls").delegate("button", "click",
-      function(){
-        var i = $("#snow_profile_ctrls tr").index(this.parentNode.parentNode);
-        //var row$ = $($("#snow_profile_ctrls tr")[i]);
-        //console.debug("row=%d  row$=%o", i, row$);
-        //row$.css("background-color", "yellow").show("fast");
-        var numLayers = SnowProfile.snowLayers.length;
-        var layer = SnowProfile.snowLayers[i];
-        var newDepth;
-        // console.debug("button=%s  i=%d  numLayers=%d  layer=%o",
-        //   this.name, i, numLayers, layer);
-        // console.dir(SnowProfile.snowLayers);
-        var name = this.name;
-        switch (name) {
-          case "ia":
+    // $("#snow_profile_ctrls").delegate("button", "click",
+    //   function(){
+    //     var i = $("#snow_profile_ctrls tr").index(this.parentNode.parentNode);
+    //     var numLayers = SnowProfile.snowLayers.length;
+    //     var layer = SnowProfile.snowLayers[i];
+    //     var newDepth;
+    //     var name = this.name;
+    //     switch (name) {
+    //       case "ia":
 
-            // New layer will be at same depth as this layer
-            newDepth = layer.getDepth();
+    //         // New layer will be at same depth as this layer
+    //         newDepth = layer.getDepth();
 
-            // Push down on this layer and all layers below it
-            layer.pushDown();
-            //console.debug("new Layer(%d)", newDepth);
-            new SnowProfile.Layer(newDepth);
-            break;
+    //         // Push down on this layer and all layers below it
+    //         layer.pushDown();
+    //         new SnowProfile.Layer(newDepth);
+    //         break;
 
-          case "ib":
+    //       case "ib":
 
-            // New layer will be an increment below this layer
-            newDepth = layer.getDepth() + SnowProfile.INS_INCR;
+    //         // New layer will be an increment below this layer
+    //         newDepth = layer.getDepth() + SnowProfile.INS_INCR;
 
-            // If this is not the bottom layer, push down
-            // the layers below this layer.
-            if (i !== (numLayers - 1)) {
-              SnowProfile.snowLayers[i + 1].pushDown();
-            }
-            new SnowProfile.Layer(newDepth);
-            break;
+    //         // If this is not the bottom layer, push down
+    //         // the layers below this layer.
+    //         if (i !== (numLayers - 1)) {
+    //           SnowProfile.snowLayers[i + 1].pushDown();
+    //         }
+    //         new SnowProfile.Layer(newDepth);
+    //         break;
 
-          case "edit":
-            //console.debug("Edit button i=%d", i);
-            // Modal dialog pop-up to edit description of snow layer
-            //console.debug("layer.grainShape=%s", layer.grainShape);
-            $("#snow_profile_grain_shape").val(layer.grainShape);
-            $("#snow_profile_grain_size").val(layer.grainSize);
-            $("#snow_profile_lwc").val(layer.lwc);
-            $("#snow_profile_comment").val(layer.comment);
-            var editArgs = {
-              modal: true,
-              width: 400,
-              height: 600,
-              buttons: [
-                {
-                  // Done button on description pop-up saves values from
-                  // the pop-up form into the layer description
-                  text: "Done",
-                  click: function() {
-                    //console.debug("grain shape=%s",
-                    //  $("#snow_profile_grain_shape").val());
-                    layer.grainShape = $("#snow_profile_grain_shape").val();
-                    layer.grainSize = $("#snow_profile_grain_size").val();
-                    if ((layer.grainShape === "") &&
-                      (layer.grainSize === "")) {
+    //       case "edit":
+    //         $("#snow_profile_grain_shape").val(layer.grainShape);
+    //         $("#snow_profile_grain_size").val(layer.grainSize);
+    //         $("#snow_profile_lwc").val(layer.lwc);
+    //         $("#snow_profile_comment").val(layer.comment);
+    //         var editArgs = {
+    //           modal: true,
+    //           width: 400,
+    //           height: 600,
+    //           buttons: [
+    //             {
+    //               // Done button on description pop-up saves values from
+    //               // the pop-up form into the layer description
+    //               text: "Done",
+    //               click: function() {
+    //                 layer.grainShape = $("#snow_profile_grain_shape").val();
+    //                 layer.grainSize = $("#snow_profile_grain_size").val();
+    //                 if ((layer.grainShape === "") &&
+    //                   (layer.grainSize === "")) {
 
-                      // No information about grains
-                      layer.grainDescr.setText("");
-                    }
-                    else {
+    //                   // No information about grains
+    //                   layer.grainDescr.setText("");
+    //                 }
+    //                 else {
 
-                      // Build a text description from what we have
-                      var text = "";
-                      if (layer.grainShape !== "") {
-                        text += SnowProfile.CAAML_SHAPE[layer.grainShape] +
-                          "\nsome second line\n";
-                      }
-                      if (layer.grainSize !== "") {
-                        text += SnowProfile.CAAML_SIZE[layer.grainSize];
-                      }
-                      layer.grainDescr.setText(text);
-                    }
+    //                   // Build a text description from what we have
+    //                   var text = "";
+    //                   if (layer.grainShape !== "") {
+    //                     text += SnowProfile.CAAML_SHAPE[layer.grainShape] +
+    //                       "\nsome second line\n";
+    //                   }
+    //                   if (layer.grainSize !== "") {
+    //                     text += SnowProfile.CAAML_SIZE[layer.grainSize];
+    //                   }
+    //                   layer.grainDescr.setText(text);
+    //                 }
 
-                    // Liquid water content description
-                    layer.lwc = $("#snow_profile_lwc").val();
-                    if (layer.lwc === "") {
-                      layer.LWCDescr.setText("");
-                    }
-                    else {
-                      layer.LWCDescr.setText(
-                        SnowProfile.CAAML_LWC[layer.lwc]);
-                    }
+    //                 // Liquid water content description
+    //                 layer.lwc = $("#snow_profile_lwc").val();
+    //                 if (layer.lwc === "") {
+    //                   layer.LWCDescr.setText("");
+    //                 }
+    //                 else {
+    //                   layer.LWCDescr.setText(
+    //                     SnowProfile.CAAML_LWC[layer.lwc]);
+    //                 }
 
-                    // Comment description
-                    layer.comment = $("#snow_profile_comment").val();
-                    if (layer.comment === "") {
-                      layer.commentDescr.setText("");
-                    }
-                    else {
-                      layer.commentDescr.setText(layer.comment);
-                    }
-                    $(this).dialog("close");
-                    // console.debug("grainDescr: text=%s  x=%d y=%d isVisible=%d",
-                    //   layer.grainDescr.getText(), layer.grainDescr.getX(),
-                    //   layer.grainDescr.getY(), layer.grainDescr.isVisible());
-                    // console.debug("lineBelow: points=%o",
-                    //   layer.lineBelow.getPoints());
-                    SnowProfile.stage.draw();
-                  }
-                },
-                {
-                  // Cancel button on description pop-up throws away changes
-                  text: "Cancel",
-                  tabindex: -1,
-                  click: function() {$(this).dialog("close");}
-                }
-              ]
-            };
-            if (numLayers > 1) {
-              editArgs.buttons.push(
-                {
-                  text: "Delete",
-                  tabindex: -1,
-                  click: function() {
+    //                 // Comment description
+    //                 layer.comment = $("#snow_profile_comment").val();
+    //                 if (layer.comment === "") {
+    //                   layer.commentDescr.setText("");
+    //                 }
+    //                 else {
+    //                   layer.commentDescr.setText(layer.comment);
+    //                 }
+    //                 $(this).dialog("close");
+    //                 SnowProfile.stage.draw();
+    //               }
+    //             },
+    //             {
+    //               // Cancel button on description pop-up throws away changes
+    //               text: "Cancel",
+    //               tabindex: -1,
+    //               click: function() {$(this).dialog("close");}
+    //             }
+    //           ]
+    //         };
+    //         if (numLayers > 1) {
+    //           editArgs.buttons.push(
+    //             {
+    //               text: "Delete",
+    //               tabindex: -1,
+    //               click: function() {
 
-                    //console.debug("Delete button");
-                    // Remove this Layer from the snowLayers array
-                    SnowProfile.snowLayers.splice(i, 1);
+    //                 // Remove this Layer from the snowLayers array
+    //                 SnowProfile.snowLayers.splice(i, 1);
 
-                    // Destroy KineticJS object of this layer
-                    layer.destroy();
+    //                 // Destroy KineticJS object of this layer
+    //                 layer.destroy();
 
-                    // If the layer we just removed was not the top layer,
-                    // tell the layer above to adjust itself.
-                    if (i > 0) {
-                      SnowProfile.snowLayers[i-1].draw();
-                    }
-                    else {
+    //                 // If the layer we just removed was not the top layer,
+    //                 // tell the layer above to adjust itself.
+    //                 if (i > 0) {
+    //                   SnowProfile.snowLayers[i-1].draw();
+    //                 }
+    //                 else {
 
-                      // We just removed the top layer.  The layer that was
-                      // below it is the new top layer so set its depth.
-                      SnowProfile.snowLayers[0].setDepth(0);
-                    }
+    //                   // We just removed the top layer.  The layer that was
+    //                   // below it is the new top layer so set its depth.
+    //                   SnowProfile.snowLayers[0].setDepth(0);
+    //                 }
 
-                    // If the layer we just removed was not the bottom layer,
-                    // tell the layer below to adjust itself.
-                    if (i !== (numLayers - 1)) {
-                      SnowProfile.snowLayers[i].draw();
-                    }
-                    numLayers--;
+    //                 // If the layer we just removed was not the bottom layer,
+    //                 // tell the layer below to adjust itself.
+    //                 if (i !== (numLayers - 1)) {
+    //                   SnowProfile.snowLayers[i].draw();
+    //                 }
+    //                 numLayers--;
 
-                    // Remove row of buttons for this layer
-                    $("#snow_profile_ctrls tr").eq(i).remove();
+    //                 // Remove row of buttons for this layer
+    //                 $("#snow_profile_ctrls tr").eq(i).remove();
 
-                    // Check how many layers remain.  If there is only one
-                    // remaining, we can't allow it to be deleted
-                    if (numLayers === 1) {
-                      $("#snow_profile_ctrls button[name=\"del\"]").attr(
-                        "disabled", "disabled");
-                    }
+    //                 // Check how many layers remain.  If there is only one
+    //                 // remaining, we can't allow it to be deleted
+    //                 if (numLayers === 1) {
+    //                   $("#snow_profile_ctrls button[name=\"del\"]").attr(
+    //                     "disabled", "disabled");
+    //                 }
 
-                    // Update location of KineticJS objects whose position
-                    // depends on the index of the layer
-                    //console.debug("calling setIndexPositions");
-                    SnowProfile.setIndexPositions();
+    //                 // Update location of KineticJS objects whose position
+    //                 // depends on the index of the layer
+    //                 SnowProfile.setIndexPositions();
 
-                    // Update the diagonal line from the lower right corner
-                    // of the graph to the horizontal line below the
-                    // description of the lowest layer to reflect the fact
-                    // that the number of layers has changed.
-                    SnowProfile.updateBottomDiag();
-                    $(this).dialog("close");
-                  }
-                }
-              );
-            }
-            $("#snow_profile_descr").dialog(editArgs);
-            break;
+    //                 // Update the diagonal line from the lower right corner
+    //                 // of the graph to the horizontal line below the
+    //                 // description of the lowest layer to reflect the fact
+    //                 // that the number of layers has changed.
+    //                 SnowProfile.updateBottomDiag();
+    //                 $(this).dialog("close");
+    //               }
+    //             }
+    //           );
+    //         }
+    //         $("#snow_profile_descr").dialog(editArgs);
+    //         break;
 
-          default:
-            console.error("click from button with unknown name " + name);
-        }
-        //console.debug("after change:");
-        //console.dir(SnowProfile.snowLayers);
-        //var ctrls = $("#snow_profile_ctrls tr");
-        //console.debug("found %d trs", ctrls.length);
-        //ctrls.each(function (idx) {
-        //  console.debug("tr %d offset=%o", idx, $(this).offset());
-        //});
-
-        //console.debug("calling SnowProfile.stage.draw()");
-        //SnowProfile.stage.draw();
-        //console.dir(SnowProfile.snowLayers);
-      });
+    //       default:
+    //         console.error("click from button with unknown name " + name);
+    //     }
+    //  });
   };  // function SnowProfile.init();
-
-  /**
-   * Main program
-   */
-  SnowProfile.init();
-  //console.dir(SnowProfile.snowLayers);
-  new SnowProfile.Layer(0);
-  new SnowProfile.Layer(20);
-  new SnowProfile.Layer(40);
-  //console.dir(SnowProfile.snowLayers);
 
 // Configure Emacs for Drupal JavaScript coding standards
 // Local Variables:
