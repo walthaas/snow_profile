@@ -55,11 +55,24 @@ SnowProfile.Button = function(text, y) {
   });
   SnowProfile.kineticJSLayer.add(self.rect);
   SnowProfile.kineticJSLayer.add(self.text);
+  SnowProfile.stage.draw();
+
+  /**
+    Reposition the button on the Y axis
+    @param {number} y - New vertical position of the center of the button
+                        on the KineticJS stage.
+   */
+  this.setY = function(y) {
+    self.text.setY(y);
+    self.rect.setY(y);
+    SnowProfile.stage.draw();
+  };
 
   /**
     Destroy the button
    */
   this.destroy = function() {
+    self.text.off('click');
     self.text.destroy();
     self.rect.destroy();
     SnowProfile.stage.draw();
@@ -67,7 +80,6 @@ SnowProfile.Button = function(text, y) {
 
   // Listen for "SnowProfileHideControls" events
   $(document).bind("SnowProfileHideControls", function(evt) {
-    console.debug("Button heard a %s event", evt.type);
     self.text.setVisible(false);
     self.rect.setVisible(false);
     SnowProfile.stage.draw();
@@ -75,16 +87,23 @@ SnowProfile.Button = function(text, y) {
 
   // Listen for "SnowProfileShowControls" events
   $(document).bind("SnowProfileShowControls", function(evt) {
-    console.debug("Button heard a %s event", evt.type);
     self.text.setVisible(true);
     self.rect.setVisible(true);
     SnowProfile.stage.draw();
+  });
+
+  // Listen for mouse clicks on this button, then emit a custom event
+  // which identifies which button was clicked.
+  this.text.on('click', function(evt) {
+    console.debug("click on button(%s, %d)", self.text.getText(),
+      self.text.getY());
+    $.event.trigger("SnowProfileButtonClick", {buttonObj: self});
   });
 };
 
 // Configure Emacs for Drupal JavaScript coding standards
 // Local Variables:
-// c-basic-offset: 2
+// js2-basic-offset: 2
 // indent-tabs-mode: nil
 // fill-column: 78
 // show-trailing-whitespace: t

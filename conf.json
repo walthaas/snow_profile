@@ -5,6 +5,7 @@
     "source": {
         "include": ["snow_profile.js",
                     "snow_profile_button.js",
+                    "snow_profile_popup.js",
                     "snow_profile_layer.js",
                     "snow_profile_main.js"
                    ]

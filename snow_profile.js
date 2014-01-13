@@ -6,19 +6,19 @@
  */
 var SnowProfile = {};
 
-  /**
-   * Layout of the snow profile Kinetic stage:
-   *
-   *       | Top Labels
-   * ___________________________________________________________________
-   *       |             |          |        |       |
-   * Depth |             |          |        |       |
-   * Label | Graph       | Controls | Grains | Water | Comment
-   *       |             |          |        |       |
-   *____________________________________________________________________
-   *       | Hardness    |
-   *       | Label       |
-   */
+/**
+ * Layout of the snow profile Kinetic stage:
+ *
+ *       | Top Labels
+ * ___________________________________________________________________
+ *       |             |          |        |       |
+ * Depth |             |          |        |       |
+ * Label | Graph       | Controls | Grains | Water | Comment
+ *       |             |          |        |       |
+ *____________________________________________________________________
+ *       | Hardness    |
+ *       | Label       |
+ */
 
 (function() {
   "use strict";
@@ -438,7 +438,6 @@ var SnowProfile = {};
       SnowProfile.snowLayers[i].setIndexPosition();
     }
   };
-})();
 
   /**
    * Initialize the container and the grid layer
@@ -447,18 +446,6 @@ var SnowProfile = {};
     "use strict";
 
     var cm, i, numLayers, x;
-
- // onclick="javascript:
- //  var i;
- //  for (i = 0; i < SnowProfile.snowLayers.length; i++) {
- //    SnowProfile.snowLayers[i].handleInvisible();
- //  }
- //  var canvas = $('#snow_profile_diagram canvas').toArray()[0];
- //  window.open(canvas.toDataURL(), 'new_window',
- //    'width=SnowProfile.STAGE_WD,height=SnowProfile.STAGE_HT');
- //  for (i = 0; i < SnowProfile.snowLayers.length; i++) {
- //    SnowProfile.snowLayers[i].handleVisible();
- //  }"
 
     SnowProfile.stage = new Kinetic.Stage({
       container: 'snow_profile_diagram',
@@ -703,9 +690,7 @@ var SnowProfile = {};
       }
     }
 
-    /**
-      When the "Preview" button is clicked, generate a preview
-     */
+    // When the "Preview" button is clicked, generate a preview
     $(document).ready(function() {
       $("#snow_profile_preview").click(function() {
 
@@ -885,10 +870,11 @@ var SnowProfile = {};
     //     }
     //  });
   };  // function SnowProfile.init();
+})();
 
 // Configure Emacs for Drupal JavaScript coding standards
 // Local Variables:
-// c-basic-offset: 2
+// js2-basic-offset: 2
 // indent-tabs-mode: nil
 // fill-column: 78
 // show-trailing-whitespace: t
