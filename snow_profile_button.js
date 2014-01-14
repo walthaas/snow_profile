@@ -12,10 +12,9 @@
   @classdesc Define a button constructed from KineticJS shapes.
   @constructor
   @param {string} text - Text to appear inside the button.
-  @param {number} y    - Vertical position of the center of the button on the
   KineticJS stage.
  */
-SnowProfile.Button = function(text, y) {
+SnowProfile.Button = function(text) {
   "use strict";
 
   var self = this;
@@ -27,7 +26,6 @@ SnowProfile.Button = function(text, y) {
    */
   this.text = new Kinetic.Text({
     x: SnowProfile.BUTTON_X,
-    y: y,
     text: text,
     fontFamily: "sans-serif",
     fontSize: 12,
@@ -44,7 +42,6 @@ SnowProfile.Button = function(text, y) {
    */
   this.rect =  new Kinetic.Rect({
     x: SnowProfile.BUTTON_X,
-    y: y,
     width: self.text.getWidth(),
     height: self.text.getHeight(),
     cornerRadius: 4,
@@ -53,9 +50,7 @@ SnowProfile.Button = function(text, y) {
     fill: "#fff"
   });
   this.rect.setOffsetX(this.rect.getWidth() / 2);
-  this.rect.setOffsetY(this.rect.getHeight() / 2);
   this.text.setOffsetX(this.rect.getWidth() / 2);
-  this.text.setOffsetY((this.rect.getHeight() / 2) - 2);
   SnowProfile.kineticJSLayer.add(self.rect);
   SnowProfile.kineticJSLayer.add(self.text);
   SnowProfile.stage.draw();
@@ -64,10 +59,13 @@ SnowProfile.Button = function(text, y) {
     Reposition the button on the Y axis
     @param {number} y - New vertical position of the center of the button
                         on the KineticJS stage.
+    @FIXME incorporate the Y position calculation above.
    */
   this.setY = function(y) {
     self.text.setY(y);
+    self.text.setOffsetY((this.rect.getHeight() / 2) - 2);
     self.rect.setY(y);
+    self.rect.setOffsetY(this.rect.getHeight() / 2);
     SnowProfile.stage.draw();
   };
 

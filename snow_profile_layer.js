@@ -117,7 +117,8 @@ SnowProfile.Layer = function(depth) {
     fontSize: 12,
     fontFamily: 'sans-serif',
     fill: "#000",
-    align: 'left'
+    align: 'left',
+    x: SnowProfile.GRAIN_LEFT
   });
   SnowProfile.kineticJSLayer.add(this.grainDescr);
 
@@ -130,7 +131,8 @@ SnowProfile.Layer = function(depth) {
     fontSize: 12,
     fontFamily: 'sans-serif',
     fill: "#000",
-    align: 'left'
+    align: 'left',
+    x: SnowProfile.LWC_LEFT
   });
   SnowProfile.kineticJSLayer.add(this.LWCDescr);
 
@@ -143,7 +145,8 @@ SnowProfile.Layer = function(depth) {
     fontSize: 12,
     fontFamily: 'sans-serif',
     fill: "#000",
-    align: 'left'
+    align: 'left',
+    x: SnowProfile.COMMENT_LEFT
   });
   SnowProfile.kineticJSLayer.add(this.commentDescr);
 
@@ -249,6 +252,47 @@ SnowProfile.Layer = function(depth) {
   this.handleInvisible = function() {
     self.handle.setVisible(false);
     self.draw();
+  };
+
+  /**
+   * Delete this layer and make necessary adjustments
+   */
+  this.delete = function() {
+
+    // Remove this Layer from the snowLayers array
+    SnowProfile.snowLayers.splice(i, 1);
+
+    // Destroy KineticJS objects of this layer
+    self.destroy();
+
+    // If the layer we just removed was not the top layer,
+    // tell the layer above to adjust itself.
+    if (i > 0) {
+      SnowProfile.snowLayers[i-1].draw();
+    }
+    else {
+
+      // We just removed the top layer.  The layer that was
+      // below it is the new top layer so set its depth.
+      SnowProfile.snowLayers[0].setDepth(0);
+    }
+
+    // If the layer we just removed was not the bottom layer,
+    // tell the layer below to adjust itself.
+    if (i !== (numLayers - 1)) {
+      SnowProfile.snowLayers[i].draw();
+    }
+    numLayers--;
+
+    // Update location of KineticJS objects whose position
+    // depends on the index of the layer
+    SnowProfile.setIndexPositions();
+
+    // Update the diagonal line from the lower right corner
+    // of the graph to the horizontal line below the
+    // description of the lowest layer to reflect the fact
+    // that the number of layers has changed.
+    SnowProfile.updateBottomDiag();
   };
 
   /**
@@ -489,13 +533,15 @@ SnowProfile.Layer = function(depth) {
       }
 
       // Comment description
-      self.comment = data.comment
+      self.comment = data.comment;
       if (self.comment === "") {
         self.commentDescr.setText("");
       }
       else {
         self.commentDescr.setText(self.comment);
       }
+
+      // Re-draw the diagram with the updated information
       self.draw();
     }
     else {
@@ -516,9 +562,7 @@ SnowProfile.Layer = function(depth) {
    Create the "Edit" button and listen for clicks on it
    @type {Object}
    */
-  this.editButton = new SnowProfile.Button("Edit",
-    SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2) +
-    (SnowProfile.DESCR_HEIGHT / 2) + (i * SnowProfile.DESCR_HEIGHT));
+  this.editButton = new SnowProfile.Button("Edit");
 
   // Edit button clicked so pop up a modal dialog form
   $(document).bind("SnowProfileButtonClick", function(evt, extra) {
@@ -649,15 +693,12 @@ SnowProfile.Layer = function(depth) {
    */
   this.setIndexPosition = function() {
     var i = self.getIndex();
-    self.grainDescr.setX(SnowProfile.GRAIN_LEFT);
     self.grainDescr.setY(SnowProfile.HANDLE_MIN_Y +
       (SnowProfile.HANDLE_SIZE / 2) + 3 +
         (i * SnowProfile.DESCR_HEIGHT));
-    self.LWCDescr.setX(SnowProfile.LWC_LEFT);
     self.LWCDescr.setY(SnowProfile.HANDLE_MIN_Y +
       (SnowProfile.HANDLE_SIZE / 2) + 3 +
         (i * SnowProfile.DESCR_HEIGHT));
-    self.commentDescr.setX(SnowProfile.COMMENT_LEFT);
     self.commentDescr.setY(SnowProfile.HANDLE_MIN_Y +
       (SnowProfile.HANDLE_SIZE / 2) + 3 +
         (i * SnowProfile.DESCR_HEIGHT));
@@ -666,6 +707,9 @@ SnowProfile.Layer = function(depth) {
         SnowProfile.CTRLS_WD - 3, SnowProfile.lineBelowY(i)],
       [SnowProfile.STAGE_WD - 3, SnowProfile.lineBelowY(i)]
     ]);
+    self.editButton.setY(SnowProfile.HANDLE_MIN_Y +
+      (SnowProfile.HANDLE_SIZE / 2) +
+      (SnowProfile.DESCR_HEIGHT / 2) + (i * SnowProfile.DESCR_HEIGHT));
   };
 
   // Draw the layer
