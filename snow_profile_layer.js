@@ -518,7 +518,7 @@ SnowProfile.Layer = function(depth) {
    */
   this.editButton = new SnowProfile.Button("Edit",
     SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2) +
-      ((i + 0.4) * SnowProfile.DESCR_HEIGHT));
+    (SnowProfile.DESCR_HEIGHT / 2) + (i * SnowProfile.DESCR_HEIGHT));
 
   // Edit button clicked so pop up a modal dialog form
   $(document).bind("SnowProfileButtonClick", function(evt, extra) {

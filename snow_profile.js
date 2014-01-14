@@ -373,7 +373,7 @@ var SnowProfile = {};
     ['K',     1, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 16.5],
     ['K+',    0, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 17.5],
     ['K-I',   0, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 18.5],
-    ['I',     1, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 19.5],
+    ['I',     1, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 19.5]
   ];
 
   /**
@@ -393,6 +393,12 @@ var SnowProfile = {};
      SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD + 1 +
      SnowProfile.GRAIN_WD + 1 + SnowProfile.LWC_WD + 1 +
      SnowProfile.COMMENT_WD;
+
+  /**
+    X position of the center line of the buttons in the control area
+   */
+  SnowProfile.BUTTON_X =  SnowProfile.DEPTH_LABEL_WD + 1 +
+    SnowProfile.GRAPH_WIDTH + 150;
 
   /**
     X position of the left edge of the Grains text area

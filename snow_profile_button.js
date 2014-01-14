@@ -26,13 +26,12 @@ SnowProfile.Button = function(text, y) {
     @private
    */
   this.text = new Kinetic.Text({
-    x: SnowProfile.GRAIN_LEFT - 70,
+    x: SnowProfile.BUTTON_X,
     y: y,
     text: text,
     fontFamily: "sans-serif",
     fontSize: 12,
     padding: 4,
-    offsetY: -2,
     stroke: "#000",
     strokeWidth: 1,
     align: "center"
@@ -44,7 +43,7 @@ SnowProfile.Button = function(text, y) {
     @private
    */
   this.rect =  new Kinetic.Rect({
-    x: SnowProfile.GRAIN_LEFT - 70,
+    x: SnowProfile.BUTTON_X,
     y: y,
     width: self.text.getWidth(),
     height: self.text.getHeight(),
@@ -53,6 +52,10 @@ SnowProfile.Button = function(text, y) {
     strokeWidth: 1,
     fill: "#fff"
   });
+  this.rect.setOffsetX(this.rect.getWidth() / 2);
+  this.rect.setOffsetY(this.rect.getHeight() / 2);
+  this.text.setOffsetX(this.rect.getWidth() / 2);
+  this.text.setOffsetY((this.rect.getHeight() / 2) - 2);
   SnowProfile.kineticJSLayer.add(self.rect);
   SnowProfile.kineticJSLayer.add(self.text);
   SnowProfile.stage.draw();
