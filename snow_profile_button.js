@@ -95,8 +95,6 @@ SnowProfile.Button = function(text, y) {
   // Listen for mouse clicks on this button, then emit a custom event
   // which identifies which button was clicked.
   this.text.on('click', function(evt) {
-    console.debug("click on button(%s, %d)", self.text.getText(),
-      self.text.getY());
     $.event.trigger("SnowProfileButtonClick", {buttonObj: self});
   });
 };
