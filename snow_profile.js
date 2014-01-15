@@ -440,6 +440,7 @@ var SnowProfile = {};
   SnowProfile.setIndexPositions = function() {
     var i,
       numLayers = SnowProfile.snowLayers.length;
+    console.debug("setIndexPositions() find numLayers=%d", numLayers);
     for (i = 0; i < numLayers; i++) {
       SnowProfile.snowLayers[i].setIndexPosition();
     }
@@ -699,9 +700,11 @@ var SnowProfile = {};
       $("#snow_profile_preview").click(function() {
 
         // Hide the controls so they won't show in the PNG
+        console.debug("triggering SnowProfileHideControls");
         $.event.trigger("SnowProfileHideControls");
 
         // Open a new window and show the PNG in it
+        console.debug("calling toArray[0]");
         var canvas = $('#snow_profile_diagram canvas').toArray()[0];
         window.open(canvas.toDataURL(), 'new_window',
           'width=SnowProfile.STAGE_WD,height=SnowProfile.STAGE_HT');

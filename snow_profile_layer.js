@@ -20,8 +20,8 @@ SnowProfile.Layer = function(depth) {
 
   // Insert this Layer in the appropriate place in the snow pack.
   var i,
-  numLayers = SnowProfile.snowLayers.length,
-  inserted = false;
+    numLayers = SnowProfile.snowLayers.length,
+    inserted = false;
 
   /**
    Depth of the top of this SnowProfileLayer in cm from the snow surface.
@@ -33,25 +33,25 @@ SnowProfile.Layer = function(depth) {
    Grain shape of this layer
    @type {string}
    */
-  this.grainShape = null;
+  var grainShape = "";
 
   /**
    Grain size of this snow layer
    @type {string}
    */
-  this.grainSize = null;
+  var grainSize = "";
 
   /**
    Liquid water content of this snow layer
    @type {string}
    */
-  this.lwc = null;
+  var lwc = "";
 
   /**
    User's comment about this snow layer
    @type {string}
    */
-  this.comment = null;
+  var comment = "";
 
   /**
    Return depth in cm of this snow layer
@@ -65,7 +65,7 @@ SnowProfile.Layer = function(depth) {
    Get index of this object in snowLayers[]
    @returns {number} Integer index into snowLayers[]
    */
-  this.getIndex = function() {
+  function getIndex() {
     var i;
     var numLayers = SnowProfile.snowLayers.length;
     for (i = 0; i < numLayers; i++) {
@@ -74,6 +74,8 @@ SnowProfile.Layer = function(depth) {
       }
     }
     console.error("Object not found in snowLayers[]");
+    console.debug("i=%d  numLayers=%d  snowLayers=%o", i, numLayers,
+      SnowProfile.snowLayers );
   };
 
   /**
@@ -83,7 +85,7 @@ SnowProfile.Layer = function(depth) {
    attention to the need to set the handle position.
    @type {boolean}
    */
-  this.handleTouched = false;
+  var handleTouched = false;
 
   /**
    Hardness of this snow layer.
@@ -92,7 +94,7 @@ SnowProfile.Layer = function(depth) {
    Initial null means the handle is untouched.
    @type {string}
    */
-  this.hardness = null;
+  var hardness = null;
 
   // Insert this layer above the first layer that is deeper
   for (i = 0; i<numLayers; i++) {
@@ -112,7 +114,7 @@ SnowProfile.Layer = function(depth) {
    Add text for the grain description
    @type {Object}
    */
-  this.grainDescr = new Kinetic.Text({
+  var grainDescr = new Kinetic.Text({
     width: SnowProfile.GRAIN_WD,
     fontSize: 12,
     fontFamily: 'sans-serif',
@@ -120,13 +122,13 @@ SnowProfile.Layer = function(depth) {
     align: 'left',
     x: SnowProfile.GRAIN_LEFT
   });
-  SnowProfile.kineticJSLayer.add(this.grainDescr);
+  SnowProfile.kineticJSLayer.add(grainDescr);
 
   /**
    Add text for the liquid water content
    @type {Object}
    */
-  this.LWCDescr = new Kinetic.Text({
+  var LWCDescr = new Kinetic.Text({
     width: SnowProfile.LWC_WD,
     fontSize: 12,
     fontFamily: 'sans-serif',
@@ -134,13 +136,13 @@ SnowProfile.Layer = function(depth) {
     align: 'left',
     x: SnowProfile.LWC_LEFT
   });
-  SnowProfile.kineticJSLayer.add(this.LWCDescr);
+  SnowProfile.kineticJSLayer.add(LWCDescr);
 
   /**
    Add text for the comment
    @type {Object}
    */
-  this.commentDescr = new Kinetic.Text({
+  var commentDescr = new Kinetic.Text({
     width: SnowProfile.COMMENT_WD,
     fontSize: 12,
     fontFamily: 'sans-serif',
@@ -148,18 +150,18 @@ SnowProfile.Layer = function(depth) {
     align: 'left',
     x: SnowProfile.COMMENT_LEFT
   });
-  SnowProfile.kineticJSLayer.add(this.commentDescr);
+  SnowProfile.kineticJSLayer.add(commentDescr);
 
   /**
    Add a horizontal line below the description
    @type {Object}
    */
-  this.lineBelow = new Kinetic.Line({
+  var lineBelow = new Kinetic.Line({
     points: [0, 0, 0, 0],
     stroke: SnowProfile.GRID_COLOR,
     strokeWidth: 1
   });
-  SnowProfile.kineticJSLayer.add(this.lineBelow);
+  SnowProfile.kineticJSLayer.add(lineBelow);
   SnowProfile.updateBottomDiag();
 
   /**
@@ -168,7 +170,7 @@ SnowProfile.Layer = function(depth) {
    The user drags and drops this handle to adjust depth and hardness.
    @type {Object}
    */
-  this.handle = new Kinetic.Rect({
+  var handle = new Kinetic.Rect({
     x: SnowProfile.HANDLE_MIN_X,
     y: self.depth2y(self.depth),
     width: SnowProfile.HANDLE_SIZE,
@@ -190,7 +192,7 @@ SnowProfile.Layer = function(depth) {
       // Y (depth) position is limited by the depth of the snow layers
       // above and below in the snow pack, or by air and ground.
       var newY = pos.y;
-      var i = self.getIndex();
+      var i = getIndex();
       var numLayers = SnowProfile.snowLayers.length;
       if (i === 0) {
 
@@ -226,31 +228,31 @@ SnowProfile.Layer = function(depth) {
         y: newY
       };
     }
-  }); // this.handle = new Kinetic.Rect({
+  }); // handle = new Kinetic.Rect({
 
   // Listen for "SnowProfileHideControls" events
   $(document).bind("SnowProfileHideControls", function(evt) {
-      self.handleInvisible();
+      handleInvisible();
   });
 
   // Listen for "SnowProfileShowControls" events
   $(document).bind("SnowProfileShowControls", function(evt) {
-    self.handleVisible();
+    handleVisible();
   });
 
   /**
    Make the handle visible
    */
-  this.handleVisible = function() {
-    self.handle.setVisible(true);
+  function handleVisible() {
+    handle.setVisible(true);
     self.draw();
   };
 
   /**
-   Make the handle invisible
+    Make the handle invisible
    */
-  this.handleInvisible = function() {
-    self.handle.setVisible(false);
+  function handleInvisible() {
+    handle.setVisible(false);
     self.draw();
   };
 
@@ -299,17 +301,17 @@ SnowProfile.Layer = function(depth) {
    Remove and destroy all KineticJS objects belonging to this snow layer
    */
   this.destroy = function() {
-    self.handle.off('mouseup mousedown dragmove mouseover mouseout');
-    self.handle.destroy();
-    self.grainDescr.destroy();
-    self.LWCDescr.destroy();
-    self.commentDescr.destroy();
-    self.lineBelow.destroy();
-    self.handleLoc.destroy();
+    handle.off('mouseup mousedown dragmove mouseover mouseout');
+    handle.destroy();
+    grainDescr.destroy();
+    LWCDescr.destroy();
+    commentDescr.destroy();
+    lineBelow.destroy();
+    handleLoc.destroy();
     self.horizLine.destroy();
     self.vertLine.destroy();
     self.diagLine.destroy();
-    self.editButton.destroy();
+    editButton.destroy();
   };
 
   /**
@@ -317,7 +319,7 @@ SnowProfile.Layer = function(depth) {
    @returns {number}
    */
   this.handleGetX = function() {
-    return self.handle.getX();
+    return handle.getX();
   };
 
   /**
@@ -325,13 +327,13 @@ SnowProfile.Layer = function(depth) {
    @returns {number}
    */
   this.handleGetY = function() {
-    return self.handle.getY();
+    return handle.getY();
   };
 
   /**
    Add text to show current handle location.
    */
-  this.handleLoc = new Kinetic.Text({
+  var handleLoc = new Kinetic.Text({
     x: SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH + 10,
     y: self.depth2y(self.depth),
     fontSize: 12,
@@ -341,13 +343,13 @@ SnowProfile.Layer = function(depth) {
     align: 'left',
     visible: 0
   });
-  SnowProfile.kineticJSLayer.add(this.handleLoc);
+  SnowProfile.kineticJSLayer.add(handleLoc);
 
   /**
    Style the cursor for the handle
    @callback
    */
-  this.handle.on('mouseover', function() {
+  handle.on('mouseover', function() {
     document.body.style.cursor = 'pointer';
   });
 
@@ -355,8 +357,8 @@ SnowProfile.Layer = function(depth) {
    Style the cursor for the handle
    @callback
    */
-  this.handle.on('mouseout', function() {
-    self.handleLoc.setVisible(0);
+  handle.on('mouseout', function() {
+    handleLoc.setVisible(0);
     SnowProfile.stage.draw();
     document.body.style.cursor = 'default';
   });
@@ -365,9 +367,9 @@ SnowProfile.Layer = function(depth) {
    When the handle is in use, show its location to the right.
    @callback
    */
-  this.handle.on('mousedown', function() {
-    self.handleLoc.setVisible(1);
-    self.handleTouched = true;
+  handle.on('mousedown', function() {
+    handleLoc.setVisible(1);
+    handleTouched = true;
     SnowProfile.stage.draw();
   });
 
@@ -375,11 +377,11 @@ SnowProfile.Layer = function(depth) {
    When the mouse releases the handle, stop showing its location.
    @callback
    */
-  this.handle.on('mouseup', function() {
-    self.handleLoc.setVisible(0);
+  handle.on('mouseup', function() {
+    handleLoc.setVisible(0);
     SnowProfile.stage.draw();
   });
-  SnowProfile.kineticJSLayer.add(this.handle);
+  SnowProfile.kineticJSLayer.add(handle);
 
   /**
    Define end points of horizontal line from the Y axis to the handle.
@@ -390,8 +392,9 @@ SnowProfile.Layer = function(depth) {
    ending points for the horizontal line.
    */
   this.horizLinePts = function() {
-    var x = self.handle.getX();
-    var i = self.getIndex();
+    var x = handle.getX();
+    var i = getIndex();
+console.debug("horizLinePts() finds i=%d", i);
     if (i !== 0) {
       x = Math.max(x, SnowProfile.snowLayers[i-1].handleGetX());
     }
@@ -421,10 +424,10 @@ SnowProfile.Layer = function(depth) {
    and ending points for the vertical line.
    */
   this.vertLinePts = function() {
-    var x = self.handle.getX();
-    var topY = self.handle.getY() + (SnowProfile.HANDLE_SIZE / 2);
+    var x = handle.getX();
+    var topY = handle.getY() + (SnowProfile.HANDLE_SIZE / 2);
     var bottomY = SnowProfile.HANDLE_MAX_Y + (SnowProfile.HANDLE_SIZE / 2);
-    var i = self.getIndex();
+    var i = getIndex();
     var numLayers = SnowProfile.snowLayers.length;
 
     // If this layer is not the lowest layer in the snowpack, bottom
@@ -454,7 +457,7 @@ SnowProfile.Layer = function(depth) {
    and ending points for the diagonal line.
    */
   this.diagLinePts = function() {
-    var i = self.getIndex();
+    var i = getIndex();
     var xLeft,
     yLeft,
     xRight,
@@ -467,7 +470,7 @@ SnowProfile.Layer = function(depth) {
         (SnowProfile.HANDLE_SIZE / 2);
     }
     else {
-      yLeft = self.handle.getY() + SnowProfile.HANDLE_SIZE / 2;
+      yLeft = handle.getY() + SnowProfile.HANDLE_SIZE / 2;
       yRight = SnowProfile.lineBelowY(i - 1);
     }
 
@@ -501,44 +504,44 @@ SnowProfile.Layer = function(depth) {
     if (data) {
 
       // Called with an argument so set values for layer
-      self.grainShape = data.grainShape;
-      self.grainSize = data.grainSize;
-      if ((self.grainShape === "") &&
-        (self.grainSize === "")) {
+      grainShape = data.grainShape;
+      grainSize = data.grainSize;
+      if ((grainShape === "") &&
+        (grainSize === "")) {
 
         // No information about grains
-        self.grainDescr.setText("");
+        grainDescr.setText("");
       }
       else {
 
         // Build a text description from what we have
         var text = "";
-        if (self.grainShape !== "") {
-          text += SnowProfile.CAAML_SHAPE[self.grainShape] +
+        if (grainShape !== "") {
+          text += SnowProfile.CAAML_SHAPE[grainShape] +
             "\nsome second line\n";
         }
-        if (self.grainSize !== "") {
-          text += SnowProfile.CAAML_SIZE[self.grainSize];
+        if (grainSize !== "") {
+          text += SnowProfile.CAAML_SIZE[grainSize];
         }
-        self.grainDescr.setText(text);
+        grainDescr.setText(text);
       }
 
       // Liquid water content description
-      self.lwc = data.lwc;
-      if (self.lwc === "") {
-        self.LWCDescr.setText("");
+      lwc = data.lwc;
+      if (lwc === "") {
+        LWCDescr.setText("");
       }
       else {
-        self.LWCDescr.setText(SnowProfile.CAAML_LWC[self.lwc]);
+        LWCDescr.setText(SnowProfile.CAAML_LWC[lwc]);
       }
 
       // Comment description
-      self.comment = data.comment;
-      if (self.comment === "") {
-        self.commentDescr.setText("");
+      comment = data.comment;
+      if (comment === "") {
+        commentDescr.setText("");
       }
       else {
-        self.commentDescr.setText(self.comment);
+        commentDescr.setText(comment);
       }
 
       // Re-draw the diagram with the updated information
@@ -548,10 +551,10 @@ SnowProfile.Layer = function(depth) {
 
       // Called with no argument, return an object with the values
       return {
-        grainShape: self.grainShape,
-        grainSize: self.grainSize,
-        lwc: self.lwc,
-        comment: self.comment,
+        grainShape: grainShape,
+        grainSize: grainSize,
+        lwc: lwc,
+        comment: comment,
         layer: self,
         numLayers: SnowProfile.snowLayers.length
       };
@@ -562,12 +565,12 @@ SnowProfile.Layer = function(depth) {
    Create the "Edit" button and listen for clicks on it
    @type {Object}
    */
-  this.editButton = new SnowProfile.Button("Edit");
+  var editButton = new SnowProfile.Button("Edit");
 
   // Edit button clicked so pop up a modal dialog form
   $(document).bind("SnowProfileButtonClick", function(evt, extra) {
-    if (extra.buttonObj === self.editButton) {
-      self.popup = new SnowProfile.PopUp(self.describe());
+    if (extra.buttonObj === editButton) {
+      SnowProfile.PopUp(self.describe());
     }
   });
 
@@ -578,14 +581,14 @@ SnowProfile.Layer = function(depth) {
    handle at the top of this layer.
    */
   this.draw = function() {
-    var i = self.getIndex();
+    var i = getIndex();
     var numLayers = SnowProfile.snowLayers.length;
-
+    console.debug("draw finds i=%d numLayers=%d", i, numLayers);
     // Set handle X from hardness
-    self.handle.setX(self.code2x(self.hardness));
+    handle.setX(self.code2x(hardness));
 
     // Set handle Y from depth
-    self.handle.setY(self.depth2y(self.depth));
+    handle.setY(self.depth2y(self.depth));
 
     // Adjust the horizontal line defining this layer
     self.horizLine.setPoints(self.horizLinePts());
@@ -620,7 +623,7 @@ SnowProfile.Layer = function(depth) {
    to the bottom
    */
   this.pushDown = function() {
-    var i = self.getIndex();
+    var i = getIndex();
     var numLayers = SnowProfile.snowLayers.length;
 
     // Is this the bottom layer?
@@ -649,15 +652,15 @@ SnowProfile.Layer = function(depth) {
    @param {boolean} visible Make the handle visible?
    */
   this.setHandleVisible = function(visible) {
-    if (!self.handleTouched) {
+    if (!handleTouched) {
 
       // The user hasn't this handle since it was inited, so blink
-      self.handle.setStroke(visible ? "#000" : "#FFF");
+      handle.setStroke(visible ? "#000" : "#FFF");
     }
     else {
 
       // The user has touched the handle so make it always visible
-      self.handle.setStroke("#000");
+      handle.setStroke("#000");
     }
     SnowProfile.stage.draw();
   }; // this.setHandleVisible = function(visible) {
@@ -667,24 +670,24 @@ SnowProfile.Layer = function(depth) {
    and draw the lines connected to the handle
    @callback
    */
-  this.handle.on('dragmove', function() {
+  handle.on('dragmove', function() {
 
     // Adjust the horizontal (hardness) position
-    self.hardness = self.x2code(self.handle.getX());
+    hardness = self.x2code(handle.getX());
     self.horizLine.setPoints(self.horizLinePts());
 
     // Adjust the vertical (depth) position
-    self.depth = self.y2depth(self.handle.getY());
+    self.depth = self.y2depth(handle.getY());
 
     // Set the text information floating to the right of the graph
     var mm = Math.round(self.depth * 10) / 10;
-    self.handleLoc.setText( '(' + mm + ', ' +
-      self.x2code(self.handle.getX()) + ')');
-    self.handleLoc.setY(self.depth2y(self.depth));
+    handleLoc.setText( '(' + mm + ', ' +
+      self.x2code(handle.getX()) + ')');
+    handleLoc.setY(self.depth2y(self.depth));
 
     // Draw the layer
     self.draw();
-  }); // this.handle.on('dragmove', function() {
+  }); // handle.on('dragmove', function() {
 
   /**
    Set the Y position of those parts of the layer whose Y position
@@ -692,22 +695,22 @@ SnowProfile.Layer = function(depth) {
    This is needed when a layer is inserted or deleted.
    */
   this.setIndexPosition = function() {
-    var i = self.getIndex();
-    self.grainDescr.setY(SnowProfile.HANDLE_MIN_Y +
+    var i = getIndex();
+    grainDescr.setY(SnowProfile.HANDLE_MIN_Y +
       (SnowProfile.HANDLE_SIZE / 2) + 3 +
         (i * SnowProfile.DESCR_HEIGHT));
-    self.LWCDescr.setY(SnowProfile.HANDLE_MIN_Y +
+    LWCDescr.setY(SnowProfile.HANDLE_MIN_Y +
       (SnowProfile.HANDLE_SIZE / 2) + 3 +
         (i * SnowProfile.DESCR_HEIGHT));
-    self.commentDescr.setY(SnowProfile.HANDLE_MIN_Y +
+    commentDescr.setY(SnowProfile.HANDLE_MIN_Y +
       (SnowProfile.HANDLE_SIZE / 2) + 3 +
         (i * SnowProfile.DESCR_HEIGHT));
-    self.lineBelow.setPoints([
+    lineBelow.setPoints([
       [SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH + 1 +
         SnowProfile.CTRLS_WD - 3, SnowProfile.lineBelowY(i)],
       [SnowProfile.STAGE_WD - 3, SnowProfile.lineBelowY(i)]
     ]);
-    self.editButton.setY(SnowProfile.HANDLE_MIN_Y +
+    editButton.setY(SnowProfile.HANDLE_MIN_Y +
       (SnowProfile.HANDLE_SIZE / 2) +
       (SnowProfile.DESCR_HEIGHT / 2) + (i * SnowProfile.DESCR_HEIGHT));
   };

@@ -14,7 +14,7 @@
   @param {string} text - Text to appear inside the button.
   KineticJS stage.
  */
-SnowProfile.Button = function(text) {
+SnowProfile.Button = function(textArg) {
   "use strict";
 
   var self = this;
@@ -24,9 +24,9 @@ SnowProfile.Button = function(text) {
     @type {Object}
     @private
    */
-  this.text = new Kinetic.Text({
+  var text = new Kinetic.Text({
     x: SnowProfile.BUTTON_X,
-    text: text,
+    text: textArg,
     fontFamily: "sans-serif",
     fontSize: 12,
     padding: 4,
@@ -40,19 +40,19 @@ SnowProfile.Button = function(text) {
     @type {Object}
     @private
    */
-  this.rect =  new Kinetic.Rect({
+  var rect =  new Kinetic.Rect({
     x: SnowProfile.BUTTON_X,
-    width: self.text.getWidth(),
-    height: self.text.getHeight(),
+    width: text.getWidth(),
+    height: text.getHeight(),
     cornerRadius: 4,
     stroke: "#000",
     strokeWidth: 1,
     fill: "#fff"
   });
-  this.rect.setOffsetX(this.rect.getWidth() / 2);
-  this.text.setOffsetX(this.rect.getWidth() / 2);
-  SnowProfile.kineticJSLayer.add(self.rect);
-  SnowProfile.kineticJSLayer.add(self.text);
+  rect.setOffsetX(rect.getWidth() / 2);
+  text.setOffsetX(rect.getWidth() / 2);
+  SnowProfile.kineticJSLayer.add(rect);
+  SnowProfile.kineticJSLayer.add(text);
   SnowProfile.stage.draw();
 
   /**
@@ -62,10 +62,10 @@ SnowProfile.Button = function(text) {
     @FIXME incorporate the Y position calculation above.
    */
   this.setY = function(y) {
-    self.text.setY(y);
-    self.text.setOffsetY((this.rect.getHeight() / 2) - 2);
-    self.rect.setY(y);
-    self.rect.setOffsetY(this.rect.getHeight() / 2);
+    text.setY(y);
+    text.setOffsetY((rect.getHeight() / 2) - 2);
+    rect.setY(y);
+    rect.setOffsetY(rect.getHeight() / 2);
     SnowProfile.stage.draw();
   };
 
@@ -73,29 +73,29 @@ SnowProfile.Button = function(text) {
     Destroy the button
    */
   this.destroy = function() {
-    self.text.off('click');
-    self.text.destroy();
-    self.rect.destroy();
+    text.off('click');
+    text.destroy();
+    rect.destroy();
     SnowProfile.stage.draw();
   };
 
   // Listen for "SnowProfileHideControls" events
   $(document).bind("SnowProfileHideControls", function(evt) {
-    self.text.setVisible(false);
-    self.rect.setVisible(false);
+    text.setVisible(false);
+    rect.setVisible(false);
     SnowProfile.stage.draw();
   });
 
   // Listen for "SnowProfileShowControls" events
   $(document).bind("SnowProfileShowControls", function(evt) {
-    self.text.setVisible(true);
-    self.rect.setVisible(true);
+    text.setVisible(true);
+    rect.setVisible(true);
     SnowProfile.stage.draw();
   });
 
   // Listen for mouse clicks on this button, then emit a custom event
   // which identifies which button was clicked.
-  this.text.on('click', function(evt) {
+  text.on('click', function(evt) {
     $.event.trigger("SnowProfileButtonClick", {buttonObj: self});
   });
 };
