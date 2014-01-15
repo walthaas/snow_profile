@@ -231,14 +231,10 @@ SnowProfile.Layer = function(depth) {
   }); // handle = new Kinetic.Rect({
 
   // Listen for "SnowProfileHideControls" events
-  $(document).bind("SnowProfileHideControls", function(evt) {
-      handleInvisible();
-  });
+  $(document).bind("SnowProfileHideControls", handleInvisible);
 
   // Listen for "SnowProfileShowControls" events
-  $(document).bind("SnowProfileShowControls", function(evt) {
-    handleVisible();
-  });
+  $(document).bind("SnowProfileShowControls", handleVisible);
 
   /**
    Make the handle visible
@@ -302,6 +298,8 @@ SnowProfile.Layer = function(depth) {
    */
   this.destroy = function() {
     handle.off('mouseup mousedown dragmove mouseover mouseout');
+    $(document).unbind("SnowProfileHideControls", handleInvisible);
+    $(document).unbind("SnowProfileShowControls", handleVisible);
     handle.destroy();
     grainDescr.destroy();
     LWCDescr.destroy();
