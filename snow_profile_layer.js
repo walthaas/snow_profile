@@ -74,9 +74,7 @@ SnowProfile.Layer = function(depth) {
       }
     }
     console.error("Object not found in snowLayers[]");
-    console.debug("i=%d  numLayers=%d  snowLayers=%o", i, numLayers,
-      SnowProfile.snowLayers );
-  };
+  }
 
   /**
    Has the user touched the handle since this layer was created?
@@ -242,7 +240,7 @@ SnowProfile.Layer = function(depth) {
   function handleVisible() {
     handle.setVisible(true);
     self.draw();
-  };
+  }
 
   /**
     Make the handle invisible
@@ -250,7 +248,7 @@ SnowProfile.Layer = function(depth) {
   function handleInvisible() {
     handle.setVisible(false);
     self.draw();
-  };
+  }
 
   /**
    * Delete this layer and make necessary adjustments
@@ -392,7 +390,6 @@ SnowProfile.Layer = function(depth) {
   this.horizLinePts = function() {
     var x = handle.getX();
     var i = getIndex();
-console.debug("horizLinePts() finds i=%d", i);
     if (i !== 0) {
       x = Math.max(x, SnowProfile.snowLayers[i-1].handleGetX());
     }
@@ -581,7 +578,7 @@ console.debug("horizLinePts() finds i=%d", i);
   this.draw = function() {
     var i = getIndex();
     var numLayers = SnowProfile.snowLayers.length;
-    console.debug("draw finds i=%d numLayers=%d", i, numLayers);
+
     // Set handle X from hardness
     handle.setX(self.code2x(hardness));
 

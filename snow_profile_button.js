@@ -15,9 +15,8 @@
   KineticJS stage.
  */
 SnowProfile.Button = function(textArg) {
-  "use strict";
 
-  var self = this;
+  "use strict";
 
   /**
     Define the text of the button
@@ -49,34 +48,36 @@ SnowProfile.Button = function(textArg) {
     strokeWidth: 1,
     fill: "#fff"
   });
-  rect.setOffsetX(rect.getWidth() / 2);
-  text.setOffsetX(rect.getWidth() / 2);
-  SnowProfile.kineticJSLayer.add(rect);
-  SnowProfile.kineticJSLayer.add(text);
-  SnowProfile.stage.draw();
 
   /**
     Reposition the button on the Y axis
     @param {number} y - New vertical position of the center of the button
                         on the KineticJS stage.
-    @FIXME incorporate the Y position calculation above.
    */
-  this.setY = function(y) {
+  function setY(y) {
     text.setY(y);
     text.setOffsetY((rect.getHeight() / 2) - 2);
     rect.setY(y);
     rect.setOffsetY(rect.getHeight() / 2);
     SnowProfile.stage.draw();
-  };
+  }
 
   /**
     Destroy the button
    */
-  this.destroy = function() {
+  function destroy() {
     text.off('click');
     text.destroy();
     rect.destroy();
     SnowProfile.stage.draw();
+  }
+
+  /**
+   * Define the new object
+   */
+  var newObj = {
+    destroy: destroy,
+    setY: setY
   };
 
   // Listen for "SnowProfileHideControls" events
@@ -96,8 +97,17 @@ SnowProfile.Button = function(textArg) {
   // Listen for mouse clicks on this button, then emit a custom event
   // which identifies which button was clicked.
   text.on('click', function(evt) {
-    $.event.trigger("SnowProfileButtonClick", {buttonObj: self});
+    $.event.trigger("SnowProfileButtonClick", {buttonObj: newObj});
   });
+
+  // Set the X position of the button and add it to the KineticJS stage.
+  rect.setOffsetX(rect.getWidth() / 2);
+  text.setOffsetX(rect.getWidth() / 2);
+  SnowProfile.kineticJSLayer.add(rect);
+  SnowProfile.kineticJSLayer.add(text);
+  SnowProfile.stage.draw();
+
+  return newObj;
 };
 
 // Configure Emacs for Drupal JavaScript coding standards
