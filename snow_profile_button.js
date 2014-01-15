@@ -50,6 +50,24 @@ SnowProfile.Button = function(textArg) {
   });
 
   /**
+   * Hide this button.
+   */
+  function hideButton() {
+    text.setVisible(false);
+    rect.setVisible(false);
+    SnowProfile.stage.draw();
+  }
+
+  /**
+   * Show this button.
+   */
+  function showButton() {
+    text.setVisible(true);
+    rect.setVisible(true);
+    SnowProfile.stage.draw();
+  }
+
+  /**
     Reposition the button on the Y axis
     @param {number} y - New vertical position of the center of the button
                         on the KineticJS stage.
@@ -67,6 +85,8 @@ SnowProfile.Button = function(textArg) {
    */
   function destroy() {
     text.off('click');
+    $(document).unbind("SnowProfileHideControls", hideButton);
+    $(document).unbind("SnowProfileShowControls", showButton);
     text.destroy();
     rect.destroy();
     SnowProfile.stage.draw();
@@ -81,18 +101,10 @@ SnowProfile.Button = function(textArg) {
   };
 
   // Listen for "SnowProfileHideControls" events
-  $(document).bind("SnowProfileHideControls", function(evt) {
-    text.setVisible(false);
-    rect.setVisible(false);
-    SnowProfile.stage.draw();
-  });
+  $(document).bind("SnowProfileHideControls", hideButton);
 
   // Listen for "SnowProfileShowControls" events
-  $(document).bind("SnowProfileShowControls", function(evt) {
-    text.setVisible(true);
-    rect.setVisible(true);
-    SnowProfile.stage.draw();
-  });
+  $(document).bind("SnowProfileShowControls", showButton);
 
   // Listen for mouse clicks on this button, then emit a custom event
   // which identifies which button was clicked.
