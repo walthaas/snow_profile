@@ -6,8 +6,6 @@
   @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPVv2}
  */
 
-/* global SnowProfile */
-
 /**
   @classdesc Define a button constructed from KineticJS shapes.
   @constructor
@@ -35,7 +33,7 @@ SnowProfile.Button = function(textArg) {
   });
 
   /**
-    Define a rectangle around the text
+    Define a rectangle around the text.
     @type {Object}
     @private
    */
@@ -51,6 +49,7 @@ SnowProfile.Button = function(textArg) {
 
   /**
    * Hide this button.
+   * @private
    */
   function hideButton() {
     text.setVisible(false);
@@ -60,6 +59,7 @@ SnowProfile.Button = function(textArg) {
 
   /**
    * Show this button.
+   * @private
    */
   function showButton() {
     text.setVisible(true);
@@ -74,7 +74,7 @@ SnowProfile.Button = function(textArg) {
    */
   function setY(y) {
     text.setY(y);
-    text.setOffsetY((rect.getHeight() / 2) - 2);
+    text.setOffsetY(rect.getHeight() / 2);
     rect.setY(y);
     rect.setOffsetY(rect.getHeight() / 2);
     SnowProfile.stage.draw();

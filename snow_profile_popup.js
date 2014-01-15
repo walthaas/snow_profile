@@ -4,16 +4,12 @@
   @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPVv2}
  */
 
-/* global SnowProfile */
-
 /**
   Object for a jQueryUI modal dialog to enter data describing a snow layer.
   @constructor
  */
 SnowProfile.PopUp = function(data) {
   "use strict";
-
-  var self = this;
 
   // Fill in the pop-up HTML form with information passed to constructor
   $("#snow_profile_grain_shape").val(data.grainShape);

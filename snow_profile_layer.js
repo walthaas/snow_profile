@@ -4,8 +4,6 @@
  @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPVv2}
  */
 
-/* global SnowProfile */
-
 /**
  Object describing a single snow stratigraphy layer.
  @param {number} depth Initial depth in cm of this layer from the top
