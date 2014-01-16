@@ -68,9 +68,10 @@ SnowProfile.Button = function(textArg) {
   }
 
   /**
-    Reposition the button on the Y axis
-    @param {number} y - New vertical position of the center of the button
-                        on the KineticJS stage.
+   * Reposition the button on the Y axis
+   * @param {number} y - New vertical position of the center of the button
+   *                     on the KineticJS stage.
+   * @public
    */
   function setY(y) {
     text.setY(y);
@@ -81,7 +82,8 @@ SnowProfile.Button = function(textArg) {
   }
 
   /**
-    Destroy the button
+   * Destroy the button
+   * @public
    */
   function destroy() {
     text.off('click');

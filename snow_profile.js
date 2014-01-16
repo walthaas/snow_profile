@@ -652,6 +652,7 @@ var SnowProfile = {};
     SnowProfile.stage.add(SnowProfile.kineticJSLayer);
 
     // Create an animation
+    // FIXME use a custom event to communicate with layers
     var anim = new Kinetic.Animation(function(frame) {
       SnowProfile.showHandle = (frame.time % 1000) > 500;
       if (SnowProfile.oldShowHandle === null) {
