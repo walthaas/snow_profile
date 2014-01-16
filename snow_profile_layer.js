@@ -148,7 +148,7 @@ SnowProfile.Layer = function(depthArg) {
       // Y (depth) position is limited by the depth of the snow layers
       // above and below in the snow pack, or by air and ground.
       var newY = pos.y;
-      var i = getIndex();
+      var i = self.getIndex();
       var numLayers = SnowProfile.snowLayers.length;
       if (i === 0) {
 
@@ -208,6 +208,17 @@ SnowProfile.Layer = function(depthArg) {
   var editButton = new SnowProfile.Button("Edit");
 
   /**
+   * Define a diagonal line from the bottom of this layer right to the
+   * line below the description of this layer.
+   * @type {Object}
+   */
+  var diagLine = new Kinetic.Line({
+    points: [0, 0, 0, 0],
+    stroke: SnowProfile.GRID_COLOR,
+    strokeWidth: 1
+  });
+
+  /**
    * Define a horizontal line at the top of the layer.
    * @type {Object}
    */
@@ -245,7 +256,7 @@ SnowProfile.Layer = function(depthArg) {
    Get index of this object in snowLayers[]
    @returns {number} Integer index into snowLayers[]
    */
-  function getIndex() {
+  this.getIndex = function() {
     var i;
     var numLayers = SnowProfile.snowLayers.length;
     for (i = 0; i < numLayers; i++) {
@@ -287,21 +298,65 @@ SnowProfile.Layer = function(depthArg) {
     handleLoc.destroy();
     horizLine.destroy();
     vertLine.destroy();
-    self.diagLine.destroy();
+    diagLine.destroy();
     editButton.destroy();
   }
 
   /**
-   Define end points of horizontal line from the Y axis to the handle.
+   * Define end points of a diagonal line from the handle of the layer below
+   * this layer to the line below the description of this layer.
+   * @returns {number[]} Two-dimensional array of numbers of the starting
+   * and ending points for the diagonal line.
+   */
+  function diagLinePts() {
+    var i = self.getIndex();
+    var numLayers = SnowProfile.snowLayers.length;
+    var xLeft,
+    yLeft,
+    xRight,
+    yRight,
+    points;
 
-   The horizontal line extends from the left edge of the graph right to
-   the maximum of (X of SnowProfile, X of snow layer above).
-   @returns {number[]} Two-dimensional array of numbers of the starting and
-   ending points for the horizontal line.
+    if (i === (numLayers - 1)) {
+
+      // This snow layer is the bottom snow layer.  The Y dimension of the
+      // left end of the line is the bottom of the graph
+      yLeft = SnowProfile.HANDLE_MAX_Y + (SnowProfile.HANDLE_SIZE / 2);
+    }
+    else {
+
+      // This is not the bottom snow layer, so the Y dimension of the left end
+      // is the Y of the handle of the snow layer below this snow layer.
+      yLeft = SnowProfile.snowLayers[i + 1].handleGetY() +
+        SnowProfile.HANDLE_SIZE / 2;
+    }
+
+    // Y dimension of the right end is the Y of the line below the
+    // description of this snow layer.
+    yRight = SnowProfile.lineBelowY(i);
+
+    // X dimension of the left end is the right edge of the graph
+    xLeft = SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH;
+
+    // X dimension of the right end is the left end of the line
+    // below the description of this snow layer.
+    xRight = SnowProfile.DEPTH_LABEL_WD + 1 +
+      SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD - 3;
+    points = [[xLeft, yLeft], [xRight, yRight]];
+    return points;
+  };
+
+  /**
+   * Define end points of horizontal line from the Y axis to the handle.
+   *
+   * The horizontal line extends from the left edge of the graph right to
+   * the maximum of (X of SnowProfile, X of snow layer above).
+   * @returns {number[]} Two-dimensional array of numbers of the starting and
+   * ending points for the horizontal line.
    */
   function horizLinePts() {
     var x = handle.getX();
-    var i = getIndex();
+    var i = self.getIndex();
     if (i !== 0) {
       x = Math.max(x, SnowProfile.snowLayers[i-1].handleGetX());
     }
@@ -324,7 +379,7 @@ SnowProfile.Layer = function(depthArg) {
     var x = handle.getX();
     var topY = handle.getY() + (SnowProfile.HANDLE_SIZE / 2);
     var bottomY = SnowProfile.HANDLE_MAX_Y + (SnowProfile.HANDLE_SIZE / 2);
-    var i = getIndex();
+    var i = self.getIndex();
     var numLayers = SnowProfile.snowLayers.length;
 
     // If this layer is not the lowest layer in the snowpack, bottom
@@ -369,12 +424,6 @@ SnowProfile.Layer = function(depthArg) {
     // Update location of KineticJS objects whose position
     // depends on the index of the layer
     SnowProfile.setIndexPositions();
-
-    // Update the diagonal line from the lower right corner
-    // of the graph to the horizontal line below the
-    // description of the lowest layer to reflect the fact
-    // that the number of layers has changed.
-    SnowProfile.updateBottomDiag();
   };
 
   /**
@@ -393,6 +442,41 @@ SnowProfile.Layer = function(depthArg) {
     return handle.getY();
   };
 
+  /**
+   * Set position and length of the diagonal line at bottom of this layer
+   *
+   */
+  this.setDiagLine = function() {
+    diagLine.setPoints(diagLinePts());
+  };
+
+  /**
+   * Set position and length of the horizontal line at top of this layer
+   *
+   */
+  this.setHorizLine = function() {
+    horizLine.setPoints(horizLinePts());
+  };
+
+  /**
+   * Set position and length of the vertical line at right side of this layer
+   *
+   */
+  this.setVertLine = function() {
+    vertLine.setPoints(vertLinePts());
+  };
+
+  // Add KineticJS objects to the KineticJS layer
+  SnowProfile.kineticJSLayer.add(grainDescr);
+  SnowProfile.kineticJSLayer.add(LWCDescr);
+  SnowProfile.kineticJSLayer.add(commentDescr);
+  SnowProfile.kineticJSLayer.add(lineBelow);
+  SnowProfile.kineticJSLayer.add(handleLoc);
+  SnowProfile.kineticJSLayer.add(horizLine);
+  SnowProfile.kineticJSLayer.add(vertLine);
+  SnowProfile.kineticJSLayer.add(handle);
+  SnowProfile.kineticJSLayer.add(diagLine);
+
   // Insert this layer above the first layer that is deeper
   for (i = 0; i<numLayers; i++) {
     if (SnowProfile.snowLayers[i].depth() >= depthVal) {
@@ -406,16 +490,6 @@ SnowProfile.Layer = function(depthArg) {
   if (!inserted) {
     SnowProfile.snowLayers.push(this);
   }
-
-  // Add KineticJS objects to the KineticJS layer
-  SnowProfile.kineticJSLayer.add(grainDescr);
-  SnowProfile.kineticJSLayer.add(LWCDescr);
-  SnowProfile.kineticJSLayer.add(commentDescr);
-  SnowProfile.kineticJSLayer.add(lineBelow);
-  SnowProfile.kineticJSLayer.add(handleLoc);
-  SnowProfile.kineticJSLayer.add(horizLine);
-  SnowProfile.kineticJSLayer.add(vertLine);
-  SnowProfile.updateBottomDiag();
 
   // Listen for "SnowProfileHideControls" events
   $(document).bind("SnowProfileHideControls", handleInvisible);
@@ -459,68 +533,6 @@ SnowProfile.Layer = function(depthArg) {
     handleLoc.setVisible(0);
     SnowProfile.stage.draw();
   });
-  SnowProfile.kineticJSLayer.add(handle);
-
-  /**
-   * Set position and length of the horizontal line at top of this layer
-   *
-   */
-  this.setHorizLine = function() {
-    horizLine.setPoints(horizLinePts());
-  };
-
-  /**
-   * Set position and length of the vertical line at right side of this layer
-   *
-   */
-  this.setVertLine = function() {
-    vertLine.setPoints(vertLinePts());
-  };
-
-  /**
-   Define end points of a diagonal line from the handle of the layer below
-   this layer to the line below the description of this layer.
-   @returns {number[]} Two-dimensional array of numbers of the starting
-   and ending points for the diagonal line.
-   */
-  this.diagLinePts = function() {
-    var i = getIndex();
-    var xLeft,
-    yLeft,
-    xRight,
-    yRight,
-    points;
-
-    // Y dimension of the left end is the Y of the handle.
-    if (i === 0) {
-      yLeft = yRight = SnowProfile.HANDLE_MIN_Y +
-        (SnowProfile.HANDLE_SIZE / 2);
-    }
-    else {
-      yLeft = handle.getY() + SnowProfile.HANDLE_SIZE / 2;
-      yRight = SnowProfile.lineBelowY(i - 1);
-    }
-
-    // x dimension of the left end is the right edge of the graph
-    xLeft = SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH;
-    xRight = SnowProfile.DEPTH_LABEL_WD + 1 +
-      SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD - 3;
-    points = [[xLeft, yLeft], [xRight, yRight]];
-    return points;
-  }; // this.diagLinePts = function() {
-
-  /**
-   Define a diagonal line from the handle right to the top of the
-   row of buttons that control the layer
-   @todo Don't want this for the top layer.
-   @type {Object}
-   */
-  this.diagLine = new Kinetic.Line({
-    points: self.diagLinePts(),
-    stroke: SnowProfile.GRID_COLOR,
-    strokeWidth: 1
-  });
-  SnowProfile.kineticJSLayer.add(this.diagLine);
 
   /**
    * Get or set description of this snow layer
@@ -602,7 +614,7 @@ SnowProfile.Layer = function(depthArg) {
    handle at the top of this layer.
    */
   this.draw = function() {
-    var i = getIndex();
+    var i = self.getIndex();
     var numLayers = SnowProfile.snowLayers.length;
 
     // Set handle X from hardness
@@ -618,7 +630,7 @@ SnowProfile.Layer = function(depthArg) {
     self.setVertLine();
 
     // Adjust the diagonal line to the description area
-    self.diagLine.setPoints(self.diagLinePts());
+    self.setDiagLine();
 
     // Adjust the horizontal line of the layer below, if any.
     // That line should extend to its own handle or to the vertical line
@@ -642,7 +654,7 @@ SnowProfile.Layer = function(depthArg) {
    to the bottom
    */
   this.pushDown = function() {
-    var i = getIndex();
+    var i = self.getIndex();
     var numLayers = SnowProfile.snowLayers.length;
 
     // Is this the bottom layer?
@@ -682,6 +694,8 @@ SnowProfile.Layer = function(depthArg) {
    */
   handle.on('dragmove', function() {
 
+    var i = self.getIndex();
+
     // Adjust the horizontal (hardness) position
     hardness = self.x2code(handle.getX());
     self.setHorizLine();
@@ -695,6 +709,12 @@ SnowProfile.Layer = function(depthArg) {
       self.x2code(handle.getX()) + ')');
     handleLoc.setY(self.depth2y(depthVal));
 
+    // If this is not the top snow layer, update the diagonal line
+    // owned by the snow layer above.
+    if (i !== 0) {
+      SnowProfile.snowLayers[i - 1].setDiagLine();
+    }
+
     // Draw the layer
     self.draw();
   }); // handle.on('dragmove', function() {
@@ -705,7 +725,7 @@ SnowProfile.Layer = function(depthArg) {
    This is needed when a layer is inserted or deleted.
    */
   this.setIndexPosition = function() {
-    var i = getIndex();
+    var i = self.getIndex();
     grainDescr.setY(SnowProfile.HANDLE_MIN_Y +
       (SnowProfile.HANDLE_SIZE / 2) + 3 +
         (i * SnowProfile.DESCR_HEIGHT));
@@ -723,6 +743,12 @@ SnowProfile.Layer = function(depthArg) {
     editButton.setY(SnowProfile.HANDLE_MIN_Y +
       (SnowProfile.HANDLE_SIZE / 2) +
       (SnowProfile.DESCR_HEIGHT / 2) + (i * SnowProfile.DESCR_HEIGHT));
+
+    // If this is not the top snow layer, update the diagonal line
+    // owned by the snow layer above.
+    if (i !== 0) {
+      SnowProfile.snowLayers[i - 1].setDiagLine();
+    }
   };
 
   // Draw the layer

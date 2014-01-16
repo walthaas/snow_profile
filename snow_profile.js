@@ -145,13 +145,6 @@ var SnowProfile = {};
     snowLayers: [],
 
     /**
-      Diagonal line from the lower right corner of the graph to the left
-      end of the horizontal line below the description of the bottom layer.
-      @type {Object}
-     */
-    bottomDiag: null,
-
-    /**
       Make the handle visible if it has not been touched.
       @type {boolean}
      */
@@ -569,45 +562,6 @@ var SnowProfile = {};
     });
     hardnessText.setOffsetX(hardnessText.getWidth() / 2 );
     SnowProfile.kineticJSLayer.add(hardnessText);
-
-    // Add a diagonal connector line from the bottom right corner of the
-    // graph to the left end of the line below the description of the lowest
-    // snow layer.  We can't draw this line now because we don't have any
-    // snow layers yet so we make it a bogus value.  When snow layers are
-    // created or deleted, they will update the definition of this line.
-    SnowProfile.bottomDiag = new Kinetic.Line({
-      points: [0, 0, 0, 0],
-      stroke: SnowProfile.GRID_COLOR,
-      strokeWidth: 1,
-      visible: 0
-    });
-    SnowProfile.kineticJSLayer.add(SnowProfile.bottomDiag);
-
-    /**
-      Update the end points of SnowProfile.bottomDiag based on the number
-      of snow layers.
-     */
-    SnowProfile.updateBottomDiag = function() {
-      var numLayers = SnowProfile.snowLayers.length;
-      var xLeft,
-        yLeft,
-        xRight,
-        yRight;
-      if (numLayers !== 0 ) {
-
-        // Left end of the line is always the lower right corner of the graph
-        xLeft = SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH;
-        yLeft =  SnowProfile.HANDLE_MAX_Y + (SnowProfile.HANDLE_SIZE / 2);
-
-        // Right end of the line is the left end of the horizontal line
-        // below the bottom layer.
-        xRight = SnowProfile.DEPTH_LABEL_WD + 1 +
-          SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD - 3;
-        yRight = SnowProfile.lineBelowY(numLayers - 1);
-        SnowProfile.bottomDiag.setPoints([[xLeft, yLeft], [xRight, yRight]]);
-        SnowProfile.bottomDiag.setVisible(1);
-      }
-    };
 
     // Add the label to the Grain Type column
     var grainText = new Kinetic.Text({
