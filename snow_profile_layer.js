@@ -217,6 +217,16 @@ SnowProfile.Layer = function(depthArg) {
   });
 
   /**
+   Define a vertical line from the handle down to the top of the layer
+   below, or graph bottom if this is the lowest layer.
+   @type {Object}
+   */
+  var vertLine = new Kinetic.Line({
+    points: [0, 0, 0, 0],
+    stroke: '#000'
+  });
+
+  /**
    * Get or set depth in cm of this snow layer
    * @param {number} [depth] - Depth of the top of this snow layer in cm
    * @returns {number} Depth of the snow layer if param omitted.
@@ -276,7 +286,7 @@ SnowProfile.Layer = function(depthArg) {
     lineBelow.destroy();
     handleLoc.destroy();
     horizLine.destroy();
-    self.vertLine.destroy();
+    vertLine.destroy();
     self.diagLine.destroy();
     editButton.destroy();
   }
@@ -301,6 +311,29 @@ SnowProfile.Layer = function(depthArg) {
       [x,
         self.depth2y(depthVal) + Math.floor(SnowProfile.HANDLE_SIZE / 2)]
     ];
+  }
+
+  /**
+   Define end points of a vertical line from the handle down to the top of
+   the layer below in the snow pack, or the graph bottom if this is lowest
+   layer.
+   @returns {number[]} Two-dimensional array of numbers of the starting
+   and ending points for the vertical line.
+   */
+   function vertLinePts() {
+    var x = handle.getX();
+    var topY = handle.getY() + (SnowProfile.HANDLE_SIZE / 2);
+    var bottomY = SnowProfile.HANDLE_MAX_Y + (SnowProfile.HANDLE_SIZE / 2);
+    var i = getIndex();
+    var numLayers = SnowProfile.snowLayers.length;
+
+    // If this layer is not the lowest layer in the snowpack, bottom
+    // Y is the top of the layer below.
+    if (i !== numLayers - 1) {
+      bottomY = SnowProfile.snowLayers[i + 1].handleGetY() +
+        SnowProfile.HANDLE_SIZE / 2;
+    }
+    return [[x, topY],[x, bottomY]];
   }
 
   /**
@@ -381,6 +414,7 @@ SnowProfile.Layer = function(depthArg) {
   SnowProfile.kineticJSLayer.add(lineBelow);
   SnowProfile.kineticJSLayer.add(handleLoc);
   SnowProfile.kineticJSLayer.add(horizLine);
+  SnowProfile.kineticJSLayer.add(vertLine);
   SnowProfile.updateBottomDiag();
 
   // Listen for "SnowProfileHideControls" events
@@ -436,38 +470,12 @@ SnowProfile.Layer = function(depthArg) {
   };
 
   /**
-   Define end points of a vertical line from the handle down to the top of
-   the layer below in the snow pack, or the graph bottom if this is lowest
-   layer.
-   @returns {number[]} Two-dimensional array of numbers of the starting
-   and ending points for the vertical line.
+   * Set position and length of the vertical line at right side of this layer
+   *
    */
-  this.vertLinePts = function() {
-    var x = handle.getX();
-    var topY = handle.getY() + (SnowProfile.HANDLE_SIZE / 2);
-    var bottomY = SnowProfile.HANDLE_MAX_Y + (SnowProfile.HANDLE_SIZE / 2);
-    var i = getIndex();
-    var numLayers = SnowProfile.snowLayers.length;
-
-    // If this layer is not the lowest layer in the snowpack, bottom
-    // Y is the top of the layer below.
-    if (i !== numLayers - 1) {
-      bottomY = SnowProfile.snowLayers[i + 1].handleGetY() +
-        SnowProfile.HANDLE_SIZE / 2;
-    }
-    return [[x, topY],[x, bottomY]];
-  }; // this.vertLinePts = function() {
-
-  /**
-   Define a vertical line from the handle down to the top of the layer
-   below, or graph bottom if this is the lowest layer.
-   @type {Object}
-   */
-  this.vertLine = new Kinetic.Line({
-    points: self.vertLinePts(),
-    stroke: '#000'
-  });
-  SnowProfile.kineticJSLayer.add(this.vertLine);
+  this.setVertLine = function() {
+    vertLine.setPoints(vertLinePts());
+  };
 
   /**
    Define end points of a diagonal line from the handle of the layer below
@@ -607,7 +615,7 @@ SnowProfile.Layer = function(depthArg) {
     self.setHorizLine();
 
     // Adjust the vertical line defining this layer
-    self.vertLine.setPoints(self.vertLinePts());
+    self.setVertLine();
 
     // Adjust the diagonal line to the description area
     self.diagLine.setPoints(self.diagLinePts());
@@ -622,8 +630,7 @@ SnowProfile.Layer = function(depthArg) {
     // Adjust the vertical line of the layer above, if any
     // That line should extend to the top of this layer.
     if (i !== 0) {
-      SnowProfile.snowLayers[i - 1].vertLine.setPoints(
-        SnowProfile.snowLayers[i - 1].vertLinePts());
+      SnowProfile.snowLayers[i - 1].setVertLine();
     }
     SnowProfile.stage.draw();
   }; // this.draw = function() {
