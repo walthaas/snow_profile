@@ -6,6 +6,8 @@
   @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPVv2}
  */
 
+/* global SnowProfile */
+
 /**
   @classdesc Define a button constructed from KineticJS shapes.
   @constructor

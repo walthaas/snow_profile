@@ -4,6 +4,8 @@
   @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPVv2}
  */
 
+/* global SnowProfile */
+
 /**
   Object for a jQueryUI modal dialog to enter data describing a snow layer.
   @constructor
@@ -56,7 +58,7 @@ SnowProfile.PopUp = function(data) {
       click: function() {
 
         // Delete this layer
-        data.layer.delete();
+        data.layer.deleteLayer();
 
         // Close the popup
         $(this).dialog("close");

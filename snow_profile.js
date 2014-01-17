@@ -619,7 +619,7 @@ var SnowProfile = {};
           // For each snow layer, if handle untouched, blink
           numLayers = SnowProfile.snowLayers.length;
           for (i = 0; i < numLayers; i++) {
-            SnowProfile.snowLayers[i].setHandleVisible(SnowProfile.showHandle);
+            SnowProfile.snowLayers[i].setHandleVisibility(SnowProfile.showHandle);
           }
         }
       }
