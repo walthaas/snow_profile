@@ -18,75 +18,43 @@ SnowProfile.Layer = function(depthArg) {
   // Reference this object inside an event handler
   var self = this;
 
-  // Insert this Layer in the appropriate place in the snow pack.
-  var i,
-    numLayers = SnowProfile.snowLayers.length,
-    inserted = false;
-
   /**
-   * Depth of the top of this SnowProfileLayer in cm from the snow surface.
-   * Initialized to the constructor parameter.
+   * @summary Depth of the top of this snow layer in cm from the snow surface.
+   * @desc Initialized to the argument passed to the constructor and adjusted
+   * whenever the user moves the handle for this snow layer.
    * @type {number}
    */
   var depthVal = depthArg;
 
   /**
-   Grain shape of this layer
-   @type {string}
+   * @summary Grain shape of this layer.
+   * @desc Two- or four-character code from the
+   * [IACS 2009 Standard]{@link http://www.cryosphericsciences.org/products/snowClassification/snowclass_2009-11-23-tagged-highres.pdf}
+   * Appendix A.1 table as stored in {@link SnowProfile.CAAML_SHAPE} or
+   * {@link SnowProfile.CAAML_SUBSHAPE}.
+   * @type {string}
    */
   var grainShape = "";
 
   /**
-   Grain size of this snow layer
-   @type {string}
+   * @summary Grain size of this snow layer.
+   * @desc Code from the
+   * [CAAMLv5 IACS Snow Profile schema definition]{@link http://caaml.org/Schemas/V5.0/Profiles/SnowProfileIACS/CAAMLv5_SnowProfileIACS.xsd}
+   * GrainSizeBaseEnumType as stored in {@link SnowProfile.CAAML_SIZE}.
+   * @type {string}
    */
   var grainSize = "";
 
   /**
-   Liquid water content of this snow layer
-   @type {string}
+   * @summary Liquid water content of this snow layer
+   * @type {string}
    */
   var lwc = "";
 
   /**
-   User's comment about this snow layer
-   @type {string}
-   */
-  var comment = "";
-
-  /**
-   Has the user touched the handle since this layer was created?
-
-   Used to make an untouched handle throb visibly, to draw the user's
-   attention to the need to set the handle position.
-   @type {boolean}
-   */
-  var handleTouched = false;
-
-  /**
-   Hardness of this snow layer.
-
-   A string code from the SnowProfile.CAAML_HARD table above.
-   Initial null means the handle is untouched.
-   @type {string}
-   */
-  var hardness = null;
-
-  /**
-   * Text for the grain description
-   * @type {Object}
-   */
-  var grainDescr = new Kinetic.Text({
-    width: SnowProfile.GRAIN_WD,
-    fontSize: 12,
-    fontFamily: 'sans-serif',
-    fill: "#000",
-    align: 'left',
-    x: SnowProfile.GRAIN_LEFT
-  });
-
-  /**
-   * Text for the liquid water content
+   * @summary Text for the liquid water content.
+   * @desc [Kinetic.Text]{@link http://kineticjs.com/docs/Kinetic.Text.html}
+   * object for text describing the liquid water content of this snow layer.
    * @type {Object}
    */
   var LWCDescr = new Kinetic.Text({
@@ -99,7 +67,20 @@ SnowProfile.Layer = function(depthArg) {
   });
 
   /**
-   * Text for the comment
+   * @summary User's comment about this snow layer
+   * @desc The comment character string entered by the user to comment
+   * on this snow layer.
+   * @type {string}
+   */
+  var comment = "";
+
+  /**
+   * @summary Text for the comment.
+   * @desc [Kinetic.Text]{@link http://kineticjs.com/docs/Kinetic.Text.html}
+   * object for text describing the user's comment on this snow layer.  It
+   * contains the character string entered by the user from
+   * {@link SnowProfile.Layer~comment} plus additional
+   * information to format this string on the browser window.
    * @type {Object}
    */
   var commentDescr = new Kinetic.Text({
@@ -112,7 +93,46 @@ SnowProfile.Layer = function(depthArg) {
   });
 
   /**
-   * Horizontal line below the description
+   Has the user touched the handle since this layer was created?
+
+   Used to make an untouched handle throb visibly, to draw the user's
+   attention to the need to set the handle position.
+   @type {boolean}
+   */
+  var handleTouched = false;
+
+  /**
+   * @summary Hardness of this snow layer.
+   * @desc A string code from the {@link SnowProfile.CAAML_HARD} table.
+   * The initial value of null indicates the handle for this snow layer has not
+   * yet been touched by the user.
+   * @type {string}
+   */
+  var hardness = null;
+
+  /**
+   * @summary Text for the grain description.
+   * @desc [Kinetic.Text]{@link http://kineticjs.com/docs/Kinetic.Text.html}
+   * object for text combining the grain shape and grain size of this
+   * snow layer.
+   * @type {Object}
+   *
+   */
+  var grainDescr = new Kinetic.Text({
+    width: SnowProfile.GRAIN_WD,
+    fontSize: 12,
+    fontFamily: 'sans-serif',
+    fill: "#000",
+    align: 'left',
+    x: SnowProfile.GRAIN_LEFT
+  });
+
+  /**
+   * @summary Horizontal line below the description
+   * @desc [Kinetic.Line]{@link http://kineticjs.com/docs/Kinetic.Line.html}
+   * object for a horizontal line below the text description of this snow
+   * layer.  This line visually separates the descriptions of the various
+   * snow layers.
    * @type {Object}
    */
   var lineBelow = new Kinetic.Line({
@@ -267,7 +287,7 @@ SnowProfile.Layer = function(depthArg) {
       }
     }
     console.error("Object not found in snowLayers[]");
-  }
+  };
 
   /**
    Make the handle visible
@@ -575,20 +595,24 @@ SnowProfile.Layer = function(depthArg) {
   }; // this.draw = function() {
 
   /**
-   Push this layer down to make room to insert a layer above
-
-   Add an increment to the depth of this layer and all layers below
-   to the bottom
+   * @summary Push this layer down to make room to insert a layer above.
+   * @desc Add an increment to the depth of this layer and all layers below
+   * to the bottom.
    */
   this.pushDown = function() {
     var i = self.getIndex();
     var numLayers = SnowProfile.snowLayers.length;
-
     // Is this the bottom layer?
     if (i !== (numLayers - 1)) {
 
-      // This isn't the bottom layer so push the layer below down
-      SnowProfile.snowLayers[i + 1].pushDown();
+      // This isn't the bottom layer so we need to push it down.  How much
+      // space is there between this snow layer and the snow layer below?
+      var spaceBelow = SnowProfile.snowLayers[i + 1].depth() - depthVal;
+      if (spaceBelow < (2 * SnowProfile.INS_INCR)) {
+
+        // Not enough so we need to make space below this snow layer.
+        SnowProfile.snowLayers[i + 1].pushDown();
+      }
     }
 
     // Add the insertion increment to this layer
@@ -644,7 +668,7 @@ SnowProfile.Layer = function(depthArg) {
     if (i !== 0) {
       SnowProfile.snowLayers[i - 1].setDiagLine();
     }
-  }
+  };
 
   // Add KineticJS objects to the KineticJS layer
   SnowProfile.kineticJSLayer.add(grainDescr);
@@ -657,16 +681,34 @@ SnowProfile.Layer = function(depthArg) {
   SnowProfile.kineticJSLayer.add(handle);
   SnowProfile.kineticJSLayer.add(diagLine);
 
-  // Insert this layer above the first layer that is deeper
-  for (i = 0; i<numLayers; i++) {
+  // Insert this Layer in the appropriate place in the snow pack.
+  var i,
+    numLayers = SnowProfile.snowLayers.length,
+    inserted = false;
+
+  // Insert this snow layer above the first snow layer that is
+  // at the same depth or deeper.
+  for (i = 0; i < numLayers; i++) {
     if (SnowProfile.snowLayers[i].depth() >= depthVal) {
+
+      // Insertion point found, we need to insert above snowLayers[i].
+      // How much space is there between this layer and that layer?
+      var spaceBelow = SnowProfile.snowLayers[i].depth() - depthVal;
+      if (spaceBelow < SnowProfile.INS_INCR) {
+
+        // Not enough so we need to make space below this snow layer.
+        SnowProfile.snowLayers[i].pushDown();
+      }
+
+      // Insert this snow layer.
       SnowProfile.snowLayers.splice(i, 0, this);
+      inserted = true;
       break;
     }
   }
 
-  // If no deeper layer was found, add this layer at the bottom.
-  // This also handles the initial case where there were no layers.
+  // If no deeper snow layer was found, add this layer at the bottom.
+  // This also handles the initial case where there were no snow layers.
   if (!inserted) {
     SnowProfile.snowLayers.push(this);
   }
@@ -714,7 +756,7 @@ SnowProfile.Layer = function(depthArg) {
     SnowProfile.stage.draw();
   });
 
-  // When Edit button clicked, pop up a modal dialog form
+  // When Edit button clicked, pop up a modal dialog form.
   $(document).bind("SnowProfileButtonClick", function(evt, extra) {
     if (extra.buttonObj === editButton) {
       SnowProfile.PopUp(self.describe());
