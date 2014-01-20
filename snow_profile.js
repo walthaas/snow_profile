@@ -451,7 +451,7 @@ var SnowProfile = {};
       height: SnowProfile.STAGE_HT
     });
 
-    // Create the reference grid layer
+    // Create the KineticJS layer
     SnowProfile.kineticJSLayer = new Kinetic.Layer();
 
     // Draw the vertical line along the left edge
@@ -490,6 +490,20 @@ var SnowProfile = {};
         stroke: SnowProfile.GRID_COLOR,
         strokeWidth: 1
       }));
+
+      // Add an "Insert" button to allow the user to insert a snow layer
+      // above the top snow layer.
+      var insertButton = new SnowProfile.Button("Insert");
+      insertButton.setY(SnowProfile.HANDLE_MIN_Y +
+        (SnowProfile.HANDLE_SIZE / 2));
+
+      // When Insert button clicked, insert a new snow layer at depth zero.
+      $(document).bind("SnowProfileButtonClick", function(evt, extra) {
+        if (extra.buttonObj === insertButton) {
+          new SnowProfile.Layer(0);
+          evt.stopImmediatePropagation();
+        }
+      });
 
       // Draw a horizontal line every 20 cm as a depth scale
       if (cm !== SnowProfile.MAX_DEPTH) {

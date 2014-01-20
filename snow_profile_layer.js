@@ -230,6 +230,12 @@ SnowProfile.Layer = function(depthArg) {
   var editButton = new SnowProfile.Button("Edit");
 
   /**
+   * "Insert" button
+   * @type {Object}
+   */
+  var insertButton = new SnowProfile.Button("Insert");
+
+  /**
    * Define a diagonal line from the bottom of this layer right to the
    * line below the description of this layer.
    * @type {Object}
@@ -659,10 +665,11 @@ SnowProfile.Layer = function(depthArg) {
         SnowProfile.CTRLS_WD - 3, SnowProfile.lineBelowY(i)],
       [SnowProfile.STAGE_WD - 3, SnowProfile.lineBelowY(i)]
     ]);
+    diagLine.setPoints(diagLinePts());
     editButton.setY(SnowProfile.HANDLE_MIN_Y +
       (SnowProfile.HANDLE_SIZE / 2) +
       (SnowProfile.DESCR_HEIGHT / 2) + (i * SnowProfile.DESCR_HEIGHT));
-
+    insertButton.setY(SnowProfile.lineBelowY(i));
     // If this is not the top snow layer, update the diagonal line
     // owned by the snow layer above.
     if (i !== 0) {
@@ -760,6 +767,31 @@ SnowProfile.Layer = function(depthArg) {
   $(document).bind("SnowProfileButtonClick", function(evt, extra) {
     if (extra.buttonObj === editButton) {
       SnowProfile.PopUp(self.describe());
+    }
+  });
+
+  // When Insert button clicked, insert a snow layer below this one.
+  $(document).bind("SnowProfileButtonClick", function(evt, extra) {
+    if (extra.buttonObj === insertButton) {
+      var i = self.getIndex();
+      var numLayers = SnowProfile.snowLayers.length;
+      console.debug("insert below %d", i);
+      // Is this the bottom layer?
+      if (i !== (numLayers - 1)) {
+
+        // We need space for a layer below this one.  Calculate the space
+        // available between this layer and the layer below it.
+        var spaceBelow = SnowProfile.snowLayers[i + 1].depth() - depthVal;
+        console.debug("depthVal=%d  spaceBelow=%d", depthVal, spaceBelow);
+        if (spaceBelow < ( 2 * SnowProfile.INS_INCR)) {
+
+          // Not enough so we need to make space below this snow layer.
+          console.debug("pushing down layer %d", i+1);
+          SnowProfile.snowLayers[i + 1].pushDown();
+          SnowProfile.snowLayers[i + 1].pushDown();
+        }
+      }
+      new SnowProfile.Layer(depthVal + SnowProfile.INS_INCR);
     }
   });
 
