@@ -493,10 +493,14 @@ SnowProfile.Layer = function(depthArg) {
         if (grainShape !== "") {
           text += SnowProfile.CAAML_SHAPE[grainShape];
           if (grainSubShape !== "") {
-            text += "\n" + SnowProfile.CAAML_SUBSHAPE[grainShape][grainSubShape];
+            text += "\n" +
+              SnowProfile.CAAML_SUBSHAPE[grainShape][grainSubShape];
           }
         }
         if (grainSize !== "") {
+          if (text) {
+            text += "\n";
+          }
           text += SnowProfile.CAAML_SIZE[grainSize];
         }
         grainDescr.setText(text);
@@ -780,18 +784,16 @@ SnowProfile.Layer = function(depthArg) {
     if (extra.buttonObj === insertButton) {
       var i = self.getIndex();
       var numLayers = SnowProfile.snowLayers.length;
-      console.debug("insert below %d", i);
+
       // Is this the bottom layer?
       if (i !== (numLayers - 1)) {
 
         // We need space for a layer below this one.  Calculate the space
         // available between this layer and the layer below it.
         var spaceBelow = SnowProfile.snowLayers[i + 1].depth() - depthVal;
-        console.debug("depthVal=%d  spaceBelow=%d", depthVal, spaceBelow);
         if (spaceBelow < ( 2 * SnowProfile.INS_INCR)) {
 
           // Not enough so we need to make space below this snow layer.
-          console.debug("pushing down layer %d", i+1);
           SnowProfile.snowLayers[i + 1].pushDown();
           SnowProfile.snowLayers[i + 1].pushDown();
         }

@@ -28,7 +28,7 @@ var SnowProfile = {};
      * Horizontal width in pixels of the depth (vertical) axis label.
      * @const
      */
-    DEPTH_LABEL_WD: 40,
+    DEPTH_LABEL_WD: 70,
 
     /**
      * Width in pixels available for plotting data.
@@ -280,6 +280,15 @@ var SnowProfile = {};
     (SnowProfile.GRAPH_WIDTH / 2);
 
   /**
+    Central Y of the data plotting area.
+    @const
+    @type {number}
+    @memberof SnowProfile
+   */
+  SnowProfile.GRAPH_CENTER_Y = SnowProfile.TOP_LABEL_HT + 1 +
+    (SnowProfile.GRAPH_HEIGHT / 2);
+
+  /**
     Maximum x value allowed for a handle (hardness 'I').
     @const
     @type {number}
@@ -454,6 +463,20 @@ var SnowProfile = {};
     // Create the KineticJS layer
     SnowProfile.kineticJSLayer = new Kinetic.Layer();
 
+  /**
+   * Add a text label for "Depth"
+   */
+  SnowProfile.kineticJSLayer.add(new Kinetic.Text({
+    text: "Depth",
+    rotationDeg: 270,
+    fontSize: 18,
+    fontStyle: 'bold',
+    fontFamily: 'sans-serif',
+    fill: SnowProfile.LABEL_COLOR,
+    x: 10,
+    y: SnowProfile.GRAPH_CENTER_Y
+  }));
+
     // Draw the vertical line along the left edge
     SnowProfile.kineticJSLayer.add(new Kinetic.Line({
       points: [
@@ -469,7 +492,7 @@ var SnowProfile = {};
     // Add text every 20 cm to the depth label area
     for (cm = 0; cm <= SnowProfile.MAX_DEPTH; cm += 20) {
       SnowProfile.kineticJSLayer.add(new Kinetic.Text({
-        x: 10,
+        x: 40,
         y: SnowProfile.HANDLE_MIN_Y + cm * SnowProfile.DEPTH_SCALE,
         text: cm,
         fontSize: 12,
@@ -665,13 +688,13 @@ var SnowProfile = {};
 
     // Listen for changes to the grain shape
     $("#snow_profile_grain_shape").change(function() {
-      console.debug("selected %s", $("#snow_profile_grain_shape").val());
-      // Grain shape selection has changed, so provide a sub-shape <select>
+
+      // Grain shape selection has changed, so adjust sub-shape <select>.
       $("#snow_profile_grain_subshape select").attr("style", "display:none;");
+      $("#snow_profile_grain_subshape option").attr("selected", false);
       if ($("#snow_profile_grain_shape").val()) {
 
         // A non-null grain shape has been selected.  Display the sub-shape
-        console.debug("displaying subshape");
         $("#snow_profile_grain_subshape_" +
           $("#snow_profile_grain_shape").val()).attr("style", "display:block;");
       }
