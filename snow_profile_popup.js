@@ -32,6 +32,8 @@ SnowProfile.PopUp = function(data) {
           // Store description in layer
           data.layer.describe({
             grainShape: $("#snow_profile_grain_shape").val(),
+            grainSubShape: $("#snow_profile_grain_subshape_" +
+              $("#snow_profile_grain_shape").val()).val(),
             grainSize: $("#snow_profile_grain_size").val(),
             lwc: $("#snow_profile_lwc").val(),
             comment: $("#snow_profile_comment").val()
@@ -57,8 +59,12 @@ SnowProfile.PopUp = function(data) {
       tabindex: -1,
       click: function() {
 
-        // Delete this layer
-        data.layer.deleteLayer();
+        // Not reversible so ask for confirmation
+        if (confirm("This action cannot be reversed.  Delete?")) {
+
+          // Delete this layer
+          data.layer.deleteLayer();
+        }
 
         // Close the popup
         $(this).dialog("close");

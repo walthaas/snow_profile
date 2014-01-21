@@ -648,6 +648,35 @@ var SnowProfile = {};
       }
     }
 
+    // Create the <select>s for the grain subshape from the CAAML_SUBSHAPE
+    // table.
+    var html = "";
+    for (var shape in SnowProfile.CAAML_SUBSHAPE)  {
+      html += "<select id=\"snow_profile_grain_subshape_" + shape +
+        "\" style=\"display: none\">";
+      html += "<option value=\"\" selected=\"selected\"></option>";
+      for (var subShape in SnowProfile.CAAML_SUBSHAPE[shape]) {
+        html += "<option value=\"" + subShape + "\">" +
+          SnowProfile.CAAML_SUBSHAPE[shape][subShape] + "</option>";
+      }
+      html += "</select>";
+    }
+    $("#snow_profile_grain_subshape").append(html);
+
+    // Listen for changes to the grain shape
+    $("#snow_profile_grain_shape").change(function() {
+      console.debug("selected %s", $("#snow_profile_grain_shape").val());
+      // Grain shape selection has changed, so provide a sub-shape <select>
+      $("#snow_profile_grain_subshape select").attr("style", "display:none;");
+      if ($("#snow_profile_grain_shape").val()) {
+
+        // A non-null grain shape has been selected.  Display the sub-shape
+        console.debug("displaying subshape");
+        $("#snow_profile_grain_subshape_" +
+          $("#snow_profile_grain_shape").val()).attr("style", "display:block;");
+      }
+    });
+
     // Populate the grain size selector in the layer description pop-up
     for (code in SnowProfile.CAAML_SIZE) {
       if (SnowProfile.CAAML_SIZE.hasOwnProperty(code)) {
