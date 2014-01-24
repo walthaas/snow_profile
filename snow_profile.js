@@ -452,7 +452,7 @@ var SnowProfile = {};
    * Initialize the container and the grid layer
    */
   SnowProfile.init = function() {
-    var cm, i, numLayers, x;
+    var i, numLayers;
 
     SnowProfile.stage = new Kinetic.Stage({
       container: 'snow_profile_diagram',
@@ -463,142 +463,34 @@ var SnowProfile = {};
     // Create the KineticJS layer
     SnowProfile.kineticJSLayer = new Kinetic.Layer();
 
-  /**
-   * Add a text label for "Depth"
-   */
-  SnowProfile.kineticJSLayer.add(new Kinetic.Text({
-    text: "Depth",
-    rotationDeg: 270,
-    fontSize: 18,
-    fontStyle: 'bold',
-    fontFamily: 'sans-serif',
-    fill: SnowProfile.LABEL_COLOR,
-    x: 10,
-    y: SnowProfile.GRAPH_CENTER_Y
-  }));
+    // Add the reference grid to it
+    new SnowProfile.Grid();
 
-    // Draw the vertical line along the left edge
+    // Draw a horizontal line across the top of the description area
     SnowProfile.kineticJSLayer.add(new Kinetic.Line({
       points: [
-        [SnowProfile.DEPTH_LABEL_WD, SnowProfile.HANDLE_MIN_Y - 1 +
-          (SnowProfile.HANDLE_SIZE / 2)],
-        [SnowProfile.DEPTH_LABEL_WD, SnowProfile.HANDLE_MAX_Y +
-          (SnowProfile.HANDLE_SIZE / 2)]
+        [SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH,
+          SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2)],
+        [SnowProfile.STAGE_WD - 3,
+          SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2)]
       ],
-      stroke: SnowProfile.LABEL_COLOR,
+      stroke: SnowProfile.GRID_COLOR,
       strokeWidth: 1
     }));
 
-    // Add text every 20 cm to the depth label area
-    for (cm = 0; cm <= SnowProfile.MAX_DEPTH; cm += 20) {
-      SnowProfile.kineticJSLayer.add(new Kinetic.Text({
-        x: 40,
-        y: SnowProfile.HANDLE_MIN_Y + cm * SnowProfile.DEPTH_SCALE,
-        text: cm,
-        fontSize: 12,
-        fontStyle: 'bold',
-        fontFamily: 'sans-serif',
-        fill: SnowProfile.LABEL_COLOR,
-        align: 'right'
-      }));
+    // Add an "Insert" button to allow the user to insert a snow layer
+    // above the top snow layer.
+    var insertButton = new SnowProfile.Button("Insert");
+    insertButton.setY(SnowProfile.HANDLE_MIN_Y +
+      (SnowProfile.HANDLE_SIZE / 2));
 
-      // Draw a horizontal line across the top of the description area
-      SnowProfile.kineticJSLayer.add(new Kinetic.Line({
-        points: [
-          [SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH,
-            SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2)],
-          [SnowProfile.STAGE_WD - 3,
-            SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2)]
-        ],
-        stroke: SnowProfile.GRID_COLOR,
-        strokeWidth: 1
-      }));
-
-      // Add an "Insert" button to allow the user to insert a snow layer
-      // above the top snow layer.
-      var insertButton = new SnowProfile.Button("Insert");
-      insertButton.setY(SnowProfile.HANDLE_MIN_Y +
-        (SnowProfile.HANDLE_SIZE / 2));
-
-      // When Insert button clicked, insert a new snow layer at depth zero.
-      $(document).bind("SnowProfileButtonClick", function(evt, extra) {
-        if (extra.buttonObj === insertButton) {
-          new SnowProfile.Layer(0);
-          evt.stopImmediatePropagation();
-        }
-      });
-
-      // Draw a horizontal line every 20 cm as a depth scale
-      if (cm !== SnowProfile.MAX_DEPTH) {
-        SnowProfile.kineticJSLayer.add(new Kinetic.Line({
-          points: [
-            [SnowProfile.DEPTH_LABEL_WD + 1,
-              SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2) +
-                (cm * SnowProfile.DEPTH_SCALE)],
-            [SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH -
-              SnowProfile.HANDLE_SIZE / 2,
-              SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2) +
-                (cm * SnowProfile.DEPTH_SCALE)]
-          ],
-          stroke: SnowProfile.GRID_COLOR,
-          strokeWidth: 1
-        }));
+    // When Insert button clicked, insert a new snow layer at depth zero.
+    $(document).bind("SnowProfileButtonClick", function(evt, extra) {
+      if (extra.buttonObj === insertButton) {
+        new SnowProfile.Layer(0);
+        evt.stopImmediatePropagation();
       }
-    }
-
-    // Draw and label the hardness (horizontal) axis
-    SnowProfile.kineticJSLayer.add(new Kinetic.Line({
-      points: [
-        [SnowProfile.DEPTH_LABEL_WD,
-          SnowProfile.HANDLE_MAX_Y + (SnowProfile.HANDLE_SIZE / 2)],
-        [SnowProfile.DEPTH_LABEL_WD + SnowProfile.GRAPH_WIDTH +1 -
-          SnowProfile.HANDLE_SIZE / 2,
-          SnowProfile.HANDLE_MAX_Y + (SnowProfile.HANDLE_SIZE / 2)]
-      ],
-      stroke: SnowProfile.LABEL_COLOR,
-      strokeWidth: 1
-    }));
-
-    // Iterate through the table of CAAML hardness codes to
-    // build the hardness (horizontal) scale for the graph area
-    for (i = 0; i < SnowProfile.CAAML_HARD.length; i++) {
-      x = SnowProfile.DEPTH_LABEL_WD + 1 + (SnowProfile.HARD_BAND_WD * i) +
-        (SnowProfile.HANDLE_SIZE / 2);
-      if (SnowProfile.CAAML_HARD[i][1]) {
-
-        // Add a vertical line to show SnowProfile hardness value
-        SnowProfile.kineticJSLayer.add(new Kinetic.Line({
-          points: [
-            [x, SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2)],
-            [x, SnowProfile.HANDLE_MAX_Y + (SnowProfile.HANDLE_SIZE / 2)]
-          ],
-          stroke: SnowProfile.GRID_COLOR,
-          strokeWidth: 1
-        }));
-        SnowProfile.kineticJSLayer.add(new Kinetic.Text({
-          x: x,
-          y: SnowProfile.HANDLE_MAX_Y + 10,
-          text: SnowProfile.CAAML_HARD[i][0],
-          fontSize: 12,
-          fontStyle: 'bold',
-          fontFamily: 'sans-serif',
-          fill: SnowProfile.LABEL_COLOR,
-          align: 'center'
-        }));
-      }
-    }
-    var hardnessText = new Kinetic.Text({
-      x: SnowProfile.GRAPH_CENTER_X,
-      y: SnowProfile.STAGE_HT - 16,
-      text: 'Hardness',
-      fontSize: 18,
-      fontStyle: 'bold',
-      fontFamily: 'sans-serif',
-      fill: SnowProfile.LABEL_COLOR,
-      align: "center"
     });
-    hardnessText.setOffsetX(hardnessText.getWidth() / 2 );
-    SnowProfile.kineticJSLayer.add(hardnessText);
 
     // Add the label to the Grain Type column
     var grainText = new Kinetic.Text({
@@ -674,15 +566,19 @@ var SnowProfile = {};
     // Create the <select>s for the grain subshape from the CAAML_SUBSHAPE
     // table.
     var html = "";
-    for (var shape in SnowProfile.CAAML_SUBSHAPE)  {
-      html += "<select id=\"snow_profile_grain_subshape_" + shape +
-        "\" style=\"display: none\">";
-      html += "<option value=\"\" selected=\"selected\"></option>";
-      for (var subShape in SnowProfile.CAAML_SUBSHAPE[shape]) {
-        html += "<option value=\"" + subShape + "\">" +
-          SnowProfile.CAAML_SUBSHAPE[shape][subShape] + "</option>";
+    for (var shape in SnowProfile.CAAML_SUBSHAPE) {
+      if (SnowProfile.CAAML_SUBSHAPE.hasOwnProperty()) {
+        html += "<select id=\"snow_profile_grain_subshape_" + shape +
+          "\" style=\"display: none\">";
+        html += "<option value=\"\" selected=\"selected\"></option>";
+        for (var subShape in SnowProfile.CAAML_SUBSHAPE[shape]) {
+          if (SnowProfile.CAAML_SUBSHAPE.hasOwnProperty()) {
+            html += "<option value=\"" + subShape + "\">" +
+            SnowProfile.CAAML_SUBSHAPE[shape][subShape] + "</option>";
+          }
+        }
+        html += "</select>";
       }
-      html += "</select>";
     }
     $("#snow_profile_grain_subshape").append(html);
 

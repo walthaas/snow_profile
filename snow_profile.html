@@ -48,6 +48,19 @@ div.kineticjs-content {
 </p><p>
   Click the Preview button to see how the diagram will look.
 </p>
+<p>
+  <label for="snow_profile_total_depth">Total snow depth</label>
+  <input type="text" size="4" id="snow_profile_total_depth" value="200" /> cm&nbsp;&nbsp;
+  <label for="snow_profile_pit_depth">Snow pit depth</label>
+  <input type="text" size="4" id="snow_profile_pit_depth" value="200" /> cm&nbsp;&nbsp;
+  <div id="snow_profile_ref_depth" style="display: none">
+    <label for="snow_profile_ref_select">Measure depth from</label>
+    <select id="snow_profile_ref_select">
+      <option>snow surface</option>
+      <option>ground</option>
+    </select>
+  </div>
+</p>
 <div id="snow_profile_diagram"></div>
 </div>
 <!--
@@ -86,7 +99,16 @@ div.kineticjs-content {
 <script src="snow_profile_button.js"></script>
 <script src="snow_profile_popup.js"></script>
 <script src="snow_profile_layer.js"></script>
+<script src="snow_profile_grid.js"></script>
 <script src="snow_profile_main.js"></script>
 <button id="snow_profile_preview">Preview</button>
+<p>Terminology is from the
+  <a href="http://www.cryosphericsciences.org/products/snowClassification/snowclass_2009-11-23-tagged-highres.pdf">IACS 2009 standard</a>
+and the
+<a href="http://caaml.org/Schemas/V5.0/Profiles/SnowProfileIACS/CAAMLv5_SnowProfileIACS.xsd">CAAMLv5 IACS Snow Profile schema definition</a>
+</p><p>
+Questions? Comments? Gripes?  Email author
+<a href="mailto:haas@xmission.com">Walt Haas</a>
+</p>
 </body>
 </html>
