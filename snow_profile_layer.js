@@ -183,8 +183,8 @@ SnowProfile.Layer = function(depthArg) {
 
         // This is the bottom layer.  The handle depth is constrained
         // between the layer above and GRAPH_HEIGHT.
-        if (pos.y > (SnowProfile.HANDLE_MAX_Y)) {
-          newY = SnowProfile.HANDLE_MAX_Y;
+        if (pos.y > (SnowProfile.handleMaxY)) {
+          newY = SnowProfile.handleMaxY;
         }
         else if (pos.y < SnowProfile.snowLayers[i - 1].handleGetY()) {
           newY = SnowProfile.snowLayers[i - 1].handleGetY() + 1;
@@ -319,6 +319,7 @@ SnowProfile.Layer = function(depthArg) {
     handle.off('mouseup mousedown dragmove mouseover mouseout');
     $(document).unbind("SnowProfileHideControls", handleInvisible);
     $(document).unbind("SnowProfileShowControls", handleVisible);
+    $(document).unbind("SnowProfileAdjustGrid", self.draw);
     handle.destroy();
     grainDescr.destroy();
     LWCDescr.destroy();
@@ -350,7 +351,7 @@ SnowProfile.Layer = function(depthArg) {
 
       // This snow layer is the bottom snow layer.  The Y dimension of the
       // left end of the line is the bottom of the graph
-      yLeft = SnowProfile.HANDLE_MAX_Y + (SnowProfile.HANDLE_SIZE / 2);
+      yLeft = SnowProfile.handleMaxY + (SnowProfile.HANDLE_SIZE / 2);
     }
     else {
 
@@ -408,7 +409,7 @@ SnowProfile.Layer = function(depthArg) {
    function vertLinePts() {
     var x = handle.getX();
     var topY = handle.getY() + (SnowProfile.HANDLE_SIZE / 2);
-    var bottomY = SnowProfile.HANDLE_MAX_Y + (SnowProfile.HANDLE_SIZE / 2);
+    var bottomY = SnowProfile.handleMaxY + (SnowProfile.HANDLE_SIZE / 2);
     var i = self.getIndex();
     var numLayers = SnowProfile.snowLayers.length;
 
@@ -736,6 +737,9 @@ SnowProfile.Layer = function(depthArg) {
   // Listen for "SnowProfileShowControls" events
   $(document).bind("SnowProfileShowControls", handleVisible);
 
+  // Listen for "SnowProfileAdjustGrid" events
+  $(document).bind("SnowProfileAdjustGrid", self.draw);
+
   /**
    Style the cursor for the handle
    @callback
@@ -820,7 +824,17 @@ SnowProfile.Layer = function(depthArg) {
     depthVal = self.y2depth(handle.getY());
 
     // Set the text information floating to the right of the graph
-    var mm = Math.round(depthVal * 10) / 10;
+    var mm;
+    if (SnowProfile.depthRef === "s") {
+
+       // Depth is referred to the snow surface
+       mm = Math.round(depthVal * 10) / 10;
+    }
+    else {
+
+      // Depth is referred to the ground
+      mm = Math.round((SnowProfile.totalDepth - depthVal) * 10) / 10;
+    }
     handleLoc.setText( '(' + mm + ', ' +
       self.x2code(handle.getX()) + ')');
     handleLoc.setY(SnowProfile.depth2y(depthVal));

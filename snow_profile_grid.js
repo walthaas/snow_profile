@@ -127,11 +127,8 @@ SnowProfile.Grid = function() {
       // The bottom of the grid is shown as (totalDepth - pitDepth).  The
       // lowest grid line is at the next integer multiple of 20 cm.
       var bottom = SnowProfile.totalDepth - SnowProfile.pitDepth;
-      console.debug("bottom=%d", bottom);
       var lowestLine = Math.ceil(bottom / 20) * 20;
-      console.debug("lowestLine=%d", lowestLine);
       for (cm = lowestLine; cm <= SnowProfile.totalDepth; cm += 20) {
-        console.debug("cm=%d", cm);
         group.add(new Kinetic.Text({
           x: 40,
           y: (SnowProfile.totalDepth - cm) * SnowProfile.DEPTH_SCALE,
@@ -234,7 +231,7 @@ SnowProfile.Grid = function() {
       verticalLines.push(new Kinetic.Line({
         points: [
           [x, SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2)],
-          [x, SnowProfile.HANDLE_MAX_Y + (SnowProfile.HANDLE_SIZE / 2)]
+          [x, SnowProfile.handleMaxY + (SnowProfile.HANDLE_SIZE / 2)]
         ],
         stroke: SnowProfile.GRID_COLOR,
         strokeWidth: 1
@@ -354,9 +351,16 @@ SnowProfile.Grid = function() {
     });
 
     // Destroy and re-create the depth scale
-   depthScale.destroy();
-   depthScale = depthScaleGrp();
-   gridLayer.add(depthScale);
+    depthScale.destroy();
+    depthScale = depthScaleGrp();
+    gridLayer.add(depthScale);
+
+    // Set the maximum Y value to which a handle may be dragged
+    SnowProfile.handleMaxY = SnowProfile.TOP_LABEL_HT + 1 +
+      (SnowProfile.DEPTH_SCALE * SnowProfile.pitDepth);
+
+    // Trigger a custom event to let the rest of the code know
+    $.event.trigger("SnowProfileAdjustGrid");
   }
 
   // Listen for a change to the "Total snow depth" input

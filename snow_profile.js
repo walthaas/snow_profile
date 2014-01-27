@@ -114,7 +114,7 @@ var SnowProfile = {};
 
       Snow depth in cm that corresponds to GRAPH_HEIGHT pixels.
       Zero depth always corresponds to zero graph pixels.
-      FIXME: we need the concept to calculate ration of pixels/cm but
+      FIXME: we need the concept to calculate ratio of pixels/cm but
         should find a better name for it.
       @const
      */
@@ -359,15 +359,6 @@ var SnowProfile = {};
   };
 
   /**
-    Maximum Y value allowed for any handle (bottom of graph area)
-    @const
-    @type {number}
-    @memberof SnowProfile
-   */
-  SnowProfile.HANDLE_MAX_Y = SnowProfile.TOP_LABEL_HT + 1 +
-    SnowProfile.GRAPH_HEIGHT;
-
-  /**
     Width in pixels of one hardness band in the CAAML_HARD table
 
     Calculation depends on knowing there are 21 entries in the table
@@ -469,6 +460,14 @@ var SnowProfile = {};
     @memberof SnowProfile
    */
   SnowProfile.DEPTH_SCALE = SnowProfile.GRAPH_HEIGHT / SnowProfile.MAX_DEPTH;
+
+  /**
+    Maximum Y value allowed for any handle (bottom of graph area)
+    @type {number}
+    @memberof SnowProfile
+   */
+  SnowProfile.handleMaxY = SnowProfile.TOP_LABEL_HT + 1 +
+    (SnowProfile.DEPTH_SCALE * SnowProfile.pitDepth);
 
   /**
     Recalculate the Y axis positions of all KineticJS objects whose position
