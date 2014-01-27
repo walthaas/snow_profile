@@ -24,6 +24,12 @@ var SnowProfile = {};
   "use strict";
   SnowProfile = {
 
+   /**
+    * Minimum depth that can be set by the user (cm)
+    * @type {number}
+    */
+   MIN_SETTABLE_DEPTH: 50,
+
     /**
      * Horizontal width in pixels of the depth (vertical) axis label.
      * @const
@@ -108,6 +114,8 @@ var SnowProfile = {};
 
       Snow depth in cm that corresponds to GRAPH_HEIGHT pixels.
       Zero depth always corresponds to zero graph pixels.
+      FIXME: we need the concept to calculate ration of pixels/cm but
+        should find a better name for it.
       @const
      */
     MAX_DEPTH:  200,
@@ -155,6 +163,33 @@ var SnowProfile = {};
       @type {boolean}
      */
     oldShowHandle: null,
+
+    /**
+     * @summary Total depth of the snow pack (cm)
+     * @desc Distance in cm from the snow surface to the ground, as measured
+     *   with a calibrated probe or by digging to the ground.  Null
+     *   if this distance is not known.
+     * @type {?number}
+     */
+    totalDepth: null,
+
+    /**
+     * @summary Pit depth (cm)
+     * @desc Depth of the pit in cm from the snow surface.  Must
+     *   be an integer >= 30.  Default 200.
+     * @type {!number}
+     */
+    pitDepth: 200,
+
+    /**
+     * @summary Depth reference (snow surface or ground)
+     * @desc  A single letter indicating whether snow depth is referenced
+     *   to the snow surface ("s") or ground ("g").  Must be one or the
+     *   other.  Default is "s".  Ground reference may be used only if
+     *   the value of total snow depth (totalDepth) is known.
+     * @type {!string}
+     */
+    depthRef: "s",
 
     /**
       Table of CAAML grain shapes.
@@ -449,6 +484,16 @@ var SnowProfile = {};
   };
 
   /**
+   Convert a depth in cm to a Y axis position.
+   @param {number} depth Depth from the snow surface in cm.
+   @returns {number} Y position.
+   */
+  SnowProfile.depth2y = function(depthArg) {
+    return (depthArg * (SnowProfile.GRAPH_HEIGHT / SnowProfile.MAX_DEPTH)) +
+      SnowProfile.HANDLE_MIN_Y;
+  };
+
+  /**
    * Initialize the container and the grid layer
    */
   SnowProfile.init = function() {
@@ -460,16 +505,16 @@ var SnowProfile = {};
       height: SnowProfile.STAGE_HT
     });
 
+    // Add the reference grid to it
+    SnowProfile.stage.add(new SnowProfile.Grid());
+
     // Create the KineticJS layer
     SnowProfile.kineticJSLayer = new Kinetic.Layer();
 
-    // Add the reference grid to it
-    new SnowProfile.Grid();
-
-    // Draw a horizontal line across the top of the description area
+    // Draw a horizontal line across the top of graph and description areas
     SnowProfile.kineticJSLayer.add(new Kinetic.Line({
       points: [
-        [SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH,
+        [SnowProfile.DEPTH_LABEL_WD + 1,
           SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2)],
         [SnowProfile.STAGE_WD - 3,
           SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2)]
@@ -555,6 +600,7 @@ var SnowProfile = {};
     });
     anim.start();
 
+    // FIXME: move this code to the Pop-Up prototype
     // Populate the grain shape selector in the layer description pop-up
     for (var code in SnowProfile.CAAML_SHAPE) {
       if (SnowProfile.CAAML_SHAPE.hasOwnProperty(code)) {

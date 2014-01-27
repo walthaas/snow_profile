@@ -150,7 +150,7 @@ SnowProfile.Layer = function(depthArg) {
    */
   var handle = new Kinetic.Rect({
     x: SnowProfile.HANDLE_MIN_X,
-    y: self.depth2y(depthVal),
+    y: SnowProfile.depth2y(depthVal),
     width: SnowProfile.HANDLE_SIZE,
     height: SnowProfile.HANDLE_SIZE,
     offsetX: SnowProfile.HANDLE_SIZE / 2,
@@ -215,7 +215,7 @@ SnowProfile.Layer = function(depthArg) {
    */
   var handleLoc = new Kinetic.Text({
     x: SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH + 10,
-    y: self.depth2y(depthVal),
+    y: SnowProfile.depth2y(depthVal),
     fontSize: 12,
     fontStyle: 'bold',
     fontFamily: 'sans-serif',
@@ -391,9 +391,10 @@ SnowProfile.Layer = function(depthArg) {
     }
     return  [
       [SnowProfile.DEPTH_LABEL_WD + 1,
-        self.depth2y(depthVal) + Math.floor(SnowProfile.HANDLE_SIZE / 2)],
+        SnowProfile.depth2y(depthVal) +
+        Math.floor(SnowProfile.HANDLE_SIZE / 2)],
       [x,
-        self.depth2y(depthVal) + Math.floor(SnowProfile.HANDLE_SIZE / 2)]
+        SnowProfile.depth2y(depthVal) + Math.floor(SnowProfile.HANDLE_SIZE / 2)]
     ];
   }
 
@@ -583,7 +584,7 @@ SnowProfile.Layer = function(depthArg) {
     handle.setX(self.code2x(hardness));
 
     // Set handle Y from depth
-    handle.setY(self.depth2y(depthVal));
+    handle.setY(SnowProfile.depth2y(depthVal));
 
     // Adjust the horizontal line defining this layer
     self.setHorizLine();
@@ -822,7 +823,7 @@ SnowProfile.Layer = function(depthArg) {
     var mm = Math.round(depthVal * 10) / 10;
     handleLoc.setText( '(' + mm + ', ' +
       self.x2code(handle.getX()) + ')');
-    handleLoc.setY(self.depth2y(depthVal));
+    handleLoc.setY(SnowProfile.depth2y(depthVal));
 
     // If this is not the top snow layer, update the diagonal line
     // owned by the snow layer above.
@@ -877,17 +878,6 @@ SnowProfile.Layer.prototype.x2code = function(x) {
     }
   }
   return code;
-};
-
-/**
- Convert a depth in cm to a Y axis position.
- @param {number} depth Depth of the top of this layer in cm.
- @returns {number} Y position of the layer.
- */
-SnowProfile.Layer.prototype.depth2y = function(depthArg) {
-  "use strict";
-  return (depthArg * (SnowProfile.GRAPH_HEIGHT / SnowProfile.MAX_DEPTH)) +
-    SnowProfile.HANDLE_MIN_Y;
 };
 
 /**
