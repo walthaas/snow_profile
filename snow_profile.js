@@ -612,12 +612,12 @@ var SnowProfile = {};
     // table.
     var html = "";
     for (var shape in SnowProfile.CAAML_SUBSHAPE) {
-      if (SnowProfile.CAAML_SUBSHAPE.hasOwnProperty()) {
+      if (SnowProfile.CAAML_SUBSHAPE.hasOwnProperty(shape)) {
         html += "<select id=\"snow_profile_grain_subshape_" + shape +
           "\" style=\"display: none\">";
         html += "<option value=\"\" selected=\"selected\"></option>";
         for (var subShape in SnowProfile.CAAML_SUBSHAPE[shape]) {
-          if (SnowProfile.CAAML_SUBSHAPE.hasOwnProperty()) {
+          if (SnowProfile.CAAML_SUBSHAPE[shape].hasOwnProperty(subShape)) {
             html += "<option value=\"" + subShape + "\">" +
             SnowProfile.CAAML_SUBSHAPE[shape][subShape] + "</option>";
           }
@@ -633,6 +633,7 @@ var SnowProfile = {};
       // Grain shape selection has changed, so adjust sub-shape <select>.
       $("#snow_profile_grain_subshape select").attr("style", "display:none;");
       $("#snow_profile_grain_subshape option").attr("selected", false);
+      $("#snow_profile_grain_subshape option[value='']").attr("selected", true);
       if ($("#snow_profile_grain_shape").val()) {
 
         // A non-null grain shape has been selected.  Display the sub-shape
@@ -665,11 +666,15 @@ var SnowProfile = {};
         $.event.trigger("SnowProfileHideControls");
 
         // Open a new window and show the PNG in it
-        var canvas = $('#snow_profile_diagram canvas').toArray()[0];
-        window.open(canvas.toDataURL(), 'new_window',
-          'width=SnowProfile.STAGE_WD,height=SnowProfile.STAGE_HT');
-
-        // The PNG has been generated so we can show controls again
+        SnowProfile.stage.toDataURL({
+          callback: function(dataUrl) {
+            var newWin = window.open(dataUrl, "_blank");
+            if (newWin === undefined) {
+              alert("You must enable pop-ups for this site to use" +
+                " the Preview button");
+           }
+          }
+        });
         $.event.trigger("SnowProfileShowControls");
       });
     });

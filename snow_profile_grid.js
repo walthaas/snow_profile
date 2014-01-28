@@ -282,6 +282,8 @@ SnowProfile.Grid = function() {
       $("#snow_profile_ref_depth").attr("style", "display: none;");
       SnowProfile.depthRef = "s";
       $("#snow_profile_ref_select option").attr("selected", false);
+      $("#snow_profile_ref_select option[value='s']").attr("selected", true);
+      adjustGrid();
       return;
     }
     if (( totalDepth.search(/^\d+$/) < 0) ||
