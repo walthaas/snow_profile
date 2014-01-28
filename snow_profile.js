@@ -672,10 +672,10 @@ var SnowProfile = {};
             if (newWin === undefined) {
               alert("You must enable pop-ups for this site to use" +
                 " the Preview button");
+            $.event.trigger("SnowProfileShowControls");
            }
           }
         });
-        $.event.trigger("SnowProfileShowControls");
       });
     });
   };  // function SnowProfile.init();
