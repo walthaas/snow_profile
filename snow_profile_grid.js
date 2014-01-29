@@ -70,7 +70,7 @@ SnowProfile.Grid = function() {
      * @type {Object}
      */
     var depthText = new Kinetic.Text({
-      text: "Depth",
+      text: "Depth (cm)",
       rotationDeg: 270,
       fontSize: 18,
       fontStyle: 'bold',
@@ -330,10 +330,10 @@ SnowProfile.Grid = function() {
     // Adust lengths of vertical lines
     var points;
     verticalLines.forEach(function(line){
-      points = line.getPoints();
-      points[1].y = SnowProfile.depth2y(SnowProfile.pitDepth) +
+      points = line.points();
+      points[3] = SnowProfile.depth2y(SnowProfile.pitDepth) +
         (SnowProfile.HANDLE_SIZE / 2);
-      line.setPoints(points);
+      line.points(points);
     });
 
     // Adjust position of hardness scale group
