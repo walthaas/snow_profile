@@ -106,15 +106,13 @@ SnowProfile.Grid = function() {
         // Draw a horizontal line every 20 cm as a depth scale
         if (cm !== SnowProfile.pitDepth) {
           group.add(new Kinetic.Line({
-            points: [
-              [SnowProfile.DEPTH_LABEL_WD + 1,
+            points: [SnowProfile.DEPTH_LABEL_WD + 1,
                 (SnowProfile.HANDLE_SIZE / 2) +
-                  (cm * SnowProfile.DEPTH_SCALE)],
-              [SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH -
-               SnowProfile.HANDLE_SIZE / 2,
-                 (SnowProfile.HANDLE_SIZE / 2) +
-                   (cm * SnowProfile.DEPTH_SCALE)]
-            ],
+                  (cm * SnowProfile.DEPTH_SCALE),
+                SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH -
+                  SnowProfile.HANDLE_SIZE / 2,
+                (SnowProfile.HANDLE_SIZE / 2) +
+                   (cm * SnowProfile.DEPTH_SCALE)],
             stroke: SnowProfile.GRID_COLOR,
             strokeWidth: 1
           }));
@@ -143,15 +141,13 @@ SnowProfile.Grid = function() {
         // Draw a horizontal line every 20 cm as a depth scale
         if (cm !== SnowProfile.totalDepth) {
           group.add(new Kinetic.Line({
-            points: [
-              [SnowProfile.DEPTH_LABEL_WD + 1,
-                (SnowProfile.HANDLE_SIZE / 2) +
+            points: [SnowProfile.DEPTH_LABEL_WD + 1,
+              (SnowProfile.HANDLE_SIZE / 2) +
+                ((SnowProfile.totalDepth - cm) * SnowProfile.DEPTH_SCALE),
+              SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH -
+                SnowProfile.HANDLE_SIZE / 2,
+              (SnowProfile.HANDLE_SIZE / 2) +
                 ((SnowProfile.totalDepth - cm) * SnowProfile.DEPTH_SCALE)],
-              [SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH -
-               SnowProfile.HANDLE_SIZE / 2,
-                 (SnowProfile.HANDLE_SIZE / 2) +
-                ((SnowProfile.totalDepth - cm) * SnowProfile.DEPTH_SCALE)]
-            ],
             stroke: SnowProfile.GRID_COLOR,
             strokeWidth: 1
           }));
@@ -187,13 +183,12 @@ SnowProfile.Grid = function() {
    * @type {Object}
    */
   verticalLines.push(new Kinetic.Line({
-    points: [
-      [SnowProfile.DEPTH_LABEL_WD, SnowProfile.HANDLE_MIN_Y - 1 +
-       (SnowProfile.HANDLE_SIZE / 2)],
-      [SnowProfile.DEPTH_LABEL_WD,
-        SnowProfile.depth2y(SnowProfile.pitDepth) +
-        (SnowProfile.HANDLE_SIZE / 2)]
-    ],
+    points: [SnowProfile.DEPTH_LABEL_WD,
+      SnowProfile.HANDLE_MIN_Y - 1 +
+       (SnowProfile.HANDLE_SIZE / 2),
+      SnowProfile.DEPTH_LABEL_WD,
+      SnowProfile.depth2y(SnowProfile.pitDepth) +
+        (SnowProfile.HANDLE_SIZE / 2)],
     stroke: SnowProfile.LABEL_COLOR,
     strokeWidth: 1
   }));
@@ -212,10 +207,8 @@ SnowProfile.Grid = function() {
 
   // Draw and label the hardness (horizontal) axis
   hardScaleGrp.add(new Kinetic.Line({
-    points: [
-      [0, 0],
-      [SnowProfile.GRAPH_WIDTH +1 - SnowProfile.HANDLE_SIZE / 2, 0]
-    ],
+    points: [0, 0,
+      SnowProfile.GRAPH_WIDTH +1 - SnowProfile.HANDLE_SIZE / 2, 0],
     stroke: SnowProfile.LABEL_COLOR,
     strokeWidth: 1
   }));
@@ -229,10 +222,8 @@ SnowProfile.Grid = function() {
 
       // Add a vertical line to show SnowProfile hardness value
       verticalLines.push(new Kinetic.Line({
-        points: [
-          [x, SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2)],
-          [x, SnowProfile.handleMaxY + (SnowProfile.HANDLE_SIZE / 2)]
-        ],
+        points: [x, SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2),
+          x, SnowProfile.handleMaxY + (SnowProfile.HANDLE_SIZE / 2)],
         stroke: SnowProfile.GRID_COLOR,
         strokeWidth: 1
       }));

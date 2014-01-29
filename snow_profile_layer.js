@@ -330,6 +330,7 @@ SnowProfile.Layer = function(depthArg) {
     vertLine.destroy();
     diagLine.destroy();
     editButton.destroy();
+    insertButton.destroy();
   }
 
   /**
@@ -372,7 +373,7 @@ SnowProfile.Layer = function(depthArg) {
     // below the description of this snow layer.
     xRight = SnowProfile.DEPTH_LABEL_WD + 1 +
       SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD - 3;
-    points = [[xLeft, yLeft], [xRight, yRight]];
+    points = [xLeft, yLeft, xRight, yRight];
     return points;
   }
 
@@ -390,13 +391,10 @@ SnowProfile.Layer = function(depthArg) {
     if (i !== 0) {
       x = Math.max(x, SnowProfile.snowLayers[i-1].handleGetX());
     }
-    return  [
-      [SnowProfile.DEPTH_LABEL_WD + 1,
-        SnowProfile.depth2y(depthVal) +
-        Math.floor(SnowProfile.HANDLE_SIZE / 2)],
-      [x,
-        SnowProfile.depth2y(depthVal) + Math.floor(SnowProfile.HANDLE_SIZE / 2)]
-    ];
+    return  [SnowProfile.DEPTH_LABEL_WD + 1,
+      SnowProfile.depth2y(depthVal) + Math.floor(SnowProfile.HANDLE_SIZE / 2),
+      x,
+      SnowProfile.depth2y(depthVal) + Math.floor(SnowProfile.HANDLE_SIZE / 2)];
   }
 
   /**
@@ -419,13 +417,15 @@ SnowProfile.Layer = function(depthArg) {
       bottomY = SnowProfile.snowLayers[i + 1].handleGetY() +
         SnowProfile.HANDLE_SIZE / 2;
     }
-    return [[x, topY],[x, bottomY]];
+    return [x, topY,x, bottomY];
   }
 
   /**
    * Delete this layer and make necessary adjustments
    */
   this.deleteLayer = function() {
+    var i = self.getIndex();
+    var numLayers = SnowProfile.snowLayers.length;
 
     // Remove this Layer from the snowLayers array
     SnowProfile.snowLayers.splice(i, 1);
@@ -671,11 +671,10 @@ SnowProfile.Layer = function(depthArg) {
     commentDescr.setY(SnowProfile.HANDLE_MIN_Y +
       (SnowProfile.HANDLE_SIZE / 2) + 3 +
         (i * SnowProfile.DESCR_HEIGHT));
-    lineBelow.setPoints([
-      [SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH + 1 +
-        SnowProfile.CTRLS_WD - 3, SnowProfile.lineBelowY(i)],
-      [SnowProfile.STAGE_WD - 3, SnowProfile.lineBelowY(i)]
-    ]);
+    lineBelow.setPoints([SnowProfile.DEPTH_LABEL_WD + 1 +
+      SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD - 3,
+      SnowProfile.lineBelowY(i), SnowProfile.STAGE_WD - 3,
+      SnowProfile.lineBelowY(i)]);
     diagLine.setPoints(diagLinePts());
     editButton.setY(SnowProfile.HANDLE_MIN_Y +
       (SnowProfile.HANDLE_SIZE / 2) +

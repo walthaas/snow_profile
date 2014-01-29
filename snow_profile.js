@@ -512,12 +512,10 @@ var SnowProfile = {};
 
     // Draw a horizontal line across the top of graph and description areas
     SnowProfile.kineticJSLayer.add(new Kinetic.Line({
-      points: [
-        [SnowProfile.DEPTH_LABEL_WD + 1,
-          SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2)],
-        [SnowProfile.STAGE_WD - 3,
-          SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2)]
-      ],
+      points: [SnowProfile.DEPTH_LABEL_WD + 1,
+        SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2),
+        SnowProfile.STAGE_WD - 3,
+        SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2)],
       stroke: SnowProfile.GRID_COLOR,
       strokeWidth: 1
     }));
