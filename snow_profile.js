@@ -129,6 +129,13 @@ var SnowProfile = {};
     INS_INCR: 5,
 
     /**
+     * Width in pixels of the image to be generated
+     * @const
+     * @type {number}
+     */
+    IMAGE_WD: 800,
+
+    /**
      * KineticJS stage object for the whole program
      */
     stage: null,
@@ -662,15 +669,22 @@ var SnowProfile = {};
 
         // Hide the controls so they won't show in the PNG
         $.event.trigger("SnowProfileHideControls");
+        var scaleFactor = SnowProfile.IMAGE_WD / SnowProfile.stage.getWidth();
+        SnowProfile.stage.scale({x: scaleFactor, y: scaleFactor});
 
         // Open a new window and show the PNG in it
         SnowProfile.stage.toDataURL({
+          x: 0,
+          y: 0,
+          width: SnowProfile.IMAGE_WD,
+          height: scaleFactor * SnowProfile.stage.getHeight(),
           callback: function(dataUrl) {
             var newWin = window.open(dataUrl, "_blank");
             if (newWin === undefined) {
               alert("You must enable pop-ups for this site to use" +
                 " the Preview button");
             }
+            SnowProfile.stage.scale({x: 1, y: 1});
             $.event.trigger("SnowProfileShowControls");
           }
         });
