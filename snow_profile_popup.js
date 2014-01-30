@@ -64,12 +64,28 @@ SnowProfile.PopUp = function(data) {
   "use strict";
 
   // Fill in the pop-up HTML form with information passed to constructor
-  $("#snow_profile_grain_shape").val(data.grainShape);
+  $("#snow_profile_grain_shape option").attr("selected", false);
+  $("#snow_profile_grain_shape option[value=" +
+    data.grainShape + "]").attr("selected", true);
+  $("#snow_profile_grain_subshape select").css("display", "none");
+  $("#snow_profile_grain_subshape_" + data.grainShape).css("display", "block");
   $("#snow_profile_grain_subshape option").attr("selected", false);
-  $("#snow_profile_grain_subshape").val(data.grainSubShape);
+  $("#snow_profile_grain_subshape option[value=" +
+    data.grainSubShape + "]").attr("selected", true);
   $("#snow_profile_grain_size").val(data.grainSize);
   $("#snow_profile_lwc").val(data.lwc);
   $("#snow_profile_comment").val(data.comment);
+  // console.debug("data shape=%s  subshape=%s", data.grainShape,
+  //   data.grainSubShape);
+  // $("#snow_profile_grain_shape option").each(function(i) {
+  //   console.debug("%d: '%s'", i, $(this).val(), $(this).attr("selected"));
+  // });
+  // $("#snow_profile_grain_subshape select").each(function(i) {
+  //   console.debug("%d: '%s' %s", i, $(this).attr("id"), $(this).css("display"));
+  //   $(this).find("option").each(function(i) {
+  //     console.debug("%d: '%s'", i, $(this).val(), $(this).attr("selected"));
+  //   });
+  // });
   var editArgs = {
     modal: true,
     width: 400,
