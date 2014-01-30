@@ -4,6 +4,7 @@
   @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPVv2}
   @namespace SnowProfile
  */
+
 var SnowProfile = {};
 
 /**
@@ -22,6 +23,7 @@ var SnowProfile = {};
 
 (function() {
   "use strict";
+
   SnowProfile = {
 
    /**
@@ -603,65 +605,6 @@ var SnowProfile = {};
       }
     });
     anim.start();
-
-    // FIXME: move this code to the Pop-Up prototype
-    // Populate the grain shape selector in the layer description pop-up
-    for (var code in SnowProfile.CAAML_SHAPE) {
-      if (SnowProfile.CAAML_SHAPE.hasOwnProperty(code)) {
-        $("#snow_profile_grain_shape").append("<option value=\"" + code +
-          "\">" + SnowProfile.CAAML_SHAPE[code] + "</option>");
-      }
-    }
-
-    // Create the <select>s for the grain subshape from the CAAML_SUBSHAPE
-    // table.
-    var html = "";
-    for (var shape in SnowProfile.CAAML_SUBSHAPE) {
-      if (SnowProfile.CAAML_SUBSHAPE.hasOwnProperty(shape)) {
-        html += "<select id=\"snow_profile_grain_subshape_" + shape +
-          "\" style=\"display: none\">";
-        html += "<option value=\"\" selected=\"selected\"></option>";
-        for (var subShape in SnowProfile.CAAML_SUBSHAPE[shape]) {
-          if (SnowProfile.CAAML_SUBSHAPE[shape].hasOwnProperty(subShape)) {
-            html += "<option value=\"" + subShape + "\">" +
-            SnowProfile.CAAML_SUBSHAPE[shape][subShape] + "</option>";
-          }
-        }
-        html += "</select>";
-      }
-    }
-    $("#snow_profile_grain_subshape").append(html);
-
-    // Listen for changes to the grain shape
-    $("#snow_profile_grain_shape").change(function() {
-
-      // Grain shape selection has changed, so adjust sub-shape <select>.
-      $("#snow_profile_grain_subshape select").attr("style", "display:none;");
-      $("#snow_profile_grain_subshape option").attr("selected", false);
-      $("#snow_profile_grain_subshape option[value='']").attr("selected", true);
-      if ($("#snow_profile_grain_shape").val()) {
-
-        // A non-null grain shape has been selected.  Display the sub-shape
-        $("#snow_profile_grain_subshape_" +
-          $("#snow_profile_grain_shape").val()).attr("style", "display:block;");
-      }
-    });
-
-    // Populate the grain size selector in the layer description pop-up
-    for (code in SnowProfile.CAAML_SIZE) {
-      if (SnowProfile.CAAML_SIZE.hasOwnProperty(code)) {
-        $("#snow_profile_grain_size").append("<option value=\"" + code +
-          "\">" + SnowProfile.CAAML_SIZE[code] + "</option>");
-      }
-    }
-
-    // Populate the liquid water selector in the layer description pop-up
-    for (code in SnowProfile.CAAML_LWC) {
-      if (SnowProfile.CAAML_LWC.hasOwnProperty(code)) {
-        $("#snow_profile_lwc").append("<option value=\"" + code +
-          "\">" + SnowProfile.CAAML_LWC[code] + "</option>");
-      }
-    }
 
     // When the "Preview" button is clicked, generate a preview
     $(document).ready(function() {

@@ -248,21 +248,16 @@ SnowProfile.Layer = function(depthArg) {
   });
 
   /**
-   * Define a horizontal line at the top of the layer.
+   * Define a rectangle to outline the layer
    * @type {Object}
    */
-  var horizLine = new Kinetic.Line({
-    points: [0, 0, 0, 0],
-    stroke: '#000'
-  });
-
-  /**
-   Define a vertical line from the handle down to the top of the layer
-   below, or graph bottom if this is the lowest layer.
-   @type {Object}
-   */
-  var vertLine = new Kinetic.Line({
-    points: [0, 0, 0, 0],
+  var layerOutline = new Kinetic.Rect({
+    x: SnowProfile.DEPTH_LABEL_WD + 1,
+    y:0,
+    width: 0,
+    height: 0,
+    fill: "white",
+    opacity: 0.85,
     stroke: '#000'
   });
 
@@ -326,8 +321,7 @@ SnowProfile.Layer = function(depthArg) {
     commentDescr.destroy();
     lineBelow.destroy();
     handleLoc.destroy();
-    horizLine.destroy();
-    vertLine.destroy();
+    layerOutline.destroy();
     diagLine.destroy();
     editButton.destroy();
     insertButton.destroy();
@@ -375,49 +369,6 @@ SnowProfile.Layer = function(depthArg) {
       SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD - 3;
     points = [xLeft, yLeft, xRight, yRight];
     return points;
-  }
-
-  /**
-   * Define end points of horizontal line from the Y axis to the handle.
-   *
-   * The horizontal line extends from the left edge of the graph right to
-   * the maximum of (X of SnowProfile, X of snow layer above).
-   * @returns {number[]} Two-dimensional array of numbers of the starting and
-   * ending points for the horizontal line.
-   */
-  function horizLinePts() {
-    var x = handle.getX();
-    var i = self.getIndex();
-    if (i !== 0) {
-      x = Math.max(x, SnowProfile.snowLayers[i-1].handleGetX());
-    }
-    return  [SnowProfile.DEPTH_LABEL_WD + 1,
-      SnowProfile.depth2y(depthVal) + Math.floor(SnowProfile.HANDLE_SIZE / 2),
-      x,
-      SnowProfile.depth2y(depthVal) + Math.floor(SnowProfile.HANDLE_SIZE / 2)];
-  }
-
-  /**
-   Define end points of a vertical line from the handle down to the top of
-   the layer below in the snow pack, or the graph bottom if this is lowest
-   layer.
-   @returns {number[]} Two-dimensional array of numbers of the starting
-   and ending points for the vertical line.
-   */
-   function vertLinePts() {
-    var x = handle.getX();
-    var topY = handle.getY() + (SnowProfile.HANDLE_SIZE / 2);
-    var bottomY = SnowProfile.handleMaxY + (SnowProfile.HANDLE_SIZE / 2);
-    var i = self.getIndex();
-    var numLayers = SnowProfile.snowLayers.length;
-
-    // If this layer is not the lowest layer in the snowpack, bottom
-    // Y is the top of the layer below.
-    if (i !== numLayers - 1) {
-      bottomY = SnowProfile.snowLayers[i + 1].handleGetY() +
-        SnowProfile.HANDLE_SIZE / 2;
-    }
-    return [x, topY,x, bottomY];
   }
 
   /**
@@ -556,19 +507,27 @@ SnowProfile.Layer = function(depthArg) {
   };
 
   /**
-   * Set position and length of the horizontal line at top of this layer
-   *
+   * Set coordinates of the layer outline
    */
-  this.setHorizLine = function() {
-    horizLine.setPoints(horizLinePts());
-  };
+  this.setLayerOutline = function() {
+    var i = self.getIndex();
+    var numLayers = SnowProfile.snowLayers.length;
+    var x = handle.getX();
+    var yTop = handle.getY() +  (SnowProfile.HANDLE_SIZE / 2);
+    var yBottom = SnowProfile.HANDLE_SIZE / 2;
+    if (i === (numLayers - 1)) {
 
-  /**
-   * Set position and length of the vertical line at right side of this layer
-   *
-   */
-  this.setVertLine = function() {
-    vertLine.setPoints(vertLinePts());
+      // This is the bottom layer so bottom Y is bottom of graph
+      yBottom += SnowProfile.handleMaxY;
+    }
+    else {
+
+      // Not the bottom layer so bottom Y is top of next lower layer
+      yBottom += SnowProfile.snowLayers[i+1].handleGetY();
+    }
+    layerOutline.width(x - SnowProfile.DEPTH_LABEL_WD - 1);
+    layerOutline.y(yTop);
+    layerOutline.height(yBottom - yTop);
   };
 
   /**
@@ -579,7 +538,6 @@ SnowProfile.Layer = function(depthArg) {
    */
   this.draw = function() {
     var i = self.getIndex();
-    var numLayers = SnowProfile.snowLayers.length;
 
     // Set handle X from hardness
     handle.setX(self.code2x(hardness));
@@ -587,26 +545,15 @@ SnowProfile.Layer = function(depthArg) {
     // Set handle Y from depth
     handle.setY(SnowProfile.depth2y(depthVal));
 
-    // Adjust the horizontal line defining this layer
-    self.setHorizLine();
-
-    // Adjust the vertical line defining this layer
-    self.setVertLine();
+    // Adjust the rectangle that outlines this layer
+    self.setLayerOutline();
 
     // Adjust the diagonal line to the description area
     self.setDiagLine();
 
-    // Adjust the horizontal line of the layer below, if any.
-    // That line should extend to its own handle or to the vertical line
-    // dropping from the handle of this layer, whichever is greater.
-    if (i !== (numLayers - 1)) {
-      SnowProfile.snowLayers[i + 1].setHorizLine();
-    }
-
-    // Adjust the vertical line of the layer above, if any
-    // That line should extend to the top of this layer.
+    // Adjust the outline of the layer above, if any
     if (i !== 0) {
-      SnowProfile.snowLayers[i - 1].setVertLine();
+      SnowProfile.snowLayers[i - 1].setLayerOutline();
     }
     SnowProfile.stage.draw();
   }; // this.draw = function() {
@@ -693,8 +640,7 @@ SnowProfile.Layer = function(depthArg) {
   SnowProfile.kineticJSLayer.add(commentDescr);
   SnowProfile.kineticJSLayer.add(lineBelow);
   SnowProfile.kineticJSLayer.add(handleLoc);
-  SnowProfile.kineticJSLayer.add(horizLine);
-  SnowProfile.kineticJSLayer.add(vertLine);
+  SnowProfile.kineticJSLayer.add(layerOutline);
   SnowProfile.kineticJSLayer.add(handle);
   SnowProfile.kineticJSLayer.add(diagLine);
 
@@ -817,7 +763,7 @@ SnowProfile.Layer = function(depthArg) {
 
     // Adjust the horizontal (hardness) position
     hardness = self.x2code(handle.getX());
-    self.setHorizLine();
+    self.setLayerOutline();
 
     // Adjust the vertical (depth) position
     depthVal = self.y2depth(handle.getY());
