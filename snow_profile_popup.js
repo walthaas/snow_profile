@@ -16,7 +16,7 @@
     for (code in SnowProfile.CAAML_SHAPE) {
       if (SnowProfile.CAAML_SHAPE.hasOwnProperty(code)) {
         $("#snow_profile_grain_shape").append("<option value=\"" + code +
-          "\">" + SnowProfile.CAAML_SHAPE[code] + "</option>");
+          "\">" + SnowProfile.CAAML_SHAPE[code].text + "</option>");
       }
     }
 

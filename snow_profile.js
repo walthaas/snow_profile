@@ -208,15 +208,15 @@ var SnowProfile = {};
       @const
      */
     CAAML_SHAPE: {
-      PP: "Precipitation Particles",
-      MM: "Machine Made",
-      DF: "Decomposing/Fragmented",
-      RG: "Rounded Grains",
-      FC: "Faceted Crystals",
-      DH: "Depth Hoar",
-      SH: "Surface Hoar",
-      MF: "Melt Forms",
-      IF: "Ice Formations"
+      PP: {text: "Precipitation Particles"},
+      MM: {text: "Machine Made"},
+      DF: {text: "Decomposing/Fragmented"},
+      RG: {text: "Rounded Grains"},
+      FC: {text: "Faceted Crystals"},
+      DH: {text: "Depth Hoar"},
+      SH: {text: "Surface Hoar"},
+      MF: {text: "Melt Forms"},
+      IF: {text: "Ice Formations"}
     },
 
     /**

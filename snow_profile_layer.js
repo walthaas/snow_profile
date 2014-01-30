@@ -444,7 +444,7 @@ SnowProfile.Layer = function(depthArg) {
         // Build a text description from what we have
         var text = "";
         if (grainShape !== "") {
-          text += SnowProfile.CAAML_SHAPE[grainShape];
+          text += SnowProfile.CAAML_SHAPE[grainShape].text;
           if (grainSubShape !== "") {
             text += "\n" +
               SnowProfile.CAAML_SUBSHAPE[grainShape][grainSubShape];
