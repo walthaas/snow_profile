@@ -202,8 +202,8 @@ var SnowProfile = {};
 
     /**
       Table of CAAML grain shapes.
-      Property name is the code value to store
-      Property value is the humanly-readable description
+      Property name is the code value to store.
+      Property value is the humanly-readable description.
       @type {Object}
       @const
      */
@@ -213,7 +213,23 @@ var SnowProfile = {};
       DF: {text: "Decomposing/Fragmented"},
       RG: {text: "Rounded Grains"},
       FC: {text: "Faceted Crystals"},
-      DH: {text: "Depth Hoar"},
+      DH: {
+        text: "Depth Hoar",
+        icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAeCAYAAA" +
+          "BNChwpAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAjuwAAI7sBWQdZ2QAAABl0RV" +
+          "h0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAH2SURBVEiJtdU/SJVRHM" +
+          "bxz2sSIghSgRAODgkRQS1ObhIRtDS5uQnS0hIEQoLQ4NTQ0pKTTW4SBNHQ5OSk1B" +
+          "AVuDgI/UEUEcw8DR7h7XC7nvd474EfvPec33me7/vjfbhVCEHpqqrqHoQQ3hVrlA" +
+          "JUVdWLjfjzVgjhqESnp8j9ZM3gRqyZUpGiCVRVNYhvuBy3fuJaCGGnqVbpBOZq5u" +
+          "LzXJFSCKFRYRSHCEkdYrSxXgHASgvz01rpKgAmEsPvsep7E10BcPK9rCdmD2PV99" +
+          "bR0w2A6cToIy7E+pScTXcUAAPYTkzu1M7vJmfbGOgkwEJi8KZFz9ukZ6EjABjBwV" +
+          "lxw3X8rvUdYKQTAMvJmz1v0/si6V0+FwDGW8RusE3/JfxK7owXAaDCWhq7jIk9Su" +
+          "6sif85TQGmWsUuA6AXn5O7U40A0I+t/8UuA+J+cncL/U0A5s+KXQbE+0RjPgsAw9" +
+          "g/K3YZADdxVNPZx3AOwFJu7DIgXiZaS20BMIbj3NhlAFzBTk3vGGPtAFabxi4D4n" +
+          "GiudoSAJMlscsAuIivifbkPwDow2Zp7DIgHiTam+irA8yeN3YZEB8Sj9m4bwi754" +
+          "1dBsBt/Kn57EZvi52KXQbEq8RrsSd+IPtO1g880731FHvxeQ9fTsmu4jVmuvX2tS" +
+          "k8iZMYCiH4C9201TU2DtZhAAAAAElFTkSuQmCC"
+      },
       SH: {text: "Surface Hoar"},
       MF: {text: "Melt Forms"},
       IF: {text: "Ice Formations"}
@@ -528,6 +544,21 @@ var SnowProfile = {};
       stroke: SnowProfile.GRID_COLOR,
       strokeWidth: 1
     }));
+
+    // Add an icon to see if it works
+    var imageObj = new Image();
+    imageObj.onload = function() {
+      var newIcon = new Kinetic.Image({
+        x:100,
+        y:100,
+        image: imageObj,
+        width:32,
+        height:32
+      });
+      SnowProfile.kineticJSLayer.add(newIcon);
+    };
+    imageObj.src = SnowProfile.CAAML_SHAPE.DH.icon;
+
 
     // Add an "Insert" button to allow the user to insert a snow layer
     // above the top snow layer.
