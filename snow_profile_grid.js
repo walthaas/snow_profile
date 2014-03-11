@@ -1,7 +1,7 @@
 /**
  @file Define the object that describes the reference grid
  @copyright Walt Haas <haas@xmission.com>
- @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPVv2}
+ @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPLv2}
  */
 
 /* global SnowProfile */

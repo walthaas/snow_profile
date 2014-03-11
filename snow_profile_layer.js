@@ -1,7 +1,7 @@
 /**
  @file Define the object that describes a snow layer
  @copyright Walt Haas <haas@xmission.com>
- @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPVv2}
+ @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPLv2}
  */
 
 /* global SnowProfile */
@@ -28,14 +28,17 @@ SnowProfile.Layer = function(depthArg) {
 
   /**
    * @summary Grain shape of this layer.
+   * @todo Revise this doc.
    * @desc Two- or four-character code from the
    * [IACS 2009 Standard]{@link http://www.cryosphericsciences.org/products/snowClassification/snowclass_2009-11-23-tagged-highres.pdf}
    * Appendix A.1 table as stored in {@link SnowProfile.CAAML_SHAPE} or
    * {@link SnowProfile.CAAML_SUBSHAPE}.
    * @type {string}
    */
-  var grainShape = "";
-  var grainSubShape = "";
+  var primaryGrainShape = "";
+  var primaryGrainSubShape = "";
+  var secondaryGrainShape = "";
+  var secondaryGrainSubShape = "";
 
   /**
    * @summary Grain size of this snow layer.
@@ -418,8 +421,10 @@ SnowProfile.Layer = function(depthArg) {
 
       // Called with no argument, return an object with the values
       return {
-        grainShape: grainShape,
-        grainSubShape: grainSubShape,
+        primaryGrainShape: primaryGrainShape,
+        primaryGrainSubShape: primaryGrainSubShape,
+        secondaryGrainShape: secondaryGrainShape,
+        secondaryGrainSubShape: secondaryGrainSubShape,
         grainSize: grainSize,
         lwc: lwc,
         comment: comment,
@@ -430,10 +435,12 @@ SnowProfile.Layer = function(depthArg) {
     else {
 
       // Called with an argument so set values for layer
-      grainShape = data.grainShape;
-      grainSubShape = data.grainSubShape;
+      primaryGrainShape = data.primaryGrainShape;
+      primaryGrainSubShape = data.primaryGrainSubShape;
+      secondaryGrainShape = data.secondaryGrainShape;
+      secondaryGrainSubShape = data.secondaryGrainSubShape;
       grainSize = data.grainSize;
-      if ((grainShape === "") &&
+      if ((primaryGrainShape === "") &&
         (grainSize === "")) {
 
         // No information about grains
@@ -443,11 +450,11 @@ SnowProfile.Layer = function(depthArg) {
 
         // Build a text description from what we have
         var text = "";
-        if (grainShape !== "") {
-          text += SnowProfile.CAAML_SHAPE[grainShape].text;
-          if (grainSubShape !== "") {
+        if (primaryGrainShape !== "") {
+          text += SnowProfile.CAAML_SHAPE[primaryGrainShape].text;
+          if (primaryGrainSubShape !== "") {
             text += "\n" +
-              SnowProfile.CAAML_SUBSHAPE[grainShape][grainSubShape];
+              SnowProfile.CAAML_SUBSHAPE[primaryGrainShape][primaryGrainSubShape];
           }
         }
         if (grainSize !== "") {

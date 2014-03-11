@@ -1,7 +1,7 @@
 /**
   @file Defines the namespace and configuration for the snow profile editor.
   @copyright Walt Haas <haas@xmission.com>
-  @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPVv2}
+  @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPLv2}
   @namespace SnowProfile
  */
 
@@ -208,31 +208,122 @@ var SnowProfile = {};
       @const
      */
     CAAML_SHAPE: {
-      PP: {text: "Precipitation Particles"},
-      MM: {text: "Machine Made"},
-      DF: {text: "Decomposing/Fragmented"},
-      RG: {text: "Rounded Grains"},
-      FC: {text: "Faceted Crystals"},
+      PP: {
+        text: "Precipitation Particles",
+        icon: {
+          image: "iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAABHNC" +
+            "SVQICAgIfAhkiAAAAAlwSFlzAAAN/wAADf8B9IqyiQAAABl0RVh0U29md" +
+            "HdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAABBSURBVBiVY/j//z8DMm" +
+            "ZgYFjBwMCwA12ciYFIQH2FjAwMDBvQxEwYGBhYGRgYjiMLsjAwMHCgKWS" +
+            "G2oQqPgR8DQBaczRnq8swOAAAAABJRU5ErkJggg==",
+          height: 10,
+          width: 10
+        }
+      },
+      MM: {
+        text: "Machine Made",
+        icon: {
+          image: "iVBORw0KGgoAAAANSUhEUgAAAAsAAAALCAYAAACprHcmAAAABHNC" +
+            "SVQICAgIfAhkiAAAAAlwSFlzAAAN/wAADf8B9IqyiQAAABl0RVh0U29md" +
+            "HdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAADcSURBVBiVbdGhSsNRGI" +
+            "bx37yBsTBYGsgYMqfBbFrxBhZN3oOgyeSQgU0Ek8kgGr0ILTIsWozCYFj" +
+            "GwKbH4LvxDx444cDzfrzfc5RSlFKggTGeMMcjzlBfMQEHmAa6wynuscAH" +
+            "dsNpYpaJbfQwRBfreE6gDpeZ0MYIPyj4xjE6+EolE9xiO9A1+rhJoIuH7" +
+            "GCBExwE7qRfP+8hzjFfwzs28eLvHNVqtR4OA79iA29wVel8EWB5R5XOY2" +
+            "jhs2JjB/vYqtiYorH0vJfAf55nGKw+JYFWKk0CTaK1uWR+Aai+ZHz0ufc" +
+            "/AAAAAElFTkSuQmCC",
+          height: 11,
+          width: 11
+        }
+      },
+      DF: {
+        text: "Decomposing/Fragmented",
+        icon: {
+          image: "iVBORw0KGgoAAAANSUhEUgAAAAwAAAALCAYAAABLcGxfAAAABHNC" +
+            "SVQICAgIfAhkiAAAAAlwSFlzAAAN/wAADf8B9IqyiQAAABl0RVh0U29md" +
+            "HdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAACZSURBVCiRjdE9DkEBDA" +
+            "Dg7xEmI7OYJQ5gcAGLG5hsjuAQTsEZxA3ETsxiMIgJCVKLiL/nadKl/ZK" +
+            "mbRIRsiJJkhyG2Ob+wEWM0MdJRKQmSpjijG5E+IUrmOOA9qOegmtYYYfm" +
+            "S+8LbmCDNeof/Tfcwh5LVL9Of8IdHDFDOXW3O+7hgglKGZczQGCMwi8cE" +
+            "fJoYoFeRFyzHnkDrgjcZmZpVyQAAAAASUVORK5CYII=",
+          height: 12,
+          width: 11
+        }
+      },
+      RG: {
+        text: "Rounded Grains",
+        icon: {
+          image: "iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAABHNC" +
+            "SVQICAgIfAhkiAAAAAlwSFlzAAAN/wAADf8B9IqyiQAAABl0RVh0U29md" +
+            "HdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAABmSURBVBiVhdAxDoNADE" +
+            "TRp10ODBXKlSKlTBWqVKFIT8Ep4ABO43TAWhpN4a+xxiICCgbM2NJ7lNy" +
+            "reCEO9MwA4wnwVw/fBvSBvQFtBavrWQoeDegOHd4npyZU+YcOtyyxp4+o" +
+            "EeEHsA48LYJE+zsAAAAASUVORK5CYII=",
+          height: 9,
+          width: 9
+        }
+      },
+      FC: {
+        text: "Faceted Crystals",
+        icon: {
+        }
+      },
       DH: {
         text: "Depth Hoar",
-        icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAeCAYAAA" +
-          "BNChwpAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAjuwAAI7sBWQdZ2QAAABl0RV" +
-          "h0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAH2SURBVEiJtdU/SJVRHM" +
-          "bxz2sSIghSgRAODgkRQS1ObhIRtDS5uQnS0hIEQoLQ4NTQ0pKTTW4SBNHQ5OSk1B" +
-          "AVuDgI/UEUEcw8DR7h7XC7nvd474EfvPec33me7/vjfbhVCEHpqqrqHoQQ3hVrlA" +
-          "JUVdWLjfjzVgjhqESnp8j9ZM3gRqyZUpGiCVRVNYhvuBy3fuJaCGGnqVbpBOZq5u" +
-          "LzXJFSCKFRYRSHCEkdYrSxXgHASgvz01rpKgAmEsPvsep7E10BcPK9rCdmD2PV99" +
-          "bR0w2A6cToIy7E+pScTXcUAAPYTkzu1M7vJmfbGOgkwEJi8KZFz9ukZ6EjABjBwV" +
-          "lxw3X8rvUdYKQTAMvJmz1v0/si6V0+FwDGW8RusE3/JfxK7owXAaDCWhq7jIk9Su" +
-          "6sif85TQGmWsUuA6AXn5O7U40A0I+t/8UuA+J+cncL/U0A5s+KXQbE+0RjPgsAw9" +
-          "g/K3YZADdxVNPZx3AOwFJu7DIgXiZaS20BMIbj3NhlAFzBTk3vGGPtAFabxi4D4n" +
-          "GiudoSAJMlscsAuIivifbkPwDow2Zp7DIgHiTam+irA8yeN3YZEB8Sj9m4bwi754" +
-          "1dBsBt/Kn57EZvi52KXQbEq8RrsSd+IPtO1g880731FHvxeQ9fTsmu4jVmuvX2tS" +
-          "k8iZMYCiH4C9201TU2DtZhAAAAAElFTkSuQmCC"
+        icon: {
+          image: "iVBORw0KGgoAAAANSUhEUgAAAA0AAA" +
+            "AMCAYAAAC5tzfZAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAN/wAADf8" +
+            "B9IqyiQAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoA" +
+            "AACsSURBVCiRjdEhDsJAEAXQRw2ioroO3UtwBE6ArEVzACQCjoDmCD0ED" +
+            "oXFYBEIUhYzojSlsMlm83fmTbJZKSX9jQl2mAzWv6AlEpZ/IeS4Broi/w" +
+            "dt8MIqzs0owgwPHCIfIs/G0BF3lJHLyMdBhHm8Y90btI77+QdChhMumPb" +
+            "QNO5PyLqojmmLL1+wiHodWYEbmiHQgU30FbDFE9UPVEXfNkOLfUrpbGRF" +
+            "fY/2DaXII1lKdBtjAAAAAElFTkSuQmCC",
+          height: 13,
+          width: 12
+        }
       },
-      SH: {text: "Surface Hoar"},
-      MF: {text: "Melt Forms"},
-      IF: {text: "Ice Formations"}
+      SH: {
+        text: "Surface Hoar",
+        icon: {
+          image: "iVBORw0KGgoAAAANSUhEUgAAAA0AAAAMCAYAAAC5tzfZAAAABHNC" +
+            "SVQICAgIfAhkiAAAAAlwSFlzAAAN/wAADf8B9IqyiQAAABl0RVh0U29md" +
+            "HdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAC6SURBVCiRhc8tbkJREI" +
+            "bhZ0qCKQaFxrILFsASsE1QGFgCVTVdAEtgAWwDW43D4EiTZjADaW/vzZ3" +
+            "kZPL9vCeZwDuGmbnRMxHxge8XvGIdEbMeYIZ19Y1xwTEzdT0cqzd+GCsk" +
+            "Fh3AovJVZnqYA5zwVff9BoblnzB4QhXO67dtA9qWP396jcIBV0xKT0of/" +
+            "vQa0BQ37EvvS087oSru8IO32rt/nRZohHPdccaoFypwWdCyNe+AAp+Itv" +
+            "wObdwHHKZZfd8AAAAASUVORK5CYII=",
+          height: 13,
+          width: 12
+        }
+      },
+      MF: {
+        text: "Melt Forms",
+        icon: {
+          image: "iVBORw0KGgoAAAANSUhEUgAAAAsAAAALCAYAAACprHcmAAAABHNC" +
+            "SVQICAgIfAhkiAAAAAlwSFlzAAAN/wAADf8B9IqyiQAAABl0RVh0U29md" +
+            "HdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAACwSURBVBiVjdExakIBEI" +
+            "Th73kBESJYBcRAwCtYvcYzeCBBPIDgGZIyhzBNeF1EsBQEsZGA7Vq4TxQ" +
+            "iuuXuP8MwKyJEBLQwxTcOWGCC5oVJsMQ2oQ+M8Yk/bDBIThu7dHytXfLY" +
+            "xU8KmjBLhxvwStDDEZMCFVYRMXJniqL4wksDb/i9B+as0G9gjf4D+B1Lm" +
+            "D+ZeQod7B+0sUWrXg5T8F/PO5SXp6Sgk5GqhCrnWts1cwKxkX9atWiAlQ" +
+            "AAAABJRU5ErkJggg==",
+          height: 11,
+          width: 11
+        }
+      },
+      IF: {
+        text: "Ice Formations",
+        icon: {
+          image: "iVBORw0KGgoAAAANSUhEUgAAAAoAAAAHCAYAAAAxrNxjAAAABHNC" +
+            "SVQICAgIfAhkiAAAAAlwSFlzAAAN/wAADf8B9IqyiQAAABl0RVh0U29md" +
+            "HdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAAWSURBVBiVY2RgYPjPQA" +
+            "RgIkbRsFMIACLsAQ1q3ztJAAAAAElFTkSuQmCC",
+          height: 10,
+          width: 7
+        }
+      }
     },
 
     /**
@@ -551,13 +642,14 @@ var SnowProfile = {};
       var newIcon = new Kinetic.Image({
         x:100,
         y:100,
-        image: imageObj,
-        width:32,
-        height:32
+        image: imageObj//,
+        //width:12,
+        //height:13
       });
       SnowProfile.kineticJSLayer.add(newIcon);
     };
-    imageObj.src = SnowProfile.CAAML_SHAPE.DH.icon;
+    imageObj.src = "data:image/png;base64," +
+      SnowProfile.CAAML_SHAPE.DH.icon.image;
 
 
     // Add an "Insert" button to allow the user to insert a snow layer

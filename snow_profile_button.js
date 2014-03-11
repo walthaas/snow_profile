@@ -3,7 +3,7 @@
   to get more control over the size and location of the button than we can
   get by using an HTML <button>button</button>.
   @copyright Walt Haas <haas@xmission.com>
-  @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPVv2}
+  @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPLv2}
  */
 
 /* global SnowProfile */
