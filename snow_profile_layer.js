@@ -451,13 +451,33 @@ SnowProfile.Layer = function(depthArg) {
         // Build a text description from what we have
         var text = "";
         if (primaryGrainShape !== "") {
+
+          // Grain shape information is available
+          if (secondaryGrainShape !== "") {
+
+            // Both primary and secondary shapes so identify them
+            text += "Primary Grain Shape:\n";
+          }
           text += SnowProfile.CAAML_SHAPE[primaryGrainShape].text;
           if (primaryGrainSubShape !== "") {
             text += "\n" +
-              SnowProfile.CAAML_SUBSHAPE[primaryGrainShape][primaryGrainSubShape];
+            SnowProfile.CAAML_SUBSHAPE[primaryGrainShape][primaryGrainSubShape];
+          }
+          if (secondaryGrainShape !== "") {
+
+            // Describe the secondary grain shape
+            text += "\nSecondary Grain Shape:\n" +
+              SnowProfile.CAAML_SHAPE[secondaryGrainShape].text;
+            if (secondaryGrainSubShape !== "") {
+              text += "\n" +
+                SnowProfile.CAAML_SUBSHAPE[secondaryGrainShape][
+                secondaryGrainSubShape];
+            }
           }
         }
         if (grainSize !== "") {
+
+          // Grain size information is available.
           if (text) {
             text += "\n";
           }
@@ -466,7 +486,7 @@ SnowProfile.Layer = function(depthArg) {
         grainDescr.setText(text);
       }
 
-      // Liquid water content description
+      // Liquid water content description.
       lwc = data.lwc;
       if (lwc === "") {
         LWCDescr.setText("");
