@@ -211,13 +211,13 @@ var SnowProfile = {};
       PP: {
         text: "Precipitation Particles",
         icon: {
-          image: "iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAABHNC" +
-            "SVQICAgIfAhkiAAAAAlwSFlzAAAN/wAADf8B9IqyiQAAABl0RVh0U29md" +
-            "HdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAABBSURBVBiVY/j//z8DMm" +
-            "ZgYFjBwMCwA12ciYFIQH2FjAwMDBvQxEwYGBhYGRgYjiMLsjAwMHCgKWS" +
-            "G2oQqPgR8DQBaczRnq8swOAAAAABJRU5ErkJggg==",
-          height: 10,
-          width: 10
+          image: "iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAABHNC" +
+            "SVQICAgIfAhkiAAAAAlwSFlzAAARagAAEWoBAFXniAAAABl0RVh0U29md" +
+            "HdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAABPSURBVCiRY/j//z8DOm" +
+            "ZgYEhgYGD4z8DAkIFNnomBDDDINbEwMjJmYBG3hNK2jIyMGJKMDJBQIgk" +
+            "wMjAw4LIpjoGBYRkDA8NhDNnReIIAAEJwQ7TYUolnAAAAAElFTkSuQmCC",
+          height: 13,
+          width: 13
         }
       },
       MM: {
@@ -232,96 +232,111 @@ var SnowProfile = {};
             "GCBExwE7qRfP+8hzjFfwzs28eLvHNVqtR4OA79iA29wVel8EWB5R5XOY2" +
             "jhs2JjB/vYqtiYorH0vJfAf55nGKw+JYFWKk0CTaK1uWR+Aai+ZHz0ufc" +
             "/AAAAAElFTkSuQmCC",
-          height: 11,
-          width: 11
+          height: 13,
+          width: 13
         }
       },
       DF: {
         text: "Decomposing/Fragmented",
         icon: {
-          image: "iVBORw0KGgoAAAANSUhEUgAAAAwAAAALCAYAAABLcGxfAAAABHNC" +
-            "SVQICAgIfAhkiAAAAAlwSFlzAAAN/wAADf8B9IqyiQAAABl0RVh0U29md" +
-            "HdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAACZSURBVCiRjdE9DkEBDA" +
-            "Dg7xEmI7OYJQ5gcAGLG5hsjuAQTsEZxA3ETsxiMIgJCVKLiL/nadKl/ZK" +
-            "mbRIRsiJJkhyG2Ob+wEWM0MdJRKQmSpjijG5E+IUrmOOA9qOegmtYYYfm" +
-            "S+8LbmCDNeof/Tfcwh5LVL9Of8IdHDFDOXW3O+7hgglKGZczQGCMwi8cE" +
-            "fJoYoFeRFyzHnkDrgjcZmZpVyQAAAAASUVORK5CYII=",
-          height: 12,
-          width: 11
+          image: "iVBORw0KGgoAAAANSUhEUgAAABMAAAASCAYAAAC5DOVpAAAABHNC" +
+            "SVQICAgIfAhkiAAAAAlwSFlzAAAV6wAAFesBBGcFMAAAABl0RVh0U29md" +
+            "HdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAADxSURBVDiNpdKrSkRRFA" +
+            "bgzwsKIngBMRgmGAwWo+bp+gD6AOIDCD6AYJ9gFqwG44g2g8lgESyCQbB" +
+            "PGBh0WfaRrc7tnBN2Wj/fgrV/EaHOww7usFwXaqKDwE0daA/dBL1jsyp0" +
+            "gF6CXrEeEapAR/hK0DPWfmYloZOEBB6x8mteAjrLoHss/MuMgUziPIPam" +
+            "OubHQFN4zKDrjAzMD8EmsV1Bl1gaujyAdB8anUBtTAx8iR9oCU8ZNDp2J" +
+            "/0B1rFUwYdl6pOBjXwkpBPHJYudII28JagHvbLQsmxhY8EdbFbBSqwdoI" +
+            "6aFaFCmwRt9iuA0WEb9vULhTE9LrXAAAAAElFTkSuQmCC",
+          height: 18,
+          width: 19
         }
       },
       RG: {
         text: "Rounded Grains",
         icon: {
-          image: "iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAABHNC" +
-            "SVQICAgIfAhkiAAAAAlwSFlzAAAN/wAADf8B9IqyiQAAABl0RVh0U29md" +
-            "HdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAABmSURBVBiVhdAxDoNADE" +
-            "TRp10ODBXKlSKlTBWqVKFIT8Ep4ABO43TAWhpN4a+xxiICCgbM2NJ7lNy" +
-            "reCEO9MwA4wnwVw/fBvSBvQFtBavrWQoeDegOHd4npyZU+YcOtyyxp4+o" +
-            "EeEHsA48LYJE+zsAAAAASUVORK5CYII=",
-          height: 9,
-          width: 9
+          image: "iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAABHNC" +
+            "SVQICAgIfAhkiAAAAAlwSFlzAAATEQAAExEBOWB/8AAAABl0RVh0U29md" +
+            "HdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAACASURBVCiRldLRCcJAEE" +
+            "XRk00LQsCqtIOsJQYVDPphAeki2Mb6swkRMWYH3t+9zMA8KSVTENHhldO" +
+            "h/WAy2OCG9CNX7JZCvwLPUmbFDfCUNuBg+xxhLNgwBtQFG+qAoUAYAi4F" +
+            "whkCnv7ff0c1/WGPxwrco5kfl6UKJ9/ViMtqvAGD/nbwFTl/UgAAAABJR" +
+            "U5ErkJggg==",
+          height: 12,
+          width: 12
         }
       },
       FC: {
         text: "Faceted Crystals",
         icon: {
+          image: "iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAABHNC" +
+            "SVQICAgIfAhkiAAAAAlwSFlzAAARagAAEWoBAFXniAAAABl0RVh0U29md" +
+            "HdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAABPSURBVCiR7dExCoBAEE" +
+            "PRt2IlXsPK+9/BUrDyImI3Fq61O42VgSFNPhNIQUiqr35ib8hPGNRPa0R" +
+            "4OyyILlsNfuhzqLjHPbA15GeMD5TSBUq1JZC/MAMeAAAAAElFTkSuQmCC",
+          height: 13,
+          width: 13
         }
       },
       DH: {
         text: "Depth Hoar",
         icon: {
-          image: "iVBORw0KGgoAAAANSUhEUgAAAA0AAA" +
-            "AMCAYAAAC5tzfZAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAN/wAADf8" +
-            "B9IqyiQAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoA" +
-            "AACsSURBVCiRjdEhDsJAEAXQRw2ioroO3UtwBE6ArEVzACQCjoDmCD0ED" +
-            "oXFYBEIUhYzojSlsMlm83fmTbJZKSX9jQl2mAzWv6AlEpZ/IeS4Broi/w" +
-            "dt8MIqzs0owgwPHCIfIs/G0BF3lJHLyMdBhHm8Y90btI77+QdChhMumPb" +
-            "QNO5PyLqojmmLL1+wiHodWYEbmiHQgU30FbDFE9UPVEXfNkOLfUrpbGRF" +
-            "fY/2DaXII1lKdBtjAAAAAElFTkSuQmCC",
-          height: 13,
-          width: 12
+          image: "iVBORw0KGgoAAAANSUhEUgAAABEAAAAQCAYAAADwMZRfAAAABHNC" +
+            "SVQICAgIfAhkiAAAAAlwSFlzAAAStQAAErUB1jM0ZgAAABl0RVh0U29md" +
+            "HdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAD1SURBVDiNndMvS0NRGA" +
+            "fgZ0GYCoaloRhMi6sGP8NA2wxm4/JAEJtFWF9RMBmXF8XgJ1icmFemIoL" +
+            "O8hPm2P9wuLzv+zvPgXvuNRqNzFu4WZhZANQxQn0tBEX0g/RRXAdpBvhb" +
+            "zZUQlDHED87zHKK8CtLO6bep71K3l0JQxTfesJveHt7Try6DdHPqxUT/M" +
+            "v3uXAS1BF+wOTHbwmvmtakINtBL6HTGuzrLvIeNaUgjgScUZiAFPCfX+I" +
+            "eghEGu8nDBV3wUZIDSONLK4H7Rf5L8Q/Kt1Cr4wgf2l0QO8Jl9FehEvVo" +
+            "GGIOus68DJ3jE9orITi7h+BfPSUFU8uzJMwAAAABJRU5ErkJggg==",
+          height: 17,
+          width: 16
         }
       },
       SH: {
         text: "Surface Hoar",
         icon: {
-          image: "iVBORw0KGgoAAAANSUhEUgAAAA0AAAAMCAYAAAC5tzfZAAAABHNC" +
-            "SVQICAgIfAhkiAAAAAlwSFlzAAAN/wAADf8B9IqyiQAAABl0RVh0U29md" +
-            "HdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAC6SURBVCiRhc8tbkJREI" +
-            "bhZ0qCKQaFxrILFsASsE1QGFgCVTVdAEtgAWwDW43D4EiTZjADaW/vzZ3" +
-            "kZPL9vCeZwDuGmbnRMxHxge8XvGIdEbMeYIZ19Y1xwTEzdT0cqzd+GCsk" +
-            "Fh3AovJVZnqYA5zwVff9BoblnzB4QhXO67dtA9qWP396jcIBV0xKT0of/" +
-            "vQa0BQ37EvvS087oSru8IO32rt/nRZohHPdccaoFypwWdCyNe+AAp+Itv" +
-            "wObdwHHKZZfd8AAAAASUVORK5CYII=",
-          height: 13,
-          width: 12
+          image: "iVBORw0KGgoAAAANSUhEUgAAABEAAAAQCAYAAADwMZRfAAAABHNC" +
+            "SVQICAgIfAhkiAAAAAlwSFlzAAAStQAAErUB1jM0ZgAAABl0RVh0U29md" +
+            "HdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAEDSURBVDiNldIxTkJBFI" +
+            "Xhj4qgiSUJGgsXQENlYa0LoKOwdgVUmBg7K2sqoomVS6Aimli4BhrjBkj" +
+            "UWBjG5j6C8B6MxS3mnHP/ezMzcIYn7KaU5Bb28IxTGCPh+p+Qm+gbQxs/" +
+            "+MJhJuAI39HXLsRhUB8yIY+RH6aUFGITM8xxvAVwEoAZmgtImP0wX1CrA" +
+            "NTwGrn+Ql8K1DGNQK8Cch7+FPU1SIS6EXpDY8XbwXv43T9eybRJBC9X9K" +
+            "vQJ2s9JZBOXPAH9kM7wGfona2QaBrF1Ls438d5VJqvgLRikzkuljZrZUM" +
+            "CNIjpRQ0qsxsgjXil0tfKggSot+nf5EJquK36wUX9Amy9O8ZyCXfaAAAA" +
+            "AElFTkSuQmCC",
+          height: 16,
+          width: 17
         }
       },
       MF: {
         text: "Melt Forms",
         icon: {
-          image: "iVBORw0KGgoAAAANSUhEUgAAAAsAAAALCAYAAACprHcmAAAABHNC" +
-            "SVQICAgIfAhkiAAAAAlwSFlzAAAN/wAADf8B9IqyiQAAABl0RVh0U29md" +
-            "HdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAACwSURBVBiVjdExakIBEI" +
-            "Th73kBESJYBcRAwCtYvcYzeCBBPIDgGZIyhzBNeF1EsBQEsZGA7Vq4TxQ" +
-            "iuuXuP8MwKyJEBLQwxTcOWGCC5oVJsMQ2oQ+M8Yk/bDBIThu7dHytXfLY" +
-            "xU8KmjBLhxvwStDDEZMCFVYRMXJniqL4wksDb/i9B+as0G9gjf4D+B1Lm" +
-            "D+ZeQod7B+0sUWrXg5T8F/PO5SXp6Sgk5GqhCrnWts1cwKxkX9atWiAlQ" +
-            "AAAABJRU5ErkJggg==",
-          height: 11,
-          width: 11
+          image: "iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAABHNC" +
+            "SVQICAgIfAhkiAAAAAlwSFlzAAATOQAAEzkBj8JWAQAAABl0RVh0U29md" +
+            "HdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAEESURBVCiRndMtS4RBFA" +
+            "Xg532DzSDoyiaTitEPxGLS4oLFtn9C8B+Y/RfmBUEMIiIGixi0KWgyycq" +
+            "Cot1rmVlGcJfVC5fh3jnnzJmvKiKUUVVVC1tYxQLucY2TiLj4AY4ISaCB" +
+            "DmJIHmKiz0nEJroJ8IpdLGMcK9hDL80/Z4FMPk4TZ5jMymViGpfZQd7uT" +
+            "mp0BxELgSbeEn6jTocD+xHRMyQi4gUHqdyusZSKq2HEIjJuDT7xhbFhlg" +
+            "vrU8n2R40nVJgbceX5ND7UuEvF+ojkjLuBtv+ddis3z/3tnjvlI5nBu9F" +
+            "eWBeNPrkQyA4G5TGamVP98qva2MQiZvGIW5xGxFGJ/QaoLuxwkopfZwAA" +
+            "AABJRU5ErkJggg==",
+          height: 15,
+          width: 15
         }
       },
       IF: {
         text: "Ice Formations",
         icon: {
-          image: "iVBORw0KGgoAAAANSUhEUgAAAAoAAAAHCAYAAAAxrNxjAAAABHNC" +
-            "SVQICAgIfAhkiAAAAAlwSFlzAAAN/wAADf8B9IqyiQAAABl0RVh0U29md" +
-            "HdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAAWSURBVBiVY2RgYPjPQA" +
-            "RgIkbRsFMIACLsAQ1q3ztJAAAAAElFTkSuQmCC",
-          height: 10,
-          width: 7
+          image: "iVBORw0KGgoAAAANSUhEUgAAAA0AAAAICAYAAAAiJnXPAAAABHNC" +
+            "SVQICAgIfAhkiAAAAAlwSFlzAAARagAAEWoBAFXniAAAABl0RVh0U29md" +
+            "HdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAAYSURBVBiVY2RgYPjPQC" +
+            "JgIlXDqCZKNQEAsVMBD3cM+XcAAAAASUVORK5CYII=",
+          height: 8,
+          width: 13
         }
       }
     },
@@ -333,59 +348,170 @@ var SnowProfile = {};
      */
     CAAML_SUBSHAPE: {
       PP: {
-        PPco: "Prismatic",
-        PPnd: "Needles",
-        PPpl: "Plates",
-        PPsd: "Stellars",
-        PPir: "Irregular",
-        PPgp: "Graupel",
-        PPhl: "Hail",
-        PPip: "Ice pellets",
-        PPrm: "Rimed"
+        PPco: {
+          text: "Prismatic",
+          icon: ""
+        },
+        PPnd:{
+          text: "Needles",
+          icon: ""
+        },
+        PPpl: {
+          text: "Plates",
+          icon: ""
+        },
+        PPsd: {
+          text: "Stellars",
+          icon: ""
+        },
+        PPir: {
+          text: "Irregular",
+          icon: ""
+        },
+        PPgp: {
+          text: "Graupel",
+          icon: ""
+        },
+        PPhl: {
+          text: "Hail",
+          icon: ""
+        },
+        PPip: {
+          text: "Ice pellets",
+          icon: ""
+        },
+        PPrm: {
+          text: "Rimed",
+          icon: ""
+        }
       },
       MM: {
-        MMrp: "Round polycrystalline",
-        MMci: "Crushed ice"
+        MMrp: {
+          text: "Round polycrystalline",
+          icon: ""
+        },
+        MMci: {
+          text: "Crushed ice",
+          icon: ""
+        }
       },
       DF: {
-        DFdc: "Partly decomposed",
-        DFbk: "Wind-broken"
+        DFdc: {
+          text: "Partly decomposed",
+          icon: ""
+        },
+        DFbk: {
+          text: "Wind-broken",
+          icon: ""
+        }
       },
       RG: {
-        RGsr: "Small rounded",
-        RGlr: "Large rounded",
-        RGwp: "Wind packed",
-        RGxf: "Faceted rounded"
+        RGsr: {
+          text: "Small rounded",
+          icon: ""
+        },
+        RGlr: {
+          text: "Large rounded",
+          icon: ""
+        },
+        RGwp: {
+          text: "Wind packed",
+          icon: ""
+        },
+        RGxf: {
+          text: "Faceted rounded",
+          icon: ""
+        }
       },
       FC: {
-        FCso: "Solid faceted",
-        FCsf: "Near surface",
-        FCxr: "Rounded faceted"
+        FCso: {
+          text: "Solid faceted",
+          icon: ""
+        },
+        FCsf: {
+          text: "Near surface",
+          icon: ""
+        },
+        FCxr: {
+          text: "Rounded faceted",
+          icon: ""
+        }
       },
       DH: {
-        DHcp: "Hollow cups",
-        DHpr: "Hollow prisms",
-        DHch: "Chains of depth hoar",
-        DHla: "Large striated",
-        DHxr: "Rounding depth hoar"
+        DHcp: {
+          text: "Hollow cups",
+          icon: ""
+        },
+        DHpr: {
+          text: "Hollow prisms",
+          icon: ""
+        },
+        DHch: {
+          text: "Chains of depth hoar",
+          icon: ""
+        },
+        DHla: {
+          text: "Large striated",
+          icon: ""
+        },
+        DHxr: {
+          text: "Rounding depth hoar",
+          icon: ""
+        }
       },
       SH: {
-        SHsu: "Surface hoar",
-        SHcv: "Cavity hoar",
-        SHxr: "Rounding surface hoar"
+        SHsu: {
+          text: "Surface hoar",
+          icon: ""
+        },
+        SHcv: {
+          text: "Cavity hoar",
+          icon: ""
+        },
+        SHxr: {
+          text: "Rounding surface hoar",
+          icon: ""
+        }
       },
       MF: {
-        MFcl: "Clustered rounded",
-        MFpc: "Rounded polycrystals",
-        MFsl: "Slush",
-        MFcr: "Melt-freeze crust"
+        MFcl: {
+          text: "Clustered rounded",
+          icon: ""
+        },
+        MFpc: {
+          text: "Rounded polycrystals",
+          icon: ""
+        },
+        MFsl: {
+          text: "Slush",
+          icon: ""
+        },
+        MFcr: {
+          text: "Melt-freeze crust",
+          icon: ""
+        }
       },
       IF: {
-        IFil: "Ice layer",
-        IFic: "Ice column",
-        IFbi: "Basal ice",
-        IFrc: "Rain crust",
-        IFsc: "Sun crust"
+        IFil: {
+          text: "Ice layer",
+          icon: ""
+        },
+        IFic: {
+          text: "Ice column",
+          icon: ""
+        },
+        IFbi: {
+          text: "Basal ice",
+          icon: ""
+        },
+        IFrc: {
+          text: "Rain crust",
+          icon: ""
+        },
+        IFsc: {
+          text: "Sun crust",
+          icon: ""
+        }
       }
     },
 
@@ -637,19 +763,17 @@ var SnowProfile = {};
     }));
 
     // Add an icon to see if it works
-    var imageObj = new Image();
-    imageObj.onload = function() {
-      var newIcon = new Kinetic.Image({
-        x:100,
-        y:100,
-        image: imageObj//,
-        //width:12,
-        //height:13
-      });
-      SnowProfile.kineticJSLayer.add(newIcon);
-    };
-    imageObj.src = "data:image/png;base64," +
-      SnowProfile.CAAML_SHAPE.DH.icon.image;
+    // var imageObj = new Image();
+    // imageObj.onload = function() {
+    //   var newIcon = new Kinetic.Image({
+    //     x:100,
+    //     y:100,
+    //     image: imageObj
+    //   });
+    //   SnowProfile.kineticJSLayer.add(newIcon);
+    // };
+    // imageObj.src = "data:image/png;base64," +
+    //   SnowProfile.CAAML_SHAPE.DH.icon.image;
 
 
     // Add an "Insert" button to allow the user to insert a snow layer

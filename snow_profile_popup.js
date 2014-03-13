@@ -38,9 +38,9 @@
         for (var subShape in SnowProfile.CAAML_SUBSHAPE[shape]) {
           if (SnowProfile.CAAML_SUBSHAPE[shape].hasOwnProperty(subShape)) {
             primary_opts += "<option value=\"" + subShape + "\">" +
-              SnowProfile.CAAML_SUBSHAPE[shape][subShape] + "</option>";
+              SnowProfile.CAAML_SUBSHAPE[shape][subShape].text + "</option>";
             secondary_opts += "<option value=\"" + subShape + "\">" +
-              SnowProfile.CAAML_SUBSHAPE[shape][subShape] + "</option>";
+              SnowProfile.CAAML_SUBSHAPE[shape][subShape].text + "</option>";
           }
         }
         primary_opts += "</select>";
@@ -80,7 +80,8 @@ SnowProfile.PopUp = function(data) {
   $("#snow_profile_primary_grain_shape option[value=" +
     data.primaryGrainShape + "]").attr("selected", true);
   $("#snow_profile_primary_grain_subshape select").css("display", "none");
-  $("#snow_profile_primary_grain_subshape_" + data.grainShape).css("display", "block");
+  $("#snow_profile_primary_grain_subshape_" + data.primaryGrainShape).
+    css("display", "block");
   $("#snow_profile_primary_grain_subshape option").attr("selected", false);
   $("#snow_profile_primary_grain_subshape option[value=" +
     data.primaryGrainSubShape + "]").attr("selected", true);
@@ -88,24 +89,14 @@ SnowProfile.PopUp = function(data) {
   $("#snow_profile_secondary_grain_shape option[value=" +
     data.secondaryGrainShape + "]").attr("selected", true);
   $("#snow_profile_secondary_grain_subshape select").css("display", "none");
-  $("#snow_profile_secondary_grain_subshape_" + data.grainShape).css("display", "block");
+  $("#snow_profile_secondary_grain_subshape_" + data.secondaryGrainShape).
+    css("display", "block");
   $("#snow_profile_secondary_grain_subshape option").attr("selected", false);
   $("#snow_profile_secondary_grain_subshape option[value=" +
     data.secondaryGrainSubShape + "]").attr("selected", true);
   $("#snow_profile_grain_size").val(data.grainSize);
   $("#snow_profile_lwc").val(data.lwc);
   $("#snow_profile_comment").val(data.comment);
-  // console.debug("data shape=%s  subshape=%s", data.grainShape,
-  //   data.grainSubShape);
-  // $("#snow_profile_grain_shape option").each(function(i) {
-  //   console.debug("%d: '%s'", i, $(this).val(), $(this).attr("selected"));
-  // });
-  // $("#snow_profile_grain_subshape select").each(function(i) {
-  //   console.debug("%d: '%s' %s", i, $(this).attr("id"), $(this).css("display"));
-  //   $(this).find("option").each(function(i) {
-  //     console.debug("%d: '%s'", i, $(this).val(), $(this).attr("selected"));
-  //   });
-  // });
   var editArgs = {
     modal: true,
     width: 400,
@@ -123,7 +114,8 @@ SnowProfile.PopUp = function(data) {
             primaryGrainSubShape: $("#snow_profile_primary_grain_subshape_" +
               $("#snow_profile_primary_grain_shape").val()).val(),
             secondaryGrainShape: $("#snow_profile_secondary_grain_shape").val(),
-            secondaryGrainSubShape: $("#snow_profile_secondar_grain_subshape_" +
+            secondaryGrainSubShape: $(
+              "#snow_profile_secondary_grain_subshape_" +
               $("#snow_profile_secondary_grain_shape").val()).val(),
             grainSize: $("#snow_profile_grain_size").val(),
             lwc: $("#snow_profile_lwc").val(),

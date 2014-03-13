@@ -120,7 +120,6 @@ SnowProfile.Layer = function(depthArg) {
    * object for text combining the grain shape and grain size of this
    * snow layer.
    * @type {Object}
-   *
    */
   var grainDescr = new Kinetic.Text({
     width: SnowProfile.GRAIN_WD,
@@ -130,6 +129,20 @@ SnowProfile.Layer = function(depthArg) {
     align: 'left',
     x: SnowProfile.GRAIN_LEFT
   });
+
+  /**
+   * @summary Group to hold the icons describing this layer's grains
+   * @desc [Kinetic.Group]{@link http://kineticjs.com/docs/Kinetic.Group.html}
+   * object holding icons describing the grain shape of this snow layer.
+   * @type {Object}
+   */
+  var grainIcons = new Kinetic.Group({
+    x: SnowProfile.GRAIN_LEFT,
+    y: 0
+  });
+
+  var primaryGrainIcon = new Image();
+  var secondaryGrainIcon = new Image();
 
   /**
    * @summary Horizontal line below the description
@@ -320,6 +333,7 @@ SnowProfile.Layer = function(depthArg) {
     $(document).unbind("SnowProfileAdjustGrid", self.draw);
     handle.destroy();
     grainDescr.destroy();
+    grainIcons.destroy
     LWCDescr.destroy();
     commentDescr.destroy();
     lineBelow.destroy();
@@ -440,13 +454,14 @@ SnowProfile.Layer = function(depthArg) {
       secondaryGrainShape = data.secondaryGrainShape;
       secondaryGrainSubShape = data.secondaryGrainSubShape;
       grainSize = data.grainSize;
-      if ((primaryGrainShape === "") &&
-        (grainSize === "")) {
 
-        // No information about grains
-        grainDescr.setText("");
-      }
-      else {
+      // Empty the icon group and text description
+      grainDescr.setText("");
+      grainIcons.destroyChildren();
+      var iconCursor = 0;
+
+      if ((primaryGrainShape !== "") ||
+        (grainSize !== "")) {
 
         // Build a text description from what we have
         var text = "";
@@ -459,9 +474,18 @@ SnowProfile.Layer = function(depthArg) {
             text += "Primary Grain Shape:\n";
           }
           text += SnowProfile.CAAML_SHAPE[primaryGrainShape].text;
+          grainIcons.add(new Kinetic.Image({
+            x: 0,
+            y: 12,
+            image: primaryGrainIcon
+          }));
+          primaryGrainIcon.src = "data:image/png;base64," +
+            SnowProfile.CAAML_SHAPE[primaryGrainShape].icon.image;
+
           if (primaryGrainSubShape !== "") {
             text += "\n" +
-            SnowProfile.CAAML_SUBSHAPE[primaryGrainShape][primaryGrainSubShape];
+            SnowProfile.CAAML_SUBSHAPE[primaryGrainShape][
+            primaryGrainSubShape].text;
           }
           if (secondaryGrainShape !== "") {
 
@@ -471,7 +495,7 @@ SnowProfile.Layer = function(depthArg) {
             if (secondaryGrainSubShape !== "") {
               text += "\n" +
                 SnowProfile.CAAML_SUBSHAPE[secondaryGrainShape][
-                secondaryGrainSubShape];
+                secondaryGrainSubShape].text;
             }
           }
         }
@@ -639,6 +663,9 @@ SnowProfile.Layer = function(depthArg) {
     grainDescr.setY(SnowProfile.HANDLE_MIN_Y +
       (SnowProfile.HANDLE_SIZE / 2) + 3 +
         (i * SnowProfile.DESCR_HEIGHT));
+    grainIcons.setY(SnowProfile.HANDLE_MIN_Y +
+      (SnowProfile.HANDLE_SIZE / 2) + 3 +
+        (i * SnowProfile.DESCR_HEIGHT));
     LWCDescr.setY(SnowProfile.HANDLE_MIN_Y +
       (SnowProfile.HANDLE_SIZE / 2) + 3 +
         (i * SnowProfile.DESCR_HEIGHT));
@@ -662,7 +689,8 @@ SnowProfile.Layer = function(depthArg) {
   };
 
   // Add KineticJS objects to the KineticJS layer
-  SnowProfile.kineticJSLayer.add(grainDescr);
+  //SnowProfile.kineticJSLayer.add(grainDescr);
+  SnowProfile.kineticJSLayer.add(grainIcons);
   SnowProfile.kineticJSLayer.add(LWCDescr);
   SnowProfile.kineticJSLayer.add(commentDescr);
   SnowProfile.kineticJSLayer.add(lineBelow);
