@@ -349,168 +349,388 @@ var SnowProfile = {};
     CAAML_SUBSHAPE: {
       PP: {
         PPco: {
-          text: "Prismatic",
-          icon: ""
+          text: "Columns",
+          icon: {
+            image: "iVBORw0KGgoAAAANSUhEUgAAAA0AAAAICAYAAAAiJnXPAAAABH" +
+              "NCSVQICAgIfAhkiAAAAAlwSFlzAAARagAAEWoBAFXniAAAABl0RVh0U" +
+              "29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAABMSURBVBiVvdCx" +
+              "DYAwEAPAe5SeGWiYgbGZIqJkFwZ4mlCTUGDJcmPLlgNpEKXphdrh3zB" +
+              "rTWdmeiMO5DQ6Df4LPUcsEbF3+FcIHy6/AcG3I4RzaDQCAAAAAElFTk" +
+              "SuQmCC",
+            height: 8,
+            width: 13
+          }
         },
         PPnd:{
           text: "Needles",
-          icon: ""
+          icon: {
+            image: "iVBORw0KGgoAAAANSUhEUgAAABUAAAAKCAYAAABblxXYAAAABH" +
+              "NCSVQICAgIfAhkiAAAAAlwSFlzAAASxAAAEsQBIGmitQAAABl0RVh0U" +
+              "29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAC1SURBVCiRndK7" +
+              "CgJBDIXhD/Wt9CVWsLBXsNBiwXI7X0N8SCvxsmMTcRxvq4HAkJz8cCa" +
+              "RUpIn5tiiV/YKXS9086deIVyhxQWjL9BR6FqsXkKxRsIJ00/AbGYa+o" +
+              "T1AxRNNI4YdwFm4HHMJTRRs4lCCiuHP7LNGJsB9u5xg/4aA/Tjvb9Zq" +
+              "DP71Y/2q8x+XS5qmS1q0hE4yRa1fHdSi/iCM4ZfgMPQtVi8vdMQz7DT" +
+              "7fh3mJW9K/CPft+d08h8AAAAAElFTkSuQmCC",
+            height: 10,
+            width: 21
+          }
         },
         PPpl: {
           text: "Plates",
-          icon: ""
+          icon: {
+            image: "iVBORw0KGgoAAAANSUhEUgAAABAAAAAOCAYAAAAmL5yKAAAABH" +
+              "NCSVQICAgIfAhkiAAAAAlwSFlzAAASjwAAEo8BVnvO1AAAABl0RVh0U" +
+              "29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAADZSURBVCiRrdM7" +
+              "TkJREAbgTwtWQIOFjQkFJdF9sBY6W/dAR2KMUUpDRe9jFSwCiSYWBC/" +
+              "NEM+dXB4xTDLFzPzzz5nHUVWVrWKA6oAOajlFcgvzAC3xmXQZsTlaTQ" +
+              "TDALyWFdIL3wMzrBGgjQV+0d9DcB2YBdolwSiYH3clFyT3gR2FrYcVf" +
+              "nBZALuY4gVXhb+Dr8jpwSwY71Klp2LykxS7Df/s3J+sHS9npbFt4Rud" +
+              "1MIEz6mFi1oLaYjjI4b4UBtiWuP6wBpvGteYDultD8GHpkM6ySn/9zN" +
+              "tADskYCazQ11mAAAAAElFTkSuQmCC",
+            height: 14,
+            width: 16
+          }
         },
         PPsd: {
           text: "Stellars",
-          icon: ""
+          icon: {
+            image: "iVBORw0KGgoAAAANSUhEUgAAAA0AAAAOCAYAAAD0f5bSAAAABH" +
+              "NCSVQICAgIfAhkiAAAAAlwSFlzAAASnAAAEpwBstb/cwAAABl0RVh0U" +
+              "29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAADqSURBVCiRndK/" +
+              "SkNRDAbwXy53KZ2kQ9eugg8ggk66ufkIDi4KLhZHn0EnfQc3n0IUdbX" +
+              "gJvgHXLSrcfAIl9srlB4IgeQ7Sb4vkZnahkMkTrrylQVeFRG9iBjMA4" +
+              "6IQUT0KowxiYiDiKj/AdcRsY8JxhVGWMIpHiJiq/VhE/c4K7jRH/F13" +
+              "Poln3gu/q0Ru8NGZmoqVmEXLw1g4h17qLrUS3x3UJqNly6ruG5U/2j5" +
+              "xA3WCt55qZR4wo7GcrGNx0bHi6rM/IVjLGfmZWuSK6zgCJ9FHH0M5zk" +
+              "jDNGvM3OKaYcAs4pkvmKx2/sBVe+NaMYatvwAAAAASUVORK5CYII=",
+            height: 14,
+            width: 13
+          }
         },
         PPir: {
-          text: "Irregular",
-          icon: ""
+          text: "Irregular Crystals",
+          icon: {
+            image: "iVBORw0KGgoAAAANSUhEUgAAABMAAAAPCAYAAAAGRPQsAAAABH" +
+              "NCSVQICAgIfAhkiAAAAAlwSFlzAAAS6QAAEukBu3HusgAAABl0RVh0U" +
+              "29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAEaSURBVDiNpdK/" +
+              "K8VRGAbwz7kYkB8lE6PFbqAYlRWTf8FgxeJPEIO/wKDuIIOyUlI2Awa" +
+              "LRUkpuRYKr8Ghr9u931vuW2+n03nO8z7neU6KCGWVUhrBImYwjWec4B" +
+              "jViPj4BUdE08YUHhC53/BZ2B+i5xdfQrSE13xpD3PoxhAWcJHPzjHcl" +
+              "AyzWcE7VppgBnCaCc/Q0Qg0iPsMWm5hQy9uMna1EWAzHx4jlZFl/ET2" +
+              "cisV00wpjeEaXajiti7cq4jYbZD4aETc1U/ZLyTVqA/KVHYW2Ccxjxp" +
+              "W66fnqlf6twqqjvL0jVY+NfWvYGLgEX3/Jatkget53YyIl9KntKhx3x" +
+              "/0Cf3/VfWjbA0JOxFRa0dVBZe4wnY7RPAF/8KM8xJmJpAAAAAASUVOR" +
+              "K5CYII=",
+            height: 15,
+            width: 19
+          }
         },
         PPgp: {
           text: "Graupel",
-          icon: ""
+          icon: {
+            image: "iVBORw0KGgoAAAANSUhEUgAAABEAAAATCAYAAAB2pebxAAAABH" +
+              "NCSVQICAgIfAhkiAAAAAlwSFlzAAASFwAAEhcBHtZa6AAAABl0RVh0U" +
+              "29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAFSSURBVDiNndOx" +
+              "S1xBEMfxzzuJhICXVhQsAioETBs0CJJasPEPECIWKQNa5Q9IDknlH6C" +
+              "FhbUaESSdhRBSHKlsAhIQOauQBCKStXAOnpv39MzCsMzsb76zO8NKKS" +
+              "kbnuIAL7L4S+xj/J+cCsg8Er6gEbE+tCM+eyckkj5FwlL4r8P/WKmvg" +
+              "UzgEh08wTkuqp5SCwnQWlTvxL5apy1SSoqieIaWm6uJyZJ/iJ+ZZiWl" +
+              "1O5WnYlq97WZ8k0eYSSrMod3Jf8N9jLNSUrpd10/HuJbVPsQ+zH67zO" +
+              "dt5G4Hf5O+Ms9QTAcDfyD0YiNxYh/YLAXyGZUfZ/FVyO+fisEUyE8xU" +
+              "B29hhn+IvnlRA08DkgCzW9WozzI64nm0NeVQkySMP1x7xRqHvYrLtqB" +
+              "Wg6f3LetI3bACXQVuhbKSVFjO8rHuA7frl7DWAoxj4Bu/7v33Rt9wpA" +
+              "YRuYmE55mwAAAABJRU5ErkJggg==",
+            height: 19,
+            width: 17
+          }
         },
         PPhl: {
           text: "Hail",
-          icon: ""
+          icon: {
+            image: "iVBORw0KGgoAAAANSUhEUgAAABEAAAAPCAYAAAACsSQRAAAABH" +
+              "NCSVQICAgIfAhkiAAAAAlwSFlzAAASFwAAEhcBHtZa6AAAABl0RVh0U" +
+              "29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAACYSURBVDiNncyr" +
+              "DYNgAIXRg2mCx7BCXUdBMgeSIaoqOweyg6CYAIEkhBr+pCW8xefuPcZ" +
+              "xtBYiPBFt7naQHCPySwhiNBPSIL6ClBMQKk8hSNHNkA7pGeQ9A0LvQw" +
+              "geGFaQAY8jyGcFCH02EWQ7QChbRHBDfRCpcVtCioNAqPhDkKA9ibRIf" +
+              "pHXSSD0mv7u6C8i/fRXXQRC1RfYM7vTTD2TnQAAAABJRU5ErkJggg==",
+            height: 15,
+            width: 17
+          }
         },
         PPip: {
           text: "Ice pellets",
-          icon: ""
+          icon: {
+            image: "iVBORw0KGgoAAAANSUhEUgAAABEAAAAPCAYAAAACsSQRAAAABH" +
+              "NCSVQICAgIfAhkiAAAAAlwSFlzAAASFwAAEhcBHtZa6AAAABl0RVh0U" +
+              "29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAD5SURBVDiNndKx" +
+              "SsJRFMfxj1BGW4VDQkNLSw3la0QQji7NBUGDow9hi20+h0GQz9DSkJN" +
+              "75OBW2b/lN1iYmhcOh9/vnvs9l8NRFIW/AiW0UZpbtwDSQIHGShBsYh" +
+              "jIEJurQFoBfCa3/gVBFWO84yx5jOp/IN10b0ffRneXgqCGCV6xHW8Hb" +
+              "/Fry0D66Xr9y7+J358LQT2Fz1jDBR6S1/GS+/pMCMoYpOgUu/iInmAf" +
+              "59EDlGdBmim4j97L4wJfOIj/GK/5A4IKRtmJoynwZWZ0NeWdBD5CZRr" +
+              "SCf1u3nrPWIFOURRKOMRTBjnKYi06G9jKz4+hF+qq0fsGQJ/GtsuuuR" +
+              "MAAAAASUVORK5CYII=",
+            height: 15,
+            width: 17
+          }
         },
         PPrm: {
-          text: "Rimed",
-          icon: ""
+          text: "Rime",
+          icon: {
+            image: "iVBORw0KGgoAAAANSUhEUgAAAAwAAAAQCAYAAAAiYZ4HAAAABH" +
+              "NCSVQICAgIfAhkiAAAAAlwSFlzAAATEQAAExEBOWB/8AAAABl0RVh0U" +
+              "29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAADcSURBVCiRfZA9" +
+              "CsJAEIW/SEBIp5W1pWBn5yHS5gR2QoqcwUvYWXgCy7QhtYpXEAtBtBB" +
+              "sMjYvYU02DjyYfT+zwwCkwAkYmRk+AGPgLC8HwID1n0AqzwEg1uP4J3" +
+              "CRJwYIgauIhce8lHYFwprciHwBtxZe0jZmRh2YApUEHypg2gQUyiVmw" +
+              "ETIxOWNzwkkEkuHK8UlvsAQuMswF0zcsPYNUJnZB9jpuRIAdtIao/vL" +
+              "TFMfggGzH4/n7oVznaKtNys5te3puyvphwh4ClFbDz0D3kEQ7Ou+rXc" +
+              "CvauovtUCBKqH02NUAAAAAElFTkSuQmCC",
+            height: 16,
+            width: 12
+          }
         }
       },
       MM: {
         MMrp: {
           text: "Round polycrystalline",
-          icon: ""
+          icon: {
+            image: "",
+            height: 0,
+            width: 0
+          }
         },
         MMci: {
           text: "Crushed ice",
-          icon: ""
+          icon: {
+            image: "",
+            height: 0,
+            width: 0
+          }
         }
       },
       DF: {
         DFdc: {
           text: "Partly decomposed",
-          icon: ""
+          icon: {
+            image: "",
+            height: 0,
+            width: 0
+          }
         },
         DFbk: {
           text: "Wind-broken",
-          icon: ""
+          icon: {
+            image: "",
+            height: 0,
+            width: 0
+          }
         }
       },
       RG: {
         RGsr: {
           text: "Small rounded",
-          icon: ""
+          icon: {
+            image: "",
+            height: 0,
+            width: 0
+          }
         },
         RGlr: {
           text: "Large rounded",
-          icon: ""
+          icon: {
+            image: "",
+            height: 0,
+            width: 0
+          }
         },
         RGwp: {
           text: "Wind packed",
-          icon: ""
+          icon: {
+            image: "",
+            height: 0,
+            width: 0
+          }
         },
         RGxf: {
           text: "Faceted rounded",
-          icon: ""
+          icon: {
+            image: "",
+            height: 0,
+            width: 0
+          }
         }
       },
       FC: {
         FCso: {
           text: "Solid faceted",
-          icon: ""
+          icon: {
+            image: "",
+            height: 0,
+            width: 0
+          }
         },
         FCsf: {
           text: "Near surface",
-          icon: ""
+          icon: {
+            image: "",
+            height: 0,
+            width: 0
+          }
         },
         FCxr: {
           text: "Rounded faceted",
-          icon: ""
+          icon: {
+            image: "",
+            height: 0,
+            width: 0
+          }
         }
       },
       DH: {
         DHcp: {
           text: "Hollow cups",
-          icon: ""
+          icon: {
+            image: "",
+            height: 0,
+            width: 0
+          }
         },
         DHpr: {
           text: "Hollow prisms",
-          icon: ""
+          icon: {
+            image: "",
+            height: 0,
+            width: 0
+          }
         },
         DHch: {
           text: "Chains of depth hoar",
-          icon: ""
+          icon: {
+            image: "",
+            height: 0,
+            width: 0
+          }
         },
         DHla: {
           text: "Large striated",
-          icon: ""
+          icon: {
+            image: "",
+            height: 0,
+            width: 0
+          }
         },
         DHxr: {
           text: "Rounding depth hoar",
-          icon: ""
+          icon: {
+            image: "",
+            height: 0,
+            width: 0
+          }
         }
       },
       SH: {
         SHsu: {
           text: "Surface hoar",
-          icon: ""
+          icon: {
+            image: "",
+            height: 0,
+            width: 0
+          }
         },
         SHcv: {
           text: "Cavity hoar",
-          icon: ""
+          icon: {
+            image: "",
+            height: 0,
+            width: 0
+          }
         },
         SHxr: {
           text: "Rounding surface hoar",
-          icon: ""
+          icon: {
+            image: "",
+            height: 0,
+            width: 0
+          }
         }
       },
       MF: {
         MFcl: {
           text: "Clustered rounded",
-          icon: ""
+          icon: {
+            image: "",
+            height: 0,
+            width: 0
+          }
         },
         MFpc: {
           text: "Rounded polycrystals",
-          icon: ""
+          icon: {
+            image: "",
+            height: 0,
+            width: 0
+          }
         },
         MFsl: {
           text: "Slush",
-          icon: ""
+          icon: {
+            image: "",
+            height: 0,
+            width: 0
+          }
         },
         MFcr: {
           text: "Melt-freeze crust",
-          icon: ""
+          icon: {
+            image: "",
+            height: 0,
+            width: 0
+          }
         }
       },
       IF: {
         IFil: {
           text: "Ice layer",
-          icon: ""
+          icon: {
+            image: "",
+            height: 0,
+            width: 0
+          }
         },
         IFic: {
           text: "Ice column",
-          icon: ""
+          icon: {
+            image: "",
+            height: 0,
+            width: 0
+          }
         },
         IFbi: {
           text: "Basal ice",
-          icon: ""
+          icon: {
+            image: "",
+            height: 0,
+            width: 0
+          }
         },
         IFrc: {
           text: "Rain crust",
-          icon: ""
+          icon: {
+            image: "",
+            height: 0,
+            width: 0
+          }
         },
         IFsc: {
           text: "Sun crust",
-          icon: ""
+          icon: {
+            image: "",
+            height: 0,
+            width: 0
+          }
         }
       }
     },

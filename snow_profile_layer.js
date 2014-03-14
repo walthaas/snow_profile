@@ -479,14 +479,21 @@ SnowProfile.Layer = function(depthArg) {
             y: 12,
             image: primaryGrainIcon
           }));
-          primaryGrainIcon.src = "data:image/png;base64," +
-            SnowProfile.CAAML_SHAPE[primaryGrainShape].icon.image;
 
           if (primaryGrainSubShape !== "") {
             text += "\n" +
-            SnowProfile.CAAML_SUBSHAPE[primaryGrainShape][
-            primaryGrainSubShape].text;
+              SnowProfile.CAAML_SUBSHAPE[primaryGrainShape][
+              primaryGrainSubShape].text;
+              primaryGrainIcon.src = "data:image/png;base64," +
+                SnowProfile.CAAML_SUBSHAPE[primaryGrainShape][
+                primaryGrainSubShape].icon.image;
+
           }
+          else {
+            primaryGrainIcon.src = "data:image/png;base64," +
+              SnowProfile.CAAML_SHAPE[primaryGrainShape].icon.image;
+          }
+
           if (secondaryGrainShape !== "") {
 
             // Describe the secondary grain shape
