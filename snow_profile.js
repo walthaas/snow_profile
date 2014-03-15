@@ -138,11 +138,6 @@ var SnowProfile = {};
     IMAGE_WD: 800,
 
     /**
-     * KineticJS stage object for the whole program
-     */
-    stage: null,
-
-    /**
      * KineticJS drawing layer.
      */
     kineticJSLayer: null,
@@ -1143,6 +1138,19 @@ var SnowProfile = {};
   SnowProfile.DEPTH_SCALE = SnowProfile.GRAPH_HEIGHT / SnowProfile.MAX_DEPTH;
 
   /**
+   @summary KineticJS stage
+   @desc [Kinetic.Stage]{@link http://kineticjs.com/docs/Kinetic.Stage.html}
+   object for the stage where the diagram will be drawn
+   @type {object}
+   @memberof SnowProfile
+   */
+  SnowProfile.stage = new Kinetic.Stage({
+    container: 'snow_profile_diagram',
+    width: SnowProfile.STAGE_WD,
+    height: SnowProfile.STAGE_HT
+  });
+
+  /**
     Maximum Y value allowed for any handle (bottom of graph area)
     @type {number}
     @memberof SnowProfile
@@ -1184,6 +1192,44 @@ var SnowProfile = {};
    */
 
   /**
+   @event SnowProfileShowControls
+   @memberof SnowProfile
+   @type {object}
+   */
+
+  /**
+   * @method
+   * @memberof SnowProfile
+   * @summary Produce a preview PNG in a new window
+   * @fires ShowProfileHideControls
+   * @fires ShowProfileShowControls
+   */
+  SnowProfile.preview = function() {
+
+    // Hide the controls so they won't show in the PNG
+    $.event.trigger("SnowProfileHideControls");
+    var scaleFactor = SnowProfile.IMAGE_WD / SnowProfile.stage.getWidth();
+    SnowProfile.stage.scale({x: scaleFactor, y: scaleFactor});
+
+    // Open a new window and show the PNG in it
+    SnowProfile.stage.toDataURL({
+      x: 0,
+      y: 0,
+      width: SnowProfile.IMAGE_WD,
+      height: scaleFactor * SnowProfile.stage.getHeight(),
+      callback: function(dataUrl) {
+        var newWin = window.open(dataUrl, "_blank");
+        if (newWin === undefined) {
+          alert("You must enable pop-ups for this site to use" +
+            " the Preview button");
+        }
+        SnowProfile.stage.scale({x: 1, y: 1});
+        $.event.trigger("SnowProfileShowControls");
+      }
+    });
+  };
+
+  /**
    @method
    @memberof SnowProfile
    @summary Initialize the container and the grid layer
@@ -1191,13 +1237,6 @@ var SnowProfile = {};
    */
   SnowProfile.init = function() {
     var i, numLayers;
-
-
-    SnowProfile.stage = new Kinetic.Stage({
-      container: 'snow_profile_diagram',
-      width: SnowProfile.STAGE_WD,
-      height: SnowProfile.STAGE_HT
-    });
 
     // Add the reference grid to it
     SnowProfile.stage.add(new SnowProfile.Grid());
@@ -1294,32 +1333,7 @@ var SnowProfile = {};
 
     // When the "Preview" button is clicked, generate a preview
     $(document).ready(function() {
-      $("#snow_profile_preview").click(function() {
-
-        // Hide the controls so they won't show in the PNG
-        console.debug("trigger HideControls");
-        $.event.trigger("SnowProfileHideControls");
-        console.debug("back from trigger HideControls");
-        var scaleFactor = SnowProfile.IMAGE_WD / SnowProfile.stage.getWidth();
-        SnowProfile.stage.scale({x: scaleFactor, y: scaleFactor});
-
-        // Open a new window and show the PNG in it
-        SnowProfile.stage.toDataURL({
-          x: 0,
-          y: 0,
-          width: SnowProfile.IMAGE_WD,
-          height: scaleFactor * SnowProfile.stage.getHeight(),
-          callback: function(dataUrl) {
-            var newWin = window.open(dataUrl, "_blank");
-            if (newWin === undefined) {
-              alert("You must enable pop-ups for this site to use" +
-                " the Preview button");
-            }
-            SnowProfile.stage.scale({x: 1, y: 1});
-            $.event.trigger("SnowProfileShowControls");
-          }
-        });
-      });
+      $("#snow_profile_preview").click(SnowProfile.preview);
     });
   };  // function SnowProfile.init();
 })();

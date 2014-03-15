@@ -11,6 +11,7 @@
  @param {number} depth Initial depth in cm of this layer from the top
  of the snow pack.
  @constructor
+ @see {@link SnowProfile.preview}
  */
 SnowProfile.Layer = function(depthArg) {
   "use strict";
@@ -319,7 +320,6 @@ SnowProfile.Layer = function(depthArg) {
     Make the handle invisible
    */
   function handleInvisible() {
-    console.debug("entered handleInvisible()");
     handle.setVisible(false);
     self.draw();
   }
