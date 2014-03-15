@@ -319,6 +319,7 @@ SnowProfile.Layer = function(depthArg) {
     Make the handle invisible
    */
   function handleInvisible() {
+    console.debug("entered handleInvisible()");
     handle.setVisible(false);
     self.draw();
   }
@@ -333,7 +334,7 @@ SnowProfile.Layer = function(depthArg) {
     $(document).unbind("SnowProfileAdjustGrid", self.draw);
     handle.destroy();
     grainDescr.destroy();
-    grainIcons.destroy
+    grainIcons.destroy();
     LWCDescr.destroy();
     commentDescr.destroy();
     lineBelow.destroy();
