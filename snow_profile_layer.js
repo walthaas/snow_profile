@@ -1,17 +1,20 @@
 /**
- @file Define the object that describes a snow layer
- @copyright Walt Haas <haas@xmission.com>
- @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPLv2}
+  @file Define the object that describes a snow layer
+  @copyright Walt Haas <haas@xmission.com>
+  @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPLv2}
  */
 
 /* global SnowProfile */
 
 /**
- Object describing a single snow stratigraphy layer.
- @param {number} depth Initial depth in cm of this layer from the top
- of the snow pack.
- @constructor
- @see {@link SnowProfile.preview}
+  Object describing a single snow stratigraphy layer.
+  @param {number} depth Initial depth in cm of this layer from the top
+  of the snow pack.
+  @constructor
+  @listens SnowProfileAdjustGrid
+  @listens SnowProfileButtonClick
+  @listens SnowProfileHideControls
+  @listens SnowProfileShowControls
  */
 SnowProfile.Layer = function(depthArg) {
   "use strict";
@@ -590,10 +593,10 @@ SnowProfile.Layer = function(depthArg) {
   };
 
   /**
-   Draw this layer from depth and hardness values and adjacent layers.
-
-   This function redraws as necessary to respond to movement of the
-   handle at the top of this layer.
+    @summary Draw this layer from depth and hardness values and adjacent layers.
+    @desc Redraw as necessary to respond to movement of the handle at the
+      top of this layer.
+    @callback SnowProfile.Layer#draw
    */
   this.draw = function() {
     var i = self.getIndex();

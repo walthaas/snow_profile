@@ -323,7 +323,8 @@ SnowProfile.Grid = function() {
   }
 
   /**
-   * @summary Adjust grid for change in depth or reference
+    @summary Adjust grid for change in depth or reference
+    @fires SnowProfileAdjustGrid
    */
   function adjustGrid() {
 

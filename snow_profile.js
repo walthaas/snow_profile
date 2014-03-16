@@ -1186,15 +1186,39 @@ var SnowProfile = {};
   };
 
   /**
-   @event SnowProfileHideControls
-   @memberof SnowProfile
-   @type {object}
+    @event SnowProfileHideControls
+    @summary Tell listeners to hide anything that should not appear on
+      the final image.
+    @desc This event is fired just before the image is generated
+      from the canvas.
+    @memberof SnowProfile
+    @type {string}
    */
 
   /**
-   @event SnowProfileShowControls
-   @memberof SnowProfile
-   @type {object}
+    @event SnowProfileShowControls
+    @summary Tell listeners to show controls hidden from the image.
+    @desc This event is fired after the image has been generated from
+      the canvas.  It tells listeners they should show anything that was
+      hidden from the image.
+    @memberof SnowProfile
+    @type {string}
+   */
+
+  /**
+    @event SnowProfileAdjustGrid
+    @summary Tell listeners the reference grid has changed.
+    @desc This event is fired when the user changes a parameter that
+      governs the reference grid.  It tells listeners to respond to the
+      new grid parameters by adjusting their data display.
+    @memberof SnowProfile
+    @type {string}
+   */
+
+  /**
+    @event SnowProfileButtonClick
+    @memberof SnowProfile
+    @type {Object}
    */
 
   /**
@@ -1234,6 +1258,7 @@ var SnowProfile = {};
    @memberof SnowProfile
    @summary Initialize the container and the grid layer
    @fires SnowProfileHideControls
+   @listens SnowProfileButtonClick
    */
   SnowProfile.init = function() {
     var i, numLayers;

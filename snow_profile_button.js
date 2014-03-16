@@ -13,7 +13,10 @@
   @constructor
   @param {string} text - Text to appear inside the button.
   KineticJS stage.
- */
+  @listens SnowProfileHideControls
+  @listens SnowProfileShowControls
+  @fires SnowProfileButtonClick
+*/
 SnowProfile.Button = function(textArg) {
 
   "use strict";
