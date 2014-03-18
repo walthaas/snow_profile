@@ -886,6 +886,45 @@ var SnowProfile = {};
             height: 29,
             width: 52
           }
+        },
+
+        // Special Melt-freeze crust icon allowing space on the right
+        // side to insert a secondary form
+        MFcr_sec: {
+          text: "Melt-freeze crust",
+          icon: {
+            image: "iVBORw0KGgoAAAANSUhEUgAAADQAAAAdCAYAAADl208VAAAABH" +
+              "ONCSVQICAgIfAhkiAAAAAlwSFlzAAAT9gAAE/YBIx4x4QAAABl0RVh0" +
+              "U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAQDSURBVFiFxdh" +
+              "biFVlFAfw3z6TQg46NVbeMiqpxGrsZqUGlkgmCfngQ/Vg0UMPQS8hhF" +
+              "GgkW8VvUhFF3qqQBAi7QIiRURgmWKFl1BQIbOLpjWZt3YPe21mz+nss" +
+              "/dxxnHBx8fea63/+tZ3XWslaZqqoiRJerAIi3EtJuFS/IH9OIDP8X6a" +
+              "pr9UAg7GvgwPYh6m4gpchF9xELuxHh+naXq0EjBN09KGy/E2TiKt0U7" +
+              "hI8xphxvYc0L2VE3sk3gLU9rilhjrwvM4XgD8AauxEH2YEP1SPIOtBd" +
+              "l/8SbGt8C+GK+HTC6/NTCWNmHfFzZ3FGT78RwatRwKg58WAPbgnqoZD" +
+              "9352FDQPYRbCvw+/FTgb8D8mtj3Yl9Bdz3GtXUIvdgZCmfwCsbUMdiE" +
+              "83DMZCo7Z3Njix2Jf3/hobPAHRurmzv1HXpaOoRR2BSC+zC3U4NNxmd" +
+              "ib2Gb5A7uxg1DxF6AnwPvE3S1cujFEDiN2RWAXZiOsRVyE5u2yV5cMh" +
+              "RnmrZgjvvCIIdwNU4Ec3UJwAV4Cp/hz8K23I41mFii1xfyx3D9cDhTw" +
+              "F4T4/gHVxYdei8Y32JUyfbZUpiRNA538To/jGUlhhfj/uF0JnDHYFfY" +
+              "fzf+6ZW9BWdazSBmxAzkN94ScR1jNG7DuoJjy4d74BVOzTbwBvbCsvj" +
+              "xZclZ2Rz8dehuA/xYYfmHdWvVcGp72F4Ga+Pj6RaCTwbvgKbrsQT4nb" +
+              "LJOccOrQy7axuYJqNv/J8WRL8qrRNHsTyA70ySZFwN+eGir6Of1pAFm" +
+              "mSHvJlujf6rOqhpmv4me5gbsrM1UpSPfVJDHCT8XpRIkqQbU2Qz/mMH" +
+              "4Duinz6UEXZI+dh7G7LrFsYXJdI07Zd5nuCaDsBnRL9zKCPskPKxH27" +
+              "Icg6Y3EJwS/Rz66AmSTIB18lWtdWZPFeUj/1gQ/a20HrPb4p+ZZIkvS" +
+              "34zfSybEU3p2l6bGhj7IhmRb+H9u/QKAN5zodahOsF2SdC7gRmns93q" +
+              "CpS6DMQ5+2XpctTgteNuwzOgVaMsDODI4X4WRXLzZLlHsVY7nBMQv59" +
+              "FI+XGB25WC4YdaLt0bI0+QsD0fZpfI83MLVEb+Sj7WB2kg8luEpFNut" +
+              "85UMh0JyxVlZuKgzebCBjPRYtf6T7hog9X1XGGoLNNYWXcOFZGHzUQM" +
+              "XoCO7A7bIXPcXfeOQscLtjm+UVo/KaQkGpueqzq+5qyUpcGwu6h3BTg" +
+              "X+jwVWfjVhYE3ue7J3JdaurPgXlLqyKmcwBtsjqYfNk1dMeWby2BCuw" +
+              "rSDbaV1uW2AsCcyesHF32CzW/PrxrLp1uSbjk/GawQXHdu1cVk6P41U" +
+              "ltYu8JQHeliLyXoQHZLHaSNa2d+EDWW27vwrvP/t31UVx0/hpAAAAAE" +
+              "lFTkSuQmCC",
+            height: 29,
+            width: 52
+          }
         }
       },
       IF: {
@@ -963,22 +1002,22 @@ var SnowProfile = {};
       "coarse": "1.0 - 2.0 mm",
       "very coarse": "2.0 - 5.0 mm",
       "extreme": "> 5.0 mm"
-    },
+    }  //,
 
-    /**
-      Table of CAAML liquid water contents.
-      Property name is the code value to store
-      Property value is the humanly-readable description
-      @type {Object}
-      @const
-     */
-    CAAML_LWC: {
-      D: "Dry",
-      M: "Moist",
-      W: "Wet",
-      V: "Very Wet",
-      S: "Soaked"
-    }
+    // /**
+    //   Table of CAAML liquid water contents.
+    //   Property name is the code value to store
+    //   Property value is the humanly-readable description
+    //   @type {Object}
+    //   @const
+    //  */
+    // CAAML_LWC: {
+    //   D: "Dry",
+    //   M: "Moist",
+    //   W: "Wet",
+    //   V: "Very Wet",
+    //   S: "Soaked"
+    // }
   }; // SnowProfile = {
 
   /**
@@ -1306,18 +1345,18 @@ var SnowProfile = {};
     });
     SnowProfile.kineticJSLayer.add(grainText);
 
-    // Add the label to the Water column
-    var waterText = new Kinetic.Text({
-      x: SnowProfile.LWC_LEFT,
-      y: 25,
-      text: 'Water',
-      fontSize: 18,
-      fontStyle: 'bold',
-      fontFamily: 'sans-serif',
-      fill: SnowProfile.LABEL_COLOR,
-      align: "left"
-    });
-    SnowProfile.kineticJSLayer.add(waterText);
+    // // Add the label to the Water column
+    // var waterText = new Kinetic.Text({
+    //   x: SnowProfile.LWC_LEFT,
+    //   y: 25,
+    //   text: 'Water',
+    //   fontSize: 18,
+    //   fontStyle: 'bold',
+    //   fontFamily: 'sans-serif',
+    //   fill: SnowProfile.LABEL_COLOR,
+    //   align: "left"
+    // });
+    // SnowProfile.kineticJSLayer.add(waterText);
 
     // Add the label to the Comment column
     var commentText = new Kinetic.Text({

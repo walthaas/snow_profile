@@ -53,26 +53,26 @@ SnowProfile.Layer = function(depthArg) {
    */
   var grainSize = "";
 
-  /**
-   * @summary Liquid water content of this snow layer
-   * @type {string}
-   */
-  var lwc = "";
+  // /**
+  //  * @summary Liquid water content of this snow layer
+  //  * @type {string}
+  //  */
+  // var lwc = "";
 
-  /**
-   * @summary Text for the liquid water content.
-   * @desc [Kinetic.Text]{@link http://kineticjs.com/docs/Kinetic.Text.html}
-   * object for text describing the liquid water content of this snow layer.
-   * @type {Object}
-   */
-  var LWCDescr = new Kinetic.Text({
-    width: SnowProfile.LWC_WD,
-    fontSize: 12,
-    fontFamily: 'sans-serif',
-    fill: "#000",
-    align: 'left',
-    x: SnowProfile.LWC_LEFT
-  });
+  // /**
+  //  * @summary Text for the liquid water content.
+  //  * @desc [Kinetic.Text]{@link http://kineticjs.com/docs/Kinetic.Text.html}
+  //  * object for text describing the liquid water content of this snow layer.
+  //  * @type {Object}
+  //  */
+  // var LWCDescr = new Kinetic.Text({
+  //   width: SnowProfile.LWC_WD,
+  //   fontSize: 12,
+  //   fontFamily: 'sans-serif',
+  //   fill: "#000",
+  //   align: 'left',
+  //   x: SnowProfile.LWC_LEFT
+  // });
 
   /**
    * @summary User's comment about this snow layer
@@ -341,7 +341,7 @@ SnowProfile.Layer = function(depthArg) {
     handle.destroy();
     grainDescr.destroy();
     grainIcons.destroy();
-    LWCDescr.destroy();
+//    LWCDescr.destroy();
     commentDescr.destroy();
     lineBelow.destroy();
     handleLoc.destroy();
@@ -447,7 +447,7 @@ SnowProfile.Layer = function(depthArg) {
         secondaryGrainShape: secondaryGrainShape,
         secondaryGrainSubShape: secondaryGrainSubShape,
         grainSize: grainSize,
-        lwc: lwc,
+//        lwc: lwc,
         comment: comment,
         layer: self,
         numLayers: SnowProfile.snowLayers.length
@@ -545,7 +545,7 @@ SnowProfile.Layer = function(depthArg) {
             });
             grainIcons.add(secondaryGrainIconKJS);
 
-            if (secondaryGrainSubShape == "") {
+            if (secondaryGrainSubShape === "") {
               secondaryGrainIconKJS.offsetY((SnowProfile.CAAML_SHAPE[
                 secondaryGrainShape].icon.height - SnowProfile.DESCR_HEIGHT)/2);
               secondaryGrainIconKJS.offsetX(-iconCursor);
@@ -588,14 +588,14 @@ SnowProfile.Layer = function(depthArg) {
         grainDescr.setText(text);
       }
 
-      // Liquid water content description.
-      lwc = data.lwc;
-      if (lwc === "") {
-        LWCDescr.setText("");
-      }
-      else {
-        LWCDescr.setText(SnowProfile.CAAML_LWC[lwc]);
-      }
+      // // Liquid water content description.
+      // lwc = data.lwc;
+      // if (lwc === "") {
+      //   LWCDescr.setText("");
+      // }
+      // else {
+      //   LWCDescr.setText(SnowProfile.CAAML_LWC[lwc]);
+      // }
 
       // Comment description
       comment = data.comment;
@@ -744,9 +744,9 @@ SnowProfile.Layer = function(depthArg) {
     grainIcons.y(SnowProfile.HANDLE_MIN_Y +
       (SnowProfile.HANDLE_SIZE / 2) + //3 +
       (i * SnowProfile.DESCR_HEIGHT));
-    LWCDescr.y(SnowProfile.HANDLE_MIN_Y +
-      (SnowProfile.HANDLE_SIZE / 2) + 3 +
-        (i * SnowProfile.DESCR_HEIGHT));
+    // LWCDescr.y(SnowProfile.HANDLE_MIN_Y +
+    //   (SnowProfile.HANDLE_SIZE / 2) + 3 +
+    //     (i * SnowProfile.DESCR_HEIGHT));
     commentDescr.y(SnowProfile.HANDLE_MIN_Y +
       (SnowProfile.HANDLE_SIZE / 2) + 3 +
         (i * SnowProfile.DESCR_HEIGHT));
@@ -769,7 +769,7 @@ SnowProfile.Layer = function(depthArg) {
   // Add KineticJS objects to the KineticJS layer
   //SnowProfile.kineticJSLayer.add(grainDescr);
   SnowProfile.kineticJSLayer.add(grainIcons);
-  SnowProfile.kineticJSLayer.add(LWCDescr);
+//  SnowProfile.kineticJSLayer.add(LWCDescr);
   SnowProfile.kineticJSLayer.add(commentDescr);
   SnowProfile.kineticJSLayer.add(lineBelow);
   SnowProfile.kineticJSLayer.add(handleLoc);

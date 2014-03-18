@@ -58,13 +58,13 @@
       }
     }
 
-    // Populate the liquid water selector in the layer description pop-up
-    for (code in SnowProfile.CAAML_LWC) {
-      if (SnowProfile.CAAML_LWC.hasOwnProperty(code)) {
-        $("#snow_profile_lwc").append("<option value=\"" + code +
-          "\">" + SnowProfile.CAAML_LWC[code] + "</option>");
-      }
-    }
+    // // Populate the liquid water selector in the layer description pop-up
+    // for (code in SnowProfile.CAAML_LWC) {
+    //   if (SnowProfile.CAAML_LWC.hasOwnProperty(code)) {
+    //     $("#snow_profile_lwc").append("<option value=\"" + code +
+    //       "\">" + SnowProfile.CAAML_LWC[code] + "</option>");
+    //   }
+    // }
 })();
 
 /**
@@ -95,7 +95,7 @@ SnowProfile.PopUp = function(data) {
   $("#snow_profile_secondary_grain_subshape option[value=" +
     data.secondaryGrainSubShape + "]").attr("selected", true);
   $("#snow_profile_grain_size").val(data.grainSize);
-  $("#snow_profile_lwc").val(data.lwc);
+//  $("#snow_profile_lwc").val(data.lwc);
   $("#snow_profile_comment").val(data.comment);
   var editArgs = {
     modal: true,
@@ -118,7 +118,7 @@ SnowProfile.PopUp = function(data) {
               "#snow_profile_secondary_grain_subshape_" +
               $("#snow_profile_secondary_grain_shape").val()).val(),
             grainSize: $("#snow_profile_grain_size").val(),
-            lwc: $("#snow_profile_lwc").val(),
+//            lwc: $("#snow_profile_lwc").val(),
             comment: $("#snow_profile_comment").val()
           });
 
