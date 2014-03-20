@@ -145,12 +145,6 @@ SnowProfile.Layer = function(depthArg) {
     y: 0
   });
 
-  var primaryGrainIcon = new Image();
-  var primaryGrainIconKJS;
-
-  var secondaryGrainIcon = new Image();
-  var secondaryGrainIconKJS;
-
   /**
    * @summary Horizontal line below the description
    * @desc [Kinetic.Line]{@link http://kineticjs.com/docs/Kinetic.Line.html}
@@ -438,6 +432,276 @@ SnowProfile.Layer = function(depthArg) {
    * @returns {Object} Object describing the snow layer if param omitted.
    */
   this.describe = function(data) {
+
+    /**
+     * @summary Generate a text description of grain forms from symbols
+     * @desc Accept grain form symbols selected by the user, if any, and
+     *   return a text description of the form.  The description is
+     *   constructed by looking up the symbols in CAAML_SHAPE and
+     *   CAAML_SUBSHAPE to find the equivalent text.
+     * @param {string} primaryShape Primary grain shape symbol
+     * @param {string} primarySubShape Primary grain subshape symbol
+     * @param {string} secondaryShape Secondary grain shape symbol
+     * @param {string} secondarySubShape Secondary grain subshape symbol
+     * @returns {string} Text description of the grain forms
+     */
+    function sym2text(primaryShape, primarySubShape, secondaryShape,
+      secondarySubShape) {
+
+      var result = "";
+      if (primaryShape !== "") {
+
+        // Grain shape information is available
+        if (secondaryGrainShape !== "") {
+
+          // Both primary and secondary shapes so identify them
+          result += "Primary Grain Shape:\n";
+        }
+        result += SnowProfile.CAAML_SHAPE[primaryShape].text;
+        if (primarySubShape !== "") {
+
+          // Primary subshape available, add to text description
+          result += "\n" +
+            SnowProfile.CAAML_SUBSHAPE[primaryShape][primarySubShape].text;
+        }
+        if (secondaryGrainShape !== "") {
+
+          // Secondary shape information available
+          result += "\nSecondary Grain Shape:\n" +
+            SnowProfile.CAAML_SHAPE[secondaryShape].text;
+          if (secondarySubShape !== "") {
+            result += "\n" +
+              SnowProfile.CAAML_SUBSHAPE[secondaryShape][
+              secondarySubShape].text;
+          }
+        }
+      }
+      return result;
+    } // function sym2text
+
+    /**
+     * @summary Generate an icon description for Melt-freeze crust
+     * @desc Generate the appropriate Melt-freeze crust icon for the
+     *   the specified secondary shape, if any
+     * @param {string} secondaryShape Secondary grain shape symbol
+     * @param {string} secondarySubShape Secondary grain subshape symbol
+     * @param {Object} container KineticJS.Group object to hold icons
+     */
+    function sym2iconsMFcr(secondaryShape, secondarySubShape, container) {
+
+      var primaryIcon = new Image();
+      var primaryIconKJS;
+      var secondaryIcon = new Image();
+      var secondaryIconKJS;
+
+      // Special Melt-freeze crust icon allowing space on the right
+      // side to insert a secondary form
+      var image = "iVBORw0KGgoAAAANSUhEUgAAADQAAAAdCAYAAADl208VAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz" +
+"AAAT9gAAE/YBIx4x4QAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAQDSURB" +
+"VFiFxdhbiFVlFAfw3z6TQg46NVbeMiqpxGrsZqUGlkgmCfngQ/Vg0UMPQS8hhFGgkW8VvUhFF3qq" +
+"QBAi7QIiRURgmWKFl1BQIbOLpjWZt3YPe21mz+nss/dxxnHBx8fea63/+tZ3XWslaZqqoiRJerAI" +
+"i3EtJuFS/IH9OIDP8X6apr9UAg7GvgwPYh6m4gpchF9xELuxHh+naXq0EjBN09KGy/E2TiKt0U7h" +
+"I8xphxvYc0L2VE3sk3gLU9rilhjrwvM4XgD8AauxEH2YEP1SPIOtBdl/8SbGt8C+GK+HTC6/NTCW" +
+"NmHfFzZ3FGT78RwatRwKg58WAPbgnqoZD9352FDQPYRbCvw+/FTgb8D8mtj3Yl9Bdz3GtXUIvdgZ" +
+"CmfwCsbUMdiE83DMZCo7Z3Njix2Jf3/hobPAHRurmzv1HXpaOoRR2BSC+zC3U4NNxmdib2Gb5A7u" +
+"xg1DxF6AnwPvE3S1cujFEDiN2RWAXZiOsRVyE5u2yV5cMhRnmrZgjvvCIIdwNU4Ec3UJwAV4Cp/h" +
+"z8K23I41mFii1xfyx3D9cDhTwF4T4/gHVxYdei8Y32JUyfbZUpiRNA538To/jGUlhhfj/uF0JnDH" +
+"YFfYfzf+6ZW9BWdazSBmxAzkN94ScR1jNG7DuoJjy4d74BVOzTbwBvbCsvjxZclZ2Rz8dehuA/xY" +
+"YfmHdWvVcGp72F4Ga+Pj6RaCTwbvgKbrsQT4nbLJOccOrQy7axuYJqNv/J8WRL8qrRNHsTyA70yS" +
+"ZFwN+eGir6Of1pAFmmSHvJlujf6rOqhpmv4me5gbsrM1UpSPfVJDHCT8XpRIkqQbU2Qz/mMH4Dui" +
+"nz6UEXZI+dh7G7LrFsYXJdI07Zd5nuCaDsBnRL9zKCPskPKxH27Icg6Y3EJwS/Rz66AmSTIB18lW" +
+"tdWZPFeUj/1gQ/a20HrPb4p+ZZIkvS34zfSybEU3p2l6bGhj7IhmRb+H9u/QKAN5zodahOsF2SdC" +
+"7gRmns93qCpS6DMQ5+2XpctTgteNuwzOgVaMsDODI4X4WRXLzZLlHsVY7nBMQv59FI+XGB25WC4Y" +
+"daLt0bI0+QsD0fZpfI83MLVEb+Sj7WB2kg8luEpFNut85UMh0JyxVlZuKgzebCBjPRYtf6T7hog9" +
+"X1XGGoLNNYWXcOFZGHzUQMXoCO7A7bIXPcXfeOQscLtjm+UVo/KaQkGpueqzq+5qyUpcGwu6h3BT" +
+"gX+jwVWfjVhYE3ue7J3JdaurPgXlLqyKmcwBtsjqYfNk1dMeWby2BCuwrSDbaV1uW2AsCcyesHF3" +
+"2CzW/PrxrLp1uSbjk/GawQXHdu1cVk6P41UltYu8JQHeliLyXoQHZLHaSNa2d+EDWW27vwrvP/t3" +
+"1UVx0/hpAAAAAElFTkSuQmCC";
+
+      // Make a place to hold the Melt-freeze crust icon
+      primaryIconKJS = new Kinetic.Image({
+        x: 0,
+        y: 0,
+        image: primaryIcon
+      });
+      container.add(primaryIconKJS);
+      primaryIconKJS.offsetY((29 - SnowProfile.DESCR_HEIGHT)/2);
+
+      if (secondaryShape === "") {
+
+        // There is no secondary shape so we just use the normal MFcr icon
+        primaryIcon.src = "data:image/png;base64," +
+          SnowProfile.CAAML_SUBSHAPE.MF.MFcr.icon.image;
+      }
+      else {
+
+        // There is a secondary shape, so use the alternative MFcr icon
+        primaryIcon.src = "data:image/png;base64," + image;
+        secondaryIconKJS = new Kinetic.Image({
+          x: 0,
+          y: 0,
+          image: secondaryIcon
+        });
+        container.add(secondaryIconKJS);
+        if (secondarySubShape === "") {
+          secondaryIconKJS.offsetY((SnowProfile.CAAML_SHAPE[
+            secondaryShape].icon.height - SnowProfile.DESCR_HEIGHT)/2);
+          secondaryIconKJS.offsetX((SnowProfile.CAAML_SHAPE[secondaryShape].
+            icon.width) / 2 - 38);
+          secondaryIcon.src = "data:image/png;base64," +
+            SnowProfile.CAAML_SHAPE[secondaryShape].icon.image;
+        }
+        else {
+          secondaryIconKJS.offsetY((SnowProfile.CAAML_SUBSHAPE[
+            secondaryShape][secondarySubShape].icon.height-
+            SnowProfile.DESCR_HEIGHT)/2);
+          secondaryIconKJS.offsetX((SnowProfile.CAAML_SUBSHAPE[secondaryShape][
+            secondarySubShape].icon.width) / 2 - 38);
+          secondaryIcon.src = "data:image/png;base64," +
+            SnowProfile.CAAML_SUBSHAPE[secondaryShape][
+            secondarySubShape].icon.image;
+        }
+      }
+    } // function sym2iconsMFcr()
+
+    /**
+     * @summary Generate an icon description for normal case
+     * @desc  Accept grain form symbols selected by the user, if any, and
+     *   return an icon description of the form.  The description is
+     *   constructed by looking up the symbols in CAAML_SHAPE and
+     *   CAAML_SUBSHAPE to find the equivalent icons.  It has been
+     *   determined that the primary subshape is NOT Melt-freeze crust.
+     * @param {string} primaryShape Primary grain shape symbol
+     * @param {string} primarySubShape Primary grain subshape symbol
+     * @param {string} secondaryShape Secondary grain shape symbol
+     * @param {string} secondarySubShape Secondary grain subshape symbol
+     * @param {Object} container KineticJS.Group object to hold icons
+     */
+    function sym2iconsNormal(primaryShape, primarySubShape, secondaryShape,
+      secondarySubShape, container) {
+
+      var primaryIcon = new Image();
+      var primaryIconKJS;
+      var secondaryIcon = new Image();
+      var secondaryIconKJS;
+      var iconCursor = 0;
+
+      if (primaryShape !== "") {
+        primaryIconKJS = new Kinetic.Image({
+          x: 0,
+          y: 0,
+          image: primaryIcon
+        });
+        container.add(primaryIconKJS);
+
+        if (primarySubShape !== "") {
+
+          // Add the icon for the primary grain subshape
+          primaryIconKJS.offsetY((SnowProfile.CAAML_SUBSHAPE[
+            primaryShape][primarySubShape].icon.height-
+            SnowProfile.DESCR_HEIGHT)/2);
+          iconCursor = SnowProfile.CAAML_SUBSHAPE[primaryShape][
+            primarySubShape].icon.width;
+          primaryIcon.src = "data:image/png;base64," +
+              SnowProfile.CAAML_SUBSHAPE[primaryShape][
+              primarySubShape].icon.image;
+        }
+        else {
+
+          // Add the icon for the primary grain shape
+          primaryIconKJS.offsetY((SnowProfile.CAAML_SHAPE[
+            primaryShape].icon.height - SnowProfile.DESCR_HEIGHT)/2);
+            iconCursor = SnowProfile.CAAML_SHAPE[primaryShape].icon.width;
+            primaryIcon.src = "data:image/png;base64," +
+              SnowProfile.CAAML_SHAPE[primaryShape].icon.image;
+        }
+        if (secondaryShape !== "") {
+
+          // Add left paren to the icons
+          iconCursor += 3;
+          container.add(new Kinetic.Text({
+            text: "(",
+            offsetY: 6 - (SnowProfile.DESCR_HEIGHT / 2),
+            offsetX: - iconCursor,
+            stroke: "000"
+          }));
+          iconCursor += 7;
+
+          // Add secondary grain shape icon
+          secondaryIconKJS = new Kinetic.Image({
+            x: 0,
+            y: 0,
+            image: secondaryIcon
+          });
+          container.add(secondaryIconKJS);
+          if (secondarySubShape === "") {
+            secondaryIconKJS.offsetY((SnowProfile.CAAML_SHAPE[
+              secondaryShape].icon.height - SnowProfile.DESCR_HEIGHT)/2);
+            secondaryIconKJS.offsetX(-iconCursor);
+            iconCursor += SnowProfile.CAAML_SHAPE[
+              secondaryShape].icon.width;
+            secondaryIcon.src = "data:image/png;base64," +
+              SnowProfile.CAAML_SHAPE[secondaryShape].icon.image;
+          }
+          else {
+            secondaryIconKJS.offsetY((SnowProfile.CAAML_SUBSHAPE[
+              secondaryShape][secondarySubShape].icon.height-
+              SnowProfile.DESCR_HEIGHT)/2);
+            secondaryIconKJS.offsetX(-iconCursor);
+            iconCursor += SnowProfile.CAAML_SUBSHAPE[secondaryShape][
+              secondarySubShape].icon.width;
+            secondaryIcon.src = "data:image/png;base64," +
+              SnowProfile.CAAML_SUBSHAPE[secondaryShape][
+              secondarySubShape].icon.image;
+          }
+
+          // Add right paren to the icons
+          iconCursor += 3;
+          container.add(new Kinetic.Text({
+            text: ")",
+            offsetY: 6 - (SnowProfile.DESCR_HEIGHT / 2),
+            offsetX: - iconCursor,
+            stroke: "000"
+          }));
+        }
+      }
+    } // function sym2iconsNormal()
+
+    /**
+     * @summary Generate an icon description of grain forms from symbols
+     * @desc Accept grain form symbols selected by the user, if any, and
+     *   return an icon description of the form.  The description is
+     *   constructed by looking up the symbols in CAAML_SHAPE and
+     *   CAAML_SUBSHAPE to find the equivalent icons.   There are two
+     *   cases:
+     *   1) If the primary subshape is Melt-freeze crust, then the
+     *      secondary shape is incorporated into the MFcr icon.
+     *   2) In all other cases, the secondary shape in parentheses follows
+     *      the primary shape.
+     * @param {string} primaryShape Primary grain shape symbol
+     * @param {string} primarySubShape Primary grain subshape symbol
+     * @param {string} secondaryShape Secondary grain shape symbol
+     * @param {string} secondarySubShape Secondary grain subshape symbol
+     * @param {Object} container KineticJS.Group object to hold icons
+     */
+    function sym2icons(primaryShape, primarySubShape, secondaryShape,
+      secondarySubShape, container) {
+
+      if (primaryShape !== "") {
+        if (primarySubShape === "MFcr") {
+
+          // Case 1) Melt-freeze crust, secondary goes inside
+          sym2iconsMFcr(secondaryShape, secondarySubShape, container);
+        }
+        else {
+
+          // Case 2) secondary follows primary in parentheses
+          sym2iconsNormal(primaryShape, primarySubShape, secondaryShape,
+            secondarySubShape, container);
+        }
+      }
+    } // function sym2icons
+
     if (data === undefined) {
 
       // Called with no argument, return an object with the values
@@ -465,127 +729,27 @@ SnowProfile.Layer = function(depthArg) {
       // Empty the icon group and text description
       grainDescr.setText("");
       grainIcons.destroyChildren();
-      var iconCursor = 0;
 
       if ((primaryGrainShape !== "") ||
         (grainSize !== "")) {
 
         // Build a text description from what we have
-        var text = "";
-        if (primaryGrainShape !== "") {
+        var text = sym2text(primaryGrainShape, primaryGrainSubShape,
+          secondaryGrainShape, secondaryGrainSubShape);
 
-          // Grain shape information is available
-          if (secondaryGrainShape !== "") {
-
-            // Both primary and secondary shapes so identify them
-            text += "Primary Grain Shape:\n";
-          }
-          text += SnowProfile.CAAML_SHAPE[primaryGrainShape].text;
-          primaryGrainIconKJS = new Kinetic.Image({
-            x: 0,
-            y: 0,
-            image: primaryGrainIcon
-          });
-          grainIcons.add(primaryGrainIconKJS);
-
-          if (primaryGrainSubShape !== "") {
-
-            // Add subshape to text description
-            text += "\n" +
-              SnowProfile.CAAML_SUBSHAPE[primaryGrainShape][
-              primaryGrainSubShape].text;
-
-            // Add the icon for the primary grain subshape
-            primaryGrainIconKJS.offsetY((SnowProfile.CAAML_SUBSHAPE[
-              primaryGrainShape][primaryGrainSubShape].icon.height-
-              SnowProfile.DESCR_HEIGHT)/2);
-            iconCursor = SnowProfile.CAAML_SUBSHAPE[primaryGrainShape][
-              primaryGrainSubShape].icon.width;
-            primaryGrainIcon.src = "data:image/png;base64," +
-              SnowProfile.CAAML_SUBSHAPE[primaryGrainShape][
-              primaryGrainSubShape].icon.image;
-
-          }
-          else {
-
-            // Add the icon for the primary grain shape
-            primaryGrainIconKJS.offsetY((SnowProfile.CAAML_SHAPE[
-              primaryGrainShape].icon.height - SnowProfile.DESCR_HEIGHT)/2);
-            iconCursor = SnowProfile.CAAML_SHAPE[primaryGrainShape].icon.width;
-            primaryGrainIcon.src = "data:image/png;base64," +
-              SnowProfile.CAAML_SHAPE[primaryGrainShape].icon.image;
-          }
-          if (secondaryGrainShape !== "") {
-
-            // Add description of the secondary grain shape to the text
-            text += "\nSecondary Grain Shape:\n" +
-              SnowProfile.CAAML_SHAPE[secondaryGrainShape].text;
-            if (secondaryGrainSubShape !== "") {
-              text += "\n" +
-                SnowProfile.CAAML_SUBSHAPE[secondaryGrainShape][
-                secondaryGrainSubShape].text;
-            }
-
-            // Add left paren to the icons
-            iconCursor += 3;
-            grainIcons.add(new Kinetic.Text({
-                text: "(",
-                offsetY: 6 - (SnowProfile.DESCR_HEIGHT / 2),
-                offsetX: - iconCursor,
-                stroke: "000"
-              })
-            );
-            iconCursor += 7;
-
-            // Add secondary grain shape icon
-            secondaryGrainIconKJS = new Kinetic.Image({
-              x: 0,
-              y: 0,
-              image: secondaryGrainIcon
-            });
-            grainIcons.add(secondaryGrainIconKJS);
-
-            if (secondaryGrainSubShape === "") {
-              secondaryGrainIconKJS.offsetY((SnowProfile.CAAML_SHAPE[
-                secondaryGrainShape].icon.height - SnowProfile.DESCR_HEIGHT)/2);
-              secondaryGrainIconKJS.offsetX(-iconCursor);
-              iconCursor += SnowProfile.CAAML_SHAPE[
-                secondaryGrainShape].icon.width;
-              secondaryGrainIcon.src = "data:image/png;base64," +
-                SnowProfile.CAAML_SHAPE[secondaryGrainShape].icon.image;
-            }
-            else {
-              secondaryGrainIconKJS.offsetY((SnowProfile.CAAML_SUBSHAPE[
-                secondaryGrainShape][secondaryGrainSubShape].icon.height-
-                SnowProfile.DESCR_HEIGHT)/2);
-              secondaryGrainIconKJS.offsetX(-iconCursor);
-              iconCursor += SnowProfile.CAAML_SUBSHAPE[secondaryGrainShape][
-                secondaryGrainSubShape].icon.width;
-              secondaryGrainIcon.src = "data:image/png;base64," +
-                SnowProfile.CAAML_SUBSHAPE[secondaryGrainShape][
-                secondaryGrainSubShape].icon.image;
-            }
-
-            // Add right paren to the icons
-            iconCursor += 3;
-            grainIcons.add(new Kinetic.Text({
-                text: ")",
-                offsetY: 6 - (SnowProfile.DESCR_HEIGHT / 2),
-                offsetX: - iconCursor,
-                stroke: "000"
-              })
-            );
-          }
+        // Build an iconic description from what we have
+        sym2icons(primaryGrainShape, primaryGrainSubShape,
+          secondaryGrainShape, secondaryGrainSubShape, grainIcons);
         }
-        if (grainSize !== "") {
+        // if (grainSize !== "") {
 
-          // Grain size information is available.
-          if (text) {
-            text += "\n";
-          }
-          text += SnowProfile.CAAML_SIZE[grainSize];
-        }
-        grainDescr.setText(text);
+        //   // Grain size information is available.
+        //   if (text) {
+        //     text += "\n";
+        //   }
+        //   text += SnowProfile.CAAML_SIZE[grainSize];
+        // }
+        // grainDescr.setText(text);
       }
 
       // // Liquid water content description.
@@ -608,7 +772,6 @@ SnowProfile.Layer = function(depthArg) {
 
       // Re-draw the diagram with the updated information
       self.draw();
-    }
   };
 
   /**
