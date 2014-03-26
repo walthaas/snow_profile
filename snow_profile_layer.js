@@ -93,7 +93,7 @@ SnowProfile.Layer = function(depthArg) {
    */
   var commentDescr = new Kinetic.Text({
     width: SnowProfile.COMMENT_WD,
-    fontSize: 12,
+    fontSize: 14,
     fontFamily: 'sans-serif',
     fill: "#000",
     align: 'left',
@@ -119,19 +119,20 @@ SnowProfile.Layer = function(depthArg) {
   var hardness = null;
 
   /**
-   * @summary Text for the grain description.
+   * @summary Text for the grain size
    * @desc [Kinetic.Text]{@link http://kineticjs.com/docs/Kinetic.Text.html}
-   * object for text combining the grain shape and grain size of this
-   * snow layer.
+   * object for text giving th grain size of this snow layer.
    * @type {Object}
+   * @todo Adjust format, text of heading
    */
-  var grainDescr = new Kinetic.Text({
+  var grainSizeText = new Kinetic.Text({
     width: SnowProfile.GRAIN_WD,
-    fontSize: 12,
+    fontSize: 14,
     fontFamily: 'sans-serif',
     fill: "#000",
     align: 'left',
-    x: SnowProfile.GRAIN_LEFT
+    x: SnowProfile.GRAIN_LEFT + SnowProfile.GRAIN_FORM_WD +
+      SnowProfile.GRAIN_SPACE_WD
   });
 
   /**
@@ -333,7 +334,7 @@ SnowProfile.Layer = function(depthArg) {
     $(document).unbind("SnowProfileShowControls", handleVisible);
     $(document).unbind("SnowProfileAdjustGrid", self.draw);
     handle.destroy();
-    grainDescr.destroy();
+    grainSizeText.destroy();
     grainIcons.destroy();
 //    LWCDescr.destroy();
     commentDescr.destroy();
@@ -525,18 +526,19 @@ SnowProfile.Layer = function(depthArg) {
         image: primaryIcon
       });
       container.add(primaryIconKJS);
-      primaryIconKJS.offsetY((29 - SnowProfile.DESCR_HEIGHT)/2);
-
       if (secondaryShape === "") {
 
         // There is no secondary shape so we just use the normal MFcr icon
         primaryIcon.src = "data:image/png;base64," +
           SnowProfile.CAAML_SUBSHAPE.MF.MFcr.icon.image;
+        primaryIconKJS.offsetY((SnowProfile.CAAML_SUBSHAPE.MF.MFcr.icon.
+          height - SnowProfile.DESCR_HEIGHT) / 2);
       }
       else {
 
         // There is a secondary shape, so use the alternative MFcr icon
         primaryIcon.src = "data:image/png;base64," + image;
+        primaryIconKJS.offsetY((29 - SnowProfile.DESCR_HEIGHT) / 2);
         secondaryIconKJS = new Kinetic.Image({
           x: 0,
           y: 0,
@@ -727,7 +729,7 @@ SnowProfile.Layer = function(depthArg) {
       grainSize = data.grainSize;
 
       // Empty the icon group and text description
-      grainDescr.setText("");
+      grainSizeText.setText("");
       grainIcons.destroyChildren();
 
       if ((primaryGrainShape !== "") ||
@@ -741,15 +743,13 @@ SnowProfile.Layer = function(depthArg) {
         sym2icons(primaryGrainShape, primaryGrainSubShape,
           secondaryGrainShape, secondaryGrainSubShape, grainIcons);
         }
-        // if (grainSize !== "") {
 
-        //   // Grain size information is available.
-        //   if (text) {
-        //     text += "\n";
-        //   }
-        //   text += SnowProfile.CAAML_SIZE[grainSize];
-        // }
-        // grainDescr.setText(text);
+        // Show the grain size
+        if (grainSize !== "") {
+
+          // Grain size information is available.
+          grainSizeText.setText(SnowProfile.CAAML_SIZE[grainSize]);
+        }
       }
 
       // // Liquid water content description.
@@ -901,7 +901,7 @@ SnowProfile.Layer = function(depthArg) {
    */
   this.setIndexPosition = function() {
     var i = self.getIndex();
-    grainDescr.y(SnowProfile.HANDLE_MIN_Y +
+    grainSizeText.y(SnowProfile.HANDLE_MIN_Y +
       (SnowProfile.HANDLE_SIZE / 2) + 3 +
         (i * SnowProfile.DESCR_HEIGHT));
     grainIcons.y(SnowProfile.HANDLE_MIN_Y +
@@ -930,7 +930,7 @@ SnowProfile.Layer = function(depthArg) {
   };
 
   // Add KineticJS objects to the KineticJS layer
-  //SnowProfile.kineticJSLayer.add(grainDescr);
+  SnowProfile.kineticJSLayer.add(grainSizeText);
   SnowProfile.kineticJSLayer.add(grainIcons);
 //  SnowProfile.kineticJSLayer.add(LWCDescr);
   SnowProfile.kineticJSLayer.add(commentDescr);

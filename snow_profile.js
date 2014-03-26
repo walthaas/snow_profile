@@ -12,10 +12,10 @@ var SnowProfile = {};
  *
  *       | Top Labels
  * ___________________________________________________________________
- *       |             |          |        |       |
- * Depth |             |          |        |       |
- * Label | Graph       | Controls | Grains | Water | Comment
- *       |             |          |        |       |
+ *       |             |          |       | |       |
+ * Depth |             |          | Grain | | Grain |
+ * Label | Graph       | Controls | Form  | | Size  | Comment
+ *       |             |          |       | |       |
  *____________________________________________________________________
  *       | Hardness    |
  *       | Label       |
@@ -26,17 +26,35 @@ var SnowProfile = {};
 
   SnowProfile = {
 
-   /**
-    * Minimum depth that can be set by the user (cm)
-    * @type {number}
-    */
-   MIN_SETTABLE_DEPTH: 50,
+    /**
+     * Maximum snow depth in cm that can be plotted on the graph.
+     * @type {number}
+     * @const
+     * @see SnowProfile.Grid~depthScaleGrp
+     */
+    MAX_DEPTH:  300,
+
+    /**
+     * Minimum depth in cm that can be set by the user.
+     * @type {number}
+     * @const
+     * @see SnowProfile.Grid~depthScaleGrp
+     */
+    MIN_DEPTH: 50,
 
     /**
      * Horizontal width in pixels of the depth (vertical) axis label.
      * @const
+     * @see SnowProfile.Grid~depthScaleGrp
      */
     DEPTH_LABEL_WD: 70,
+
+    /**
+     * Depth interval in cm between horizontal grid lines
+     * @type {number}
+     * @const
+     */
+    DEPTH_LINE_INT: 10,
 
     /**
      * Width in pixels available for plotting data.
@@ -52,16 +70,34 @@ var SnowProfile = {};
     CTRLS_WD: 200,
 
     /**
-      Width in pixels of the area used by snow grain description
+      Width in pixels of the area used by snow grain form
       @const
      */
-    GRAIN_WD: 180,
+    GRAIN_FORM_WD: 60,
 
     /**
-      Width in pixels of the area used by snow liquid water description
+      Width in pixels of the space between grain form and size
       @const
      */
-    LWC_WD: 70,
+    GRAIN_SPACE_WD: 5,
+
+    /**
+      Width in pixels of the area used by snow grain size
+      @const
+     */
+    GRAIN_SIZE_WD: 50,
+
+    // /**
+    //   Width in pixels of the area used by snow liquid water description
+    //   @const
+    //  */
+    // LWC_WD: 70,
+
+    /**
+     * Width in pixels of the space between grain size and comment
+     * @const
+     */
+    COMMENT_SPACE_WD: 5,
 
     /**
       Width in pixels of the area used by snow layer comment
@@ -74,12 +110,6 @@ var SnowProfile = {};
      * @const
      */
     TOP_LABEL_HT: 40,
-
-    /**
-     * Height in pixels available for plotting data.
-     * @const
-     */
-    GRAPH_HEIGHT: 500,
 
     /**
       Height in pixels of the text description area for one snow layer
@@ -112,15 +142,11 @@ var SnowProfile = {};
     GRID_COLOR: '#69768C',
 
     /**
-      Maximum snow depth in cm that can be plotted on the graph.
-
-      Snow depth in cm that corresponds to GRAPH_HEIGHT pixels.
-      Zero depth always corresponds to zero graph pixels.
-      FIXME: we need the concept to calculate ratio of pixels/cm but
-        should find a better name for it.
+      Depth scale in pixels per cm
       @const
+      @memberof SnowProfile
      */
-    MAX_DEPTH:  200,
+    DEPTH_SCALE: 5,
 
     /**
       Depth increment in cm to allow when inserting a layer above
@@ -178,20 +204,13 @@ var SnowProfile = {};
     totalDepth: null,
 
     /**
-     * @summary Pit depth (cm)
-     * @desc Depth of the pit in cm from the snow surface.  Must
-     *   be an integer >= 30.  Default 200.
-     * @type {!number}
-     */
-    pitDepth: 200,
-
-    /**
      * @summary Depth reference (snow surface or ground)
      * @desc  A single letter indicating whether snow depth is referenced
      *   to the snow surface ("s") or ground ("g").  Must be one or the
      *   other.  Default is "s".  Ground reference may be used only if
      *   the value of total snow depth (totalDepth) is known.
      * @type {!string}
+     * @see SnowProfile.Grid~depthScaleGrp
      */
     depthRef: "s",
 
@@ -738,23 +757,23 @@ var SnowProfile = {};
         }
       },
       SH: {
-        SHsu: {
-          text: "Surface hoar",
-          icon: {
-            image: "iVBORw0KGgoAAAANSUhEUgAAABEAAAAQCAYAAADwMZRfAAAABHNC" +
-              "SVQICAgIfAhkiAAAAAlwSFlzAAAStQAAErUB1jM0ZgAAABl0RVh0U29md" +
-              "HdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAEDSURBVDiNldIxTkJBFI" +
-              "Xhj4qgiSUJGgsXQENlYa0LoKOwdgVUmBg7K2sqoomVS6Aimli4BhrjBkj" +
-              "UWBjG5j6C8B6MxS3mnHP/ezMzcIYn7KaU5Bb28IxTGCPh+p+Qm+gbQxs/" +
-              "+MJhJuAI39HXLsRhUB8yIY+RH6aUFGITM8xxvAVwEoAZmgtImP0wX1CrA" +
-              "NTwGrn+Ql8K1DGNQK8Cch7+FPU1SIS6EXpDY8XbwXv43T9eybRJBC9X9K" +
-              "vQJ2s9JZBOXPAH9kM7wGfona2QaBrF1Ls438d5VJqvgLRikzkuljZrZUM" +
-              "CNIjpRQ0qsxsgjXil0tfKggSot+nf5EJquK36wUX9Amy9O8ZyCXfaAAAA" +
-              "AElFTkSuQmCC",
-            height: 16,
-            width: 17
-          }
-        },
+        // SHsu: {
+        //   text: "Surface hoar",
+        //   icon: {
+        //     image: "iVBORw0KGgoAAAANSUhEUgAAABEAAAAQCAYAAADwMZRfAAAABHNC" +
+        //       "SVQICAgIfAhkiAAAAAlwSFlzAAAStQAAErUB1jM0ZgAAABl0RVh0U29md" +
+        //       "HdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAEDSURBVDiNldIxTkJBFI" +
+        //       "Xhj4qgiSUJGgsXQENlYa0LoKOwdgVUmBg7K2sqoomVS6Aimli4BhrjBkj" +
+        //       "UWBjG5j6C8B6MxS3mnHP/ezMzcIYn7KaU5Bb28IxTGCPh+p+Qm+gbQxs/" +
+        //       "+MJhJuAI39HXLsRhUB8yIY+RH6aUFGITM8xxvAVwEoAZmgtImP0wX1CrA" +
+        //       "NTwGrn+Ql8K1DGNQK8Cch7+FPU1SIS6EXpDY8XbwXv43T9eybRJBC9X9K" +
+        //       "vQJ2s9JZBOXPAH9kM7wGfona2QaBrF1Ls438d5VJqvgLRikzkuljZrZUM" +
+        //       "CNIjpRQ0qsxsgjXil0tfKggSot+nf5EJquK36wUX9Amy9O8ZyCXfaAAAA" +
+        //       "AElFTkSuQmCC",
+        //     height: 16,
+        //     width: 17
+        //   }
+        // },
         SHcv: {
           text: "Cavity hoar",
           icon: {
@@ -850,41 +869,23 @@ var SnowProfile = {};
         MFcr: {
           text: "Melt-freeze crust",
           icon: {
-            image: "iVBORw0KGgoAAAANSUhEUgAAADQAAAAdCAYAAADl208VAAAABHNC" +
-              "SVQICAgIfAhkiAAAAAlwSFlzAAAT9gAAE/YBIx4x4QAAABl0RVh0U29md" +
-              "HdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAATWSURBVFiFvdhv6J5TGA" +
-              "fwz/2bic2M38YwEyus4Ycx2qbGyKyt7IUXeDFCkvJmKU0IUV4gb+ZPRl6" +
-              "hRDEMSSTRsj/502wa2QobNvuHYW4v7uvuOb9n930/97PFqafTc1/f873O" +
-              "dc51zrmuK8vzXK+WZdlYzMMCnIbjcQx+xSZsxgd4Mc/zrT0Jh3Mfi6sxG" +
-              "5NwEo7CT/gBG/A6VuR5vqMnYZ7ntT+ciGfxJ/IWv7/wJmY28Qb3zMD+1Z" +
-              "L7TzyDiY28NcpG4H78nhB+iQcxF0OYEP1VuBNrEuw/WIZxFdxH46nAlPg" +
-              "1wXFVF/cVoXNdgt2DuzHQyqBQ+HZCsBGX9FrxGDsHbyRjt2BaIh/C94n8" +
-              "DcxpyX05vkvGvo4jGw3CIL6KAfvwGEa1UdjFc22sZK44Z7PCxbbHt9245" +
-              "gB4x8TulkZ9jrGVBmEk3gvgd5jVr8Iu5Wfjm8RNSgM34MyD5L4MPwbfWx" +
-              "hRZdDDAfgbM3oQjsAUjOmBO67LTb7B+B5jjsXkli5Y8j4wzCBMxt4QPlh" +
-              "DcAgW433sStzyMyzFcTXjhgK/E2fUYM7HC8mO5tiK5VjYYNTSwP6Bk1OD" +
-              "XgjBaoyscZ9VibI8Dnd6nW/DohrFCzC/4vtheCi8ouTZrXiDUl0vYULF+" +
-              "FFYH5jn45tBxVuwr2oFMTVWoLzxForrGIfG6r6SKL+9j7PwWrLTj4SugZ" +
-              "BNwq3YkbjrERUcM3TewEFYFB8+qjkrK0P+CkY3TO6GZPsrXasLX+rdoeH" +
-              "MhmFfBPbxGsxnIV8ktjPHHRXA20K2Wdf1WEP8XN3idOHG6FzhN7bgPTfc" +
-              "+x9cWCG/N3FNq+PPpRXAV0N2U0sXGh9K96l49BLcJcH7eR/uuSzG3FMhm" +
-              "x+y1QOKQJPikHe386L/uEK2X8vz/GfFwzygOFt1reT9pA1v1xxmVMjKuR" +
-              "8/IA4SfkkRWZaNxkSF5V/3oXhd9FMaMKdHv74P3hI7tUJWzn1wQHHdwrg" +
-              "Ukef5HoXlGU7tQ3Gp8KsGzIboT2/AdLcSu65CVs5924Ai54ATKoCrop/V" +
-              "RmOWZRNCcY5PG6Al78wsy7I23Mkcqty0nPsPA4q3hWqffy/6e7MsG6yQd" +
-              "7dHFTu6Ms/znQ24VYrIYSpu6UWaZdl0cSXjnQrI9Og30vwOjdTJc5Zrvr" +
-              "luDdxenN3i1rop8LswuwE3WScDWNbmHeoVKQzpxHmbFOnyxJCNxkWG50B" +
-              "L+riKV+gkhEsxTRF9lOd2sSIUKjOA/fOf7kghPvaK5aYrco80vtoWi1D+" +
-              "34GbayZeF8uNUuRcKc9ehTumuparSL1VxXLJtvaKtg9VpMkf6kTbfyvC" +
-              "kqcxqWZcm2h7Fl7Gt4kRW2MHr27Y4epoO4T95EMZTtEjm3Vg+dDROLGF" +
-              "u9bnQ8kFkGasPSs3PRSeq5Pf7Ezc6GsMHST3HL0y1gB21xQeweEHoPB6" +
-              "nYrRdlyICxQveo7fcN0B8I4ONysrRvU1ha4tT6s+69vulqLE9W4ydgvO" +
-              "SeRnGV71eRdzW3LPVrwz5djeVZ9k8AjcFytZEqxS1MNmK6qnYxXx2kIs" +
-              "wdoE229dbm1wLAzOsaHj4tCZ1vz24C5t63Jdyk/Ak4YXHJt+/2Xl9Hc8" +
-              "oaZ2Uf6yIG9sEXnPw5WKWO3/rG2vV+RlK/IiYG5s/wKhe2zOmk4pTAAA" +
-              "AABJRU5ErkJggg==",
-            height: 29,
-            width: 52
+            image: "iVBORw0KGgoAAAANSUhEUgAAABwAAAAQCAYAAAAFzx/vAAAABH" +
+              "NCSVQICAgIfAhkiAAAAAlwSFlzAAAK4gAACuIBdEbn2wAAABl0RVh0U" +
+              "29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAHJSURBVDiNvdU7" +
+              "a1VBEAfw38k1JmhaEWwEHwQLEZMQonYWioUYEUJ8FL7QIle7gNroB7D" +
+              "xC2inYmlKK0vBVKL4iGBjiAoaDDfEqKzFmSvr5dyQBHVhOMx//rNzdn" +
+              "ZmtkgpyVdRFDsxggH0o4a3eIjbKaXpFv4mnMERbMVPTOIpHqSUnv0RI" +
+              "KUkgtZwFQ3cRR2DGMLF2GQO9cynHthkcIbC5xLuYx5XUPvtkwV7hJcY" +
+              "bBpbBaPxQ7dCGhhdgr8Xb2LvWh5wHM+xLiN3YAc2t2zSF6eaQ1+GF9i" +
+              "ObS38HrzGePP6esN5ICOdw5fAv2EK+zP7MIYzfQQzkcJ5vMfhzL4vst" +
+              "ELN3AnM14Ih0NxyrWBNarSjWP4HN81IaOYxcGMdw/XYQLnA+zE1/w0m" +
+              "cM1PK7A3+FEBX4Wr1oKbAKmsTvAXfjYpgC2YAGdGbYRi+iq4PcoW2RD" +
+              "6Hsw3eHvrGKZmA5lD/WH/gLdRVEcqOCewpOU0vcmkFL6oMzQSAX/OKZ" +
+              "SSp9C749YlUUzg6PKO12Py8rqa1c0sziJLnTjtLIWKotmqbZYwA/Lb4" +
+              "vFkPZt8d8bf5Wj7WbI6kbbCof3WOYzZoXDu2jOt+b618/TLzmbEEiG7" +
+              "JCdAAAAAElFTkSuQmCC",
+            height: 16,
+            width: 28
           }
         },
       },
@@ -957,12 +958,12 @@ var SnowProfile = {};
       @const
      */
     CAAML_SIZE: {
-      "very fine": "< 0.2 mm",
-      "fine": "0.2 - 0.5 mm",
-      "medium": "0.5 - 1.0 mm",
-      "coarse": "1.0 - 2.0 mm",
-      "very coarse": "2.0 - 5.0 mm",
-      "extreme": "> 5.0 mm"
+      "very fine": "< 0.2\nmm",
+      "fine": "0.2-0.5\nmm",
+      "medium": "0.5-1.0\nmm",
+      "coarse": "1.0-2.0\nmm",
+      "very coarse": "2.0-5.0\nmm",
+      "extreme": "> 5.0\nmm"
     }  //,
 
     // /**
@@ -982,6 +983,15 @@ var SnowProfile = {};
   }; // SnowProfile = {
 
   /**
+   * @summary Pit depth (cm)
+   * @desc Depth of the pit in cm from the snow surface.  Must
+   *   be an integer >= 30.  Default 200.
+   * @type {!number}
+   * @see SnowProfile.Grid~depthScaleGrp
+   */
+  SnowProfile.pitDepth = SnowProfile.MAX_DEPTH;
+
+  /**
     Central x of the data plotting area.
     @const
     @type {number}
@@ -990,14 +1000,14 @@ var SnowProfile = {};
   SnowProfile.GRAPH_CENTER_X = SnowProfile.DEPTH_LABEL_WD + 1 +
     (SnowProfile.GRAPH_WIDTH / 2);
 
-  /**
-    Central Y of the data plotting area.
-    @const
-    @type {number}
-    @memberof SnowProfile
-   */
-  SnowProfile.GRAPH_CENTER_Y = SnowProfile.TOP_LABEL_HT + 1 +
-    (SnowProfile.GRAPH_HEIGHT / 2);
+  // /**
+  //   Central Y of the data plotting area.
+  //   @const
+  //   @type {number}
+  //   @memberof SnowProfile
+  //  */
+  // SnowProfile.GRAPH_CENTER_Y = SnowProfile.TOP_LABEL_HT + 1 +
+  //   (SnowProfile.GRAPH_HEIGHT / 2);
 
   /**
     Maximum x value allowed for a handle (hardness 'I').
@@ -1080,6 +1090,13 @@ var SnowProfile = {};
     ['I',     1, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 19.5]
   ];
 
+    /**
+      Height of the graph in pixels
+      @const
+      @memberof SnowProfile
+     */
+    SnowProfile.GRAPH_HEIGHT = SnowProfile.MAX_DEPTH * SnowProfile.DEPTH_SCALE;
+
   /**
     Vertical height in pixels of the KineticJS stage
     @const
@@ -1095,7 +1112,8 @@ var SnowProfile = {};
    */
    SnowProfile.STAGE_WD = SnowProfile.DEPTH_LABEL_WD + 1 +
      SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD + 1 +
-     SnowProfile.GRAIN_WD + 1 + SnowProfile.LWC_WD + 1 +
+     SnowProfile.GRAIN_FORM_WD + SnowProfile.GRAIN_SPACE_WD +
+     SnowProfile.GRAIN_SIZE_WD + SnowProfile.COMMENT_SPACE_WD +
      SnowProfile.COMMENT_WD;
 
   /**
@@ -1112,14 +1130,14 @@ var SnowProfile = {};
   SnowProfile.GRAIN_LEFT = SnowProfile.DEPTH_LABEL_WD + 1 +
     SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD;
 
-  /**
-    X position of the left edge of the Water text area
-    @const
-    @memberof SnowProfile
-   */
-  SnowProfile.LWC_LEFT = SnowProfile.DEPTH_LABEL_WD + 1 +
-    SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD +
-    SnowProfile.GRAIN_WD;
+  // /**
+  //   X position of the left edge of the Water text area
+  //   @const
+  //   @memberof SnowProfile
+  //  */
+  // SnowProfile.LWC_LEFT = SnowProfile.DEPTH_LABEL_WD + 1 +
+  //   SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD +
+  //   SnowProfile.GRAIN_WD;
 
   /**
     X position of the left edge of the Comment text area
@@ -1128,14 +1146,8 @@ var SnowProfile = {};
    */
   SnowProfile.COMMENT_LEFT = SnowProfile.DEPTH_LABEL_WD + 1 +
     SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD +
-    SnowProfile.GRAIN_WD + SnowProfile.LWC_WD;
-
-  /**
-    Depth scale in pixels per cm
-    @const
-    @memberof SnowProfile
-   */
-  SnowProfile.DEPTH_SCALE = SnowProfile.GRAPH_HEIGHT / SnowProfile.MAX_DEPTH;
+    SnowProfile.GRAIN_FORM_WD + SnowProfile.GRAIN_SPACE_WD +
+    SnowProfile.GRAIN_SIZE_WD + SnowProfile.COMMENT_SPACE_WD;
 
   /**
    @summary KineticJS stage
@@ -1296,13 +1308,13 @@ var SnowProfile = {};
     // Add the label to the Grain Type column
     var grainText = new Kinetic.Text({
       x: SnowProfile.GRAIN_LEFT,
-      y: 25,
-      text: 'Grain Type',
-      fontSize: 18,
+      y: 12,
+      text: 'Grain\nForm    Size',
+      fontSize: 14,
       fontStyle: 'bold',
       fontFamily: 'sans-serif',
       fill: SnowProfile.LABEL_COLOR,
-      align: "left"
+      align: "center"
     });
     SnowProfile.kineticJSLayer.add(grainText);
 
@@ -1324,7 +1336,7 @@ var SnowProfile = {};
       x: SnowProfile.COMMENT_LEFT,
       y: 25,
       text: 'Comment',
-      fontSize: 18,
+      fontSize: 14,
       fontStyle: 'bold',
       fontFamily: 'sans-serif',
       fill: SnowProfile.LABEL_COLOR,

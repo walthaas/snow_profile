@@ -84,14 +84,15 @@ SnowProfile.Grid = function() {
 
     // Referenced to snow surface or ground?
     // Start drawing lines/labels at zero.  Continue to depth of pit.
-    // Horizontal lines are drawn at multiples of 20 cm regardless of
+    // Horizontal lines are drawn at multiples of DEPTH_LINE_INT regardless of
     //   location of the top or bottom of the scale.
     if (SnowProfile.depthRef === "s") {
 
       // Depth indication is referenced to snow surface.  Zero is at the top.
       // Numbers and horizontal reference lines are generated from the
-      // snow surface down every 20 cm to the bottom of the pit.
-      for (cm = 0; cm <= SnowProfile.pitDepth; cm += 20) {
+      // snow surface down every HORIZ_INT cm to the bottom of the pit.
+      for (cm = 0; cm <= SnowProfile.pitDepth;
+        cm += SnowProfile.DEPTH_LINE_INT) {
         group.add(new Kinetic.Text({
           x: 40,
           y: cm * SnowProfile.DEPTH_SCALE,
@@ -103,7 +104,7 @@ SnowProfile.Grid = function() {
           align: 'right'
         }));
 
-        // Draw a horizontal line every 20 cm as a depth scale
+        // Draw a horizontal line every DEPTH_LINE_INT cm as a depth scale
         if (cm !== SnowProfile.pitDepth) {
           group.add(new Kinetic.Line({
             points: [SnowProfile.DEPTH_LABEL_WD + 1,
@@ -123,10 +124,12 @@ SnowProfile.Grid = function() {
 
       // Depth indication is referenced to ground.  Zero is the ground.
       // The bottom of the grid is shown as (totalDepth - pitDepth).  The
-      // lowest grid line is at the next integer multiple of 20 cm.
+      // lowest grid line is at the next integer multiple of DEPTH_LINE_INT cm.
       var bottom = SnowProfile.totalDepth - SnowProfile.pitDepth;
-      var lowestLine = Math.ceil(bottom / 20) * 20;
-      for (cm = lowestLine; cm <= SnowProfile.totalDepth; cm += 20) {
+      var lowestLine = Math.ceil(bottom / SnowProfile.DEPTH_LINE_INT) *
+        SnowProfile.DEPTH_LINE_INT;
+      for (cm = lowestLine; cm <= SnowProfile.totalDepth;
+        cm += SnowProfile.DEPTH_LINE_INT) {
         group.add(new Kinetic.Text({
           x: 40,
           y: (SnowProfile.totalDepth - cm) * SnowProfile.DEPTH_SCALE,
@@ -138,7 +141,7 @@ SnowProfile.Grid = function() {
           align: 'right'
         }));
 
-        // Draw a horizontal line every 20 cm as a depth scale
+        // Draw a horizontal line every DEPTH_LINE_INT cm as a depth scale
         if (cm !== SnowProfile.totalDepth) {
           group.add(new Kinetic.Line({
             points: [SnowProfile.DEPTH_LABEL_WD + 1,
@@ -248,7 +251,7 @@ SnowProfile.Grid = function() {
   var hardnessText = new Kinetic.Text({
     x: SnowProfile.GRAPH_WIDTH / 2,
     y: 16,
-    text: 'Hardness',
+    text: 'Hand Hardness',
     fontSize: 18,
     fontStyle: 'bold',
     fontFamily: 'sans-serif',
@@ -278,9 +281,9 @@ SnowProfile.Grid = function() {
       return;
     }
     if (( totalDepth.search(/^\d+$/) < 0) ||
-      (totalDepth < SnowProfile.MIN_SETTABLE_DEPTH)) {
+      (totalDepth < SnowProfile.MIN_DEPTH)) {
       alert("Total snow depth must be a number >= " +
-        SnowProfile.MIN_SETTABLE_DEPTH);
+        SnowProfile.MIN_DEPTH);
       $("#snow_profile_total_depth").val(SnowProfile.totalDepth);
       return;
     }
@@ -306,9 +309,9 @@ SnowProfile.Grid = function() {
   function pitDepthChange() {
     var pitDepth = $("#snow_profile_pit_depth").val();
     if ((pitDepth.search(/^\d+$/) < 0) ||
-      (pitDepth < SnowProfile.MIN_SETTABLE_DEPTH)) {
+      (pitDepth < SnowProfile.MIN_DEPTH)) {
       alert("Snow pit depth must be a number >= " +
-        SnowProfile.MIN_SETTABLE_DEPTH);
+        SnowProfile.MIN_DEPTH);
       $("#snow_profile_pit_depth").val(SnowProfile.pitDepth);
       return;
     }
