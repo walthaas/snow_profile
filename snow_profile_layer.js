@@ -1142,8 +1142,7 @@ SnowProfile.Layer.prototype.x2code = function(x) {
  */
 SnowProfile.Layer.prototype.y2depth = function(y) {
   "use strict";
-  return ((y - SnowProfile.HANDLE_MIN_Y) / SnowProfile.GRAPH_HEIGHT) *
-    SnowProfile.MAX_DEPTH;
+  return (y - SnowProfile.HANDLE_MIN_Y) / SnowProfile.DEPTH_SCALE;
 };
 
 // Configure Emacs for Drupal JavaScript coding standards
