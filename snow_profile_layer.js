@@ -32,7 +32,6 @@ SnowProfile.Layer = function(depthArg) {
 
   /**
    * @summary Grain shape of this layer.
-   * @todo Revise this doc.
    * @desc Two- or four-character code from the
    * [IACS 2009 Standard]{@link http://www.cryosphericsciences.org/products/snowClassification/snowclass_2009-11-23-tagged-highres.pdf}
    * Appendix A.1 table as stored in {@link SnowProfile.CAAML_SHAPE} or
@@ -123,7 +122,6 @@ SnowProfile.Layer = function(depthArg) {
    * @desc [Kinetic.Text]{@link http://kineticjs.com/docs/Kinetic.Text.html}
    * object for text giving th grain size of this snow layer.
    * @type {Object}
-   * @todo Adjust format, text of heading
    */
   var grainSizeText = new Kinetic.Text({
     width: SnowProfile.GRAIN_WD,
@@ -847,7 +845,7 @@ SnowProfile.Layer = function(depthArg) {
     if (i !== 0) {
       SnowProfile.snowLayers[i - 1].setLayerOutline();
     }
-    SnowProfile.stage.draw();
+    SnowProfile.kineticJSLayer.batchDraw();
   }; // this.draw = function() {
 
   /**
@@ -891,7 +889,7 @@ SnowProfile.Layer = function(depthArg) {
       // The user has touched the handle so make it always visible
       handle.setStroke("#000");
     }
-    SnowProfile.stage.draw();
+    SnowProfile.kineticJSLayer.batchDraw();
   };
 
   /**
@@ -995,7 +993,7 @@ SnowProfile.Layer = function(depthArg) {
    */
   handle.on('mouseout', function() {
     handleLoc.setVisible(0);
-    SnowProfile.stage.draw();
+    SnowProfile.kineticJSLayer.batchDraw();
     document.body.style.cursor = 'default';
   });
 
@@ -1006,7 +1004,7 @@ SnowProfile.Layer = function(depthArg) {
   handle.on('mousedown', function() {
     handleLoc.setVisible(1);
     handleTouched = true;
-    SnowProfile.stage.draw();
+    SnowProfile.kineticJSLayer.batchDraw();
   });
 
   /**
@@ -1015,7 +1013,7 @@ SnowProfile.Layer = function(depthArg) {
    */
   handle.on('mouseup', function() {
     handleLoc.setVisible(0);
-    SnowProfile.stage.draw();
+    SnowProfile.kineticJSLayer.batchDraw();
   });
 
   // When Edit button clicked, pop up a modal dialog form.

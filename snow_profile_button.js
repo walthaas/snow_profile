@@ -59,7 +59,7 @@ SnowProfile.Button = function(textArg) {
   function hideButton() {
     text.setVisible(false);
     rect.setVisible(false);
-    SnowProfile.stage.draw();
+    SnowProfile.kineticJSLayer.draw();
   }
 
   /**
@@ -69,7 +69,7 @@ SnowProfile.Button = function(textArg) {
   function showButton() {
     text.setVisible(true);
     rect.setVisible(true);
-    SnowProfile.stage.draw();
+    SnowProfile.kineticJSLayer.draw();
   }
 
   /**
@@ -83,7 +83,7 @@ SnowProfile.Button = function(textArg) {
     text.setOffsetY(rect.getHeight() / 2);
     rect.setY(y);
     rect.setOffsetY(rect.getHeight() / 2);
-    SnowProfile.stage.draw();
+    SnowProfile.kineticJSLayer.draw();
   }
 
   /**
@@ -96,7 +96,7 @@ SnowProfile.Button = function(textArg) {
     $(document).unbind("SnowProfileShowControls", showButton);
     text.destroy();
     rect.destroy();
-    SnowProfile.stage.draw();
+    SnowProfile.kineticJSLayer.draw();
   }
 
   /**
@@ -124,7 +124,7 @@ SnowProfile.Button = function(textArg) {
   text.setOffsetX(rect.getWidth() / 2);
   SnowProfile.kineticJSLayer.add(rect);
   SnowProfile.kineticJSLayer.add(text);
-  SnowProfile.stage.draw();
+  SnowProfile.kineticJSLayer.draw();
 
   return newObj;
 };

@@ -193,6 +193,13 @@ var SnowProfile = {};
     oldShowHandle: null,
 
     /**
+     * @summary Maximum Y value allowed for any handle (bottom of graph area)
+     * @type {number}
+     * @see SnowProfile.Grid~adjustGrid
+     */
+    handleMaxY: null,
+
+    /**
      * @summary Total depth of the snow pack (cm)
      * @desc Distance in cm from the snow surface to the ground, as measured
      *   with a calibrated probe or by digging to the ground.  Null
@@ -1142,14 +1149,6 @@ var SnowProfile = {};
     width: SnowProfile.STAGE_WD,
     height: SnowProfile.stageHeight()
   });
-
-  /**
-    Maximum Y value allowed for any handle (bottom of graph area)
-    @const {number}
-    @memberof SnowProfile
-   */
-  SnowProfile.handleMaxY = SnowProfile.TOP_LABEL_HT + 1 +
-    (SnowProfile.DEPTH_SCALE * SnowProfile.pitDepth);
 
   /**
     @method

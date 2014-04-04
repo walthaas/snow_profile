@@ -17,9 +17,7 @@
  *
  *   The depth scale must be adjusted whenever the user changes the total
  *   snow depth or snow pit depth or selection of reference to snow surface
- *   or ground, as indicated by the firing of the
- *   {@link event:SnowProfileAdjustGrid SnowProfileAdjustGrid}
- *   event.  When this happens, the hardness scale does not change but
+ *   or ground.  When this happens, the hardness scale does not change but
  *   its location on the chart must be adjusted to the new bottom.  However
  *   no change to the grid is made when the user moves a data point inside
  *   the snow pack or changes the description of that point.  For this reason
@@ -253,6 +251,10 @@ SnowProfile.Grid = function() {
     gridLayer.add(line);
   });
 
+  /**
+   * @type {Object}
+   * @see SnowProfile.Grid~adjustGrid
+   */
   var hardnessText = new Kinetic.Text({
     x: SnowProfile.GRAPH_WIDTH / 2,
     y: 16,
@@ -341,8 +343,11 @@ SnowProfile.Grid = function() {
   } // function pitDepthChange()
 
   /**
-    @summary Adjust grid for change in depth or reference
-    @fires SnowProfileAdjustGrid
+   * @summary Adjust grid for change in depth or reference
+   * @desc Set the height of the KineticJS stage and vertical lines.  Set the
+   *   Y position of the hand hardness scale.  Destroy and re-create the
+   *   vertical depth depth scale group.
+   * @fires SnowProfileAdjustGrid
    */
   function adjustGrid() {
 
@@ -373,6 +378,13 @@ SnowProfile.Grid = function() {
     // Set the maximum Y value to which a handle may be dragged
     SnowProfile.handleMaxY = SnowProfile.TOP_LABEL_HT + 1 +
       (SnowProfile.DEPTH_SCALE * SnowProfile.pitDepth);
+
+    gridLayer.draw(); //.cache({
+    //   x: 0,
+    //   y: 0,
+    //   width: SnowProfile.stage.width(),
+    //   height: SnowProfile.stage.height()
+    // });
 
     // Trigger a custom event to let the rest of the code know
     $.event.trigger("SnowProfileAdjustGrid");
@@ -438,7 +450,7 @@ SnowProfile.Grid = function() {
     align: "left"
   });
   gridLayer.add(commentText);
-
+  adjustGrid();
   return gridLayer;
 };
 

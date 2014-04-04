@@ -70,7 +70,6 @@
 /**
   Object for a jQueryUI modal dialog to enter data describing a snow layer.
   @constructor
-  @todo Add primary, secondary
  */
 SnowProfile.PopUp = function(data) {
   "use strict";
@@ -157,7 +156,7 @@ SnowProfile.PopUp = function(data) {
   $("#snow_profile_descr").dialog(editArgs);
 
   // Listen for changes to the primary grain shape
-  // @todo Support secondary grain shape
+  // @todo Hide secondary grain shape until a primary shape selected
   $("#snow_profile_primary_grain_shape").change(function() {
 
     // Primary grain shape selection has changed, so adjust sub-shape <select>
