@@ -51,6 +51,16 @@ SnowProfile.Grid = function() {
    */
   var gridLayer = new Kinetic.Layer();
 
+  var backGround = new Kinetic.Rect({
+    x: 0,
+    y:0,
+    width: SnowProfile.stage.width(),
+    height: 10,
+    fill: SnowProfile.BACKGROUND_COLOR,
+    opacity: 1
+  });
+  gridLayer.add(backGround);
+
   /**
    * @summary Create the depth scale group
    * @desc Generate the label and numbers for snow depth along the left edge
@@ -353,6 +363,9 @@ SnowProfile.Grid = function() {
 
     // Adjust height of stage
     SnowProfile.stage.height(SnowProfile.stageHeight());
+
+    // Adjust height of background to match
+    backGround.height(SnowProfile.stageHeight());
 
     // Adust lengths of vertical lines
     var points;

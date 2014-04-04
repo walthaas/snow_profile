@@ -129,6 +129,12 @@ var SnowProfile = {};
     HANDLE_SIZE: 11,
 
     /**
+     * Color of the background
+     * @const {string}
+     */
+    BACKGROUND_COLOR: '#fdfdfd',
+
+    /**
      * Color of the labels and axis lines
      * @const {string}
      */
