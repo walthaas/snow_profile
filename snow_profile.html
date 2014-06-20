@@ -1,129 +1,129 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Snow Profile Editor</title>
-<style type="text/css">
-body {
-  font-family: sans-serif;
-}
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Snow Profile Editor</title>
+    <style type="text/css">
+      body {
+	font-family: sans-serif;
+      }
 
-h1 {
-  text-align: center;
-}
+      h1 {
+	text-align: center;
+      }
 
-#snow_profile_container {
-  position: relative;
-  display: inline-block;
-}
+      #snow_profile_container {
+	position: relative;
+	display: inline-block;
+      }
 
-div.kineticjs-content {
-  background-color: #eef;
-  border-style: solid;
-  border-width: 1px;
-  border-color: black;
-  margin: 1em;
-}
-</style>
-<link rel="stylesheet" type="text/css" href="jquery.ui.theme.css" />
-<link rel="stylesheet" type="text/css" href="jquery.ui.core.css" />
-<link rel="stylesheet" type="text/css" href="jquery.ui.button.css" />
-<link rel="stylesheet" type="text/css" href="jquery.ui.dialog.css" />
-<link rel="stylesheet" type="text/css" href="jquery.ui.resizable.css" />
-</head>
+      div.kineticjs-content {
+	background-color: #eef;
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	margin: 1em;
+      }
+    </style>
+    <link rel="stylesheet" type="text/css" href="vendor/jquery.ui.theme.css" />
+    <link rel="stylesheet" type="text/css" href="vendor/jquery.ui.core.css" />
+    <link rel="stylesheet" type="text/css" href="vendor/jquery.ui.button.css" />
+    <link rel="stylesheet" type="text/css" href="vendor/jquery.ui.dialog.css" />
+    <link rel="stylesheet" type="text/css" href="vendor/jquery.ui.resizable.css" />
+  </head>
 
-<body>
-<div id="snow_profile_container">
-<h1>Snow Profile Editor</h1>
-<p>
-INSTRUCTIONS:<br>
-  1) Type in the total snow depth at the pit location and hit ENTER <br>
-  2) Type in the depth of the pit if it is different than the total depth (300cm max currently)<br>
-  3) Choose whether if you are measuring from the surface or ground
-</p>
-<p>
-  -- Use your mouse to drag the handle (black square) to indicate the depth
-  and hardness of each layer.
-<br>
-  -- Click an Insert button to insert another layer at that point.
-<br>
-  -- Click the Edit button in a layer to edit the description of a layer or
-  delete the layer.
-<br>
-  -- Click the Preview button to see how the diagram will look.
-</p>
-<p>
-  4) TO DOWNLOAD PROFILE: from the preview, right click on the snowprofile image and choose "save as" to save it to your hard drive.<hr>
-</p>
-<p>
-  <label for="snow_profile_total_depth">Total snow depth</label>
-  <input type="text" size="4" id="snow_profile_total_depth" value="200" /> cm&nbsp;&nbsp;
-  <label for="snow_profile_pit_depth">Snow pit depth</label>
-  <input type="text" size="4" id="snow_profile_pit_depth" value="200" /> cm&nbsp;&nbsp;
-  <div id="snow_profile_ref_depth" style="display: none">
-    <label for="snow_profile_ref_select">Measure depth from</label>
-    <select id="snow_profile_ref_select">
-      <option value="s">snow surface</option>
-      <option value="g">ground</option>
-    </select>
-  </div>
-</p>
-<div id="snow_profile_diagram"></div>
-</div>
-<!--
-  Form to edit snow layer description.  Pops up as a modal window.
--->
-<div id="snow_profile_descr" title="Snow Layer Description" class="ui-helper-hidden">
-<form>
-<label for="snow_profile_primary_grain_shape">Primary Grain Shape:</label>
-<select id="snow_profile_primary_grain_shape" style="display: block;">
-  <option value=""></option>
-</select>
-<div id="snow_profile_primary_grain_subshape"></div>
-<label for="snow_profile_secondary_grain_shape">Secondary Grain Shape:</label>
-<select id="snow_profile_secondary_grain_shape" style="display: block;">
-  <option value=""></option>
-</select>
-<div id="snow_profile_secondary_grain_subshape"></div>
-<label for="snow_profile_grain_size">Grain Size:</label>
-<select id="snow_profile_grain_size" style="display: block;">
-  <option value="" selected="selected"></option>
-</select>
-<!--
-<label for="snow_profile_lwc">Liquid Water Content:</label>
-<select id="snow_profile_lwc" style="display: block;">
-  <option value="" selected="selected"></option>
-</select>
--->
-<label for="snow_profile_comment">Comment:</label><br />
-<textarea id="snow_profile_comment" columns="30" rows="5"></textarea>
-</form>
-</div>
-<!-- script src="kinetic-v4.7.2.js"></script -->
-<script src="kinetic-v5.0.1.js"></script>
-<script src="jquery.js"></script>
-<script src="jquery.ui.core.min.js"></script>
-<script src="jquery.ui.widget.min.js"></script>
-<script src="jquery.ui.mouse.min.js"></script>
-<script src="jquery.ui.button.min.js"></script>
-<script src="jquery.ui.dialog.min.js"></script>
-<script src="jquery.ui.draggable.min.js"></script>
-<script src="jquery.ui.position.min.js"></script>
-<script src="jquery.ui.resizable.min.js"></script>
-<script src="snow_profile.js"></script>
-<script src="snow_profile_button.js"></script>
-<script src="snow_profile_popup.js"></script>
-<script src="snow_profile_layer.js"></script>
-<script src="snow_profile_grid.js"></script>
-<script src="snow_profile_main.js"></script>
-<button id="snow_profile_preview" style="display: block;">Preview</button>
-<p>Terminology is from the
-  <a href="http://www.cryosphericsciences.org/products/snowClassification/snowclass_2009-11-23-tagged-highres.pdf">IACS 2009 standard</a>
-and the
-<a href="http://caaml.org/Schemas/V5.0/Profiles/SnowProfileIACS/CAAMLv5_SnowProfileIACS.xsd">CAAMLv5 IACS Snow Profile schema definition</a>
-</p><p>
-Questions? Comments? Gripes?  Email author
-<a href="mailto:haas@xmission.com">Walt Haas</a>
-</p>
-</body>
+  <body>
+    <div id="snow_profile_container">
+      <h1>Snow Profile Editor</h1>
+      <p>
+	INSTRUCTIONS:<br>
+	  1) Type in the total snow depth at the pit location and hit ENTER <br>
+	  2) Type in the depth of the pit if it is different than the total depth (300cm max currently)<br>
+	  3) Choose whether if you are measuring from the surface or ground
+      </p>
+      <p>
+	-- Use your mouse to drag the handle (black square) to indicate the depth
+	and hardness of each layer.
+      <br>
+	-- Click an Insert button to insert another layer at that point.
+      <br>
+	-- Click the Edit button in a layer to edit the description of a layer or
+	delete the layer.
+      <br>
+	-- Click the Preview button to see how the diagram will look.
+      </p>
+      <p>
+	4) TO DOWNLOAD PROFILE: from the preview, right click on the snowprofile image and choose "save as" to save it to your hard drive.<hr>
+      </p>
+      <p>
+	<label for="snow_profile_total_depth">Total snow depth</label>
+	<input type="text" size="4" id="snow_profile_total_depth" value="200" /> cm&nbsp;&nbsp;
+	<label for="snow_profile_pit_depth">Snow pit depth</label>
+	<input type="text" size="4" id="snow_profile_pit_depth" value="200" /> cm&nbsp;&nbsp;
+	<div id="snow_profile_ref_depth" style="display: none">
+	  <label for="snow_profile_ref_select">Measure depth from</label>
+	  <select id="snow_profile_ref_select">
+	    <option value="s">snow surface</option>
+	    <option value="g">ground</option>
+	  </select>
+	</div>
+      </p>
+      <div id="snow_profile_diagram"></div>
+    </div>
+    <!--
+      Form to edit snow layer description.  Pops up as a modal window.
+    -->
+    <div id="snow_profile_descr" title="Snow Layer Description" class="ui-helper-hidden">
+      <form>
+	<label for="snow_profile_primary_grain_shape">Primary Grain Shape:</label>
+	<select id="snow_profile_primary_grain_shape" style="display: block;">
+	  <option value=""></option>
+	</select>
+	<div id="snow_profile_primary_grain_subshape"></div>
+	<label for="snow_profile_secondary_grain_shape">Secondary Grain Shape:</label>
+	<select id="snow_profile_secondary_grain_shape" style="display: block;">
+	  <option value=""></option>
+	</select>
+	<div id="snow_profile_secondary_grain_subshape"></div>
+	<label for="snow_profile_grain_size">Grain Size:</label>
+	<select id="snow_profile_grain_size" style="display: block;">
+	  <option value="" selected="selected"></option>
+	</select>
+	<!--
+	<label for="snow_profile_lwc">Liquid Water Content:</label>
+	<select id="snow_profile_lwc" style="display: block;">
+	  <option value="" selected="selected"></option>
+	</select>
+	-->
+	<label for="snow_profile_comment">Comment:</label><br />
+	<textarea id="snow_profile_comment" columns="30" rows="5"></textarea>
+      </form>
+    </div>
+    <!-- script src="kinetic-v4.7.2.js"></script -->
+    <script src="vendor/kinetic-v5.0.1.js"></script>
+    <script src="vendor/jquery.js"></script>
+    <script src="vendor/jquery.ui.core.min.js"></script>
+    <script src="vendor/jquery.ui.widget.min.js"></script>
+    <script src="vendor/jquery.ui.mouse.min.js"></script>
+    <script src="vendor/jquery.ui.button.min.js"></script>
+    <script src="vendor/jquery.ui.dialog.min.js"></script>
+    <script src="vendor/jquery.ui.draggable.min.js"></script>
+    <script src="vendor/jquery.ui.position.min.js"></script>
+    <script src="vendor/jquery.ui.resizable.min.js"></script>
+    <script src="snow_profile.js"></script>
+    <script src="snow_profile_button.js"></script>
+    <script src="snow_profile_popup.js"></script>
+    <script src="snow_profile_layer.js"></script>
+    <script src="snow_profile_grid.js"></script>
+    <script src="snow_profile_main.js"></script>
+    <button id="snow_profile_preview" style="display: block;">Preview</button>
+    <p>Terminology is from the
+      <a href="http://www.cryosphericsciences.org/products/snowClassification/snowclass_2009-11-23-tagged-highres.pdf">IACS 2009 standard</a>
+    and the
+    <a href="http://caaml.org/Schemas/V5.0/Profiles/SnowProfileIACS/CAAMLv5_SnowProfileIACS.xsd">CAAMLv5 IACS Snow Profile schema definition</a>
+    </p><p>
+    Questions? Comments? Gripes?  Email author
+    <a href="mailto:haas@xmission.com">Walt Haas</a>
+    </p>
+  </body>
 </html>

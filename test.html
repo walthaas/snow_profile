@@ -1,0 +1,112 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Test SnowProfile</title>
+    <link rel="stylesheet" href="file:///usr/lib/node_modules/qunit/node_modules/qunitjs/qunit/qunit.css">
+  </head>
+
+  <body>
+    <div id="qunit"></div>
+    <div id="qunit-fixture">
+      <div id="snow_profile_container">
+        <div id="snow_profile_diagram"></div>
+      </div>
+    </div>
+    <script src="/usr/lib/node_modules/qunit/node_modules/qunitjs/qunit/qunit.js"></script>
+    <script src="vendor/kinetic-v5.0.1.js"></script>
+    <script src="vendor/jquery.js"></script>
+    <script src="vendor/jquery.ui.core.min.js"></script>
+    <script src="vendor/jquery.ui.widget.min.js"></script>
+    <script src="vendor/jquery.ui.mouse.min.js"></script>
+    <script src="vendor/jquery.ui.button.min.js"></script>
+    <script src="vendor/jquery.ui.dialog.min.js"></script>
+    <script src="vendor/jquery.ui.draggable.min.js"></script>
+    <script src="vendor/jquery.ui.position.min.js"></script>
+    <script src="vendor/jquery.ui.resizable.min.js"></script>
+    <script src="snow_profile.js"></script>
+    <script src="snow_profile_button.js"></script>
+    <script src="snow_profile_popup.js"></script>
+    <script src="snow_profile_layer.js"></script>
+    <script src="snow_profile_grid.js"></script>
+    <script src="snow_profile_main.js"></script>
+    <script>
+      QUnit.test("Verify needed divs exist", function( assert ) {
+        assert.strictEqual($("#snow_profile_container").length, 1,
+          "div id=snow_profile_container exists" );
+        assert.strictEqual($("#snow_profile_diagram").length, 1,
+          "div id=snow_profile_diagram exists" );
+        assert.strictEqual($("div.kineticjs-content").length, 1,
+          "div class=kineticjs-content exists");
+      });
+      QUnit.test( "Verify constants exist", function( assert ) {
+        assert.ok(SnowProfile.MAX_DEPTH !== undefined,
+          "SnowProfile.MAX_DEPTH defined");
+        assert.ok(SnowProfile.MIN_DEPTH !== undefined,
+          "SnowProfile.MIN_DEPTH defined");
+        assert.ok(SnowProfile.DEPTH_LABEL_WD !== undefined,
+          "SnowProfile.DEPTH_LABEL_WD defined");
+        assert.ok(SnowProfile.DEPTH_LINE_INT !== undefined,
+          "SnowProfile.DEPTH_LINE_INT defined");
+        assert.ok(SnowProfile.GRAPH_WIDTH !== undefined,
+          "SnowProfile.GRAPH_WIDTH defined");
+        assert.ok(SnowProfile.CTRLS_WD !== undefined,
+          "SnowProfile.CTRLS_WD defined");
+        assert.ok(SnowProfile.GRAIN_FORM_WD !== undefined,
+          "SnowProfile.GRAIN_FORM_WD defined");
+        assert.ok(SnowProfile.GRAIN_SPACE_WD !== undefined,
+          "SnowProfile.GRAIN_SPACE_WD defined");
+        assert.ok(SnowProfile.GRAIN_SIZE_WD !== undefined,
+          "SnowProfile.GRAIN_SIZE_WD defined");
+        assert.ok(SnowProfile.COMMENT_SPACE_WD !== undefined,
+          "SnowProfile.COMMENT_SPACE_WD defined");
+        assert.ok(SnowProfile.COMMENT_WD !== undefined,
+          "SnowProfile.COMMENT_WD defined");
+        assert.ok(SnowProfile.TOP_LABEL_HT !== undefined,
+          "SnowProfile.TOP_LABEL_HT defined");
+        assert.ok(SnowProfile.DESCR_HEIGHT !== undefined,
+          "SnowProfile.DESCR_HEIGHT defined");
+        assert.ok(SnowProfile.HARD_LABEL_HT !== undefined,
+          "SnowProfile.HARD_LABEL_HT defined");
+        assert.ok(SnowProfile.HANDLE_SIZE !== undefined,
+          "SnowProfile.HANDLE_SIZE defined");
+        assert.ok(SnowProfile.BACKGROUND_COLOR !== undefined,
+          "SnowProfile.BACKGROUND_COLOR defined");
+        assert.ok(SnowProfile.LABEL_COLOR !== undefined,
+          "SnowProfile.LABEL_COLOR defined");
+        assert.ok(SnowProfile.GRID_COLOR !== undefined,
+          "SnowProfile.GRID_COLOR defined");
+        assert.ok(SnowProfile.DEPTH_SCALE !== undefined,
+          "SnowProfile.DEPTH_SCALE defined");
+        assert.ok(SnowProfile.INS_INCR !== undefined,
+          "SnowProfile.INS_INCR defined");
+        assert.ok(SnowProfile.IMAGE_WD !== undefined,
+          "SnowProfile.IMAGE_WD defined");
+        assert.ok(SnowProfile.kineticJSLayer !== undefined,
+          "SnowProfile.kineticJSLayer defined");
+        assert.ok(SnowProfile.snowLayers !== undefined,
+          "SnowProfile.snowLayers defined");
+        assert.ok(SnowProfile.showHandle !== undefined,
+          "SnowProfile.showHandle defined");
+        assert.ok(SnowProfile.oldShowHandle !== undefined,
+          "SnowProfile.oldShowHandle defined");
+        assert.ok(SnowProfile.handleMaxY !== undefined,
+          "SnowProfile.handleMaxY defined");
+        assert.ok(SnowProfile.totalDepth !== undefined,
+          "SnowProfile.totalDepth defined");
+        assert.ok(SnowProfile.depthRef !== undefined,
+          "SnowProfile.depthRef defined");
+        assert.ok(SnowProfile.CAAML_SHAPE !== undefined,
+          "SnowProfile.CAAML_SHAPE defined");
+        assert.ok(SnowProfile.CAAML_SUBSHAPE !== undefined,
+          "SnowProfile.CAAML_SUBSHAPE defined");
+        assert.ok(SnowProfile.CAAML_SIZE !== undefined,
+          "SnowProfile.CAAML_SIZE defined");
+        assert.ok(SnowProfile.pitDepth !== undefined,
+          "SnowProfile.pitDepth defined");
+        assert.ok(SnowProfile.GRAPH_CENTER_X !== undefined,
+          "SnowProfile.GRAPH_CENTER_X defined");
+      });
+    </script>
+  </body>
+</html>
