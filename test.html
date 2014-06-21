@@ -12,6 +12,22 @@
       <div id="snow_profile_container">
         <div id="snow_profile_diagram"></div>
       </div>
+      <div id="snow_profile_descr" title="Snow Layer Description" class="ui-helper-hidden">
+	<form>
+	  <select id="snow_profile_primary_grain_shape" style="display: block;">
+	    <option value=""></option>
+	  </select>
+	  <div id="snow_profile_primary_grain_subshape"></div>
+	  <select id="snow_profile_secondary_grain_shape" style="display: block;">
+	    <option value=""></option>
+	  </select>
+	  <div id="snow_profile_secondary_grain_subshape"></div>
+	  <select id="snow_profile_grain_size" style="display: block;">
+	    <option value="" selected="selected"></option>
+	  </select>
+	  <textarea id="snow_profile_comment" columns="30" rows="5"></textarea>
+	</form>
+      </div>
     </div>
     <script src="/usr/lib/node_modules/qunit/node_modules/qunitjs/qunit/qunit.js"></script>
     <script src="vendor/kinetic-v5.0.1.js"></script>
@@ -106,6 +122,43 @@
           "SnowProfile.pitDepth defined");
         assert.ok(SnowProfile.GRAPH_CENTER_X !== undefined,
           "SnowProfile.GRAPH_CENTER_X defined");
+        assert.ok(SnowProfile.HANDLE_MAX_X !== undefined,
+          "SnowProfile.HANDLE_MAX_X defined");
+        assert.ok(SnowProfile.HANDLE_MIN_X !== undefined,
+          "SnowProfile.HANDLE_MIN_X defined");
+        assert.ok(SnowProfile.HANDLE_MIN_Y !== undefined,
+          "SnowProfile.HANDLE_MIN_Y defined");
+        assert.ok(SnowProfile.HARD_BAND_WD !== undefined,
+          "SnowProfile.HARD_BAND_WD defined");
+        assert.ok(SnowProfile.CAAML_HARD !== undefined,
+          "SnowProfile.CAAML_HARD defined");
+        assert.ok(SnowProfile.STAGE_WD !== undefined,
+          "SnowProfile.STAGE_WD defined");
+        assert.ok(SnowProfile.BUTTON_X !== undefined,
+          "SnowProfile.BUTTON_X defined");
+        assert.ok(SnowProfile.GRAIN_LEFT !== undefined,
+          "SnowProfile.GRAIN_LEFT defined");
+        assert.ok(SnowProfile.COMMENT_LEFT !== undefined,
+          "SnowProfile.COMMENT_LEFT defined");
+        assert.ok(SnowProfile.stage !== undefined,
+          "SnowProfile.stage defined");
+        console.log("hello world");
+        assert.equal(Object.keys(SnowProfile.CAAML_SHAPE).length + 1,
+          $("#snow_profile_primary_grain_shape option").length,
+          "primary grain shape select options present");
+      });
+      QUnit.test( "Test basic SnowProfile functions", function( assert ) {
+        assert.equal(SnowProfile.lineBelowY(17),
+          SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2) +
+          (18 * SnowProfile.DESCR_HEIGHT),
+         "SnowProfile.lineBelowY() works");
+        // @todo Test stageHeight()
+        assert.equal(SnowProfile.depth2y(17),
+          (17 * SnowProfile.DEPTH_SCALE) + SnowProfile.HANDLE_MIN_Y,
+          "SnowProfile.depth2y() works");
+        // @todo Test setIndexPositions
+        // @todo Test preview
+        // @todo Test init
       });
     </script>
   </body>
