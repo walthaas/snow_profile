@@ -11,7 +11,7 @@
 /**
   @classdesc Define a button constructed from KineticJS shapes.
   @constructor
-  @param {string} text - Text to appear inside the button.
+  @param {string} textArg - Text to appear inside the button.
   KineticJS stage.
   @listens SnowProfileHideControls
   @listens SnowProfileShowControls
@@ -42,7 +42,7 @@ SnowProfile.Button = function(textArg) {
     @type {Object}
     @private
    */
-  var rect =  new Kinetic.Rect({
+  var rect = new Kinetic.Rect({
     x: SnowProfile.BUTTON_X,
     width: text.getWidth(),
     height: text.getHeight(),

@@ -53,7 +53,7 @@ SnowProfile.Grid = function() {
 
   var backGround = new Kinetic.Rect({
     x: 0,
-    y:0,
+    y: 0,
     width: SnowProfile.stage.width(),
     height: 10,
     fill: SnowProfile.BACKGROUND_COLOR,
@@ -94,7 +94,7 @@ SnowProfile.Grid = function() {
       x: 10,
       y: (SnowProfile.pitDepth * SnowProfile.DEPTH_SCALE) / 2
     });
-    depthText.setOffsetX(depthText.getWidth() / 2 );
+    depthText.setOffsetX(depthText.getWidth() / 2);
     group.add(depthText);
 
     // Referenced to snow surface or ground?
@@ -224,7 +224,7 @@ SnowProfile.Grid = function() {
   // Draw and label the hardness (horizontal) axis
   hardScaleGrp.add(new Kinetic.Line({
     points: [0, 0,
-      SnowProfile.GRAPH_WIDTH +1 - SnowProfile.HANDLE_SIZE / 2, 0],
+      SnowProfile.GRAPH_WIDTH + 1 - SnowProfile.HANDLE_SIZE / 2, 0],
     stroke: SnowProfile.LABEL_COLOR,
     strokeWidth: 1
   }));
@@ -244,7 +244,7 @@ SnowProfile.Grid = function() {
         strokeWidth: 1
       }));
       hardScaleGrp.add(new Kinetic.Text({
-        x: x - SnowProfile.DEPTH_LABEL_WD -1,
+        x: x - SnowProfile.DEPTH_LABEL_WD - 1,
         y: 3,
         text: SnowProfile.CAAML_HARD[i][0],
         fontSize: 12,
@@ -275,7 +275,7 @@ SnowProfile.Grid = function() {
     fill: SnowProfile.LABEL_COLOR,
     align: "center"
   });
-  hardnessText.setOffsetX(hardnessText.getWidth() / 2 );
+  hardnessText.setOffsetX(hardnessText.getWidth() / 2);
   hardScaleGrp.add(hardnessText);
   gridLayer.add(hardScaleGrp);
 
@@ -296,7 +296,7 @@ SnowProfile.Grid = function() {
       adjustGrid();
       return;
     }
-    if (( totalDepth.search(/^\d+$/) < 0) ||
+    if ((totalDepth.search(/^\d+$/) < 0) ||
       (totalDepth < SnowProfile.MIN_DEPTH)) {
       alert("Total snow depth must be a number >= " +
         SnowProfile.MIN_DEPTH);
@@ -337,7 +337,7 @@ SnowProfile.Grid = function() {
       $("#snow_profile_pit_depth").val(SnowProfile.pitDepth);
       return;
     }
-    if (pitDepth > SnowProfile.MAX_DEPTH){
+    if (pitDepth > SnowProfile.MAX_DEPTH) {
       alert("Snow pit depth must be less than or equal to " +
         SnowProfile.MAX_DEPTH + " cm");
       $("#snow_profile_pit_depth").val(SnowProfile.pitDepth);
@@ -369,7 +369,7 @@ SnowProfile.Grid = function() {
 
     // Adust lengths of vertical lines
     var points;
-    verticalLines.forEach(function(line){
+    verticalLines.forEach(function(line) {
       points = line.points();
       points[3] = SnowProfile.depth2y(SnowProfile.pitDepth) +
         (SnowProfile.HANDLE_SIZE / 2);

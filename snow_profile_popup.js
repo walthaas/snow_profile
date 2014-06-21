@@ -70,6 +70,7 @@
 /**
   Object for a jQueryUI modal dialog to enter data describing a snow layer.
   @constructor
+  @todo Document data parameter
  */
 SnowProfile.PopUp = function(data) {
   "use strict";

@@ -8,7 +8,7 @@
 
 /**
   Object describing a single snow stratigraphy layer.
-  @param {number} depth Initial depth in cm of this layer from the top
+  @param {number} depthArg Initial depth in cm of this layer from the top
   of the snow pack.
   @constructor
   @listens SnowProfileAdjustGrid
@@ -269,7 +269,7 @@ SnowProfile.Layer = function(depthArg) {
    */
   var layerOutline = new Kinetic.Rect({
     x: SnowProfile.DEPTH_LABEL_WD + 1,
-    y:0,
+    y: 0,
     width: 0,
     height: 0,
     fill: "white",
@@ -279,7 +279,7 @@ SnowProfile.Layer = function(depthArg) {
 
   /**
    * Get or set depth in cm of this snow layer
-   * @param {number} [depth] - Depth of the top of this snow layer in cm
+   * @param {number} [depthArg] - Depth of the top of this snow layer in cm
    * @returns {number} Depth of the snow layer if param omitted.
    */
   this.depth = function(depthArg) {
@@ -429,6 +429,7 @@ SnowProfile.Layer = function(depthArg) {
    * Get or set description of this snow layer
    * @param {Object} [data] - Object describing the snow layer.
    * @returns {Object} Object describing the snow layer if param omitted.
+   * @namespace {function} SnowProfile.Layer.describe
    */
   this.describe = function(data) {
 
@@ -443,6 +444,7 @@ SnowProfile.Layer = function(depthArg) {
      * @param {string} secondaryShape Secondary grain shape symbol
      * @param {string} secondarySubShape Secondary grain subshape symbol
      * @returns {string} Text description of the grain forms
+     * @memberof SnowProfile.Layer.describe
      */
     function sym2text(primaryShape, primarySubShape, secondaryShape,
       secondarySubShape) {
@@ -485,6 +487,7 @@ SnowProfile.Layer = function(depthArg) {
      * @param {string} secondaryShape Secondary grain shape symbol
      * @param {string} secondarySubShape Secondary grain subshape symbol
      * @param {Object} container KineticJS.Group object to hold icons
+     * @memberof SnowProfile.Layer.describe
      */
     function sym2iconsMFcr(secondaryShape, secondarySubShape, container) {
 
@@ -568,14 +571,17 @@ SnowProfile.Layer = function(depthArg) {
      * @summary Generate an icon description for normal case
      * @desc  Accept grain form symbols selected by the user, if any, and
      *   return an icon description of the form.  The description is
-     *   constructed by looking up the symbols in CAAML_SHAPE and
-     *   CAAML_SUBSHAPE to find the equivalent icons.  It has been
-     *   determined that the primary subshape is NOT Melt-freeze crust.
+     *   constructed by looking up the symbols in
+     *   {@link SnowProfile.CAAML_SHAPE} and
+     *   {@link SnowProfile.CAAML_SUBSHAPE} to find the equivalent icons.  It
+     *   has been determined that the primary subshape is NOT Melt-freeze
+     *   crust.
      * @param {string} primaryShape Primary grain shape symbol
      * @param {string} primarySubShape Primary grain subshape symbol
      * @param {string} secondaryShape Secondary grain shape symbol
      * @param {string} secondarySubShape Secondary grain subshape symbol
      * @param {Object} container KineticJS.Group object to hold icons
+     * @memberof SnowProfile.Layer.describe
      */
     function sym2iconsNormal(primaryShape, primarySubShape, secondaryShape,
       secondarySubShape, container) {
@@ -671,18 +677,20 @@ SnowProfile.Layer = function(depthArg) {
      * @summary Generate an icon description of grain forms from symbols
      * @desc Accept grain form symbols selected by the user, if any, and
      *   return an icon description of the form.  The description is
-     *   constructed by looking up the symbols in CAAML_SHAPE and
-     *   CAAML_SUBSHAPE to find the equivalent icons.   There are two
-     *   cases:
-     *   1) If the primary subshape is Melt-freeze crust, then the
-     *      secondary shape is incorporated into the MFcr icon.
-     *   2) In all other cases, the secondary shape in parentheses follows
-     *      the primary shape.
+     *   constructed by looking up the symbols in
+     *   {@link SnowProfile.CAAML_SHAPE} and
+     *   {@link SnowProfile.CAAML_SUBSHAPE} to find the equivalent icons.
+     *   There are two cases:
+     *   + If the primary subshape is Melt-freeze crust, then the
+     *     secondary shape is incorporated into the MFcr icon.
+     *   + In all other cases, the secondary shape in parentheses follows
+     *     the primary shape.
      * @param {string} primaryShape Primary grain shape symbol
      * @param {string} primarySubShape Primary grain subshape symbol
      * @param {string} secondaryShape Secondary grain shape symbol
      * @param {string} secondarySubShape Secondary grain subshape symbol
      * @param {Object} container KineticJS.Group object to hold icons
+     * @memberof SnowProfile.Layer.describe
      */
     function sym2icons(primaryShape, primarySubShape, secondaryShape,
       secondarySubShape, container) {
@@ -736,6 +744,7 @@ SnowProfile.Layer = function(depthArg) {
         // Build a text description from what we have
         var text = sym2text(primaryGrainShape, primaryGrainSubShape,
           secondaryGrainShape, secondaryGrainSubShape);
+        text = text; // to suppress JSHint "unused" error
 
         // Build an iconic description from what we have
         sym2icons(primaryGrainShape, primaryGrainSubShape,
@@ -1136,7 +1145,7 @@ SnowProfile.Layer.prototype.x2code = function(x) {
 /**
  Convert a Y axis position to a depth in cm.
  @param {number} y Y axis position.
- @return {number} Depth of this layer in cm.
+ @returns {number} Depth of this layer in cm.
  */
 SnowProfile.Layer.prototype.y2depth = function(y) {
   "use strict";

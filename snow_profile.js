@@ -1,12 +1,15 @@
 /**
-  @file Defines the namespace and configuration for the snow profile editor.
-  @copyright Walt Haas <haas@xmission.com>
-  @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPLv2}
-  @namespace SnowProfile
-  @external "Kinetic"
-  @see {@link http://kineticjs.com/docs/ KineticJS}
+ * @file Defines the namespace and configuration for the snow profile editor.
+ * @copyright Walt Haas <haas@xmission.com>
+ * @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPLv2}
  */
 
+/**
+ * Constants and common functions
+ * @type {object}
+ * @namespace
+ * @see {@link http://kineticjs.com/docs/ KineticJS}
+ */
 var SnowProfile = {};
 
 /**
@@ -22,7 +25,6 @@ var SnowProfile = {};
  *       | Hardness    |
  *       | Label       |
  */
-
 (function() {
   "use strict";
 
@@ -31,13 +33,15 @@ var SnowProfile = {};
     /**
      * Maximum snow depth in cm that can be plotted on the graph.
      * @const {number}
+     * @memberof SnowProfile
      * @see SnowProfile.Grid~depthScaleGrp
      */
-    MAX_DEPTH:  300,
+    MAX_DEPTH: 300,
 
     /**
      * Minimum depth in cm that can be set by the user.
      * @const {number}
+     * @memberof SnowProfile
      * @see SnowProfile.Grid~depthScaleGrp
      */
     MIN_DEPTH: 50,
@@ -45,18 +49,21 @@ var SnowProfile = {};
     /**
      * Horizontal width in pixels of the depth (vertical) axis label.
      * @const {number}
+     * @memberof SnowProfile
      * @see SnowProfile.Grid~depthScaleGrp
      */
     DEPTH_LABEL_WD: 70,
 
     /**
      * Depth interval in cm between horizontal grid lines
+     * @memberof SnowProfile
      * @const {number}
      */
     DEPTH_LINE_INT: 10,
 
     /**
      * Width in pixels available for plotting data.
+     * @memberof SnowProfile
      * @const {number}
      */
     GRAPH_WIDTH: 350,
@@ -64,84 +71,98 @@ var SnowProfile = {};
     /**
       Width in pixels of the area used by buttons and
       connectors (diagonal lines).
+     * @memberof SnowProfile
       @const {number}
      */
     CTRLS_WD: 200,
 
     /**
       Width in pixels of the area used by snow grain form
+     * @memberof SnowProfile
       @const {number}
      */
     GRAIN_FORM_WD: 60,
 
     /**
-      Width in pixels of the space between grain form and size
-      @const {number}
+     * Width in pixels of the space between grain form and size
+     * @memberof SnowProfile
+     * @const {number}
      */
     GRAIN_SPACE_WD: 5,
 
     /**
-      Width in pixels of the area used by snow grain size
-      @const {number}
+     * Width in pixels of the area used by snow grain size
+     * @memberof SnowProfile
+     * @const {number}
      */
     GRAIN_SIZE_WD: 50,
 
     // /**
     //   Width in pixels of the area used by snow liquid water description
+    //   @memberof SnowProfile
     //   @const {number}
     //  */
     // LWC_WD: 70,
 
     /**
      * Width in pixels of the space between grain size and comment
+     * @memberof SnowProfile
      * @const {number}
      */
     COMMENT_SPACE_WD: 5,
 
     /**
       Width in pixels of the area used by snow layer comment
+     * @memberof SnowProfile
       @const {number}
      */
     COMMENT_WD: 200,
 
     /**
      * Vertical height in pixels of the temperature (horizontal) axis label.
+     * @memberof SnowProfile
      * @const {number}
      */
     TOP_LABEL_HT: 40,
 
     /**
       Height in pixels of the text description area for one snow layer
+     * @memberof SnowProfile
       @const {number}
      */
     DESCR_HEIGHT: 40,
 
     /**
      * Vertical height in pixels of the hardness (horizontal) axis label.
+     * @memberof SnowProfile
      * @const {number}
      */
     HARD_LABEL_HT: 40,
 
     /**
      * Size in pixels of the handle square
+     * @memberof SnowProfile
      * @const {number}
      */
     HANDLE_SIZE: 11,
 
     /**
      * Color of the background
+     * @memberof SnowProfile
      * @const {string}
      */
     BACKGROUND_COLOR: '#fdfdfd',
 
     /**
      * Color of the labels and axis lines
+     * @memberof SnowProfile
      * @const {string}
      */
      LABEL_COLOR: '#003390',
 
     /**
      * Color of the chart background grid
+     * @memberof SnowProfile
      * @const {string}
      */
     GRID_COLOR: '#69768C',
@@ -156,19 +177,24 @@ var SnowProfile = {};
     /**
       Depth increment in cm to allow when inserting a layer above
       or below another layer.
+     * @memberof SnowProfile
       @const {number}
      */
     INS_INCR: 5,
 
     /**
      * Width in pixels of the image to be generated
+     * @memberof SnowProfile
      * @const {number}
      */
     IMAGE_WD: 800,
 
     /**
      * KineticJS drawing layer.
-     * @type {external:Kinetic#Layer}
+     * @desc [Kinetic.Layer]{@link http://kineticjs.com/docs/Kinetic.Layer.html Kinetic.Layer}
+     *   object where the diagram will be drawn.
+     * @type {Object}
+     * @memberof SnowProfile
      */
     kineticJSLayer: null,
 
@@ -182,18 +208,21 @@ var SnowProfile = {};
       the indexes of the layers below increment by 1.  When the depth of a layer is changed by the
       user, the new depth is constrained to be less than the depth of the layer
       above and more than the depth of the layer below in the snow pack.
+     * @memberof SnowProfile
       @type {Array.<SnowProfile.Layer>}
      */
     snowLayers: [],
 
     /**
       Make the handle visible if it has not been touched.
+     * @memberof SnowProfile
       @type {boolean}
      */
     showHandle: null,
 
     /**
       Previous state of showHandle.
+     * @memberof SnowProfile
       @type {boolean}
      */
     oldShowHandle: null,
@@ -201,6 +230,7 @@ var SnowProfile = {};
     /**
      * @summary Maximum Y value allowed for any handle (bottom of graph area)
      * @type {number}
+     * @memberof SnowProfile
      * @see SnowProfile.Grid~adjustGrid
      */
     handleMaxY: null,
@@ -210,6 +240,7 @@ var SnowProfile = {};
      * @desc Distance in cm from the snow surface to the ground, as measured
      *   with a calibrated probe or by digging to the ground.  Null
      *   if this distance is not known.
+     * @memberof SnowProfile
      * @type {?number}
      */
     totalDepth: null,
@@ -220,6 +251,7 @@ var SnowProfile = {};
      *   to the snow surface ("s") or ground ("g").  Must be one or the
      *   other.  Default is "s".  Ground reference may be used only if
      *   the value of total snow depth (totalDepth) is known.
+     * @memberof SnowProfile
      * @type {!string}
      * @see SnowProfile.Grid~depthScaleGrp
      */
@@ -230,6 +262,7 @@ var SnowProfile = {};
      * @desc
      * + Property name is the code value to store.
      * + Property value is the description.
+     * @memberof SnowProfile
      * @const {Object}
      */
     CAAML_SHAPE: {
@@ -367,9 +400,10 @@ var SnowProfile = {};
     },
 
     /**
-      Table of CAAML sub-shapes
-      @type {Object}
-      @const
+     * Table of CAAML sub-shapes
+     * @type {Object}
+     * @memberof SnowProfile
+     * @const
      */
     CAAML_SUBSHAPE: {
       PP: {
@@ -386,7 +420,7 @@ var SnowProfile = {};
             width: 13
           }
         },
-        PPnd:{
+        PPnd: {
           text: "Needles",
           icon: {
             image: "iVBORw0KGgoAAAANSUhEUgAAABUAAAAKCAYAAABblxXYAAAABH" +
@@ -898,7 +932,7 @@ var SnowProfile = {};
             height: 16,
             width: 28
           }
-        },
+        }
       },
       IF: {
         IFil: {
@@ -962,10 +996,11 @@ var SnowProfile = {};
     },
 
     /**
-      Table of CAAML grain sizes.
-      Property name is the code value to store
-      Property value is the humanly-readable description
-      @const {Object}
+     * Table of CAAML grain sizes.
+     * Property name is the code value to store
+     * Property value is the humanly-readable description
+     * @memberof SnowProfile
+     * @const {Object}
      */
     CAAML_SIZE: {
       "very fine": "< 0.2\nmm",
@@ -980,6 +1015,7 @@ var SnowProfile = {};
     //   Table of CAAML liquid water contents.
     //   Property name is the code value to store
     //   Property value is the humanly-readable description
+    //   @memberof SnowProfile
     //   @type {Object}
     //   @const
     //  */
@@ -1096,7 +1132,7 @@ var SnowProfile = {};
    */
   SnowProfile.stageHeight = function() {
     return  SnowProfile.TOP_LABEL_HT + 1 + (SnowProfile.pitDepth *
-      SnowProfile.DEPTH_SCALE)  + 1 + SnowProfile.HARD_LABEL_HT;
+      SnowProfile.DEPTH_SCALE) + 1 + SnowProfile.HARD_LABEL_HT;
   };
 
   /**
@@ -1113,7 +1149,7 @@ var SnowProfile = {};
   /**
     X position of the center line of the buttons in the control area
    */
-  SnowProfile.BUTTON_X =  SnowProfile.DEPTH_LABEL_WD + 1 +
+  SnowProfile.BUTTON_X = SnowProfile.DEPTH_LABEL_WD + 1 +
     SnowProfile.GRAPH_WIDTH + 150;
 
   /**
@@ -1144,11 +1180,11 @@ var SnowProfile = {};
     SnowProfile.GRAIN_SIZE_WD + SnowProfile.COMMENT_SPACE_WD;
 
   /**
-   @summary KineticJS stage
-   @desc [Kinetic.Stage]{@link http://kineticjs.com/docs/Kinetic.Stage.html}
-   object for the stage where the diagram will be drawn
-   @type {object}
-   @memberof SnowProfile
+   * @summary KineticJS stage
+   * @desc [Kinetic.Stage]{@link http://kineticjs.com/docs/Kinetic.Stage.html}
+   *   object for the stage where the diagram will be drawn
+   * @type {object}
+   * @memberof SnowProfile
    */
   SnowProfile.stage = new Kinetic.Stage({
     container: 'snow_profile_diagram',
@@ -1183,13 +1219,13 @@ var SnowProfile = {};
   };
 
   /**
-    @event SnowProfileHideControls
-    @summary Tell listeners to hide anything that should not appear on
-      the final image.
-    @desc This event is fired just before the image is generated
-      from the canvas.
-    @memberof SnowProfile
-    @type {string}
+   * @event SnowProfileHideControls
+   * @summary Tell listeners to hide anything that should not appear on
+   *   the final image.
+   * @desc This event is fired just before the image is generated
+   *   from the canvas.
+   * @memberof SnowProfile
+   * @type {string}
    */
 
   /**
@@ -1298,7 +1334,8 @@ var SnowProfile = {};
           // For each snow layer, if handle untouched, blink
           numLayers = SnowProfile.snowLayers.length;
           for (i = 0; i < numLayers; i++) {
-            SnowProfile.snowLayers[i].setHandleVisibility(SnowProfile.showHandle);
+            SnowProfile.snowLayers[i].setHandleVisibility(
+              SnowProfile.showHandle);
           }
         }
       }
