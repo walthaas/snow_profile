@@ -30,6 +30,7 @@
       </div>
     </div>
     <script src="/usr/lib/node_modules/qunit/node_modules/qunitjs/qunit/qunit.js"></script>
+    <script src="vendor/blanket.min.js"></script>
     <script src="vendor/kinetic-v5.0.1.js"></script>
     <script src="vendor/jquery.js"></script>
     <script src="vendor/jquery.ui.core.min.js"></script>
@@ -40,10 +41,10 @@
     <script src="vendor/jquery.ui.draggable.min.js"></script>
     <script src="vendor/jquery.ui.position.min.js"></script>
     <script src="vendor/jquery.ui.resizable.min.js"></script>
-    <script src="snow_profile.js"></script>
+    <script src="snow_profile.js" data-cover></script>
     <script src="snow_profile_button.js"></script>
     <script src="snow_profile_popup.js"></script>
-    <script src="snow_profile_layer.js"></script>
+    <script src="snow_profile_layer.js" data-cover></script>
     <script src="snow_profile_grid.js"></script>
     <script src="snow_profile_main.js"></script>
     <script>
@@ -142,7 +143,6 @@
           "SnowProfile.COMMENT_LEFT defined");
         assert.ok(SnowProfile.stage !== undefined,
           "SnowProfile.stage defined");
-        console.log("hello world");
         assert.equal(Object.keys(SnowProfile.CAAML_SHAPE).length + 1,
           $("#snow_profile_primary_grain_shape option").length,
           "primary grain shape select options present");
