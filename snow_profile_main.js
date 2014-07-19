@@ -5,14 +5,19 @@
  */
 
 /* global SnowProfile */
+/* global SVG */
 
 /**
   @desc Main program
  */
-SnowProfile.init();
-new SnowProfile.Layer(0);
-new SnowProfile.Layer(20);
-new SnowProfile.Layer(40);
+if (SVG.supported) {
+  SnowProfile.init();
+  new SnowProfile.Layer(0);
+  new SnowProfile.Layer(20);
+  new SnowProfile.Layer(40);
+} else {
+  alert('Your browser does not support SVG, used by the snow profile editor');
+}
 
 // Configure Emacs for Drupal JavaScript coding standards
 // Local Variables:

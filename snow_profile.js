@@ -3,17 +3,21 @@
  * @copyright Walt Haas <haas@xmission.com>
  * @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPLv2}
  */
+/**
+ * The svg.js library
+ * @external SVG
+ * @see {@link http://http://documentup.com/wout/svg.js svg.js}
+ */
 
 /**
  * Constants and common functions
  * @type {object}
  * @namespace
- * @see {@link http://kineticjs.com/docs/ KineticJS}
  */
 var SnowProfile = {};
 
 /**
- * Layout of the snow profile Kinetic stage:
+ * Layout of the snow profile SVG drawing:
  *
  *       | Top Labels
  * ___________________________________________________________________
@@ -161,7 +165,7 @@ var SnowProfile = {};
      LABEL_COLOR: '#003390',
 
     /**
-     * Color of the chart background grid
+     * Color of the chart grid
      * @memberof SnowProfile
      * @const {string}
      */
@@ -189,27 +193,28 @@ var SnowProfile = {};
      */
     IMAGE_WD: 800,
 
-    /**
-     * KineticJS drawing layer.
-     * @desc [Kinetic.Layer]{@link http://kineticjs.com/docs/Kinetic.Layer.html Kinetic.Layer}
-     *   object where the diagram will be drawn.
-     * @type {Object}
-     * @memberof SnowProfile
-     */
-    kineticJSLayer: null,
+    // /**
+    //  * KineticJS drawing layer.
+    //  * @desc [Kinetic.Layer]{@link http://kineticjs.com/docs/Kinetic.Layer.html Kinetic.Layer}
+    //  *   object where the diagram will be drawn.
+    //  * @type {Object}
+    //  * @memberof SnowProfile
+    //  */
+    // kineticJSLayer: null,
 
     /**
-      Snow stratigraphy snow layers.
-
-      The SnowProfile.Layer objects are referenced by this array which is ordered by
-      the depth of the layer.  The top layer(depth == 0) is always referenced
-      by snowLayers[0].  When a Layer object is created or removed, it is
-      spliced into the array so that the order of depths is maintained, and
-      the indexes of the layers below increment by 1.  When the depth of a layer is changed by the
-      user, the new depth is constrained to be less than the depth of the layer
-      above and more than the depth of the layer below in the snow pack.
+     * Snow stratigraphy snow layers.
+     *
+     * The SnowProfile.Layer objects are referenced by this array which is
+     * ordered by the depth of the layer.  The top layer(depth == 0) is always
+     * referenced by snowLayers[0].  When a Layer object is created or
+     * removed, it is spliced into the array so that the order of depths is
+     * maintained, and the indexes of the layers below increment by 1.  When
+     * the depth of a layer is changed by the user, the new depth is
+     * constrained to be less than the depth of the layer above and more than
+     * the depth of the layer below in the snow pack.
      * @memberof SnowProfile
-      @type {Array.<SnowProfile.Layer>}
+     * @type {Array.<SnowProfile.Layer>}
      */
     snowLayers: [],
 
@@ -1125,22 +1130,22 @@ var SnowProfile = {};
   ];
 
   /**
-   * Vertical height in pixels of the KineticJS stage
+   * Vertical height in pixels of the SVG drawing
    * @method
    * @memberof SnowProfile
-   * @returns {number} Stage height in pixels.
+   * @returns {number} Drawing height in pixels.
    */
-  SnowProfile.stageHeight = function() {
+  SnowProfile.drawingHeight = function() {
     return  SnowProfile.TOP_LABEL_HT + 1 + (SnowProfile.pitDepth *
       SnowProfile.DEPTH_SCALE) + 1 + SnowProfile.HARD_LABEL_HT;
   };
 
   /**
-    Horizontal width in pixels of the KineticJS stage
+    Horizontal width in pixels of the SVG drawing
     @const {number}
     @memberof SnowProfile
    */
-   SnowProfile.STAGE_WD = SnowProfile.DEPTH_LABEL_WD + 1 +
+   SnowProfile.DRAWING_WD = SnowProfile.DEPTH_LABEL_WD + 1 +
      SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD + 1 +
      SnowProfile.GRAIN_FORM_WD + SnowProfile.GRAIN_SPACE_WD +
      SnowProfile.GRAIN_SIZE_WD + SnowProfile.COMMENT_SPACE_WD +
@@ -1180,17 +1185,26 @@ var SnowProfile = {};
     SnowProfile.GRAIN_SIZE_WD + SnowProfile.COMMENT_SPACE_WD;
 
   /**
-   * @summary KineticJS stage
-   * @desc [Kinetic.Stage]{@link http://kineticjs.com/docs/Kinetic.Stage.html}
-   *   object for the stage where the diagram will be drawn
+   * @summary SVG drawing
+   * @see  {@link http://http://documentup.com/wout/svg.js#usage/create-a-svg-document Create a SVG document}
+   * @type {Object}
+   * @memberof SnowProfile
+   */
+  // console.debug("DRAWING_WD=%d  drawingHeight=%d",
+  //   SnowProfile.DRAWING_WD, SnowProfile.drawingHeight());
+  SnowProfile.drawing = SVG("snow_profile_diagram");
+
+  /**
+   * SnowProfile drawing grid group
+   *
+   * This SVG group holds the grid to which the snow layers are referenced.
+   * Whenever the pit depth or total snow depth are changed by the user, this
+   * group is cleared and recreated.
+   * @see  {@link http://http://documentup.com/wout/svg.js#parent-elements/groups Groups}
    * @type {object}
    * @memberof SnowProfile
    */
-  SnowProfile.stage = new Kinetic.Stage({
-    container: 'snow_profile_diagram',
-    width: SnowProfile.STAGE_WD,
-    height: SnowProfile.stageHeight()
-  });
+  SnowProfile.gridGroup = SnowProfile.drawing.group();
 
   /**
     @method
@@ -1239,7 +1253,7 @@ var SnowProfile = {};
    */
 
   /**
-   * @event SnowProfileAdjustGrid
+   * @event SnowProfileDrawGrid
    * @summary Tell listeners the reference grid has changed.
    * @desc This event is fired when the user changes a parameter that
    *   governs the reference grid.  It tells listeners to respond to the
@@ -1290,16 +1304,17 @@ var SnowProfile = {};
   /**
    @method
    @memberof SnowProfile
-   @summary Initialize the container and the grid layer
+   @summary Initialize the SVG drawing and the grid group
    @fires SnowProfileHideControls
    @listens SnowProfileButtonClick
    */
   SnowProfile.init = function() {
     var i, numLayers;
+    console.debug("init() called");
 
-    // Add the reference grid to it
-    SnowProfile.stage.add(new SnowProfile.Grid());
-
+    // Add the reference grid to the SVG drawing
+    new SnowProfile.Grid();
+    return;
     // Create the KineticJS layer
     SnowProfile.kineticJSLayer = new Kinetic.Layer();
 
