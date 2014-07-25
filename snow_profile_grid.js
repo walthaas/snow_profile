@@ -46,7 +46,11 @@ SnowProfile.Grid = function() {
    */
   function drawDepthScale() {
 
-    var cm;
+    var cm,
+      x0 = SnowProfile.DEPTH_LABEL_WD + 1,
+      x1 = SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH -
+              SnowProfile.HANDLE_SIZE / 2,
+      y;
 
     // Add a Depth label on the left side of the diagram
     SnowProfile.gridGroup.add(SnowProfile.drawing.text("Depth (cm)")
@@ -73,6 +77,8 @@ SnowProfile.Grid = function() {
       // snow surface down every HORIZ_INT cm to the bottom of the pit.
       for (cm = 0; cm <= SnowProfile.pitDepth;
         cm += SnowProfile.DEPTH_LINE_INT) {
+        y = SnowProfile.TOP_LABEL_HT +
+          (SnowProfile.HANDLE_SIZE / 2) + (cm * SnowProfile.DEPTH_SCALE);
         SnowProfile.gridGroup.add(SnowProfile.drawing.text(String(cm))
         .font({
           fontSize: 12,
@@ -81,19 +87,12 @@ SnowProfile.Grid = function() {
           fill: SnowProfile.LABEL_COLOR})
         .transform({
           x: 40,
-          y: SnowProfile.TOP_LABEL_HT + (cm * SnowProfile.DEPTH_SCALE) - 8,
+          y: y - 8,
         }));
 
         // Draw a horizontal line every DEPTH_LINE_INT cm as a depth scale
         if (cm !== SnowProfile.pitDepth) {
-          SnowProfile.gridGroup.add(SnowProfile.drawing.line(
-            SnowProfile.DEPTH_LABEL_WD + 1,
-            SnowProfile.TOP_LABEL_HT +
-              (SnowProfile.HANDLE_SIZE / 2) + (cm * SnowProfile.DEPTH_SCALE),
-            SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH -
-              SnowProfile.HANDLE_SIZE / 2,
-            SnowProfile.TOP_LABEL_HT +
-              (SnowProfile.HANDLE_SIZE / 2) + (cm * SnowProfile.DEPTH_SCALE))
+          SnowProfile.gridGroup.add(SnowProfile.drawing.line(x0, y, x1, y)
             .stroke({
               color: SnowProfile.GRID_COLOR,
               width: 1
@@ -109,29 +108,22 @@ SnowProfile.Grid = function() {
       var bottom = SnowProfile.totalDepth - SnowProfile.pitDepth;
       var lowestLine = Math.ceil(bottom / SnowProfile.DEPTH_LINE_INT) *
         SnowProfile.DEPTH_LINE_INT;
-      console.debug("bottom=%dcm  lowestLine=%dcm", bottom, lowestLine);
       for (cm = lowestLine; cm <= SnowProfile.totalDepth;
         cm += SnowProfile.DEPTH_LINE_INT) {
-        console.debug("cm=%d", cm);
+        y = SnowProfile.TOP_LABEL_HT + (SnowProfile.HANDLE_SIZE / 2) +
+          ((SnowProfile.totalDepth - cm) * SnowProfile.DEPTH_SCALE);
         SnowProfile.gridGroup.add(SnowProfile.drawing.text(String(cm)).font({
           fontSize: 12,
           fontStyle: 'bold',
           fontFamily: 'sans-serif',
           fill: SnowProfile.LABEL_COLOR}).transform({
           x: 40,
-          y: SnowProfile.TOP_LABEL_HT + (cm * SnowProfile.DEPTH_SCALE) - 8,
+          y: y - 8
         }));
 
         // Draw a horizontal line every DEPTH_LINE_INT cm as a depth scale
         if (cm !== SnowProfile.totalDepth) {
-          SnowProfile.gridGroup.add(SnowProfile.drawing.line(
-            SnowProfile.DEPTH_LABEL_WD + 1,
-            SnowProfile.TOP_LABEL_HT +
-              (SnowProfile.HANDLE_SIZE / 2) + (cm * SnowProfile.DEPTH_SCALE),
-            SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH -
-              SnowProfile.HANDLE_SIZE / 2,
-            SnowProfile.TOP_LABEL_HT +
-              (SnowProfile.HANDLE_SIZE / 2) + (cm * SnowProfile.DEPTH_SCALE))
+          SnowProfile.gridGroup.add(SnowProfile.drawing.line(x0, y, x1, y)
             .stroke({
               color: SnowProfile.GRID_COLOR,
               width: 1
@@ -139,7 +131,6 @@ SnowProfile.Grid = function() {
         }
       }
     }
-
   } // function drawDepthScale()
 
   /**
