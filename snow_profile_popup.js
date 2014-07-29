@@ -6,7 +6,10 @@
 
 /* global SnowProfile */
 
-// Populate the selects from the CAAML tables
+/**
+ * Populate the selects from the CAAML tables
+ * @function
+ */
 (function() {
   "use strict";
 

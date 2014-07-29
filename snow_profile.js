@@ -43,12 +43,20 @@ var SnowProfile = {};
     MAX_DEPTH: 300,
 
     /**
-     * Minimum depth in cm that can be set by the user.
+     * Minimum snow depth in cm that can be set by the user.
      * @const {number}
      * @memberof SnowProfile
      * @see SnowProfile.Grid~depthScaleGrp
      */
     MIN_DEPTH: 50,
+
+    /**
+     * Default snow pit depth in cm
+     * @const {number}
+     * @memberof SnowProfile
+     * @see SnowProfile.Grid~depthScaleGrp
+     */
+   DEFAULT_PIT_DEPTH: 150,
 
     /**
      * Horizontal width in pixels of the depth (vertical) axis label.
@@ -1040,7 +1048,7 @@ var SnowProfile = {};
    * @type {!number}
    * @see SnowProfile.Grid~depthScaleGrp
    */
-  SnowProfile.pitDepth = SnowProfile.MAX_DEPTH;
+  SnowProfile.pitDepth = SnowProfile.DEFAULT_PIT_DEPTH;
 
   /**
     Central x of the data plotting area.

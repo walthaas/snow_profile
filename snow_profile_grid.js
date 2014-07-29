@@ -42,7 +42,6 @@ SnowProfile.Grid = function() {
    *   depends on the user setting of pit depth, total snow depth and
    *   reference to ground or snow surface.
    * @see SnowProfile.gridGroup
-   * @todo Fix depth lines for ground reference
    */
   function drawDepthScale() {
 
