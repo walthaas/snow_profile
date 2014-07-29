@@ -1,65 +1,65 @@
 /**
-  @file Holds code to define a button object constructed from KineticJS shapes
-  to get more control over the size and location of the button than we can
-  get by using an HTML <button>button</button>.
-  @copyright Walt Haas <haas@xmission.com>
-  @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPLv2}
+ * @file Holds code to define a button object constructed from SVG shapes
+ * to get more control over the size and location of the button than we can
+ * get by using an HTML <button>button</button>.
+ * @copyright Walt Haas <haas@xmission.com>
+ * @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPLv2}
  */
 
 /* global SnowProfile */
 
 /**
-  @classdesc Define a button constructed from KineticJS shapes.
-  @constructor
-  @param {string} textArg - Text to appear inside the button.
-  KineticJS stage.
-  @listens SnowProfileHideControls
-  @listens SnowProfileShowControls
-  @fires SnowProfileButtonClick
+ * @classdesc Define a button constructed from KineticJS shapes.
+ * @constructor
+ * @param {string} textArg - Text to appear inside the button.
+ * @listens SnowProfileHideControls
+ * @listens SnowProfileShowControls
+ * @fires SnowProfileButtonClick
 */
 SnowProfile.Button = function(textArg) {
 
   "use strict";
+  var buttonGroup = SnowProfile.drawing.group();
 
   /**
-    Define the text of the button
-    @type {Object}
-    @private
+   * Define the text of the button
+   * @type {Object}
+   * @private
    */
-  var text = new Kinetic.Text({
-    x: SnowProfile.BUTTON_X,
-    text: textArg,
-    fontFamily: "sans-serif",
-    fontSize: 12,
-    padding: 4,
-    stroke: "#000",
-    strokeWidth: 1,
-    align: "center"
-  });
+  var text = SnowProfile.drawing.text(textArg)
+    .font({
+      family: "sans-serif",
+      size: 12,
+      fill: "#000",
+      stroke: 1
+    })
+    .cx(SnowProfile.BUTTON_X);
+  console.debug("text=%s  length=%d  bbox=%o", textArg, text.length(), text.bbox());
+  buttonGroup.add(text);
 
   /**
     Define a rectangle around the text.
     @type {Object}
     @private
    */
-  var rect = new Kinetic.Rect({
-    x: SnowProfile.BUTTON_X,
-    width: text.getWidth(),
-    height: text.getHeight(),
-    cornerRadius: 4,
-    stroke: "#000",
-    strokeWidth: 1,
-    fill: "#fff"
-  });
+  var rect = SnowProfile.drawing.rect(text.bbox().width +4, text.bbox().height + 4)
+    .cx(SnowProfile.BUTTON_X)
+    .style({
+      "stroke-width": 1,
+      stroke: "#000",
+      "stroke-opacity": 1,
+      fill: "#fff",
+      "fill-opacity": 0
+    })
+    .radius(4);
+    buttonGroup.add(rect);
 
   /**
    * Hide this button.
    * @private
    */
   function hideButton() {
-    text.setVisible(false);
-    rect.setVisible(false);
-    SnowProfile.kineticJSLayer.draw();
+    buttonGroup.hide();
   }
 
   /**
@@ -67,9 +67,7 @@ SnowProfile.Button = function(textArg) {
    * @private
    */
   function showButton() {
-    text.setVisible(true);
-    rect.setVisible(true);
-    SnowProfile.kineticJSLayer.draw();
+    buttonGroup.show();
   }
 
   /**
@@ -79,11 +77,7 @@ SnowProfile.Button = function(textArg) {
    * @public
    */
   function setY(y) {
-    text.setY(y);
-    text.setOffsetY(rect.getHeight() / 2);
-    rect.setY(y);
-    rect.setOffsetY(rect.getHeight() / 2);
-    SnowProfile.kineticJSLayer.draw();
+    buttonGroup.cy(y);
   }
 
   /**
@@ -118,13 +112,6 @@ SnowProfile.Button = function(textArg) {
   text.on('click', function(evt) {
     $.event.trigger("SnowProfileButtonClick", {buttonObj: newObj});
   });
-
-  // Set the X position of the button and add it to the KineticJS stage.
-  rect.setOffsetX(rect.getWidth() / 2);
-  text.setOffsetX(rect.getWidth() / 2);
-  SnowProfile.kineticJSLayer.add(rect);
-  SnowProfile.kineticJSLayer.add(text);
-  SnowProfile.kineticJSLayer.draw();
 
   return newObj;
 };
