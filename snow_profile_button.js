@@ -9,7 +9,7 @@
 /* global SnowProfile */
 
 /**
- * @classdesc Define a button constructed from KineticJS shapes.
+ * @classdesc Define a button constructed from SVG shapes.
  * @constructor
  * @param {string} textArg - Text to appear inside the button.
  * @listens SnowProfileHideControls
@@ -19,6 +19,11 @@
 SnowProfile.Button = function(textArg) {
 
   "use strict";
+  /**
+   * Group holding button text and rectangle around it
+   * @type {Object}
+   * @private
+   */
   var buttonGroup = SnowProfile.drawing.group();
 
   /**
@@ -34,15 +39,11 @@ SnowProfile.Button = function(textArg) {
       stroke: 1
     })
     .cx(SnowProfile.BUTTON_X);
-  console.debug("text=%s  length=%d  bbox=%o", textArg, text.length(), text.bbox());
   buttonGroup.add(text);
 
-  /**
-    Define a rectangle around the text.
-    @type {Object}
-    @private
-   */
-  var rect = SnowProfile.drawing.rect(text.bbox().width +4, text.bbox().height + 4)
+  // Draw a rectangle around the text
+  buttonGroup.add(SnowProfile.drawing.rect(text.bbox().width +4,
+    text.bbox().height + 4)
     .cx(SnowProfile.BUTTON_X)
     .style({
       "stroke-width": 1,
@@ -51,8 +52,7 @@ SnowProfile.Button = function(textArg) {
       fill: "#fff",
       "fill-opacity": 0
     })
-    .radius(4);
-    buttonGroup.add(rect);
+    .radius(4));
 
   /**
    * Hide this button.
@@ -73,7 +73,6 @@ SnowProfile.Button = function(textArg) {
   /**
    * Reposition the button on the Y axis
    * @param {number} y - New vertical position of the center of the button
-   *                     on the KineticJS stage.
    * @public
    */
   function setY(y) {
@@ -88,9 +87,7 @@ SnowProfile.Button = function(textArg) {
     text.off('click');
     $(document).unbind("SnowProfileHideControls", hideButton);
     $(document).unbind("SnowProfileShowControls", showButton);
-    text.destroy();
-    rect.destroy();
-    SnowProfile.kineticJSLayer.draw();
+    buttonGroup.remove();
   }
 
   /**

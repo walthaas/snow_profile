@@ -16,7 +16,7 @@ if (SVG.supported) {
   new SnowProfile.Layer(20);
   new SnowProfile.Layer(40);
 } else {
-  alert('Your browser does not support SVG, used by the snow profile editor');
+  alert('Your browser does not support SVG, required by the snow profile editor');
 }
 
 // Configure Emacs for Drupal JavaScript coding standards

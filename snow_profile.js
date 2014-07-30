@@ -1215,10 +1215,10 @@ var SnowProfile = {};
   SnowProfile.gridGroup = SnowProfile.drawing.group();
 
   /**
-    @method
-    @memberof SnowProfile
-    @summary Recalculate the Y axis positions of all KineticJS objects whose
-    position depends on the index of the layer in the snowpack.
+   * Recalculate the Y axis positions of all SVG objects whose
+   * position depends on the index of the layer in the snowpack.
+   * @method
+   * @memberof SnowProfile
    */
   SnowProfile.setIndexPositions = function() {
     var i,
@@ -1310,24 +1310,18 @@ var SnowProfile = {};
   };
 
   /**
-   @method
-   @memberof SnowProfile
-   @summary Initialize the SVG drawing and the grid group
-   @fires SnowProfileHideControls
-   @listens SnowProfileButtonClick
+   * Initialize the SVG drawing and the grid group
+   * @method
+   * @memberof SnowProfile
+   * @fires SnowProfileHideControls
+   * @listens SnowProfileButtonClick
+   * @todo Replace references Kinetic
    */
   SnowProfile.init = function() {
     var i, numLayers;
-    console.debug("init() called");
 
     // Add the reference grid to the SVG drawing
     new SnowProfile.Grid();
-    return;
-    // Create the KineticJS layer
-    SnowProfile.kineticJSLayer = new Kinetic.Layer();
-
-    // add the KineticJS layer to the stage
-    SnowProfile.stage.add(SnowProfile.kineticJSLayer);
 
     // Add an "Insert" button to allow the user to insert a snow layer
     // above the top snow layer.
@@ -1345,25 +1339,26 @@ var SnowProfile = {};
 
     // Create an animation
     // FIXME use a custom event to communicate with layers
-    var anim = new Kinetic.Animation(function(frame) {
-      SnowProfile.showHandle = (frame.time % 1000) > 500;
-      if (SnowProfile.oldShowHandle === null) {
-          SnowProfile.oldShowHandle = SnowProfile.showHandle;
-      }
-      else {
-        if (SnowProfile.showHandle !== SnowProfile.oldShowHandle) {
-          SnowProfile.oldShowHandle = SnowProfile.showHandle;
+    // FIXME convert to SVG
+    // var anim = new Kinetic.Animation(function(frame) {
+    //   SnowProfile.showHandle = (frame.time % 1000) > 500;
+    //   if (SnowProfile.oldShowHandle === null) {
+    //       SnowProfile.oldShowHandle = SnowProfile.showHandle;
+    //   }
+    //   else {
+    //     if (SnowProfile.showHandle !== SnowProfile.oldShowHandle) {
+    //       SnowProfile.oldShowHandle = SnowProfile.showHandle;
 
-          // For each snow layer, if handle untouched, blink
-          numLayers = SnowProfile.snowLayers.length;
-          for (i = 0; i < numLayers; i++) {
-            SnowProfile.snowLayers[i].setHandleVisibility(
-              SnowProfile.showHandle);
-          }
-        }
-      }
-    });
-    anim.start();
+    //       // For each snow layer, if handle untouched, blink
+    //       numLayers = SnowProfile.snowLayers.length;
+    //       for (i = 0; i < numLayers; i++) {
+    //         SnowProfile.snowLayers[i].setHandleVisibility(
+    //           SnowProfile.showHandle);
+    //       }
+    //     }
+    //   }
+    // });
+    // anim.start();
 
     // When the "Preview" button is clicked, generate a preview
     $(document).ready(function() {

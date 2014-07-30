@@ -84,10 +84,7 @@ SnowProfile.Grid = function() {
           fontStyle: 'bold',
           fontFamily: 'sans-serif',
           fill: SnowProfile.LABEL_COLOR})
-        .transform({
-          x: 40,
-          y: y - 8,
-        }));
+        .move(40, y - 8));
 
         // Draw a horizontal line every DEPTH_LINE_INT cm as a depth scale
         if (cm !== SnowProfile.pitDepth) {
@@ -111,14 +108,13 @@ SnowProfile.Grid = function() {
         cm += SnowProfile.DEPTH_LINE_INT) {
         y = SnowProfile.TOP_LABEL_HT + (SnowProfile.HANDLE_SIZE / 2) +
           ((SnowProfile.totalDepth - cm) * SnowProfile.DEPTH_SCALE);
-        SnowProfile.gridGroup.add(SnowProfile.drawing.text(String(cm)).font({
+        SnowProfile.gridGroup.add(SnowProfile.drawing.text(String(cm))
+        .font({
           fontSize: 12,
           fontStyle: 'bold',
           fontFamily: 'sans-serif',
-          fill: SnowProfile.LABEL_COLOR}).transform({
-          x: 40,
-          y: y - 8
-        }));
+          fill: SnowProfile.LABEL_COLOR})
+        .move(40, y - 8));
 
         // Draw a horizontal line every DEPTH_LINE_INT cm as a depth scale
         if (cm !== SnowProfile.totalDepth) {
@@ -191,26 +187,21 @@ SnowProfile.Grid = function() {
           fontFamily: 'sans-serif',
           fill: SnowProfile.LABEL_COLOR
         })
-        .transform({
-          x: x - 1,
-          y: SnowProfile.depth2y(SnowProfile.pitDepth) +
-            (SnowProfile.HANDLE_SIZE / 2) + 3,
-        }));
+        .move(x - 1, SnowProfile.depth2y(SnowProfile.pitDepth) +
+          (SnowProfile.HANDLE_SIZE / 2) + 3));
       }
     }
 
     // Add 'Hand Hardness' label at bottom
-    SnowProfile.gridGroup.add(SnowProfile.drawing.text( 'Hand Hardness')
+    SnowProfile.gridGroup.add(SnowProfile.drawing.text('Hand Hardness')
     .font({
       fontSize: 18,
       fontStyle: 'bold',
       fontFamily: 'sans-serif',
       fill: SnowProfile.LABEL_COLOR})
-    .transform({
-      x: SnowProfile.GRAPH_WIDTH / 2,
-      y: SnowProfile.depth2y(SnowProfile.pitDepth) +
-        (SnowProfile.HANDLE_SIZE / 2) + 19
-    }));
+    .move(SnowProfile.GRAPH_WIDTH / 2,
+      SnowProfile.depth2y(SnowProfile.pitDepth) +
+      (SnowProfile.HANDLE_SIZE / 2) + 19));
   } // function drawHardnessScale()
 
   /**
@@ -238,10 +229,7 @@ SnowProfile.Grid = function() {
       fontStyle: 'bold',
       fontFamily: 'sans-serif',
       fill: SnowProfile.LABEL_COLOR})
-    .transform({
-      x: SnowProfile.GRAIN_LEFT,
-      y: 12
-    }));
+    .move(SnowProfile.GRAIN_LEFT, 12));
 
     // // Add the label to the Water column
     // var waterText = new Kinetic.Text({
@@ -263,10 +251,7 @@ SnowProfile.Grid = function() {
       fontStyle: 'bold',
       fontFamily: 'sans-serif',
       fill: SnowProfile.LABEL_COLOR})
-    .transform({
-      x: SnowProfile.COMMENT_LEFT,
-      y: 25
-    }));
+    .move(SnowProfile.COMMENT_LEFT, 25));
   } // function drawLabels()
 
   /**
