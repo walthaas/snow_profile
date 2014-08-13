@@ -154,8 +154,8 @@ SnowProfile.Grid = function() {
       SnowProfile.DEPTH_LABEL_WD,
       SnowProfile.depth2y(SnowProfile.pitDepth) +
         (SnowProfile.HANDLE_SIZE / 2),
-      SnowProfile.DEPTH_LABEL_WD + SnowProfile.GRAPH_WIDTH + 1
-        - SnowProfile.HANDLE_SIZE / 2,
+      SnowProfile.DEPTH_LABEL_WD + SnowProfile.GRAPH_WIDTH + 1 -
+        SnowProfile.HANDLE_SIZE / 2,
       SnowProfile.depth2y(SnowProfile.pitDepth) +
         (SnowProfile.HANDLE_SIZE / 2)
     )

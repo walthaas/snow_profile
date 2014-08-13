@@ -3,6 +3,9 @@
  * @copyright Walt Haas <haas@xmission.com>
  * @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPLv2}
  */
+
+/* global SVG */
+
 /**
  * The svg.js library
  * @external SVG
@@ -108,13 +111,6 @@ var SnowProfile = {};
      * @const {number}
      */
     GRAIN_SIZE_WD: 50,
-
-    // /**
-    //   Width in pixels of the area used by snow liquid water description
-    //   @memberof SnowProfile
-    //   @const {number}
-    //  */
-    // LWC_WD: 70,
 
     /**
      * Width in pixels of the space between grain size and comment
@@ -1173,15 +1169,6 @@ var SnowProfile = {};
   SnowProfile.GRAIN_LEFT = SnowProfile.DEPTH_LABEL_WD + 1 +
     SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD;
 
-  // /**
-  //   X position of the left edge of the Water text area
-  //   @const
-  //   @memberof SnowProfile
-  //  */
-  // SnowProfile.LWC_LEFT = SnowProfile.DEPTH_LABEL_WD + 1 +
-  //   SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD +
-  //   SnowProfile.GRAIN_WD;
-
   /**
     X position of the left edge of the Comment text area
     @const {number}
@@ -1198,8 +1185,6 @@ var SnowProfile = {};
    * @type {Object}
    * @memberof SnowProfile
    */
-  // console.debug("DRAWING_WD=%d  drawingHeight=%d",
-  //   SnowProfile.DRAWING_WD, SnowProfile.drawingHeight());
   SnowProfile.drawing = SVG("snow_profile_diagram");
 
   /**
@@ -1318,7 +1303,6 @@ var SnowProfile = {};
    * @todo Replace references Kinetic
    */
   SnowProfile.init = function() {
-    var i, numLayers;
 
     // Add the reference grid to the SVG drawing
     new SnowProfile.Grid();

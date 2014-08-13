@@ -25,7 +25,7 @@ SnowProfile.Layer = function(depthArg) {
   /**
    * Depth of the top of this snow layer in cm from the snow surface.
    *
-   * @desc Initialized to the argument passed to the constructor and adjusted
+   * Initialized to the argument passed to the constructor and adjusted
    * whenever the user moves the handle for this snow layer.
    * @type {number}
    */
@@ -102,17 +102,18 @@ SnowProfile.Layer = function(depthArg) {
   .x(SnowProfile.COMMENT_LEFT);
 
   /**
-   Has the user touched the handle since this layer was created?
-
-   Used to make an untouched handle throb visibly, to draw the user's
-   attention to the need to set the handle position.
-   @type {boolean}
+   * Has the user touched the handle since this layer was created?
+   *
+   * Used to make an untouched handle throb visibly, to draw the user's
+   * attention to the need to set the handle position.
+   * @type {boolean}
    */
   var handleTouched = false;
 
   /**
-   * @summary Hardness of this snow layer.
-   * @desc A string code from the {@link SnowProfile.CAAML_HARD} table.
+   * Hardness of this snow layer.
+   *
+   * A string code from the {@link SnowProfile.CAAML_HARD} table.
    * The initial value of null indicates the handle for this snow layer has not
    * yet been touched by the user.
    * @type {string}
@@ -122,8 +123,8 @@ SnowProfile.Layer = function(depthArg) {
   /**
    * Text for the grain size
    *
-   * @desc [SVG.Text]{@link http://documentup.com/wout/svg.js#text/text}
-   * object for text giving th grain size of this snow layer.
+   * [SVG.Text]{@link http://documentup.com/wout/svg.js#text/text}
+   * object for text giving the grain size of this snow layer.
    * @type {Object}
    */
   var grainSizeText = SnowProfile.drawing.text("")
@@ -138,15 +139,16 @@ SnowProfile.Layer = function(depthArg) {
   /**
    * Group to hold the icons describing this layer's grains
    *
-   * @desc [SVG.G]{@link http://documentup.com/wout/svg.js#parent-elements/groups}
+   * [SVG.G]{@link http://documentup.com/wout/svg.js#parent-elements/groups}
    * object holding icons describing the grain shape of this snow layer.
    * @type {Object}
    */
   var grainIcons = SnowProfile.drawing.group();
 
   /**
-   * @summary Horizontal line below the description
-   * @desc [SVG.Line]{@link http://documentup.com/wout/svg.js#line}
+   * Horizontal line below the description
+   *
+   * [SVG.Line]{@link http://documentup.com/wout/svg.js#line}
    * object for a horizontal line below the text description of this snow
    * layer.  This line visually separates the descriptions of the various
    * snow layers.
@@ -168,7 +170,7 @@ SnowProfile.Layer = function(depthArg) {
   var handle = SnowProfile.drawing.rect(SnowProfile.HANDLE_SIZE,
     SnowProfile.HANDLE_SIZE);
   handle.draggable(function(x, y) {
-
+    console.debug("draggable()");
     var newX = x;
     var newY = y;
     var i = self.getIndex();
@@ -213,6 +215,7 @@ SnowProfile.Layer = function(depthArg) {
       }
     }
     depthVal = self.y2depth(newY);
+    self.draw();
     return {
       x: newX,
       y: newY
@@ -313,7 +316,7 @@ SnowProfile.Layer = function(depthArg) {
   };
 
   /**
-   Make the handle visible
+   * Make the handle visible
    */
   function handleVisible() {
     handle.setVisible(true);
@@ -321,7 +324,7 @@ SnowProfile.Layer = function(depthArg) {
   }
 
   /**
-    Make the handle invisible
+   * Make the handle invisible
    */
   function handleInvisible() {
     handle.setVisible(false);
@@ -439,11 +442,12 @@ SnowProfile.Layer = function(depthArg) {
   this.describe = function(data) {
 
     /**
-     * @summary Generate a text description of grain forms from symbols
-     * @desc Accept grain form symbols selected by the user, if any, and
-     *   return a text description of the form.  The description is
-     *   constructed by looking up the symbols in CAAML_SHAPE and
-     *   CAAML_SUBSHAPE to find the equivalent text.
+     * Generate a text description of grain forms from symbols
+     *
+     * Accept grain form symbols selected by the user, if any, and
+     * return a text description of the form.  The description is
+     * constructed by looking up the symbols in CAAML_SHAPE and
+     * CAAML_SUBSHAPE to find the equivalent text.
      * @param {string} primaryShape Primary grain shape symbol
      * @param {string} primarySubShape Primary grain subshape symbol
      * @param {string} secondaryShape Secondary grain shape symbol
@@ -486,9 +490,10 @@ SnowProfile.Layer = function(depthArg) {
     } // function sym2text
 
     /**
-     * @summary Generate an icon description for Melt-freeze crust
-     * @desc Generate the appropriate Melt-freeze crust icon for the
-     *   the specified secondary shape, if any
+     * Generate an icon description for Melt-freeze crust
+     *
+     * Generate the appropriate Melt-freeze crust icon for the
+     * the specified secondary shape, if any
      * @param {string} secondaryShape Secondary grain shape symbol
      * @param {string} secondarySubShape Secondary grain subshape symbol
      * @param {Object} container SVG.G group object to hold icons
@@ -573,14 +578,15 @@ SnowProfile.Layer = function(depthArg) {
     } // function sym2iconsMFcr()
 
     /**
-     * @summary Generate an icon description for normal case
-     * @desc  Accept grain form symbols selected by the user, if any, and
-     *   return an icon description of the form.  The description is
-     *   constructed by looking up the symbols in
-     *   {@link SnowProfile.CAAML_SHAPE} and
-     *   {@link SnowProfile.CAAML_SUBSHAPE} to find the equivalent icons.  It
-     *   has been determined that the primary subshape is NOT Melt-freeze
-     *   crust.
+     * Generate an icon description for normal case
+     *
+     * Accept grain form symbols selected by the user, if any, and
+     * return an icon description of the form.  The description is
+     * constructed by looking up the symbols in
+     * {@link SnowProfile.CAAML_SHAPE} and
+     * {@link SnowProfile.CAAML_SUBSHAPE} to find the equivalent icons.  It
+     * has been determined that the primary subshape is NOT Melt-freeze
+     * crust.
      * @param {string} primaryShape Primary grain shape symbol
      * @param {string} primarySubShape Primary grain subshape symbol
      * @param {string} secondaryShape Secondary grain shape symbol
@@ -682,13 +688,14 @@ SnowProfile.Layer = function(depthArg) {
     } // function sym2iconsNormal()
 
     /**
-     * @summary Generate an icon description of grain forms from symbols
-     * @desc Accept grain form symbols selected by the user, if any, and
-     *   return an icon description of the form.  The description is
-     *   constructed by looking up the symbols in
-     *   {@link SnowProfile.CAAML_SHAPE} and
-     *   {@link SnowProfile.CAAML_SUBSHAPE} to find the equivalent icons.
-     *   There are two cases:
+     * Generate an icon description of grain forms from symbols
+     *
+     * Accept grain form symbols selected by the user, if any, and
+     * return an icon description of the form.  The description is
+     * constructed by looking up the symbols in
+     * {@link SnowProfile.CAAML_SHAPE} and
+     * {@link SnowProfile.CAAML_SUBSHAPE} to find the equivalent icons.
+     * There are two cases:
      *   + If the primary subshape is Melt-freeze crust, then the
      *     secondary shape is incorporated into the MFcr icon.
      *   + In all other cases, the secondary shape in parentheses follows
@@ -817,7 +824,6 @@ SnowProfile.Layer = function(depthArg) {
    * Set coordinates of the layer outline
    */
   this.setLayerOutline = function() {
-    console.debug("setLayerOutline()");
     var i = self.getIndex();
     var numLayers = SnowProfile.snowLayers.length;
     var x = handle.x();
@@ -866,8 +872,9 @@ SnowProfile.Layer = function(depthArg) {
   }; // this.draw = function() {
 
   /**
-   * @summary Push this layer down to make room to insert a layer above.
-   * @desc Add an increment to the depth of this layer and all layers below
+   * Push this layer down to make room to insert a layer above.
+   *
+   * Add an increment to the depth of this layer and all layers below
    * to the bottom.
    */
   this.pushDown = function() {
@@ -992,6 +999,7 @@ SnowProfile.Layer = function(depthArg) {
    * @callback
    */
   handle.mouseover(function() {
+    console.debug("handle.mouseover()");
     handle.style('cursor', 'pointer');
   });
 
@@ -1000,6 +1008,7 @@ SnowProfile.Layer = function(depthArg) {
    @callback
    */
   handle.mouseout(function() {
+    console.debug("handle.mouseout()");
     handleLoc.hide();
   });
 
@@ -1007,7 +1016,8 @@ SnowProfile.Layer = function(depthArg) {
    When the handle is in use, show its location to the right.
    @callback
    */
-  handle.on('mousedown', function() {
+  handle.mousedown(function() {
+    console.debug("handle.mousedown()");
     handleLoc.show();
     handleTouched = true;
   });
@@ -1016,7 +1026,8 @@ SnowProfile.Layer = function(depthArg) {
    When the mouse releases the handle, stop showing its location.
    @callback
    */
-  handle.on('mouseup', function() {
+  handle.mouseup(function() {
+    console.debug("handle.mouseup()");
     handleLoc.hide();
   });
 
@@ -1056,7 +1067,7 @@ SnowProfile.Layer = function(depthArg) {
    @callback
    */
   handle.mousemove(function() {
-    console.debug("mousemove");
+    console.debug("handle.mousemove()");
     var i = self.getIndex();
 
     // Adjust the horizontal (hardness) position
