@@ -223,21 +223,22 @@ var SnowProfile = {};
     snowLayers: [],
 
     /**
-      Make the handle visible if it has not been touched.
+     * Make the handle visible if it has not been touched.
      * @memberof SnowProfile
-      @type {boolean}
+     * @type {boolean}
      */
     showHandle: null,
 
     /**
-      Previous state of showHandle.
+     * Previous state of showHandle.
      * @memberof SnowProfile
-      @type {boolean}
+     * @type {boolean}
      */
     oldShowHandle: null,
 
     /**
-     * @summary Maximum Y value allowed for any handle (bottom of graph area)
+     * Maximum Y value allowed for any handle (bottom of graph area)
+     *
      * @type {number}
      * @memberof SnowProfile
      * @see SnowProfile.Grid~adjustGrid
@@ -245,8 +246,9 @@ var SnowProfile = {};
     handleMaxY: null,
 
     /**
-     * @summary Total depth of the snow pack (cm)
-     * @desc Distance in cm from the snow surface to the ground, as measured
+     * Total depth of the snow pack (cm)
+     *
+     * Distance in cm from the snow surface to the ground, as measured
      *   with a calibrated probe or by digging to the ground.  Null
      *   if this distance is not known.
      * @memberof SnowProfile

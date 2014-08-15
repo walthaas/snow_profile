@@ -53,27 +53,6 @@ SnowProfile.Layer = function(depthArg) {
    */
   var grainSize = "";
 
-  // /**
-  //  * @summary Liquid water content of this snow layer
-  //  * @type {string}
-  //  */
-  // var lwc = "";
-
-  // /**
-  //  * @summary Text for the liquid water content.
-  //  * @desc [Kinetic.Text]{@link http://kineticjs.com/docs/Kinetic.Text.html}
-  //  * object for text describing the liquid water content of this snow layer.
-  //  * @type {Object}
-  //  */
-  // var LWCDescr = new Kinetic.Text({
-  //   width: SnowProfile.LWC_WD,
-  //   fontSize: 12,
-  //   fontFamily: 'sans-serif',
-  //   fill: "#000",
-  //   align: 'left',
-  //   x: SnowProfile.LWC_LEFT
-  // });
-
   /**
    * @summary User's comment about this snow layer
    * @desc The comment character string entered by the user to comment
@@ -170,11 +149,13 @@ SnowProfile.Layer = function(depthArg) {
   var handle = SnowProfile.drawing.rect(SnowProfile.HANDLE_SIZE,
     SnowProfile.HANDLE_SIZE);
   handle.draggable(function(x, y) {
-    console.debug("draggable()");
+    //console.debug("draggable(%d, %d)", x, y);
     var newX = x;
     var newY = y;
     var i = self.getIndex();
     var numLayers = SnowProfile.snowLayers.length;
+    var mm;
+    //console.debug("i=%d  numLayers=%d", i, numLayers);
 
     // X (hardness) position is bound by the edges of the graph.
     if (x < SnowProfile.HANDLE_MIN_X) {
@@ -214,7 +195,38 @@ SnowProfile.Layer = function(depthArg) {
         newY = SnowProfile.snowLayers[i - 1].handleGetY() + 1;
       }
     }
+
+    // Adjust the horizontal (hardness) position
+    hardness = self.x2code(newX);
+
+    // Adjust the vertical (depth) position
     depthVal = self.y2depth(newY);
+
+    // Draw the outline rectangle
+    self.setLayerOutline();
+
+    // Set the text information floating to the right of the graph
+    if (SnowProfile.depthRef === "s") {
+
+       // Depth is referred to the snow surface
+       mm = Math.round(depthVal * 10) / 10;
+    }
+    else {
+
+      // Depth is referred to the ground
+      mm = Math.round((SnowProfile.totalDepth - depthVal) * 10) / 10;
+    }
+    handleLoc.text( '(' + mm + ', ' +
+      self.x2code(newX) + ')');
+    handleLoc.y(newY);
+    //console.debug("handleLoc.y=%d", handleLoc.y());
+
+    // If this is not the top snow layer, update the diagonal line
+    // owned by the snow layer above.
+    if (i !== 0) {
+      SnowProfile.snowLayers[i - 1].setDiagLine();
+    }
+    //depthVal = self.y2depth(newY);
     self.draw();
     return {
       x: newX,
@@ -247,7 +259,8 @@ SnowProfile.Layer = function(depthArg) {
     fill: SnowProfile.LABEL_COLOR,
   })
   .x(SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH + 10)
-  .y(SnowProfile.depth2y(depthVal));
+  .y(SnowProfile.depth2y(depthVal))
+  .hide();
 
   /**
    * "Edit" button
@@ -335,14 +348,13 @@ SnowProfile.Layer = function(depthArg) {
    * Remove and destroy all SVG objects belonging to this snow layer
    */
   function destroy() {
-    handle.off('mouseup mousedown dragmove mouseover mouseout');
+    handle.off('mouseup mousedown mouseover mouseout');
     $(document).unbind("SnowProfileHideControls", handleInvisible);
     $(document).unbind("SnowProfileShowControls", handleVisible);
     $(document).unbind("SnowProfileAdjustGrid", self.draw);
     handle.destroy();
     grainSizeText.destroy();
     grainIcons.destroy();
-//    LWCDescr.destroy();
     commentDescr.destroy();
     lineBelow.destroy();
     handleLoc.destroy();
@@ -734,7 +746,6 @@ SnowProfile.Layer = function(depthArg) {
         secondaryGrainShape: secondaryGrainShape,
         secondaryGrainSubShape: secondaryGrainSubShape,
         grainSize: grainSize,
-//        lwc: lwc,
         comment: comment,
         layer: self,
         numLayers: SnowProfile.snowLayers.length
@@ -773,15 +784,6 @@ SnowProfile.Layer = function(depthArg) {
           grainSizeText.setText(SnowProfile.CAAML_SIZE[grainSize]);
         }
       }
-
-      // // Liquid water content description.
-      // lwc = data.lwc;
-      // if (lwc === "") {
-      //   LWCDescr.setText("");
-      // }
-      // else {
-      //   LWCDescr.setText(SnowProfile.CAAML_LWC[lwc]);
-      // }
 
       // Comment description
       comment = data.comment;
@@ -851,10 +853,16 @@ SnowProfile.Layer = function(depthArg) {
    *   top of this layer.
    */
   this.draw = function() {
+    // console.debug("handle.draw()");
     var i = self.getIndex();
 
     // Set handle X from hardness
-    handle.x(self.code2x(hardness));
+    if (handleTouched) {
+      handle.x(self.code2x(hardness));
+    }
+    else {
+      handle.x(SnowProfile.DEPTH_LABEL_WD + 1 - (SnowProfile.HANDLE_SIZE / 2));
+    }
 
     // Set handle Y from depth
     handle.y(SnowProfile.depth2y(depthVal));
@@ -899,8 +907,9 @@ SnowProfile.Layer = function(depthArg) {
   };
 
   /**
-   Set handle visibility, if it is untouched
-   @param {boolean} visible Make the handle visible?
+   * Set handle visibility, if it is untouched
+   *
+   * @param {boolean} visible Make the handle visible?
    */
   this.setHandleVisibility = function(visible) {
     if (!handleTouched) {
@@ -916,9 +925,9 @@ SnowProfile.Layer = function(depthArg) {
   };
 
   /**
-   Set the Y position of those parts of the layer whose Y position
-   depends on the index of the snow layer in snowpack not its depth.
-   This is needed when a layer is inserted or deleted.
+   * Set the Y position of those parts of the layer whose Y position
+   * depends on the index of the snow layer in snowpack not its depth.
+   * This is needed when a layer is inserted or deleted.
    */
   this.setIndexPosition = function() {
     var i = self.getIndex();
@@ -928,9 +937,6 @@ SnowProfile.Layer = function(depthArg) {
     grainIcons.y(SnowProfile.HANDLE_MIN_Y +
       (SnowProfile.HANDLE_SIZE / 2) + //3 +
       (i * SnowProfile.DESCR_HEIGHT));
-    // LWCDescr.y(SnowProfile.HANDLE_MIN_Y +
-    //   (SnowProfile.HANDLE_SIZE / 2) + 3 +
-    //     (i * SnowProfile.DESCR_HEIGHT));
     commentDescr.y(SnowProfile.HANDLE_MIN_Y +
       (SnowProfile.HANDLE_SIZE / 2) + 3 +
         (i * SnowProfile.DESCR_HEIGHT));
@@ -995,12 +1001,16 @@ SnowProfile.Layer = function(depthArg) {
   $(document).bind("SnowProfileAdjustGrid", self.draw);
 
   /**
-   * Style the cursor for the handle
+   * When mouse hovers over handle, show handle location
+   *
    * @callback
    */
   handle.mouseover(function() {
-    console.debug("handle.mouseover()");
+    // console.debug("handle.mouseover() touched=%b", handleTouched);
     handle.style('cursor', 'pointer');
+    if (handleTouched) {
+      handleLoc.show();
+    }
   });
 
   /**
@@ -1008,7 +1018,7 @@ SnowProfile.Layer = function(depthArg) {
    @callback
    */
   handle.mouseout(function() {
-    console.debug("handle.mouseout()");
+    // console.debug("handle.mouseout()");
     handleLoc.hide();
   });
 
@@ -1017,8 +1027,7 @@ SnowProfile.Layer = function(depthArg) {
    @callback
    */
   handle.mousedown(function() {
-    console.debug("handle.mousedown()");
-    handleLoc.show();
+    // console.debug("handle.mousedown()");
     handleTouched = true;
   });
 
@@ -1027,8 +1036,9 @@ SnowProfile.Layer = function(depthArg) {
    @callback
    */
   handle.mouseup(function() {
-    console.debug("handle.mouseup()");
+    // console.debug("handle.mouseup()");
     handleLoc.hide();
+    handle.x(self.code2x(hardness));
   });
 
   // When Edit button clicked, pop up a modal dialog form.
@@ -1061,48 +1071,6 @@ SnowProfile.Layer = function(depthArg) {
     }
   });
 
-  /**
-   When the handle moves, recalculate the hardness value displayed
-   and draw the lines connected to the handle
-   @callback
-   */
-  handle.mousemove(function() {
-    console.debug("handle.mousemove()");
-    var i = self.getIndex();
-
-    // Adjust the horizontal (hardness) position
-    hardness = self.x2code(handle.x());
-    self.setLayerOutline();
-
-    // Adjust the vertical (depth) position
-    depthVal = self.y2depth(handle.y());
-
-    // Set the text information floating to the right of the graph
-    var mm;
-    if (SnowProfile.depthRef === "s") {
-
-       // Depth is referred to the snow surface
-       mm = Math.round(depthVal * 10) / 10;
-    }
-    else {
-
-      // Depth is referred to the ground
-      mm = Math.round((SnowProfile.totalDepth - depthVal) * 10) / 10;
-    }
-    handleLoc.text( '(' + mm + ', ' +
-      self.x2code(handle.x()) + ')');
-    handleLoc.y(SnowProfile.depth2y(depthVal));
-
-    // If this is not the top snow layer, update the diagonal line
-    // owned by the snow layer above.
-    if (i !== 0) {
-      SnowProfile.snowLayers[i - 1].setDiagLine();
-    }
-
-    // Draw the layer
-    self.draw();
-  }); // handle.on('dragmove', function() {
-
   // Draw the layer
   self.draw();
 
@@ -1118,7 +1086,7 @@ SnowProfile.Layer = function(depthArg) {
  */
 SnowProfile.Layer.prototype.code2x = function(code) {
   "use strict";
-  var x = SnowProfile.HANDLE_MIN_X;
+  var x = SnowProfile.DEPTH_LABEL_WD + 1;
   if (code !== null) {
     for (var i = 0; i < SnowProfile.CAAML_HARD.length; i++) {
       if (code === SnowProfile.CAAML_HARD[i][0]) {
