@@ -197,15 +197,6 @@ var SnowProfile = {};
      */
     IMAGE_WD: 800,
 
-    // /**
-    //  * KineticJS drawing layer.
-    //  * @desc [Kinetic.Layer]{@link http://kineticjs.com/docs/Kinetic.Layer.html Kinetic.Layer}
-    //  *   object where the diagram will be drawn.
-    //  * @type {Object}
-    //  * @memberof SnowProfile
-    //  */
-    // kineticJSLayer: null,
-
     /**
      * Snow stratigraphy snow layers.
      *
@@ -257,11 +248,12 @@ var SnowProfile = {};
     totalDepth: null,
 
     /**
-     * @summary Depth reference (snow surface or ground)
-     * @desc  A single letter indicating whether snow depth is referenced
-     *   to the snow surface ("s") or ground ("g").  Must be one or the
-     *   other.  Default is "s".  Ground reference may be used only if
-     *   the value of total snow depth (totalDepth) is known.
+     * Depth reference (snow surface or ground)
+     *
+     * A single letter indicating whether snow depth is referenced
+     * to the snow surface ("s") or ground ("g").  Must be one or the
+     * other.  Default is "s".  Ground reference may be used only if
+     * the value of total snow depth (totalDepth) is known.
      * @memberof SnowProfile
      * @type {!string}
      * @see SnowProfile.Grid~depthScaleGrp
@@ -269,8 +261,8 @@ var SnowProfile = {};
     depthRef: "s",
 
     /**
-     * @summary Table of CAAML grain shapes.
-     * @desc
+     * Table of CAAML grain shapes.
+     *
      * + Property name is the code value to store.
      * + Property value is the description.
      * @memberof SnowProfile
@@ -1021,68 +1013,58 @@ var SnowProfile = {};
       "very coarse": "2.0-5.0\nmm",
       "extreme": "> 5.0\nmm"
     }  //,
-
-    // /**
-    //   Table of CAAML liquid water contents.
-    //   Property name is the code value to store
-    //   Property value is the humanly-readable description
-    //   @memberof SnowProfile
-    //   @type {Object}
-    //   @const
-    //  */
-    // CAAML_LWC: {
-    //   D: "Dry",
-    //   M: "Moist",
-    //   W: "Wet",
-    //   V: "Very Wet",
-    //   S: "Soaked"
-    // }
   }; // SnowProfile = {
 
   /**
-   * @summary Pit depth (cm)
-   * @desc Maximum depth of the pit in cm from the snow surface.  Must
-   *   be an integer between MIN_DEPTH and MAX_DEPTH. Default MAX_DEPTH.
+   * Pit depth (cm)
+   *
+   * Maximum depth of the pit in cm from the snow surface.  Must
+   * be an integer between MIN_DEPTH and MAX_DEPTH. Default MAX_DEPTH.
    * @type {!number}
    * @see SnowProfile.Grid~depthScaleGrp
    */
   SnowProfile.pitDepth = SnowProfile.DEFAULT_PIT_DEPTH;
 
   /**
-    Central x of the data plotting area.
-    @const {number}
-    @memberof SnowProfile
+   * Central x of the data plotting area.
+   *
+   * @const {number}
+   * @memberof SnowProfile
    */
   SnowProfile.GRAPH_CENTER_X = SnowProfile.DEPTH_LABEL_WD + 1 +
     (SnowProfile.GRAPH_WIDTH / 2);
 
   /**
-    Maximum x value allowed for a handle (hardness 'I').
-    @const {number}
-    @memberof SnowProfile
+   * Maximum x value allowed for a handle (hardness 'I').
+   *
+   * @const {number}
+   * @memberof SnowProfile
    */
   SnowProfile.HANDLE_MAX_X = SnowProfile.DEPTH_LABEL_WD + 1 +
     SnowProfile.GRAPH_WIDTH - (SnowProfile.HANDLE_SIZE / 2);
 
   /**
-    Minimum x value allowed for a handle (hardness 'F-').
-    @const {number}
-    @memberof SnowProfile
+   * Minimum x value allowed for a handle (hardness 'F-').
+   *
+   * @const {number}
+   * @memberof SnowProfile
    */
   SnowProfile.HANDLE_MIN_X = SnowProfile.DEPTH_LABEL_WD + 1 +
     (SnowProfile.HANDLE_SIZE / 2);
 
   /**
    * Minimum Y value allowed for a handle (top of graph area)
+   *
    * @const
-     @memberof SnowProfile
+   * @memberof SnowProfile
    */
   SnowProfile.HANDLE_MIN_Y = SnowProfile.TOP_LABEL_HT + 1;
 
   /**
-    Get the Y axis value for the line below the description of a layer.
-    @param {number} i Index of the layer.
-    @returns {number} Y axis value of the line below the ith layer.
+   * Get the Y axis value for the line below the description of a layer.
+   *
+   * @param {number} i Index of the layer.
+   * @returns {number} Y axis value of the line below the ith layer.
    */
   SnowProfile.lineBelowY = function(i) {
     return SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2) +
@@ -1090,26 +1072,26 @@ var SnowProfile = {};
   };
 
   /**
-    Width in pixels of one hardness band in the CAAML_HARD table
-
-    Calculation depends on knowing there are 21 entries in the table
-    @const {number}
-    @memberof SnowProfile
+   * Width in pixels of one hardness band in the CAAML_HARD table
+   *
+   * Calculation depends on knowing there are 21 entries in the table
+   * @const {number}
+   * @memberof SnowProfile
    */
   SnowProfile.HARD_BAND_WD = (SnowProfile.GRAPH_WIDTH -
     SnowProfile.HANDLE_SIZE) / 20;
 
   /**
-   Table of CAAML hardness values (HardnessBaseEnumType).
-
-   + CAAML_HARD[i][0] is the alpha string defined by CAAML 5.0.
-   + CAAML_HARD[i][1] is a boolean; whether to draw a line here.
-   + CAAML_HARD[i][2] minimum x value having this hardness.  The
-     maximum x value for this hardness is one less than the minimum for
-     the next row.
-     @const
-     @type {string[]}
-     @memberof SnowProfile
+   * Table of CAAML hardness values (HardnessBaseEnumType).
+   *
+   * + CAAML_HARD[i][0] is the alpha string defined by CAAML 5.0.
+   * + CAAML_HARD[i][1] is a boolean; whether to draw a line here.
+   * + CAAML_HARD[i][2] minimum x value having this hardness.  The
+   *   maximum x value for this hardness is one less than the minimum for
+   *   the next row.
+   * @const
+   * @type {string[]}
+   * @memberof SnowProfile
    */
   SnowProfile.CAAML_HARD = [
     ['F-',    0, SnowProfile.HANDLE_MIN_X],
@@ -1137,6 +1119,7 @@ var SnowProfile = {};
 
   /**
    * Vertical height in pixels of the SVG drawing
+   *
    * @method
    * @memberof SnowProfile
    * @returns {number} Drawing height in pixels.
@@ -1147,9 +1130,10 @@ var SnowProfile = {};
   };
 
   /**
-    Horizontal width in pixels of the SVG drawing
-    @const {number}
-    @memberof SnowProfile
+   * Horizontal width in pixels of the SVG drawing
+   *
+   * @const {number}
+   * @memberof SnowProfile
    */
    SnowProfile.DRAWING_WD = SnowProfile.DEPTH_LABEL_WD + 1 +
      SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD + 1 +
@@ -1158,23 +1142,24 @@ var SnowProfile = {};
      SnowProfile.COMMENT_WD;
 
   /**
-    X position of the center line of the buttons in the control area
+   * X position of the center line of the buttons in the control area
    */
   SnowProfile.BUTTON_X = SnowProfile.DEPTH_LABEL_WD + 1 +
     SnowProfile.GRAPH_WIDTH + 150;
 
   /**
-    X position of the left edge of the Grains text area
-    @const {number}
-    @memberof SnowProfile
+   * X position of the left edge of the Grains text area
+   *
+   * @const {number}
+   * @memberof SnowProfile
    */
   SnowProfile.GRAIN_LEFT = SnowProfile.DEPTH_LABEL_WD + 1 +
     SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD;
 
   /**
-    X position of the left edge of the Comment text area
-    @const {number}
-    @memberof SnowProfile
+   * X position of the left edge of the Comment text area
+   * @const {number}
+   * @memberof SnowProfile
    */
   SnowProfile.COMMENT_LEFT = SnowProfile.DEPTH_LABEL_WD + 1 +
     SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD +
@@ -1182,7 +1167,8 @@ var SnowProfile = {};
     SnowProfile.GRAIN_SIZE_WD + SnowProfile.COMMENT_SPACE_WD;
 
   /**
-   * @summary SVG drawing
+   * SVG drawing
+   *
    * @see  {@link http://http://documentup.com/wout/svg.js#usage/create-a-svg-document Create a SVG document}
    * @type {Object}
    * @memberof SnowProfile
@@ -1204,6 +1190,7 @@ var SnowProfile = {};
   /**
    * Recalculate the Y axis positions of all SVG objects whose
    * position depends on the index of the layer in the snowpack.
+   *
    * @method
    * @memberof SnowProfile
    */
@@ -1217,57 +1204,64 @@ var SnowProfile = {};
   };
 
   /**
-   @method
-   @memberof SnowProfile
-   @summary Convert a depth in cm to a Y axis position.
-   @param {number} depth Depth from the snow surface in cm.
-   @returns {number} Y position.
+   * Convert a snow layer depth value to a drawing Y axis position
+   *
+   * @method
+   * @memberof SnowProfile
+   * @param {number} depth Depth from the snow surface in cm.
+   * @returns {number} Y position.
    */
   SnowProfile.depth2y = function(depthArg) {
     return (depthArg * SnowProfile.DEPTH_SCALE) + SnowProfile.HANDLE_MIN_Y;
   };
 
   /**
+   * Tell listeners to hide anything that should not appear on
+   * the final image.
+   *
+   * This event is fired just before the image is generated
+   * from the drawing.
    * @event SnowProfileHideControls
-   * @summary Tell listeners to hide anything that should not appear on
-   *   the final image.
-   * @desc This event is fired just before the image is generated
-   *   from the canvas.
    * @memberof SnowProfile
    * @type {string}
    */
 
   /**
-    @event SnowProfileShowControls
-    @summary Tell listeners to show controls hidden from the image.
-    @desc This event is fired after the image has been generated from
-      the canvas.  It tells listeners they should show anything that was
-      hidden from the image.
-    @memberof SnowProfile
-    @type {string}
+   * Tell listeners to show controls hidden from the image.
+   *
+   * This event is fired after the image has been generated from
+   * the canvas.  It tells listeners they should show anything that was
+   * hidden from the image.
+   * @event SnowProfileShowControls
+   * @memberof SnowProfile
+   * @type {string}
    */
 
   /**
+   * Tell listeners the reference grid has changed.
+   *
+   * This event is fired when the user changes a parameter that
+   * governs the reference grid.  It tells listeners to respond to the
+   * new grid parameters by adjusting their data display.
    * @event SnowProfileDrawGrid
-   * @summary Tell listeners the reference grid has changed.
-   * @desc This event is fired when the user changes a parameter that
-   *   governs the reference grid.  It tells listeners to respond to the
-   *   new grid parameters by adjusting their data display.
    * @memberof SnowProfile
    * @type {string}
    * @see SnowProfile.Grid
    */
 
   /**
-    @event SnowProfileButtonClick
-    @memberof SnowProfile
-    @type {Object}
+   * Tell listeners that a SnowProfile.Button has been clicked
+   *
+   * @event SnowProfileButtonClick
+   * @memberof SnowProfile
+   * @type {Object}
    */
 
   /**
+   * Produce a preview PNG in a new window
+   *
    * @method
    * @memberof SnowProfile
-   * @summary Produce a preview PNG in a new window
    * @fires ShowProfileHideControls
    * @fires ShowProfileShowControls
    */
@@ -1298,6 +1292,7 @@ var SnowProfile = {};
 
   /**
    * Initialize the SVG drawing and the grid group
+   *
    * @method
    * @memberof SnowProfile
    * @fires SnowProfileHideControls

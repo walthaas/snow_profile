@@ -1,14 +1,14 @@
 /**
-  @file Contains main program
-  @copyright Walt Haas <haas@xmission.com>
-  @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPLv2}
+ * @file Contains main program
+ * @copyright Walt Haas <haas@xmission.com>
+ * @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPLv2}
  */
 
 /* global SnowProfile */
 /* global SVG */
 
 /**
-  @desc Main program
+ * Main program
  */
 if (SVG.supported) {
   SnowProfile.init();

@@ -1,20 +1,20 @@
 /**
-  @file Define the object that describes a snow layer
-  @copyright Walt Haas <haas@xmission.com>
-  @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPLv2}
+ * @file Define the object that describes a snow layer
+ * @copyright Walt Haas <haas@xmission.com>
+ * @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPLv2}
  */
 
 /* global SnowProfile */
 
 /**
-  Object describing a single snow stratigraphy layer.
-  @param {number} depthArg Initial depth in cm of this layer from the top
-  of the snow pack.
-  @constructor
-  @listens SnowProfileAdjustGrid
-  @listens SnowProfileButtonClick
-  @listens SnowProfileHideControls
-  @listens SnowProfileShowControls
+ * Object describing a single snow stratigraphy layer.
+ * @param {number} depthArg Initial depth in cm of this layer from the top
+ * of the snow pack.
+ * @constructor
+ * @listens SnowProfileAdjustGrid
+ * @listens SnowProfileButtonClick
+ * @listens SnowProfileHideControls
+ * @listens SnowProfileShowControls
  */
 SnowProfile.Layer = function(depthArg) {
   "use strict";
@@ -32,8 +32,9 @@ SnowProfile.Layer = function(depthArg) {
   var depthVal = depthArg;
 
   /**
-   * @summary Grain shape of this layer.
-   * @desc Two- or four-character code from the
+   * Grain shape of this layer.
+   *
+   * Two- or four-character code from the
    * [IACS 2009 Standard]{@link http://www.cryosphericsciences.org/products/snowClassification/snowclass_2009-11-23-tagged-highres.pdf}
    * Appendix A.1 table as stored in {@link SnowProfile.CAAML_SHAPE} or
    * {@link SnowProfile.CAAML_SUBSHAPE}.
@@ -45,8 +46,9 @@ SnowProfile.Layer = function(depthArg) {
   var secondaryGrainSubShape = "";
 
   /**
-   * @summary Grain size of this snow layer.
-   * @desc Code from the
+   * Grain size of this snow layer.
+   *
+   * Code from the
    * [CAAMLv5 IACS Snow Profile schema definition]{@link http://caaml.org/Schemas/V5.0/Profiles/SnowProfileIACS/CAAMLv5_SnowProfileIACS.xsd}
    * GrainSizeBaseEnumType as stored in {@link SnowProfile.CAAML_SIZE}.
    * @type {string}
@@ -54,8 +56,9 @@ SnowProfile.Layer = function(depthArg) {
   var grainSize = "";
 
   /**
-   * @summary User's comment about this snow layer
-   * @desc The comment character string entered by the user to comment
+   * User's comment about this snow layer
+   *
+   * The comment character string entered by the user to comment
    * on this snow layer.
    * @type {string}
    */
@@ -64,7 +67,7 @@ SnowProfile.Layer = function(depthArg) {
   /**
    * Text for the comment.
    *
-   * @desc [SVG.Text]{@link http://documentup.com/wout/svg.js#text/text}
+   * [SVG.Text]{@link http://documentup.com/wout/svg.js#text/text}
    * object for text describing the user's comment on this snow layer.  It
    * contains the character string entered by the user from
    * {@link SnowProfile.Layer~comment} plus additional
@@ -314,8 +317,8 @@ SnowProfile.Layer = function(depthArg) {
   };
 
   /**
-   Get index of this object in snowLayers[]
-   @returns {number} Integer index into snowLayers[]
+   * Get index of this object in snowLayers[]
+   * @returns {number} Integer index into snowLayers[]
    */
   this.getIndex = function() {
     var i;

@@ -7,8 +7,9 @@
 /* global SnowProfile */
 
 /**
- * @summary Singleton object describing the reference grid
- * @desc The reference grid is the collection of vertical and horizontal
+ * Singleton object describing the reference grid
+ *
+ * The reference grid is the collection of vertical and horizontal
  *   lines and associated letters and numbers that indicate the location of
  *   a data point in the snow profile.  The depth of a point is indicated by
  *   depth numbers along the left edge of the grid and their associated
@@ -206,6 +207,7 @@ SnowProfile.Grid = function() {
 
   /**
    * Draw the labels for the observation columns
+   *
    * @see SnowProfile.gridGroup
    * @todo Column headings don't fit
    */
@@ -230,19 +232,6 @@ SnowProfile.Grid = function() {
       fontFamily: 'sans-serif',
       fill: SnowProfile.LABEL_COLOR})
     .move(SnowProfile.GRAIN_LEFT, 12));
-
-    // // Add the label to the Water column
-    // var waterText = new Kinetic.Text({
-    //   x: SnowProfile.LWC_LEFT,
-    //   y: 25,
-    //   text: 'Water',
-    //   fontSize: 18,
-    //   fontStyle: 'bold',
-    //   fontFamily: 'sans-serif',
-    //   fill: SnowProfile.LABEL_COLOR,
-    //   align: "left"
-    // });
-    // SnowProfile.gridGroup.add(waterText);
 
     // Add the label to the Comment column
     SnowProfile.gridGroup.add(SnowProfile.drawing.text('Comment')
@@ -340,11 +329,12 @@ SnowProfile.Grid = function() {
   } // function totalDepthChange()
 
   /**
-   * @summary Respond to a change in the depth of the pit
-   * @desc Input the value set by the user in the "Snow pit depth" box.
-   *   Check that it is a number in the range MIN_DEPTH .. MAX_DEPTH not
-   *   greater than total snow depth.  If checks pass, save this pit depth.
-   *   If the checks fail, put the previous value back in the input box.
+   * Respond to a change in the depth of the pit
+   *
+   * Input the value set by the user in the "Snow pit depth" box.
+   * Check that it is a number in the range MIN_DEPTH .. MAX_DEPTH not
+   * greater than total snow depth.  If checks pass, save this pit depth.
+   * If the checks fail, put the previous value back in the input box.
    */
   function pitDepthChange() {
 
@@ -376,16 +366,6 @@ SnowProfile.Grid = function() {
   $("#snow_profile_pit_depth").val(SnowProfile.pitDepth);
   $("#snow_profile_total_depth").val(SnowProfile.totalDepth);
   $("#snow_profile_ref_depth").val(SnowProfile.depthRef);
-
-  // var backGround = new Kinetic.Rect({
-  //   x: 0,
-  //   y: 0,
-  //   width: SnowProfile.stage.width(),
-  //   height: 10,
-  //   fill: SnowProfile.BACKGROUND_COLOR,
-  //   opacity: 1
-  // });
-  // SnowProfile.gridGroup.add(backGround);
 
   // Listen for a change to the "Total snow depth" input
   $("#snow_profile_total_depth").change(totalDepthChange);
