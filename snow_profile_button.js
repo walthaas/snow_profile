@@ -42,7 +42,7 @@ SnowProfile.Button = function(textArg) {
   buttonGroup.add(text);
 
   // Draw a rectangle around the text
-  buttonGroup.add(SnowProfile.drawing.rect(text.bbox().width +4,
+  var button = SnowProfile.drawing.rect(text.bbox().width + 4,
     text.bbox().height + 4)
     .cx(SnowProfile.BUTTON_X)
     .style({
@@ -52,7 +52,8 @@ SnowProfile.Button = function(textArg) {
       fill: "#fff",
       "fill-opacity": 0
     })
-    .radius(4));
+    .radius(4);
+  buttonGroup.add(button);
 
   /**
    * Hide this button.
@@ -84,7 +85,7 @@ SnowProfile.Button = function(textArg) {
    * @public
    */
   function destroy() {
-    text.off('click');
+    button.off('click');
     $(document).unbind("SnowProfileHideControls", hideButton);
     $(document).unbind("SnowProfileShowControls", showButton);
     buttonGroup.remove();
@@ -106,7 +107,7 @@ SnowProfile.Button = function(textArg) {
 
   // Listen for mouse clicks on this button, then emit a custom event
   // which identifies which button was clicked.
-  text.on('click', function(evt) {
+  button.click(function(evt) {
     $.event.trigger("SnowProfileButtonClick", {buttonObj: newObj});
   });
 

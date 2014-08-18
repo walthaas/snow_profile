@@ -125,7 +125,8 @@ SnowProfile.Layer = function(depthArg) {
    * object holding icons describing the grain shape of this snow layer.
    * @type {Object}
    */
-  var grainIcons = SnowProfile.drawing.group();
+  var grainIcons = SnowProfile.drawing.group()
+    .x(SnowProfile.GRAIN_LEFT);
 
   /**
    * Horizontal line below the description
@@ -151,14 +152,25 @@ SnowProfile.Layer = function(depthArg) {
    */
   var handle = SnowProfile.drawing.rect(SnowProfile.HANDLE_SIZE,
     SnowProfile.HANDLE_SIZE);
+
+  /**
+   * Process handle drag
+   *
+   * @callback
+   * @method
+   * @memberof handle
+   * @param integer x X-axis position of upper-left corner of handle
+   * @param integer y Y-axis position of upper-left corner of handle
+   * @returns Object New position of handle
+   *   + x: new X-axis position of upper-left corner of handle
+   *   + y: new Y-axis position of upper-left corner of handle
+   */
   handle.draggable(function(x, y) {
-    //console.debug("draggable(%d, %d)", x, y);
     var newX = x;
     var newY = y;
     var i = self.getIndex();
     var numLayers = SnowProfile.snowLayers.length;
     var mm;
-    //console.debug("i=%d  numLayers=%d", i, numLayers);
 
     // X (hardness) position is bound by the edges of the graph.
     if (x < SnowProfile.HANDLE_MIN_X) {
@@ -222,7 +234,6 @@ SnowProfile.Layer = function(depthArg) {
     handleLoc.text( '(' + mm + ', ' +
       self.x2code(newX) + ')');
     handleLoc.y(newY);
-    //console.debug("handleLoc.y=%d", handleLoc.y());
 
     // If this is not the top snow layer, update the diagonal line
     // owned by the snow layer above.
@@ -251,6 +262,11 @@ SnowProfile.Layer = function(depthArg) {
 
   /**
    * Text to show current handle location.
+   *
+   * The text appears to the right of the grid, at the same Y position as the
+   * handle.  The depth value is in cm and tenths referenced according to the
+   * grid scale.  This text is normally hidden, and shows when the mouse is
+   * over the handle.
    * @type {Object}
    * @todo Style
    */
@@ -355,16 +371,16 @@ SnowProfile.Layer = function(depthArg) {
     $(document).unbind("SnowProfileHideControls", handleInvisible);
     $(document).unbind("SnowProfileShowControls", handleVisible);
     $(document).unbind("SnowProfileAdjustGrid", self.draw);
-    handle.destroy();
-    grainSizeText.destroy();
-    grainIcons.destroy();
-    commentDescr.destroy();
-    lineBelow.destroy();
-    handleLoc.destroy();
-    layerOutline.destroy();
-    diagLine.destroy();
-    editButton.destroy();
-    insertButton.destroy();
+    handle.clear();
+    grainSizeText.clear();
+    grainIcons.clear();
+    commentDescr.clear();
+    lineBelow.clear();
+    handleLoc.clear();
+    layerOutline.clear();
+    diagLine.clear();
+    editButton.clear();
+    insertButton.clear();
   }
 
   /**
@@ -450,6 +466,9 @@ SnowProfile.Layer = function(depthArg) {
 
   /**
    * Get or set description of this snow layer
+   *
+   * Called from the modeal dialogue popup with data from the popup
+   * @callback
    * @param {Object} [data] - Object describing the snow layer.
    * @returns {Object} Object describing the snow layer if param omitted.
    * @namespace {function} SnowProfile.Layer.describe
@@ -515,7 +534,6 @@ SnowProfile.Layer = function(depthArg) {
      * @memberof SnowProfile.Layer.describe
      */
     function sym2iconsMFcr(secondaryShape, secondarySubShape, container) {
-
       var primaryIcon = new Image();
       var primaryIconKJS;
       var secondaryIcon = new Image();
@@ -612,92 +630,68 @@ SnowProfile.Layer = function(depthArg) {
     function sym2iconsNormal(primaryShape, primarySubShape, secondaryShape,
       secondarySubShape, container) {
 
-      var primaryIcon = new Image();
-      var primaryIconKJS;
-      var secondaryIcon = new Image();
-      var secondaryIconKJS;
+      var primaryIcon,
+        secondaryIcon;
       var iconCursor = 0;
 
       if (primaryShape !== "") {
-        primaryIconKJS = SnowProfile.drawing.image({
-          x: 0,
-          y: 0,
-          image: primaryIcon
-        });
-        container.add(primaryIconKJS);
+
+        // User specified a primary grain shape
 
         if (primarySubShape !== "") {
 
+          // User specified both primary grain shape and subshape
           // Add the icon for the primary grain subshape
-          primaryIconKJS.offsetY((SnowProfile.CAAML_SUBSHAPE[
-            primaryShape][primarySubShape].icon.height-
-            SnowProfile.DESCR_HEIGHT)/2);
-          iconCursor = SnowProfile.CAAML_SUBSHAPE[primaryShape][
-            primarySubShape].icon.width;
-          primaryIcon.src = "data:image/png;base64," +
-              SnowProfile.CAAML_SUBSHAPE[primaryShape][
-              primarySubShape].icon.image;
+          primaryIcon = SnowProfile.drawing.image("data:image/png;base64," +
+            SnowProfile.CAAML_SUBSHAPE[primaryShape][primarySubShape].
+            icon.image);
+          iconCursor += SnowProfile.CAAML_SUBSHAPE[primaryShape]
+            [primarySubShape].icon.width;
         }
         else {
 
+          // User specified a primary grain shape but no subshape
           // Add the icon for the primary grain shape
-          primaryIconKJS.offsetY((SnowProfile.CAAML_SHAPE[
-            primaryShape].icon.height - SnowProfile.DESCR_HEIGHT)/2);
-            iconCursor = SnowProfile.CAAML_SHAPE[primaryShape].icon.width;
-            primaryIcon.src = "data:image/png;base64," +
-              SnowProfile.CAAML_SHAPE[primaryShape].icon.image;
+          primaryIcon = SnowProfile.drawing.image("data:image/png;base64," +
+            SnowProfile.CAAML_SHAPE[primaryShape].icon.image);
+          iconCursor += SnowProfile.CAAML_SHAPE[primaryShape].icon.width;
         }
+        container.add(primaryIcon);
         if (secondaryShape !== "") {
 
+          // User specified a secondary grain shape
           // Add left paren to the icons
           iconCursor += 3;
           //FIXME
-          container.add(SnowProfile.drawing.text({
-            text: "(",
-            offsetY: 6 - (SnowProfile.DESCR_HEIGHT / 2),
-            offsetX: - iconCursor,
-            stroke: "000"
-          }));
+          container.add(SnowProfile.drawing.text("(").x(iconCursor).y(-6));
           iconCursor += 7;
 
           // Add secondary grain shape icon
-          // FIXME
-          secondaryIconKJS = SnowProfile.drawing.image({
-            x: 0,
-            y: 0,
-            image: secondaryIcon
-          });
-          container.add(secondaryIconKJS);
-          if (secondarySubShape === "") {
-            secondaryIconKJS.offsetY((SnowProfile.CAAML_SHAPE[
-              secondaryShape].icon.height - SnowProfile.DESCR_HEIGHT)/2);
-            secondaryIconKJS.offsetX(-iconCursor);
-            iconCursor += SnowProfile.CAAML_SHAPE[
-              secondaryShape].icon.width;
-            secondaryIcon.src = "data:image/png;base64," +
-              SnowProfile.CAAML_SHAPE[secondaryShape].icon.image;
+          if (secondarySubShape !== "") {
+
+            // User specified both secondary grain shape and subshape
+            // Add the icon for the secondary grain subshape
+
+            secondaryIcon = SnowProfile.drawing.image("data:image/png;base64," +
+              SnowProfile.CAAML_SUBSHAPE[secondaryShape][secondarySubShape].
+              icon.image).x(iconCursor);
+            iconCursor += SnowProfile.CAAML_SUBSHAPE[secondaryShape]
+              [secondarySubShape].icon.width;
           }
           else {
-            secondaryIconKJS.offsetY((SnowProfile.CAAML_SUBSHAPE[
-              secondaryShape][secondarySubShape].icon.height-
-              SnowProfile.DESCR_HEIGHT)/2);
-            secondaryIconKJS.offsetX(-iconCursor);
-            iconCursor += SnowProfile.CAAML_SUBSHAPE[secondaryShape][
-              secondarySubShape].icon.width;
-            secondaryIcon.src = "data:image/png;base64," +
-              SnowProfile.CAAML_SUBSHAPE[secondaryShape][
-              secondarySubShape].icon.image;
+
+            // User specified a secondary grain shape but no subshape
+            // Add the icon for the primary grain shape
+            secondaryIcon = SnowProfile.drawing.image("data:image/png;base64," +
+              SnowProfile.CAAML_SHAPE[secondaryShape].icon.image).x(iconCursor);
+            iconCursor += SnowProfile.CAAML_SHAPE[secondaryShape].icon.width;
           }
+          container.add(secondaryIcon);
 
           // Add right paren to the icons
           iconCursor += 3;
           // FIXME
-          container.add(SnowProfile.drawing.text({
-            text: ")",
-            offsetY: 6 - (SnowProfile.DESCR_HEIGHT / 2),
-            offsetX: - iconCursor,
-            stroke: "000"
-          }));
+          container.add(SnowProfile.drawing.text(")").x(iconCursor).y(-6));
         }
       }
     } // function sym2iconsNormal()
@@ -764,9 +758,8 @@ SnowProfile.Layer = function(depthArg) {
       grainSize = data.grainSize;
 
       // Empty the icon group and text description
-      grainSizeText.setText("");
-      grainIcons.destroyChildren();
-
+      grainSizeText.text("");
+      grainIcons.clear();
       if ((primaryGrainShape !== "") ||
         (grainSize !== "")) {
 
@@ -779,22 +772,21 @@ SnowProfile.Layer = function(depthArg) {
         sym2icons(primaryGrainShape, primaryGrainSubShape,
           secondaryGrainShape, secondaryGrainSubShape, grainIcons);
         }
-
         // Show the grain size
         if (grainSize !== "") {
 
           // Grain size information is available.
-          grainSizeText.setText(SnowProfile.CAAML_SIZE[grainSize]);
+          grainSizeText.text(SnowProfile.CAAML_SIZE[grainSize]);
         }
       }
 
       // Comment description
       comment = data.comment;
       if (comment === "") {
-        commentDescr.setText("");
+        commentDescr.text("");
       }
       else {
-        commentDescr.setText(comment);
+        commentDescr.text(comment);
       }
 
       // Re-draw the diagram with the updated information
@@ -831,7 +823,6 @@ SnowProfile.Layer = function(depthArg) {
   this.setLayerOutline = function() {
     var i = self.getIndex();
     var numLayers = SnowProfile.snowLayers.length;
-    var x = handle.x();
     var yTop = handle.y() +  (SnowProfile.HANDLE_SIZE / 2);
     var yBottom = SnowProfile.HANDLE_SIZE / 2;
     if (i === (numLayers - 1)) {
@@ -844,7 +835,8 @@ SnowProfile.Layer = function(depthArg) {
       // Not the bottom layer so bottom Y is top of next lower layer
       yBottom += SnowProfile.snowLayers[i+1].handleGetY();
     }
-    layerOutline.width(x - SnowProfile.DEPTH_LABEL_WD - 1);
+    layerOutline.width(handle.x() - SnowProfile.DEPTH_LABEL_WD - 1 +
+      (SnowProfile.HANDLE_SIZE / 2));
     layerOutline.y(yTop);
     layerOutline.height(yBottom - yTop);
   };
@@ -856,7 +848,6 @@ SnowProfile.Layer = function(depthArg) {
    *   top of this layer.
    */
   this.draw = function() {
-    // console.debug("handle.draw()");
     var i = self.getIndex();
 
     // Set handle X from hardness
@@ -937,9 +928,8 @@ SnowProfile.Layer = function(depthArg) {
     grainSizeText.y(SnowProfile.HANDLE_MIN_Y +
       (SnowProfile.HANDLE_SIZE / 2) + 3 +
         (i * SnowProfile.DESCR_HEIGHT));
-    grainIcons.y(SnowProfile.HANDLE_MIN_Y +
-      (SnowProfile.HANDLE_SIZE / 2) + //3 +
-      (i * SnowProfile.DESCR_HEIGHT));
+    grainIcons.cy(SnowProfile.HANDLE_MIN_Y + (i * SnowProfile.DESCR_HEIGHT)
+      + (SnowProfile.DESCR_HEIGHT / 2));
     commentDescr.y(SnowProfile.HANDLE_MIN_Y +
       (SnowProfile.HANDLE_SIZE / 2) + 3 +
         (i * SnowProfile.DESCR_HEIGHT));
@@ -1009,7 +999,6 @@ SnowProfile.Layer = function(depthArg) {
    * @callback
    */
   handle.mouseover(function() {
-    // console.debug("handle.mouseover() touched=%b", handleTouched);
     handle.style('cursor', 'pointer');
     if (handleTouched) {
       handleLoc.show();
@@ -1021,7 +1010,6 @@ SnowProfile.Layer = function(depthArg) {
    @callback
    */
   handle.mouseout(function() {
-    // console.debug("handle.mouseout()");
     handleLoc.hide();
   });
 
@@ -1030,7 +1018,6 @@ SnowProfile.Layer = function(depthArg) {
    @callback
    */
   handle.mousedown(function() {
-    // console.debug("handle.mousedown()");
     handleTouched = true;
   });
 
@@ -1039,7 +1026,6 @@ SnowProfile.Layer = function(depthArg) {
    @callback
    */
   handle.mouseup(function() {
-    // console.debug("handle.mouseup()");
     handleLoc.hide();
     handle.x(self.code2x(hardness));
   });
@@ -1093,7 +1079,8 @@ SnowProfile.Layer.prototype.code2x = function(code) {
   if (code !== null) {
     for (var i = 0; i < SnowProfile.CAAML_HARD.length; i++) {
       if (code === SnowProfile.CAAML_HARD[i][0]) {
-        x = SnowProfile.CAAML_HARD[i][2] + SnowProfile.HARD_BAND_WD * 0.5;
+        x = SnowProfile.DEPTH_LABEL_WD + 1 + (SnowProfile.HARD_BAND_WD * i) +
+          (SnowProfile.HANDLE_SIZE / 2);
         break;
       }
     }
