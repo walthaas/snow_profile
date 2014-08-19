@@ -534,10 +534,8 @@ SnowProfile.Layer = function(depthArg) {
      * @memberof SnowProfile.Layer.describe
      */
     function sym2iconsMFcr(secondaryShape, secondarySubShape, container) {
-      var primaryIcon = new Image();
-      var primaryIconKJS;
-      var secondaryIcon = new Image();
-      var secondaryIconKJS;
+      var primaryIcon,
+        secondaryIcon;
 
       // Special Melt-freeze crust icon allowing space on the right
       // side to insert a secondary form
@@ -563,50 +561,35 @@ SnowProfile.Layer = function(depthArg) {
 "2CzW/PrxrLp1uSbjk/GawQXHdu1cVk6P41UltYu8JQHeliLyXoQHZLHaSNa2d+EDWW27vwrvP/t3" +
 "1UVx0/hpAAAAAElFTkSuQmCC";
 
-      // Make a place to hold the Melt-freeze crust icon
-      primaryIconKJS = SnowProfile.drawing.image({
-        x: 0,
-        y: 0,
-        image: primaryIcon
-      });
-      container.add(primaryIconKJS);
       if (secondaryShape === "") {
-
         // There is no secondary shape so we just use the normal MFcr icon
-        primaryIcon.src = "data:image/png;base64," +
-          SnowProfile.CAAML_SUBSHAPE.MF.MFcr.icon.image;
-        primaryIconKJS.offsetY((SnowProfile.CAAML_SUBSHAPE.MF.MFcr.icon.
-          height - SnowProfile.DESCR_HEIGHT) / 2);
+        primaryIcon = SnowProfile.drawing.image("data:image/png;base64," +
+          SnowProfile.CAAML_SUBSHAPE.MF.MFcr.icon.image);
+        container.add(primaryIcon);
       }
       else {
 
         // There is a secondary shape, so use the alternative MFcr icon
-        primaryIcon.src = "data:image/png;base64," + image;
-        primaryIconKJS.offsetY((29 - SnowProfile.DESCR_HEIGHT) / 2);
-        secondaryIconKJS = SnowProfile.drawing.image({
-          x: 0,
-          y: 0,
-          image: secondaryIcon
-        });
-        container.add(secondaryIconKJS);
+        primaryIcon = SnowProfile.drawing.image("data:image/png;base64," +
+          image)
+        .y((29 - SnowProfile.DESCR_HEIGHT) / 2);
+        container.add(primaryIcon);
         if (secondarySubShape === "") {
-          secondaryIconKJS.offsetY((SnowProfile.CAAML_SHAPE[
-            secondaryShape].icon.height - SnowProfile.DESCR_HEIGHT)/2);
-          secondaryIconKJS.offsetX((SnowProfile.CAAML_SHAPE[secondaryShape].
-            icon.width) / 2 - 38);
-          secondaryIcon.src = "data:image/png;base64," +
-            SnowProfile.CAAML_SHAPE[secondaryShape].icon.image;
+          // User did not specify a secondary subshape
+          secondaryIcon = SnowProfile.drawing.image("data:image/png;base64," +
+            SnowProfile.CAAML_SHAPE[secondaryShape].icon.image);
+          secondaryIcon.x(((SnowProfile.CAAML_SHAPE[secondaryShape].icon.width)
+            / 2) + 24);
         }
         else {
-          secondaryIconKJS.offsetY((SnowProfile.CAAML_SUBSHAPE[
-            secondaryShape][secondarySubShape].icon.height-
-            SnowProfile.DESCR_HEIGHT)/2);
-          secondaryIconKJS.offsetX((SnowProfile.CAAML_SUBSHAPE[secondaryShape][
-            secondarySubShape].icon.width) / 2 - 38);
-          secondaryIcon.src = "data:image/png;base64," +
-            SnowProfile.CAAML_SUBSHAPE[secondaryShape][
-            secondarySubShape].icon.image;
+          // User specified a secondary subshape
+          secondaryIcon = SnowProfile.drawing.image("data:image/png;base64," +
+            SnowProfile.CAAML_SUBSHAPE[secondaryShape][secondarySubShape].
+            icon.image);
+          secondaryIcon.x(((SnowProfile.CAAML_SUBSHAPE[secondaryShape]
+            [secondarySubShape].icon.width) / 2) + 24);
         }
+        container.add(secondaryIcon);
       }
     } // function sym2iconsMFcr()
 
@@ -835,8 +818,7 @@ SnowProfile.Layer = function(depthArg) {
       // Not the bottom layer so bottom Y is top of next lower layer
       yBottom += SnowProfile.snowLayers[i+1].handleGetY();
     }
-    layerOutline.width(handle.x() - SnowProfile.DEPTH_LABEL_WD - 1 +
-      (SnowProfile.HANDLE_SIZE / 2));
+    layerOutline.width(handle.x() - SnowProfile.DEPTH_LABEL_WD - 1);
     layerOutline.y(yTop);
     layerOutline.height(yBottom - yTop);
   };
