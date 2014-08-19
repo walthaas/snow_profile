@@ -1096,9 +1096,13 @@ SnowProfile.Layer.prototype.code2x = function(code) {
 SnowProfile.Layer.prototype.x2code = function(x) {
   "use strict";
   var code = 'I';
+
   for (var i = 0; i < SnowProfile.CAAML_HARD.length - 1; i++) {
-    if ((x >= (SnowProfile.CAAML_HARD[i][2]) &&
-         (x < (SnowProfile.CAAML_HARD[i+1][2])))) {
+    if ((x >= (SnowProfile.DEPTH_LABEL_WD + 1 +
+        (SnowProfile.HARD_BAND_WD * i) + (SnowProfile.HANDLE_SIZE / 2))
+      && (x < (SnowProfile.DEPTH_LABEL_WD + 1 +
+        (SnowProfile.HARD_BAND_WD * (i + 1)) +
+        (SnowProfile.HANDLE_SIZE / 2))))) {
       code = SnowProfile.CAAML_HARD[i][0];
       break;
     }

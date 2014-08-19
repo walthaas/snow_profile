@@ -1086,35 +1086,32 @@ var SnowProfile = {};
    *
    * + CAAML_HARD[i][0] is the alpha string defined by CAAML 5.0.
    * + CAAML_HARD[i][1] is a boolean; whether to draw a line here.
-   * + CAAML_HARD[i][2] minimum x value having this hardness.  The
-   *   maximum x value for this hardness is one less than the minimum for
-   *   the next row.
    * @const
    * @type {string[]}
    * @memberof SnowProfile
    */
   SnowProfile.CAAML_HARD = [
-    ['F-',    0, SnowProfile.HANDLE_MIN_X],
-    ['F',     1, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 0.5],
-    ['F+',    0, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 1.5],
-    ['F-4F',  0, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 2.5],
-    ['4F-',   0, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 3.5],
-    ['4F',    1, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 4.5],
-    ['4F+',   0, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 5.5],
-    ['4F-1F', 0, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 6.5],
-    ['1F-',   0, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 7.5],
-    ['1F',    1, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 8.5],
-    ['1F+',   0, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 9.5],
-    ['1F-P',  0, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 10.5],
-    ['P-',    0, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 11.5],
-    ['P',     1, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 12.5],
-    ['P+',    0, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 13.5],
-    ['P-K',   0, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 14.5],
-    ['K-',    0, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 15.5],
-    ['K',     1, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 16.5],
-    ['K+',    0, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 17.5],
-    ['K-I',   0, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 18.5],
-    ['I',     1, SnowProfile.HANDLE_MIN_X + SnowProfile.HARD_BAND_WD * 19.5]
+    ['F-',    0],
+    ['F',     1],
+    ['F+',    0],
+    ['F-4F',  0],
+    ['4F-',   0],
+    ['4F',    1],
+    ['4F+',   0],
+    ['4F-1F', 0],
+    ['1F-',   0],
+    ['1F',    1],
+    ['1F+',   0],
+    ['1F-P',  0],
+    ['P-',    0],
+    ['P',     1],
+    ['P+',    0],
+    ['P-K',   0],
+    ['K-',    0],
+    ['K',     1],
+    ['K+',    0],
+    ['K-I',   0],
+    ['I',     1]
   ];
 
   /**
