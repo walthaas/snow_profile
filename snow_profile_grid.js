@@ -231,7 +231,7 @@ SnowProfile.Grid = function() {
       fontStyle: 'bold',
       fontFamily: 'sans-serif',
       fill: SnowProfile.LABEL_COLOR})
-    .move(SnowProfile.GRAIN_LEFT, 12));
+    .move(SnowProfile.GRAIN_ICON_LEFT, 12));
 
     // Add the label to the Comment column
     SnowProfile.gridGroup.add(SnowProfile.drawing.text('Comment')

@@ -1145,23 +1145,30 @@ var SnowProfile = {};
     SnowProfile.GRAPH_WIDTH + 150;
 
   /**
-   * X position of the left edge of the Grains text area
+   * X position of the left edge of the Grain icons area
    *
    * @const {number}
    * @memberof SnowProfile
    */
-  SnowProfile.GRAIN_LEFT = SnowProfile.DEPTH_LABEL_WD + 1 +
+  SnowProfile.GRAIN_ICON_LEFT = SnowProfile.DEPTH_LABEL_WD + 1 +
     SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD;
+
+  /**
+   * X position of the left edge of the Grain size area
+   *
+   * @const {number}
+   * @memberof SnowProfile
+   */
+  SnowProfile.GRAIN_SIZE_LEFT = SnowProfile.GRAIN_ICON_LEFT +
+    SnowProfile.GRAIN_FORM_WD + SnowProfile.GRAIN_SPACE_WD;
 
   /**
    * X position of the left edge of the Comment text area
    * @const {number}
    * @memberof SnowProfile
    */
-  SnowProfile.COMMENT_LEFT = SnowProfile.DEPTH_LABEL_WD + 1 +
-    SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD +
-    SnowProfile.GRAIN_FORM_WD + SnowProfile.GRAIN_SPACE_WD +
-    SnowProfile.GRAIN_SIZE_WD + SnowProfile.COMMENT_SPACE_WD;
+  SnowProfile.COMMENT_LEFT = SnowProfile.GRAIN_SIZE_LEFT +
+    SnowProfile.COMMENT_SPACE_WD;
 
   /**
    * SVG drawing

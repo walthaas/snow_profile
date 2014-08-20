@@ -115,8 +115,7 @@ SnowProfile.Layer = function(depthArg) {
     fontFamily: 'sans-serif',
     fill: "#000"
   })
-  .x(SnowProfile.GRAIN_LEFT + SnowProfile.GRAIN_FORM_WD +
-      SnowProfile.GRAIN_SPACE_WD);
+  .x(SnowProfile.GRAIN_SIZE_LEFT);
 
   /**
    * Group to hold the icons describing this layer's grains
@@ -126,7 +125,7 @@ SnowProfile.Layer = function(depthArg) {
    * @type {Object}
    */
   var grainIcons = SnowProfile.drawing.group()
-    .x(SnowProfile.GRAIN_LEFT);
+    .x(SnowProfile.GRAIN_ICON_LEFT);
 
   /**
    * Horizontal line below the description
@@ -151,7 +150,8 @@ SnowProfile.Layer = function(depthArg) {
    * @todo Animate
    */
   var handle = SnowProfile.drawing.rect(SnowProfile.HANDLE_SIZE,
-    SnowProfile.HANDLE_SIZE);
+    SnowProfile.HANDLE_SIZE)
+    .attr("class", "snow_profile_handle");
 
   /**
    * Process handle drag
@@ -467,8 +467,9 @@ SnowProfile.Layer = function(depthArg) {
   /**
    * Get or set description of this snow layer
    *
-   * Called from the modeal dialogue popup with data from the popup
+   * Called from the modal dialogue popup with data from the popup
    * @callback
+   * @memberof SnowProfile.Layer
    * @param {Object} [data] - Object describing the snow layer.
    * @returns {Object} Object describing the snow layer if param omitted.
    * @namespace {function} SnowProfile.Layer.describe
@@ -578,8 +579,8 @@ SnowProfile.Layer = function(depthArg) {
           // User did not specify a secondary subshape
           secondaryIcon = SnowProfile.drawing.image("data:image/png;base64," +
             SnowProfile.CAAML_SHAPE[secondaryShape].icon.image);
-          secondaryIcon.x(((SnowProfile.CAAML_SHAPE[secondaryShape].icon.width)
-            / 2) + 24);
+          secondaryIcon.x(((SnowProfile.CAAML_SHAPE[secondaryShape]
+            .icon.width) / 2) + 24);
         }
         else {
           // User specified a secondary subshape
@@ -645,7 +646,7 @@ SnowProfile.Layer = function(depthArg) {
           // User specified a secondary grain shape
           // Add left paren to the icons
           iconCursor += 3;
-          //FIXME
+          //FIXME vertical displacement should be calculated from bbox
           container.add(SnowProfile.drawing.text("(").x(iconCursor).y(-6));
           iconCursor += 7;
 
@@ -673,7 +674,7 @@ SnowProfile.Layer = function(depthArg) {
 
           // Add right paren to the icons
           iconCursor += 3;
-          // FIXME
+          //FIXME vertical displacement should be calculated from bbox
           container.add(SnowProfile.drawing.text(")").x(iconCursor).y(-6));
         }
       }
@@ -773,7 +774,8 @@ SnowProfile.Layer = function(depthArg) {
       }
 
       // Re-draw the diagram with the updated information
-      self.draw();
+      self.setIndexPosition();
+      //self.draw();
   };
 
   /**
@@ -908,10 +910,12 @@ SnowProfile.Layer = function(depthArg) {
   this.setIndexPosition = function() {
     var i = self.getIndex();
     grainSizeText.y(SnowProfile.HANDLE_MIN_Y +
-      (SnowProfile.HANDLE_SIZE / 2) + 3 +
-        (i * SnowProfile.DESCR_HEIGHT));
-    grainIcons.cy(SnowProfile.HANDLE_MIN_Y + (i * SnowProfile.DESCR_HEIGHT)
-      + (SnowProfile.DESCR_HEIGHT / 2));
+      (i * SnowProfile.DESCR_HEIGHT) +
+      (SnowProfile.HANDLE_SIZE / 2) + 3);
+    console.debug("i=%d  grainSizeText.y=%d", i, grainSizeText.y());
+    grainIcons.cy(SnowProfile.HANDLE_MIN_Y +
+      (i * SnowProfile.DESCR_HEIGHT) +
+      (SnowProfile.DESCR_HEIGHT / 2));
     commentDescr.y(SnowProfile.HANDLE_MIN_Y +
       (SnowProfile.HANDLE_SIZE / 2) + 3 +
         (i * SnowProfile.DESCR_HEIGHT));
@@ -932,6 +936,9 @@ SnowProfile.Layer = function(depthArg) {
     if (i !== 0) {
       SnowProfile.snowLayers[i - 1].setDiagLine();
     }
+
+    // Move handle closest to user
+    handle.front();
   };
 
   // Insert this Layer in the appropriate place in the snow pack.
@@ -1081,8 +1088,8 @@ SnowProfile.Layer.prototype.x2code = function(x) {
 
   for (var i = 0; i < SnowProfile.CAAML_HARD.length - 1; i++) {
     if ((x >= (SnowProfile.DEPTH_LABEL_WD + 1 +
-        (SnowProfile.HARD_BAND_WD * i) + (SnowProfile.HANDLE_SIZE / 2))
-      && (x < (SnowProfile.DEPTH_LABEL_WD + 1 +
+        (SnowProfile.HARD_BAND_WD * i) + (SnowProfile.HANDLE_SIZE / 2)) &&
+       (x < (SnowProfile.DEPTH_LABEL_WD + 1 +
         (SnowProfile.HARD_BAND_WD * (i + 1)) +
         (SnowProfile.HANDLE_SIZE / 2))))) {
       code = SnowProfile.CAAML_HARD[i][0];
