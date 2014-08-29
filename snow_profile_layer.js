@@ -565,20 +565,24 @@ SnowProfile.Layer = function(depthArg) {
       if (secondaryShape === "") {
         // There is no secondary shape so we just use the normal MFcr icon
         primaryIcon = SnowProfile.drawing.image("data:image/png;base64," +
-          SnowProfile.CAAML_SUBSHAPE.MF.MFcr.icon.image);
+          SnowProfile.CAAML_SUBSHAPE.MF.MFcr.icon.image,
+          SnowProfile.CAAML_SUBSHAPE.MF.MFcr.icon.height,
+          SnowProfile.CAAML_SUBSHAPE.MF.MFcr.icon.width);
         container.add(primaryIcon);
       }
       else {
 
         // There is a secondary shape, so use the alternative MFcr icon
         primaryIcon = SnowProfile.drawing.image("data:image/png;base64," +
-          image)
+          image, 52, 29)
         .y((29 - SnowProfile.DESCR_HEIGHT) / 2);
         container.add(primaryIcon);
         if (secondarySubShape === "") {
           // User did not specify a secondary subshape
           secondaryIcon = SnowProfile.drawing.image("data:image/png;base64," +
-            SnowProfile.CAAML_SHAPE[secondaryShape].icon.image);
+            SnowProfile.CAAML_SHAPE[secondaryShape].icon.image,
+            SnowProfile.CAAML_SHAPE[secondaryShape].icon.width,
+            SnowProfile.CAAML_SHAPE[secondaryShape].icon.height);
           secondaryIcon.x(((SnowProfile.CAAML_SHAPE[secondaryShape]
             .icon.width) / 2) + 24);
         }
@@ -586,7 +590,11 @@ SnowProfile.Layer = function(depthArg) {
           // User specified a secondary subshape
           secondaryIcon = SnowProfile.drawing.image("data:image/png;base64," +
             SnowProfile.CAAML_SUBSHAPE[secondaryShape][secondarySubShape].
-            icon.image);
+            icon.image,
+            SnowProfile.CAAML_SUBSHAPE[secondaryShape][secondarySubShape].
+            icon.width,
+            SnowProfile.CAAML_SUBSHAPE[secondaryShape][secondarySubShape].
+            icon.height);
           secondaryIcon.x(((SnowProfile.CAAML_SUBSHAPE[secondaryShape]
             [secondarySubShape].icon.width) / 2) + 24);
         }
@@ -628,7 +636,11 @@ SnowProfile.Layer = function(depthArg) {
           // Add the icon for the primary grain subshape
           primaryIcon = SnowProfile.drawing.image("data:image/png;base64," +
             SnowProfile.CAAML_SUBSHAPE[primaryShape][primarySubShape].
-            icon.image);
+            icon.image,
+            SnowProfile.CAAML_SUBSHAPE[primaryShape][primarySubShape].
+            icon.width,
+            SnowProfile.CAAML_SUBSHAPE[primaryShape][primarySubShape].
+            icon.height);
           iconCursor += SnowProfile.CAAML_SUBSHAPE[primaryShape]
             [primarySubShape].icon.width;
         }
@@ -637,7 +649,9 @@ SnowProfile.Layer = function(depthArg) {
           // User specified a primary grain shape but no subshape
           // Add the icon for the primary grain shape
           primaryIcon = SnowProfile.drawing.image("data:image/png;base64," +
-            SnowProfile.CAAML_SHAPE[primaryShape].icon.image);
+            SnowProfile.CAAML_SHAPE[primaryShape].icon.image,
+            SnowProfile.CAAML_SHAPE[primaryShape].icon.width,
+            SnowProfile.CAAML_SHAPE[primaryShape].icon.height);
           iconCursor += SnowProfile.CAAML_SHAPE[primaryShape].icon.width;
         }
         container.add(primaryIcon);
@@ -658,7 +672,11 @@ SnowProfile.Layer = function(depthArg) {
 
             secondaryIcon = SnowProfile.drawing.image("data:image/png;base64," +
               SnowProfile.CAAML_SUBSHAPE[secondaryShape][secondarySubShape].
-              icon.image).x(iconCursor);
+              icon.image,
+              SnowProfile.CAAML_SUBSHAPE[secondaryShape][secondarySubShape].
+              icon.width,
+              SnowProfile.CAAML_SUBSHAPE[secondaryShape][secondarySubShape].
+              icon.height).x(iconCursor);
             iconCursor += SnowProfile.CAAML_SUBSHAPE[secondaryShape]
               [secondarySubShape].icon.width;
           }
@@ -667,7 +685,10 @@ SnowProfile.Layer = function(depthArg) {
             // User specified a secondary grain shape but no subshape
             // Add the icon for the primary grain shape
             secondaryIcon = SnowProfile.drawing.image("data:image/png;base64," +
-              SnowProfile.CAAML_SHAPE[secondaryShape].icon.image).x(iconCursor);
+              SnowProfile.CAAML_SHAPE[secondaryShape].icon.image,
+              SnowProfile.CAAML_SHAPE[secondaryShape].icon.width,
+              SnowProfile.CAAML_SHAPE[secondaryShape].icon.height)
+            .x(iconCursor);
             iconCursor += SnowProfile.CAAML_SHAPE[secondaryShape].icon.width;
           }
           container.add(secondaryIcon);
