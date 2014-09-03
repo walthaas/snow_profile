@@ -47,22 +47,22 @@ SnowProfile.Grid = function() {
   function drawDepthScale() {
 
     var cm,
-      x0 = SnowProfile.DEPTH_LABEL_WD + 1,
-      x1 = SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH -
-              SnowProfile.HANDLE_SIZE / 2,
+      x0 = SnowProfile.Cfg.DEPTH_LABEL_WD + 1,
+      x1 = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 + SnowProfile.Cfg.GRAPH_WIDTH -
+              SnowProfile.Cfg.HANDLE_SIZE / 2,
       y;
 
     // Add a Depth label on the left side of the diagram
     SnowProfile.gridGroup.add(SnowProfile.drawing.text("Depth (cm)")
     .font({
       family: 'sans-serif',
-      fill: SnowProfile.LABEL_COLOR,
+      fill: SnowProfile.Cfg.LABEL_COLOR,
       size: 18,
       style: 'bold'
     })
     .transform({
       x: -30,
-      y: (SnowProfile.pitDepth * SnowProfile.DEPTH_SCALE) / 2,
+      y: (SnowProfile.Cfg.pitDepth * SnowProfile.Cfg.DEPTH_SCALE) / 2,
       rotation: 270
     }));
 
@@ -70,28 +70,28 @@ SnowProfile.Grid = function() {
     // Start drawing lines/labels at zero.  Continue to depth of pit.
     // Horizontal lines are drawn at multiples of DEPTH_LINE_INT regardless of
     //   location of the top or bottom of the scale.
-    if (SnowProfile.depthRef === "s") {
+    if (SnowProfile.Cfg.depthRef === "s") {
 
       // Depth indication is referenced to snow surface.  Zero is at the top.
       // Numbers and horizontal reference lines are generated from the
       // snow surface down every HORIZ_INT cm to the bottom of the pit.
-      for (cm = 0; cm <= SnowProfile.pitDepth;
-        cm += SnowProfile.DEPTH_LINE_INT) {
-        y = SnowProfile.TOP_LABEL_HT +
-          (SnowProfile.HANDLE_SIZE / 2) + (cm * SnowProfile.DEPTH_SCALE);
+      for (cm = 0; cm <= SnowProfile.Cfg.pitDepth;
+        cm += SnowProfile.Cfg.DEPTH_LINE_INT) {
+        y = SnowProfile.Cfg.TOP_LABEL_HT +
+          (SnowProfile.Cfg.HANDLE_SIZE / 2) + (cm * SnowProfile.Cfg.DEPTH_SCALE);
         SnowProfile.gridGroup.add(SnowProfile.drawing.text(String(cm))
         .font({
           fontSize: 12,
           fontStyle: 'bold',
           fontFamily: 'sans-serif',
-          fill: SnowProfile.LABEL_COLOR})
+          fill: SnowProfile.Cfg.LABEL_COLOR})
         .move(40, y - 8));
 
         // Draw a horizontal line every DEPTH_LINE_INT cm as a depth scale
-        if (cm !== SnowProfile.pitDepth) {
+        if (cm !== SnowProfile.Cfg.pitDepth) {
           SnowProfile.gridGroup.add(SnowProfile.drawing.line(x0, y, x1, y)
             .stroke({
-              color: SnowProfile.GRID_COLOR,
+              color: SnowProfile.Cfg.GRID_COLOR,
               width: 1
           }));
         }
@@ -102,26 +102,26 @@ SnowProfile.Grid = function() {
       // Depth indication is referenced to ground.  Zero is the ground.
       // The bottom of the grid is shown as (totalDepth - pitDepth).  The
       // lowest grid line is at the next integer multiple of DEPTH_LINE_INT cm.
-      var bottom = SnowProfile.totalDepth - SnowProfile.pitDepth;
-      var lowestLine = Math.ceil(bottom / SnowProfile.DEPTH_LINE_INT) *
-        SnowProfile.DEPTH_LINE_INT;
-      for (cm = lowestLine; cm <= SnowProfile.totalDepth;
-        cm += SnowProfile.DEPTH_LINE_INT) {
-        y = SnowProfile.TOP_LABEL_HT + (SnowProfile.HANDLE_SIZE / 2) +
-          ((SnowProfile.totalDepth - cm) * SnowProfile.DEPTH_SCALE);
+      var bottom = SnowProfile.Cfg.totalDepth - SnowProfile.Cfg.pitDepth;
+      var lowestLine = Math.ceil(bottom / SnowProfile.Cfg.DEPTH_LINE_INT) *
+        SnowProfile.Cfg.DEPTH_LINE_INT;
+      for (cm = lowestLine; cm <= SnowProfile.Cfg.totalDepth;
+        cm += SnowProfile.Cfg.DEPTH_LINE_INT) {
+        y = SnowProfile.Cfg.TOP_LABEL_HT + (SnowProfile.Cfg.HANDLE_SIZE / 2) +
+          ((SnowProfile.Cfg.totalDepth - cm) * SnowProfile.Cfg.DEPTH_SCALE);
         SnowProfile.gridGroup.add(SnowProfile.drawing.text(String(cm))
         .font({
           fontSize: 12,
           fontStyle: 'bold',
           fontFamily: 'sans-serif',
-          fill: SnowProfile.LABEL_COLOR})
+          fill: SnowProfile.Cfg.LABEL_COLOR})
         .move(40, y - 8));
 
         // Draw a horizontal line every DEPTH_LINE_INT cm as a depth scale
-        if (cm !== SnowProfile.totalDepth) {
+        if (cm !== SnowProfile.Cfg.totalDepth) {
           SnowProfile.gridGroup.add(SnowProfile.drawing.line(x0, y, x1, y)
             .stroke({
-              color: SnowProfile.GRID_COLOR,
+              color: SnowProfile.Cfg.GRID_COLOR,
               width: 1
           }));
         }
@@ -141,43 +141,45 @@ SnowProfile.Grid = function() {
 
     // Add a vertical line along the left edge
     SnowProfile.gridGroup.add(SnowProfile.drawing.line(
-      SnowProfile.DEPTH_LABEL_WD,
-      SnowProfile.HANDLE_MIN_Y - 1 + (SnowProfile.HANDLE_SIZE / 2),
-      SnowProfile.DEPTH_LABEL_WD,
-      SnowProfile.depth2y(SnowProfile.pitDepth) + (SnowProfile.HANDLE_SIZE / 2))
+      SnowProfile.Cfg.DEPTH_LABEL_WD,
+      SnowProfile.Cfg.HANDLE_MIN_Y - 1 + (SnowProfile.Cfg.HANDLE_SIZE / 2),
+      SnowProfile.Cfg.DEPTH_LABEL_WD,
+      SnowProfile.depth2y(SnowProfile.Cfg.pitDepth) +
+        (SnowProfile.Cfg.HANDLE_SIZE / 2))
       .stroke({
-        color: SnowProfile.LABEL_COLOR,
+        color: SnowProfile.Cfg.LABEL_COLOR,
         width: 1
       }));
 
     // Draw and label the hardness (horizontal) axis
     SnowProfile.gridGroup.add(SnowProfile.drawing.line(
-      SnowProfile.DEPTH_LABEL_WD,
-      SnowProfile.depth2y(SnowProfile.pitDepth) +
-        (SnowProfile.HANDLE_SIZE / 2),
-      SnowProfile.DEPTH_LABEL_WD + SnowProfile.GRAPH_WIDTH + 1 -
-        SnowProfile.HANDLE_SIZE / 2,
-      SnowProfile.depth2y(SnowProfile.pitDepth) +
-        (SnowProfile.HANDLE_SIZE / 2)
+      SnowProfile.Cfg.DEPTH_LABEL_WD,
+      SnowProfile.depth2y(SnowProfile.Cfg.pitDepth) +
+        (SnowProfile.Cfg.HANDLE_SIZE / 2),
+      SnowProfile.Cfg.DEPTH_LABEL_WD + SnowProfile.Cfg.GRAPH_WIDTH + 1 -
+        SnowProfile.Cfg.HANDLE_SIZE / 2,
+      SnowProfile.depth2y(SnowProfile.Cfg.pitDepth) +
+        (SnowProfile.Cfg.HANDLE_SIZE / 2)
     )
     .stroke({
-      color: SnowProfile.LABEL_COLOR,
+      color: SnowProfile.Cfg.LABEL_COLOR,
       width: 1
     }));
 
     // Iterate through the table of CAAML hardness codes to
     // build the hardness (horizontal) scale for the graph area
     for (i = 0; i < SnowProfile.CAAML_HARD.length; i++) {
-      x = SnowProfile.DEPTH_LABEL_WD + 1 + (SnowProfile.HARD_BAND_WD * i) +
-        (SnowProfile.HANDLE_SIZE / 2);
+      x = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
+        (SnowProfile.Cfg.HARD_BAND_WD * i) +
+        (SnowProfile.Cfg.HANDLE_SIZE / 2);
       if (SnowProfile.CAAML_HARD[i][1]) {
 
         // Add a vertical line to show SnowProfile hardness value
         SnowProfile.gridGroup.add(SnowProfile.drawing.line(
-          x, SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2),
-          x, SnowProfile.handleMaxY + (SnowProfile.HANDLE_SIZE / 2))
+          x, SnowProfile.Cfg.HANDLE_MIN_Y + (SnowProfile.Cfg.HANDLE_SIZE / 2),
+          x, SnowProfile.Cfg.handleMaxY + (SnowProfile.Cfg.HANDLE_SIZE / 2))
           .stroke({
-          color: SnowProfile.GRID_COLOR,
+          color: SnowProfile.Cfg.GRID_COLOR,
           width: 1
         }));
         SnowProfile.gridGroup.add(SnowProfile.drawing.text(
@@ -188,8 +190,8 @@ SnowProfile.Grid = function() {
           fontFamily: 'sans-serif',
           fill: SnowProfile.LABEL_COLOR
         })
-        .move(x - 1, SnowProfile.depth2y(SnowProfile.pitDepth) +
-          (SnowProfile.HANDLE_SIZE / 2) + 3));
+        .move(x - 1, SnowProfile.depth2y(SnowProfile.Cfg.pitDepth) +
+          (SnowProfile.Cfg.HANDLE_SIZE / 2) + 3));
       }
     }
 
@@ -199,10 +201,10 @@ SnowProfile.Grid = function() {
       fontSize: 18,
       fontStyle: 'bold',
       fontFamily: 'sans-serif',
-      fill: SnowProfile.LABEL_COLOR})
-    .move(SnowProfile.GRAPH_WIDTH / 2,
-      SnowProfile.depth2y(SnowProfile.pitDepth) +
-      (SnowProfile.HANDLE_SIZE / 2) + 19));
+      fill: SnowProfile.Cfg.LABEL_COLOR})
+    .move(SnowProfile.Cfg.GRAPH_WIDTH / 2,
+      SnowProfile.depth2y(SnowProfile.Cfg.pitDepth) +
+      (SnowProfile.Cfg.HANDLE_SIZE / 2) + 19));
   } // function drawHardnessScale()
 
   /**
@@ -215,12 +217,12 @@ SnowProfile.Grid = function() {
 
     // Draw a horizontal line across the top of graph and description areas
     SnowProfile.gridGroup.add(SnowProfile.drawing.line(
-      SnowProfile.DEPTH_LABEL_WD + 1,
-      SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2),
-      SnowProfile.DRAWING_WD - 3,
-      SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2))
+      SnowProfile.Cfg.DEPTH_LABEL_WD + 1,
+      SnowProfile.Cfg.HANDLE_MIN_Y + (SnowProfile.Cfg.HANDLE_SIZE / 2),
+      SnowProfile.Cfg.DRAWING_WD - 3,
+      SnowProfile.Cfg.HANDLE_MIN_Y + (SnowProfile.Cfg.HANDLE_SIZE / 2))
     .stroke({
-      color: SnowProfile.GRID_COLOR,
+      color: SnowProfile.Cfg.GRID_COLOR,
       width: 1
     }));
 
@@ -230,8 +232,8 @@ SnowProfile.Grid = function() {
       fontSize: 14,
       fontStyle: 'bold',
       fontFamily: 'sans-serif',
-      fill: SnowProfile.LABEL_COLOR})
-    .move(SnowProfile.GRAIN_ICON_LEFT, 12));
+      fill: SnowProfile.Cfg.LABEL_COLOR})
+    .move(SnowProfile.Cfg.GRAIN_ICON_LEFT, 12));
 
     // Add the label to the Comment column
     SnowProfile.gridGroup.add(SnowProfile.drawing.text('Comment')
@@ -239,8 +241,8 @@ SnowProfile.Grid = function() {
       fontSize: 14,
       fontStyle: 'bold',
       fontFamily: 'sans-serif',
-      fill: SnowProfile.LABEL_COLOR})
-    .move(SnowProfile.COMMENT_LEFT, 25));
+      fill: SnowProfile.Cfg.LABEL_COLOR})
+    .move(SnowProfile.Cfg.COMMENT_LEFT, 25));
   } // function drawLabels()
 
   /**
@@ -257,15 +259,15 @@ SnowProfile.Grid = function() {
     SnowProfile.gridGroup.clear();
 
     // Set size of drawing
-    SnowProfile.drawing.size(SnowProfile.DRAWING_WD,
+    SnowProfile.drawing.size(SnowProfile.Cfg.DRAWING_WD,
       SnowProfile.drawingHeight());
 
     // Adjust height of background to match
     //backGround.height(SnowProfile.stageHeight());
 
     // Set the maximum Y value to which a handle may be dragged
-    SnowProfile.handleMaxY = SnowProfile.TOP_LABEL_HT + 1 +
-      (SnowProfile.DEPTH_SCALE * SnowProfile.pitDepth);
+    SnowProfile.Cfg.handleMaxY = SnowProfile.Cfg.TOP_LABEL_HT + 1 +
+      (SnowProfile.Cfg.DEPTH_SCALE * SnowProfile.Cfg.pitDepth);
 
     // Draw the depth scale
     drawDepthScale();
@@ -286,42 +288,42 @@ SnowProfile.Grid = function() {
   function totalDepthChange() {
     var totalDepth = $("#snow_profile_total_depth").val();
     if (totalDepth === '') {
-      SnowProfile.totalDepth = null;
+      SnowProfile.Cfg.totalDepth = null;
 
       // We don't know the total snow depth so we must
       // reference depth from the snow surface.
       $("#snow_profile_ref_depth").attr("style", "display: none;");
-      SnowProfile.depthRef = "s";
+      SnowProfile.Cfg.depthRef = "s";
       $("#snow_profile_ref_select option").attr("selected", false);
       $("#snow_profile_ref_select option[value='s']").attr("selected", true);
       drawGrid();
       return;
     }
     if ((totalDepth.search(/^\d+$/) < 0) ||
-      (totalDepth < SnowProfile.MIN_DEPTH)) {
+      (totalDepth < SnowProfile.Cfg.MIN_DEPTH)) {
       alert("Total snow depth must be a number >= " +
-        SnowProfile.MIN_DEPTH);
-      $("#snow_profile_total_depth").val(SnowProfile.totalDepth);
+        SnowProfile.Cfg.MIN_DEPTH);
+      $("#snow_profile_total_depth").val(SnowProfile.Cfg.totalDepth);
       return;
     }
 
     // If this is the first time total snow depth is provided,
     // then set the depth reference to "ground"
-    if (SnowProfile.totalDepth === null) {
-      SnowProfile.depthRef = "g";
+    if (SnowProfile.Cfg.totalDepth === null) {
+      SnowProfile.Cfg.depthRef = "g";
       $("#snow_profile_ref_select option").attr("selected", false);
       $("#snow_profile_ref_select option[value='g']").attr("selected", true);
     }
-    SnowProfile.totalDepth = Number(totalDepth);
+    SnowProfile.Cfg.totalDepth = Number(totalDepth);
 
     // We know the total snow depth so can offer to measure
     // depth from the ground.
     $("#snow_profile_ref_depth").attr("style", "display:inline");
 
     // Don't allow the pit depth to be greater than total snow depth
-    if (SnowProfile.pitDepth > totalDepth) {
+    if (SnowProfile.Cfg.pitDepth > totalDepth) {
       $("#snow_profile_pit_depth").val(totalDepth);
-      SnowProfile.pitDepth = Number(totalDepth);
+      SnowProfile.Cfg.pitDepth = Number(totalDepth);
     }
 
     // Draw the grid with the new total snow depth
@@ -339,33 +341,33 @@ SnowProfile.Grid = function() {
   function pitDepthChange() {
 
     var pitDepth = $("#snow_profile_pit_depth").val();
-    var totalDepth = SnowProfile.totalDepth;
+    var totalDepth = SnowProfile.Cfg.totalDepth;
     if ((pitDepth.search(/^\d+$/) < 0) ||
-      (pitDepth < SnowProfile.MIN_DEPTH)) {
+      (pitDepth < SnowProfile.Cfg.MIN_DEPTH)) {
       alert("Snow pit depth must be a number >= " +
-        SnowProfile.MIN_DEPTH);
-      $("#snow_profile_pit_depth").val(SnowProfile.pitDepth);
+        SnowProfile.Cfg.MIN_DEPTH);
+      $("#snow_profile_pit_depth").val(SnowProfile.Cfg.pitDepth);
       return;
     }
-    if (pitDepth > SnowProfile.MAX_DEPTH) {
+    if (pitDepth > SnowProfile.Cfg.MAX_DEPTH) {
       alert("Snow pit depth must be less than or equal to " +
-        SnowProfile.MAX_DEPTH + " cm");
-      $("#snow_profile_pit_depth").val(SnowProfile.pitDepth);
+        SnowProfile.Cfg.MAX_DEPTH + " cm");
+      $("#snow_profile_pit_depth").val(SnowProfile.Cfg.pitDepth);
       return;
     }
     if (totalDepth && (pitDepth > totalDepth)) {
       alert("Snow pit depth cannot be greater than total snow depth");
-      $("#snow_profile_pit_depth").val(SnowProfile.pitDepth);
+      $("#snow_profile_pit_depth").val(SnowProfile.Cfg.pitDepth);
       return;
     }
-    SnowProfile.pitDepth = Number(pitDepth);
+    SnowProfile.Cfg.pitDepth = Number(pitDepth);
     drawGrid();
   } // function pitDepthChange()
 
   // Set controls to default values
-  $("#snow_profile_pit_depth").val(SnowProfile.pitDepth);
-  $("#snow_profile_total_depth").val(SnowProfile.totalDepth);
-  $("#snow_profile_ref_depth").val(SnowProfile.depthRef);
+  $("#snow_profile_pit_depth").val(SnowProfile.Cfg.pitDepth);
+  $("#snow_profile_total_depth").val(SnowProfile.Cfg.totalDepth);
+  $("#snow_profile_ref_depth").val(SnowProfile.Cfg.depthRef);
 
   // Listen for a change to the "Total snow depth" input
   $("#snow_profile_total_depth").change(totalDepthChange);
@@ -375,7 +377,7 @@ SnowProfile.Grid = function() {
 
   // Listen for a change to the "Measure depth from" select
   $("#snow_profile_ref_select").change(function() {
-    SnowProfile.depthRef = $("#snow_profile_ref_select").val();
+    SnowProfile.Cfg.depthRef = $("#snow_profile_ref_select").val();
     drawGrid();
   });
 

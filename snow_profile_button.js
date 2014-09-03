@@ -38,13 +38,13 @@ SnowProfile.Button = function(textArg) {
       fill: "#000",
       stroke: 1
     })
-    .cx(SnowProfile.BUTTON_X);
+    .cx(SnowProfile.Cfg.BUTTON_X);
   buttonGroup.add(text);
 
   // Draw a rectangle around the text
   var button = SnowProfile.drawing.rect(text.bbox().width + 4,
     text.bbox().height + 4)
-    .cx(SnowProfile.BUTTON_X)
+    .cx(SnowProfile.Cfg.BUTTON_X)
     .style({
       "stroke-width": 1,
       stroke: "#000",

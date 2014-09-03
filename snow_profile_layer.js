@@ -81,7 +81,7 @@ SnowProfile.Layer = function(depthArg) {
     fontFamily: 'sans-serif',
     fill: "#000",
   })
-  .x(SnowProfile.COMMENT_LEFT);
+  .x(SnowProfile.Cfg.COMMENT_LEFT);
 
   /**
    * Has the user touched the handle since this layer was created?
@@ -115,7 +115,7 @@ SnowProfile.Layer = function(depthArg) {
     fontFamily: 'sans-serif',
     fill: "#000"
   })
-  .x(SnowProfile.GRAIN_SIZE_LEFT);
+  .x(SnowProfile.Cfg.GRAIN_SIZE_LEFT);
 
   /**
    * Group to hold the icons describing this layer's grains
@@ -125,7 +125,7 @@ SnowProfile.Layer = function(depthArg) {
    * @type {Object}
    */
   var grainIcons = SnowProfile.drawing.group()
-    .x(SnowProfile.GRAIN_ICON_LEFT);
+    .x(SnowProfile.Cfg.GRAIN_ICON_LEFT);
 
   /**
    * Horizontal line below the description
@@ -138,7 +138,7 @@ SnowProfile.Layer = function(depthArg) {
    */
   var lineBelow = SnowProfile.drawing.line(0, 0, 0, 0)
   .stroke({
-    color: SnowProfile.GRID_COLOR,
+    color: SnowProfile.Cfg.GRID_COLOR,
     width: 1
   });
 
@@ -149,8 +149,8 @@ SnowProfile.Layer = function(depthArg) {
    * @type {Object}
    * @todo Animate
    */
-  var handle = SnowProfile.drawing.rect(SnowProfile.HANDLE_SIZE,
-    SnowProfile.HANDLE_SIZE)
+  var handle = SnowProfile.drawing.rect(SnowProfile.Cfg.HANDLE_SIZE,
+    SnowProfile.Cfg.HANDLE_SIZE)
     .attr("class", "snow_profile_handle");
 
   /**
@@ -173,11 +173,11 @@ SnowProfile.Layer = function(depthArg) {
     var mm;
 
     // X (hardness) position is bound by the edges of the graph.
-    if (x < SnowProfile.HANDLE_MIN_X) {
-      newX = SnowProfile.HANDLE_MIN_X;
+    if (x < SnowProfile.Cfg.HANDLE_MIN_X) {
+      newX = SnowProfile.Cfg.HANDLE_MIN_X;
     }
-    else if (x > SnowProfile.HANDLE_MAX_X) {
-      newX = SnowProfile.HANDLE_MAX_X;
+    else if (x > SnowProfile.Cfg.HANDLE_MAX_X) {
+      newX = SnowProfile.Cfg.HANDLE_MAX_X;
     }
 
     // Y (depth) position is limited by the depth of the snow layers
@@ -186,14 +186,14 @@ SnowProfile.Layer = function(depthArg) {
 
       // This is the top (snow surface) layer.
       // Handle stays on the surface.
-      newY = SnowProfile.HANDLE_MIN_Y;
+      newY = SnowProfile.Cfg.HANDLE_MIN_Y;
     }
     else if (i === (numLayers - 1)) {
 
       // This is the bottom layer.  The handle depth is constrained
       // between the layer above and GRAPH_HEIGHT.
-      if (y > (SnowProfile.handleMaxY)) {
-        newY = SnowProfile.handleMaxY;
+      if (y > (SnowProfile.Cfg.handleMaxY)) {
+        newY = SnowProfile.Cfg.handleMaxY;
       }
       else if (y < SnowProfile.snowLayers[i - 1].handleGetY()) {
         newY = SnowProfile.snowLayers[i - 1].handleGetY() + 1;
@@ -221,7 +221,7 @@ SnowProfile.Layer = function(depthArg) {
     self.setLayerOutline();
 
     // Set the text information floating to the right of the graph
-    if (SnowProfile.depthRef === "s") {
+    if (SnowProfile.Cfg.depthRef === "s") {
 
        // Depth is referred to the snow surface
        mm = Math.round(depthVal * 10) / 10;
@@ -229,7 +229,7 @@ SnowProfile.Layer = function(depthArg) {
     else {
 
       // Depth is referred to the ground
-      mm = Math.round((SnowProfile.totalDepth - depthVal) * 10) / 10;
+      mm = Math.round((SnowProfile.Cfg.totalDepth - depthVal) * 10) / 10;
     }
     handleLoc.text( '(' + mm + ', ' +
       self.x2code(newX) + ')');
@@ -252,10 +252,10 @@ SnowProfile.Layer = function(depthArg) {
   // })
   // .move({
   //   x: SnowProfile.HANDLE_MIN_X,
-  //   y: SnowProfile.depth2y(depthVal)
+  //   y: SnowProfile.Cfg.depth2y(depthVal)
   // });
 
-  //   offsetX: SnowProfile.HANDLE_SIZE / 2,
+  //   offsetX: SnowProfile.Cfg.HANDLE_SIZE / 2,
   //   draggable: true,
   //   dragBoundFunc:
   // }); // handle = SnowProfile.drawing.rect()
@@ -275,9 +275,9 @@ SnowProfile.Layer = function(depthArg) {
     fontSize: 12,
     fontStyle: 'bold',
     fontFamily: 'sans-serif',
-    fill: SnowProfile.LABEL_COLOR,
+    fill: SnowProfile.Cfg.LABEL_COLOR,
   })
-  .x(SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH + 10)
+  .x(SnowProfile.Cfg.DEPTH_LABEL_WD + 1 + SnowProfile.Cfg.GRAPH_WIDTH + 10)
   .y(SnowProfile.depth2y(depthVal))
   .hide();
 
@@ -300,7 +300,7 @@ SnowProfile.Layer = function(depthArg) {
    */
   var diagLine = SnowProfile.drawing.line(0, 0, 0, 0)
   .stroke({
-    color: SnowProfile.GRID_COLOR,
+    color: SnowProfile.Cfg.GRID_COLOR,
     width: 1
   });
 
@@ -315,7 +315,7 @@ SnowProfile.Layer = function(depthArg) {
     opacity: 0.85,
     stroke: '#000'
   })
-  .x(SnowProfile.DEPTH_LABEL_WD + 1)
+  .x(SnowProfile.Cfg.DEPTH_LABEL_WD + 1)
   .y(0);
 
   /**
@@ -402,14 +402,14 @@ SnowProfile.Layer = function(depthArg) {
 
       // This snow layer is the bottom snow layer.  The Y dimension of the
       // left end of the line is the bottom of the graph
-      yLeft = SnowProfile.handleMaxY + (SnowProfile.HANDLE_SIZE / 2);
+      yLeft = SnowProfile.Cfg.handleMaxY + (SnowProfile.Cfg.HANDLE_SIZE / 2);
     }
     else {
 
       // This is not the bottom snow layer, so the Y dimension of the left end
       // is the Y of the handle of the snow layer below this snow layer.
       yLeft = SnowProfile.snowLayers[i + 1].handleGetY() +
-        SnowProfile.HANDLE_SIZE / 2;
+        SnowProfile.Cfg.HANDLE_SIZE / 2;
     }
 
     // Y dimension of the right end is the Y of the line below the
@@ -417,12 +417,12 @@ SnowProfile.Layer = function(depthArg) {
     yRight = SnowProfile.lineBelowY(i);
 
     // X dimension of the left end is the right edge of the graph
-    xLeft = SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH;
+    xLeft = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 + SnowProfile.Cfg.GRAPH_WIDTH;
 
     // X dimension of the right end is the left end of the line
     // below the description of this snow layer.
-    xRight = SnowProfile.DEPTH_LABEL_WD + 1 +
-      SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD - 3;
+    xRight = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
+      SnowProfile.Cfg.GRAPH_WIDTH + 1 + SnowProfile.Cfg.CTRLS_WD - 3;
     points = [xLeft, yLeft, xRight, yRight];
     return points;
   }
@@ -575,7 +575,7 @@ SnowProfile.Layer = function(depthArg) {
         // There is a secondary shape, so use the alternative MFcr icon
         primaryIcon = SnowProfile.drawing.image("data:image/png;base64," +
           image, 52, 29)
-        .y((29 - SnowProfile.DESCR_HEIGHT) / 2);
+        .y((29 - SnowProfile.Cfg.DESCR_HEIGHT) / 2);
         container.add(primaryIcon);
         if (secondarySubShape === "") {
           // User did not specify a secondary subshape
@@ -652,6 +652,8 @@ SnowProfile.Layer = function(depthArg) {
             SnowProfile.CAAML_SHAPE[primaryShape].icon.image,
             SnowProfile.CAAML_SHAPE[primaryShape].icon.width,
             SnowProfile.CAAML_SHAPE[primaryShape].icon.height);
+          console.info("primaryIcon.bbox()=%o", primaryIcon.bbox());
+          console.info("primaryIcon.rbox()=%o", primaryIcon.rbox());
           iconCursor += SnowProfile.CAAML_SHAPE[primaryShape].icon.width;
         }
         container.add(primaryIcon);
@@ -829,19 +831,19 @@ SnowProfile.Layer = function(depthArg) {
   this.setLayerOutline = function() {
     var i = self.getIndex();
     var numLayers = SnowProfile.snowLayers.length;
-    var yTop = handle.y() +  (SnowProfile.HANDLE_SIZE / 2);
-    var yBottom = SnowProfile.HANDLE_SIZE / 2;
+    var yTop = handle.y() +  (SnowProfile.Cfg.HANDLE_SIZE / 2);
+    var yBottom = SnowProfile.Cfg.HANDLE_SIZE / 2;
     if (i === (numLayers - 1)) {
 
       // This is the bottom layer so bottom Y is bottom of graph
-      yBottom += SnowProfile.handleMaxY;
+      yBottom += SnowProfile.Cfg.handleMaxY;
     }
     else {
 
       // Not the bottom layer so bottom Y is top of next lower layer
       yBottom += SnowProfile.snowLayers[i+1].handleGetY();
     }
-    layerOutline.width(handle.x() - SnowProfile.DEPTH_LABEL_WD - 1);
+    layerOutline.width(handle.x() - SnowProfile.Cfg.DEPTH_LABEL_WD - 1);
     layerOutline.y(yTop);
     layerOutline.height(yBottom - yTop);
   };
@@ -860,7 +862,8 @@ SnowProfile.Layer = function(depthArg) {
       handle.x(self.code2x(hardness));
     }
     else {
-      handle.x(SnowProfile.DEPTH_LABEL_WD + 1 - (SnowProfile.HANDLE_SIZE / 2));
+      handle.x(SnowProfile.Cfg.DEPTH_LABEL_WD + 1 -
+        (SnowProfile.Cfg.HANDLE_SIZE / 2));
     }
 
     // Set handle Y from depth
@@ -893,7 +896,7 @@ SnowProfile.Layer = function(depthArg) {
       // This isn't the bottom layer so we need to push it down.  How much
       // space is there between this snow layer and the snow layer below?
       var spaceBelow = SnowProfile.snowLayers[i + 1].depth() - depthVal;
-      if (spaceBelow < (2 * SnowProfile.INS_INCR)) {
+      if (spaceBelow < (2 * SnowProfile.Cfg.INS_INCR)) {
 
         // Not enough so we need to make space below this snow layer.
         SnowProfile.snowLayers[i + 1].pushDown();
@@ -901,7 +904,7 @@ SnowProfile.Layer = function(depthArg) {
     }
 
     // Add the insertion increment to this layer
-    depthVal += SnowProfile.INS_INCR;
+    depthVal += SnowProfile.Cfg.INS_INCR;
     self.draw();
   };
 
@@ -930,27 +933,26 @@ SnowProfile.Layer = function(depthArg) {
    */
   this.setIndexPosition = function() {
     var i = self.getIndex();
-    grainSizeText.y(SnowProfile.HANDLE_MIN_Y +
-      (i * SnowProfile.DESCR_HEIGHT) +
-      (SnowProfile.HANDLE_SIZE / 2) + 3);
-    console.debug("i=%d  grainSizeText.y=%d", i, grainSizeText.y());
-    grainIcons.cy(SnowProfile.HANDLE_MIN_Y +
-      (i * SnowProfile.DESCR_HEIGHT) +
-      (SnowProfile.DESCR_HEIGHT / 2));
-    commentDescr.y(SnowProfile.HANDLE_MIN_Y +
-      (SnowProfile.HANDLE_SIZE / 2) + 3 +
-        (i * SnowProfile.DESCR_HEIGHT));
+    grainSizeText.y(SnowProfile.Cfg.HANDLE_MIN_Y +
+      (i * SnowProfile.Cfg.DESCR_HEIGHT) +
+      (SnowProfile.Cfg.HANDLE_SIZE / 2) + 3);
+    grainIcons.cy(SnowProfile.Cfg.HANDLE_MIN_Y +
+      (i * SnowProfile.Cfg.DESCR_HEIGHT) +
+      (SnowProfile.Cfg.DESCR_HEIGHT / 2));
+    commentDescr.y(SnowProfile.Cfg.HANDLE_MIN_Y +
+      (SnowProfile.Cfg.HANDLE_SIZE / 2) + 3 +
+        (i * SnowProfile.Cfg.DESCR_HEIGHT));
     lineBelow.plot(
-      SnowProfile.DEPTH_LABEL_WD + 1 +
-      SnowProfile.GRAPH_WIDTH + 1 + SnowProfile.CTRLS_WD - 3,
+      SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
+      SnowProfile.Cfg.GRAPH_WIDTH + 1 + SnowProfile.Cfg.CTRLS_WD - 3,
       SnowProfile.lineBelowY(i),
-      SnowProfile.DRAWING_WD - 3,
+      SnowProfile.Cfg.DRAWING_WD - 3,
       SnowProfile.lineBelowY(i)
     );
     diagLine.plot.apply(diagLine, diagLinePts());
-    editButton.setY(SnowProfile.HANDLE_MIN_Y +
-      (SnowProfile.HANDLE_SIZE / 2) +
-      (SnowProfile.DESCR_HEIGHT / 2) + (i * SnowProfile.DESCR_HEIGHT));
+    editButton.setY(SnowProfile.Cfg.HANDLE_MIN_Y +
+      (SnowProfile.Cfg.HANDLE_SIZE / 2) +
+      (SnowProfile.Cfg.DESCR_HEIGHT / 2) + (i * SnowProfile.Cfg.DESCR_HEIGHT));
     insertButton.setY(SnowProfile.lineBelowY(i));
     // If this is not the top snow layer, update the diagonal line
     // owned by the snow layer above.
@@ -975,7 +977,7 @@ SnowProfile.Layer = function(depthArg) {
       // Insertion point found, we need to insert above snowLayers[i].
       // How much space is there between this layer and that layer?
       var spaceBelow = SnowProfile.snowLayers[i].depth() - depthVal;
-      if (spaceBelow < SnowProfile.INS_INCR) {
+      if (spaceBelow < SnowProfile.Cfg.INS_INCR) {
 
         // Not enough so we need to make space below this snow layer.
         SnowProfile.snowLayers[i].pushDown();
@@ -1059,14 +1061,14 @@ SnowProfile.Layer = function(depthArg) {
         // We need space for a layer below this one.  Calculate the space
         // available between this layer and the layer below it.
         var spaceBelow = SnowProfile.snowLayers[i + 1].depth() - depthVal;
-        if (spaceBelow < ( 2 * SnowProfile.INS_INCR)) {
+        if (spaceBelow < ( 2 * SnowProfile.Cfg.INS_INCR)) {
 
           // Not enough so we need to make space below this snow layer.
           SnowProfile.snowLayers[i + 1].pushDown();
           SnowProfile.snowLayers[i + 1].pushDown();
         }
       }
-      new SnowProfile.Layer(depthVal + SnowProfile.INS_INCR);
+      new SnowProfile.Layer(depthVal + SnowProfile.Cfg.INS_INCR);
     }
   });
 
@@ -1085,12 +1087,13 @@ SnowProfile.Layer = function(depthArg) {
  */
 SnowProfile.Layer.prototype.code2x = function(code) {
   "use strict";
-  var x = SnowProfile.DEPTH_LABEL_WD + 1;
+  var x = SnowProfile.Cfg.DEPTH_LABEL_WD + 1;
   if (code !== null) {
     for (var i = 0; i < SnowProfile.CAAML_HARD.length; i++) {
       if (code === SnowProfile.CAAML_HARD[i][0]) {
-        x = SnowProfile.DEPTH_LABEL_WD + 1 + (SnowProfile.HARD_BAND_WD * i) +
-          (SnowProfile.HANDLE_SIZE / 2);
+        x = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
+          (SnowProfile.Cfg.HARD_BAND_WD * i) +
+          (SnowProfile.Cfg.HANDLE_SIZE / 2);
         break;
       }
     }
@@ -1108,11 +1111,11 @@ SnowProfile.Layer.prototype.x2code = function(x) {
   var code = 'I';
 
   for (var i = 0; i < SnowProfile.CAAML_HARD.length - 1; i++) {
-    if ((x >= (SnowProfile.DEPTH_LABEL_WD + 1 +
-        (SnowProfile.HARD_BAND_WD * i) + (SnowProfile.HANDLE_SIZE / 2)) &&
-       (x < (SnowProfile.DEPTH_LABEL_WD + 1 +
-        (SnowProfile.HARD_BAND_WD * (i + 1)) +
-        (SnowProfile.HANDLE_SIZE / 2))))) {
+    if ((x >= (SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
+        (SnowProfile.Cfg.HARD_BAND_WD * i) + (SnowProfile.Cfg.HANDLE_SIZE / 2)) &&
+       (x < (SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
+        (SnowProfile.Cfg.HARD_BAND_WD * (i + 1)) +
+        (SnowProfile.Cfg.HANDLE_SIZE / 2))))) {
       code = SnowProfile.CAAML_HARD[i][0];
       break;
     }
@@ -1127,7 +1130,7 @@ SnowProfile.Layer.prototype.x2code = function(x) {
  */
 SnowProfile.Layer.prototype.y2depth = function(y) {
   "use strict";
-  return (y - SnowProfile.HANDLE_MIN_Y) / SnowProfile.DEPTH_SCALE;
+  return (y - SnowProfile.Cfg.HANDLE_MIN_Y) / SnowProfile.Cfg.DEPTH_SCALE;
 };
 
 // Configure Emacs for Drupal JavaScript coding standards
