@@ -53,18 +53,19 @@ SnowProfile.Grid = function() {
       y;
 
     // Add a Depth label on the left side of the diagram
-    SnowProfile.gridGroup.add(SnowProfile.drawing.text("Depth (cm)")
-    .font({
-      family: 'sans-serif',
-      fill: SnowProfile.Cfg.LABEL_COLOR,
-      size: 18,
-      style: 'bold'
-    })
-    .transform({
-      x: -30,
-      y: (SnowProfile.Cfg.pitDepth * SnowProfile.Cfg.DEPTH_SCALE) / 2,
-      rotation: 270
-    }));
+    SnowProfile.depthGroup.add(SnowProfile.drawing.text("Depth (cm)")
+      .attr("class", "snow_profile_depth")
+      .font({
+        family: 'sans-serif',
+        fill: SnowProfile.Cfg.LABEL_COLOR,
+        size: 18,
+        style: 'bold'
+      })
+      .transform({
+        x: -30,
+        y: (SnowProfile.Cfg.pitDepth * SnowProfile.Cfg.DEPTH_SCALE) / 2,
+        rotation: 270
+      }));
 
     // Referenced to snow surface or ground?
     // Start drawing lines/labels at zero.  Continue to depth of pit.
@@ -79,17 +80,19 @@ SnowProfile.Grid = function() {
         cm += SnowProfile.Cfg.DEPTH_LINE_INT) {
         y = SnowProfile.Cfg.TOP_LABEL_HT +
           (SnowProfile.Cfg.HANDLE_SIZE / 2) + (cm * SnowProfile.Cfg.DEPTH_SCALE);
-        SnowProfile.gridGroup.add(SnowProfile.drawing.text(String(cm))
-        .font({
-          fontSize: 12,
-          fontStyle: 'bold',
-          fontFamily: 'sans-serif',
-          fill: SnowProfile.Cfg.LABEL_COLOR})
-        .move(40, y - 8));
+        SnowProfile.depthGroup.add(SnowProfile.drawing.text(String(cm))
+          .attr("class", "snow_profile_depth")
+          .font({
+            fontSize: 12,
+            fontStyle: 'bold',
+            fontFamily: 'sans-serif',
+            fill: SnowProfile.Cfg.LABEL_COLOR})
+          .move(40, y - 8));
 
         // Draw a horizontal line every DEPTH_LINE_INT cm as a depth scale
         if (cm !== SnowProfile.Cfg.pitDepth) {
-          SnowProfile.gridGroup.add(SnowProfile.drawing.line(x0, y, x1, y)
+          SnowProfile.depthGroup.add(SnowProfile.drawing.line(x0, y, x1, y)
+            .attr("class", "snow_profile_depth")
             .stroke({
               color: SnowProfile.Cfg.GRID_COLOR,
               width: 1
@@ -109,17 +112,19 @@ SnowProfile.Grid = function() {
         cm += SnowProfile.Cfg.DEPTH_LINE_INT) {
         y = SnowProfile.Cfg.TOP_LABEL_HT + (SnowProfile.Cfg.HANDLE_SIZE / 2) +
           ((SnowProfile.Cfg.totalDepth - cm) * SnowProfile.Cfg.DEPTH_SCALE);
-        SnowProfile.gridGroup.add(SnowProfile.drawing.text(String(cm))
-        .font({
-          fontSize: 12,
-          fontStyle: 'bold',
-          fontFamily: 'sans-serif',
-          fill: SnowProfile.Cfg.LABEL_COLOR})
-        .move(40, y - 8));
+        SnowProfile.depthGroup.add(SnowProfile.drawing.text(String(cm))
+          .attr("class", "snow_profile_depth")
+          .font({
+            fontSize: 12,
+            fontStyle: 'bold',
+            fontFamily: 'sans-serif',
+            fill: SnowProfile.Cfg.LABEL_COLOR})
+          .move(40, y - 8));
 
         // Draw a horizontal line every DEPTH_LINE_INT cm as a depth scale
         if (cm !== SnowProfile.Cfg.totalDepth) {
-          SnowProfile.gridGroup.add(SnowProfile.drawing.line(x0, y, x1, y)
+          SnowProfile.depthGroup.add(SnowProfile.drawing.line(x0, y, x1, y)
+            .attr("class", "snow_profile_depth")
             .stroke({
               color: SnowProfile.Cfg.GRID_COLOR,
               width: 1
@@ -140,19 +145,20 @@ SnowProfile.Grid = function() {
     var i, x;
 
     // Add a vertical line along the left edge
-    SnowProfile.gridGroup.add(SnowProfile.drawing.line(
+    SnowProfile.hardnessGroup.add(SnowProfile.drawing.line(
       SnowProfile.Cfg.DEPTH_LABEL_WD,
       SnowProfile.Cfg.HANDLE_MIN_Y - 1 + (SnowProfile.Cfg.HANDLE_SIZE / 2),
       SnowProfile.Cfg.DEPTH_LABEL_WD,
       SnowProfile.depth2y(SnowProfile.Cfg.pitDepth) +
         (SnowProfile.Cfg.HANDLE_SIZE / 2))
-      .stroke({
-        color: SnowProfile.Cfg.LABEL_COLOR,
-        width: 1
+        .attr("class", "snow_profile_hardness")
+        .stroke({
+          color: SnowProfile.Cfg.LABEL_COLOR,
+          width: 1
       }));
 
     // Draw and label the hardness (horizontal) axis
-    SnowProfile.gridGroup.add(SnowProfile.drawing.line(
+    SnowProfile.hardnessGroup.add(SnowProfile.drawing.line(
       SnowProfile.Cfg.DEPTH_LABEL_WD,
       SnowProfile.depth2y(SnowProfile.Cfg.pitDepth) +
         (SnowProfile.Cfg.HANDLE_SIZE / 2),
@@ -160,10 +166,11 @@ SnowProfile.Grid = function() {
         SnowProfile.Cfg.HANDLE_SIZE / 2,
       SnowProfile.depth2y(SnowProfile.Cfg.pitDepth) +
         (SnowProfile.Cfg.HANDLE_SIZE / 2)
-    )
-    .stroke({
-      color: SnowProfile.Cfg.LABEL_COLOR,
-      width: 1
+      )
+      .attr("class", "snow_profile_hardness")
+      .stroke({
+        color: SnowProfile.Cfg.LABEL_COLOR,
+        width: 1
     }));
 
     // Iterate through the table of CAAML hardness codes to
@@ -175,36 +182,39 @@ SnowProfile.Grid = function() {
       if (SnowProfile.CAAML_HARD[i][1]) {
 
         // Add a vertical line to show SnowProfile hardness value
-        SnowProfile.gridGroup.add(SnowProfile.drawing.line(
+        SnowProfile.hardnessGroup.add(SnowProfile.drawing.line(
           x, SnowProfile.Cfg.HANDLE_MIN_Y + (SnowProfile.Cfg.HANDLE_SIZE / 2),
           x, SnowProfile.Cfg.handleMaxY + (SnowProfile.Cfg.HANDLE_SIZE / 2))
+          .attr("class", "snow_profile_hardness")
           .stroke({
           color: SnowProfile.Cfg.GRID_COLOR,
           width: 1
         }));
-        SnowProfile.gridGroup.add(SnowProfile.drawing.text(
+        SnowProfile.hardnessGroup.add(SnowProfile.drawing.text(
           SnowProfile.CAAML_HARD[i][0])
-        .font({
-          fontSize: 12,
-          fontStyle: 'bold',
-          fontFamily: 'sans-serif',
-          fill: SnowProfile.LABEL_COLOR
-        })
-        .move(x - 1, SnowProfile.depth2y(SnowProfile.Cfg.pitDepth) +
-          (SnowProfile.Cfg.HANDLE_SIZE / 2) + 3));
+          .attr("class", "snow_profile_hardness")
+          .font({
+            fontSize: 12,
+            fontStyle: 'bold',
+            fontFamily: 'sans-serif',
+            fill: SnowProfile.LABEL_COLOR
+          })
+          .move(x - 1, SnowProfile.depth2y(SnowProfile.Cfg.pitDepth) +
+            (SnowProfile.Cfg.HANDLE_SIZE / 2) + 3));
       }
     }
 
     // Add 'Hand Hardness' label at bottom
-    SnowProfile.gridGroup.add(SnowProfile.drawing.text('Hand Hardness')
-    .font({
-      fontSize: 18,
-      fontStyle: 'bold',
-      fontFamily: 'sans-serif',
-      fill: SnowProfile.Cfg.LABEL_COLOR})
-    .move(SnowProfile.Cfg.GRAPH_WIDTH / 2,
-      SnowProfile.depth2y(SnowProfile.Cfg.pitDepth) +
-      (SnowProfile.Cfg.HANDLE_SIZE / 2) + 19));
+    SnowProfile.hardnessGroup.add(SnowProfile.drawing.text('Hand Hardness')
+      .attr("class", "snow_profile_hardness")
+      .font({
+        fontSize: 18,
+        fontStyle: 'bold',
+        fontFamily: 'sans-serif',
+        fill: SnowProfile.Cfg.LABEL_COLOR})
+      .move(SnowProfile.Cfg.GRAPH_WIDTH / 2,
+        SnowProfile.depth2y(SnowProfile.Cfg.pitDepth) +
+        (SnowProfile.Cfg.HANDLE_SIZE / 2) + 19));
   } // function drawHardnessScale()
 
   /**
@@ -257,6 +267,12 @@ SnowProfile.Grid = function() {
 
     // Throw away the existing grid
     SnowProfile.gridGroup.clear();
+
+    // Create inner groups for depth and hardness scales
+    SnowProfile.depthGroup = SnowProfile.gridGroup.group()
+      .attr("class", "snow_profile_depth");
+    SnowProfile.hardnessGroup = SnowProfile.gridGroup.group()
+      .attr("class", "snow_profile_hardness");
 
     // Set size of drawing
     SnowProfile.drawing.size(SnowProfile.Cfg.DRAWING_WD,

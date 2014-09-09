@@ -1189,7 +1189,8 @@ var SnowProfile = {};
    * @type {object}
    * @memberof SnowProfile
    */
-  SnowProfile.gridGroup = SnowProfile.drawing.group();
+  SnowProfile.gridGroup = SnowProfile.drawing.group()
+    .attr("class", "snow_profile_grid");
 
   /**
    * Recalculate the Y axis positions of all SVG objects whose
