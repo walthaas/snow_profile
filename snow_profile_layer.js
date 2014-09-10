@@ -192,8 +192,8 @@ SnowProfile.Layer = function(depthArg) {
 
       // This is the bottom layer.  The handle depth is constrained
       // between the layer above and GRAPH_HEIGHT.
-      if (y > (SnowProfile.Cfg.handleMaxY)) {
-        newY = SnowProfile.Cfg.handleMaxY;
+      if (y > (SnowProfile.handleMaxY)) {
+        newY = SnowProfile.handleMaxY;
       }
       else if (y < SnowProfile.snowLayers[i - 1].handleGetY()) {
         newY = SnowProfile.snowLayers[i - 1].handleGetY() + 1;
@@ -221,7 +221,7 @@ SnowProfile.Layer = function(depthArg) {
     self.setLayerOutline();
 
     // Set the text information floating to the right of the graph
-    if (SnowProfile.Cfg.depthRef === "s") {
+    if (SnowProfile.depthRef === "s") {
 
        // Depth is referred to the snow surface
        mm = Math.round(depthVal * 10) / 10;
@@ -229,7 +229,7 @@ SnowProfile.Layer = function(depthArg) {
     else {
 
       // Depth is referred to the ground
-      mm = Math.round((SnowProfile.Cfg.totalDepth - depthVal) * 10) / 10;
+      mm = Math.round((SnowProfile.totalDepth - depthVal) * 10) / 10;
     }
     handleLoc.text( '(' + mm + ', ' +
       self.x2code(newX) + ')');
@@ -402,7 +402,7 @@ SnowProfile.Layer = function(depthArg) {
 
       // This snow layer is the bottom snow layer.  The Y dimension of the
       // left end of the line is the bottom of the graph
-      yLeft = SnowProfile.Cfg.handleMaxY + (SnowProfile.Cfg.HANDLE_SIZE / 2);
+      yLeft = SnowProfile.handleMaxY + (SnowProfile.Cfg.HANDLE_SIZE / 2);
     }
     else {
 
@@ -836,7 +836,7 @@ SnowProfile.Layer = function(depthArg) {
     if (i === (numLayers - 1)) {
 
       // This is the bottom layer so bottom Y is bottom of graph
-      yBottom += SnowProfile.Cfg.handleMaxY;
+      yBottom += SnowProfile.handleMaxY;
     }
     else {
 

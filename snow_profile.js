@@ -195,16 +195,18 @@ var SnowProfile = {};
      * @memberof SnowProfile
      * @const {number}
      */
-    IMAGE_WD: 800,
+    IMAGE_WD: 800
+  }; // SnowProfile.Cfg = {
 
-    /**
-     * Maximum Y value allowed for any handle (bottom of graph area)
-     *
-     * @type {number}
-     * @memberof SnowProfile
-     * @see SnowProfile.Grid~adjustGrid
-     */
-    handleMaxY: null,
+  /**
+   * Pit depth (cm)
+   *
+   * Maximum depth of the pit in cm from the snow surface.  Must
+   * be an integer between MIN_DEPTH and MAX_DEPTH. Default MAX_DEPTH.
+   * @type {!number}
+   * @see SnowProfile.Grid~depthScaleGrp
+   */
+  SnowProfile.pitDepth = SnowProfile.Cfg.DEFAULT_PIT_DEPTH;
 
     /**
      * Total depth of the snow pack (cm)
@@ -215,7 +217,16 @@ var SnowProfile = {};
      * @memberof SnowProfile
      * @type {?number}
      */
-    totalDepth: null,
+  SnowProfile.totalDepth = null;
+
+    /**
+     * Maximum Y value allowed for any handle (bottom of graph area)
+     *
+     * @type {number}
+     * @memberof SnowProfile
+     * @see SnowProfile.Grid~adjustGrid
+     */
+  SnowProfile.handleMaxY = null;
 
     /**
      * Depth reference (snow surface or ground)
@@ -228,18 +239,7 @@ var SnowProfile = {};
      * @type {!string}
      * @see SnowProfile.Grid~depthScaleGrp
      */
-    depthRef: "s"
-  }; // SnowProfile.Cfg = {
-
-  /**
-   * Pit depth (cm)
-   *
-   * Maximum depth of the pit in cm from the snow surface.  Must
-   * be an integer between MIN_DEPTH and MAX_DEPTH. Default MAX_DEPTH.
-   * @type {!number}
-   * @see SnowProfile.Grid~depthScaleGrp
-   */
-  SnowProfile.Cfg.pitDepth = SnowProfile.Cfg.DEFAULT_PIT_DEPTH;
+  SnowProfile.depthRef = "s";
 
   /**
    * Central x of the data plotting area.
@@ -1166,7 +1166,7 @@ var SnowProfile = {};
    * @returns {number} Drawing height in pixels.
    */
   SnowProfile.drawingHeight = function() {
-    return  SnowProfile.Cfg.TOP_LABEL_HT + 1 + (SnowProfile.Cfg.pitDepth *
+    return  SnowProfile.Cfg.TOP_LABEL_HT + 1 + (SnowProfile.pitDepth *
       SnowProfile.Cfg.DEPTH_SCALE) + 1 + SnowProfile.Cfg.HARD_LABEL_HT;
   };
 
