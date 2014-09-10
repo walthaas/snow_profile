@@ -1,38 +1,31 @@
 var sw = require('../node_modules/selenium-webdriver'),
+  common = require('./lib'),
   chai = require("chai"),
   chaiWebdriver = require('chai-webdriver'),
-  test = require('../node_modules/selenium-webdriver/testing');
-
-var baseURL = 'file:///home/haas/Dropbox/uac/snow_profile/';
-var testURL = baseURL + "snow_profile.html";
-var SnowProfile = {};
+  test = require('../node_modules/selenium-webdriver/testing'),
+  driver,
+  SnowProfile = {};
 
 // Snow Profile test suite
 test.describe('Snow Profile', function() {
-  var driver;
 
   // Test the reference grid
   test.describe('reference grid', function() {
-    var depthLabels = [];
+    var depthLabels = [],
+      hardnessLabels = [];
     test.before(function() {
       driver = new sw.Builder()
 	.withCapabilities(sw.Capabilities.chrome())
 	.build();
       chai.use(chaiWebdriver(driver));
-      driver.get(testURL);
 
-      // Get configuration from the page JS
-      driver.executeScript('return window.SnowProfile.Cfg');
+      // Load the test page
+      driver.get(common.testURL);
 
-      // Read the depth scale text elements into depthLabels[]
-      driver.findElements(
-        sw.By.css('#snow_profile_diagram svg text.snow_profile_depth'))
+      // Get configuration SnowProfile.Cfg from the page JS
+      driver.executeScript('return window.SnowProfile.Cfg')
         .then(function(done) {
-          done.forEach(function(v, i) {
-            done[i].getText().then(function(done) {
-              depthLabels.push(done);
-            });
-          });
+          SnowProfile.Cfg = done;
         });
     });  // test.before(
 
@@ -43,15 +36,47 @@ test.describe('Snow Profile', function() {
       chai.expect('#snow_profile_ref_depth').dom.to.have.count(1);
     });
     test.it('the reference depth selector should not be shown', function() {
-      chai.expect('#snow_profile_ref_depth').dom.to.have.style('display', 'none');
+      chai.expect('#snow_profile_ref_depth')
+        .dom.to.have.style('display', 'none');
     });
     test.it('Depth (cm) label should exist', function() {
-      chai.expect(depthLabels).to.include('Depth (cm)');
+
+      // Read the depth scale text elements into depthLabels[]
+      driver.findElements(
+        sw.By.css('#snow_profile_diagram svg text.snow_profile_depth'))
+        .then(function(done) {
+          done.forEach(function(v, i) {
+            done[i].getText().then(function(done) {
+              depthLabels.push(done);
+            });
+          });
+        })
+        .then(function(done) {
+          chai.expect(depthLabels).to.include('Depth (cm)');
+        });
     });
-    // test.it('Hand Hardness label should exist', function() {
-    //   chai.expect('#snow_profile_diagram svg text.snow_profile_hardness')
-    //     .dom.to.have.text('Hand Hardness');
-    // });
+    test.it('Hardness scale labels should exist', function() {
+
+      // Read the hardness scale text elements into depthLabels[]
+      driver.findElements(
+        sw.By.css('#snow_profile_diagram svg text.snow_profile_hardness'))
+        .then(function(done) {
+          done.forEach(function(v, i) {
+            done[i].getText().then(function(done) {
+              hardnessLabels.push(done);
+            });
+          });
+        })
+        .then(function(done) {
+          chai.expect(hardnessLabels).to.include('F');
+          chai.expect(hardnessLabels).to.include('4F');
+          chai.expect(hardnessLabels).to.include('1F');
+          chai.expect(hardnessLabels).to.include('P');
+          chai.expect(hardnessLabels).to.include('K');
+          chai.expect(hardnessLabels).to.include('I');
+          chai.expect(hardnessLabels).to.include('Hand Hardness');
+        });
+    });
   }); // test.decribe('reference grid
 
 //  test.describe('handles', function() {
