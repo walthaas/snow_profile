@@ -84,17 +84,17 @@ var SnowProfile = {};
     GRAPH_WIDTH: 350,
 
     /**
-      Width in pixels of the area used by buttons and
-      connectors (diagonal lines).
+     * Width in pixels of the area used by buttons and
+     * connectors (diagonal lines).
      * @memberof SnowProfile
-      @const {number}
+     * @const {number}
      */
     CTRLS_WD: 200,
 
     /**
-      Width in pixels of the area used by snow grain form
+     * Width in pixels of the area used by snow grain form
      * @memberof SnowProfile
-      @const {number}
+     * @const {number}
      */
     GRAIN_FORM_WD: 60,
 

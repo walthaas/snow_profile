@@ -79,7 +79,8 @@ SnowProfile.Grid = function() {
       for (cm = 0; cm <= SnowProfile.pitDepth;
         cm += SnowProfile.Cfg.DEPTH_LINE_INT) {
         y = SnowProfile.Cfg.TOP_LABEL_HT +
-          (SnowProfile.Cfg.HANDLE_SIZE / 2) + (cm * SnowProfile.Cfg.DEPTH_SCALE);
+          (SnowProfile.Cfg.HANDLE_SIZE / 2) +
+          (cm * SnowProfile.Cfg.DEPTH_SCALE);
         SnowProfile.depthGroup.add(SnowProfile.drawing.text(String(cm))
           .attr("class", "snow_profile_depth")
           .font({
