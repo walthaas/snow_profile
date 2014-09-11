@@ -215,6 +215,115 @@ test.describe('Snow Profile diagram reference grid', function() {
       });
     });
 
+  test.it('Setting total depth changes reference, pit depth', function() {
+    // Set total depth 200
+    driver.findElement(sw.By.css('#snow_profile_total_depth'))
+      .then(function(elmt) {
+        elmt.sendKeys("200");
+      });
+    // Navigate out of the input box to make new pit depth effective
+    driver.findElement(sw.By.css('#snow_profile_diagram'))
+      .then(function(elmt) {
+         elmt.click();
+      })
+      .then(function() {
+        // Verify that reference select is now visible
+        chai.expect('#snow_profile_ref_depth')
+          .dom.to.have.style('display', 'inline');
+      });
+    driver.executeScript('return $("#snow_profile_pit_depth").val()')
+      .then(function(val) {
+        // Verify that pit depth changed to 200
+        chai.expect(val).to.equal("200");
+      });
+    driver.executeScript('return window.SnowProfile.depthRef')
+      .then(function(done) {
+        // Verify that reference changed to 'g'
+        chai.expect(done).to.equal('g');
+      });
+  });
+
+  test.it('Setting pit depth changes labels', function() {
+    // Set pit depth 100, then verify depth labels
+    depthLabels = [];
+    var cmdStr = [];
+    driver.executeScript('return $("#snow_profile_pit_depth").val()')
+      .then(function(val) {
+        for (var i = 0; i < val.length; i++) {
+          cmdStr.push(sw.Key.BACK_SPACE);
+        }
+        cmdStr.push(sw.Key.NULL);
+      });
+    // After backspacing over existing contents of input box,
+    // type in "100"
+    driver.findElement(sw.By.css('#snow_profile_pit_depth'))
+      .then(function(elmt) {
+        cmdStr.push("100");
+        elmt.sendKeys.apply(elmt, cmdStr);
+      });
+    // Navigate out of the input box to make new pit depth effective
+    driver.findElement(sw.By.css('#snow_profile_diagram'))
+      .then(function(elmt) {
+         elmt.click();
+      });
+    // Read the depth scale text elements into depthLabels[]
+    driver.findElements(sw.By.css(
+      '#snow_profile_diagram svg text.snow_profile_depth'))
+      .then(function(done) {
+        done.forEach(function(promise) {
+          promise.getText()
+            .then(function(done) {
+              depthLabels.push(done);
+            });
+          });
+        })
+      .then(function() {
+        expectLabels = ['Depth (cm)'];
+        for (var d = 100; d <= 200; d += SnowProfile.Cfg.DEPTH_LINE_INT) {
+          expectLabels.push(String(d));
+        }
+        depthLabels.sort();
+        expectLabels.sort();
+        chai.expect(depthLabels.length).to.equal(expectLabels.length);
+        // Depth increment labels should match default from '100'
+        // to '200' by increments of DEPTH_LINE_INT
+        expectLabels.forEach(function(v, i) {
+          chai.expect(depthLabels[i]).to.equal(v);
+        });
+      });
+    // Change reference to 's'
+    driver.findElement(sw.By.xpath(
+      '//select[@id="snow_profile_ref_select"]/option[@value="s"]'))
+      .then(function(elmt) {
+        elmt.click();
+      });
+    // Verify depth labels
+    driver.findElements(sw.By.css(
+      '#snow_profile_diagram svg text.snow_profile_depth'))
+      .then(function(done) {
+        depthLabels = [];
+        done.forEach(function(promise) {
+          promise.getText()
+            .then(function(done) {
+              depthLabels.push(done);
+            });
+          });
+        })
+      .then(function() {
+        expectLabels = ['Depth (cm)'];
+        for (var d = 0; d <= 100; d += SnowProfile.Cfg.DEPTH_LINE_INT) {
+          expectLabels.push(String(d));
+        }
+        depthLabels.sort();
+        expectLabels.sort();
+        chai.expect(depthLabels.length).to.equal(expectLabels.length);
+        // Depth increment labels should match default from '0'
+        // to '100' by increments of DEPTH_LINE_INT
+        expectLabels.forEach(function(v, i) {
+          chai.expect(depthLabels[i]).to.equal(v);
+        });
+      });
+  });
 }); // test.decribe('reference grid
 
 // When done, kill the browser
