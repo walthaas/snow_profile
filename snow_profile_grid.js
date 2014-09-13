@@ -269,6 +269,16 @@ SnowProfile.Grid = function() {
     // Throw away the existing grid
     SnowProfile.gridGroup.clear();
 
+    // Define background behind the reference grid
+    SnowProfile.gridGroup.add(
+      SnowProfile.drawing.rect(
+        SnowProfile.Cfg.GRAPH_WIDTH - (SnowProfile.Cfg.HANDLE_SIZE / 2),
+        SnowProfile.pitDepth * SnowProfile.Cfg.DEPTH_SCALE)
+        .dmove(SnowProfile.Cfg.DEPTH_LABEL_WD,
+          SnowProfile.Cfg.TOP_LABEL_HT + (SnowProfile.Cfg.HANDLE_SIZE / 2) + 1)
+        .attr({id: 'snow_profile_grid_background'})
+    );
+
     // Create inner groups for depth and hardness scales
     SnowProfile.depthGroup = SnowProfile.gridGroup.group()
       .attr("class", "snow_profile_depth");
@@ -278,9 +288,6 @@ SnowProfile.Grid = function() {
     // Set size of drawing
     SnowProfile.drawing.size(SnowProfile.Cfg.DRAWING_WD,
       SnowProfile.drawingHeight());
-
-    // Adjust height of background to match
-    //backGround.height(SnowProfile.stageHeight());
 
     // Set the maximum Y value to which a handle may be dragged
     SnowProfile.handleMaxY = SnowProfile.Cfg.TOP_LABEL_HT + 1 +

@@ -310,11 +310,12 @@ SnowProfile.Layer = function(depthArg) {
    * @todo Style
    */
   var layerOutline = SnowProfile.drawing.rect(0,0)
-  .style({
-    fill: "pink",
-    opacity: 0.85,
-    stroke: '#000'
-  })
+    .attr('class', 'snow_profile_layer_outline')
+  // .style({
+  //   fill: "pink",
+  //   opacity: 0.85,
+  //   stroke: '#000'
+  // })
   .x(SnowProfile.Cfg.DEPTH_LABEL_WD + 1)
   .y(0);
 
