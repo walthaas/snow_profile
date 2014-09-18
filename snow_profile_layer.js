@@ -863,8 +863,7 @@ SnowProfile.Layer = function(depthArg) {
       handle.x(self.code2x(hardness));
     }
     else {
-      handle.x(SnowProfile.Cfg.DEPTH_LABEL_WD + 1 -
-        (SnowProfile.Cfg.HANDLE_SIZE / 2));
+      handle.x(SnowProfile.Cfg.HANDLE_INIT_X);
     }
 
     // Set handle Y from depth

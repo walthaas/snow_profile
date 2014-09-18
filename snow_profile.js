@@ -299,6 +299,15 @@ var SnowProfile = {};
      SnowProfile.Cfg.COMMENT_WD;
 
   /**
+   * Initial X position of the layer handle
+   *
+   * This X position centers the handle over the left edge of the grid, which
+   * is farther left than the user can move it.
+   */
+  SnowProfile.Cfg.HANDLE_INIT_X = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 -
+    (SnowProfile.Cfg.HANDLE_SIZE / 2);
+
+  /**
    * X position of the center line of the buttons in the control area
    */
   SnowProfile.Cfg.BUTTON_X = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
