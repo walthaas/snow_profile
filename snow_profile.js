@@ -183,12 +183,23 @@ var SnowProfile = {};
     DEPTH_SCALE: 5,
 
     /**
-      Depth increment in cm to allow when inserting a layer above
-      or below another layer.
+     * Depth increment in cm to allow when inserting a layer above
+     * or below another layer.
      * @memberof SnowProfile
-      @const {number}
+     * @const {number}
      */
     INS_INCR: 5,
+
+    /**
+     * Number of layers initially shown on a fresh copy of the page.
+     */
+    NUM_INIT_LAYERS: 3,
+
+    /**
+     * Depth interval in cm of layers initially shown on a
+     * fresh copy of the page.
+     */
+    INT_INIT_LAYERS: 20,
 
     /**
      * Width in pixels of the image to be generated
@@ -1199,7 +1210,7 @@ var SnowProfile = {};
    * @memberof SnowProfile
    */
   SnowProfile.gridGroup = SnowProfile.drawing.group()
-    .attr("class", "snow_profile_grid");
+    .addClass("snow_profile_grid");
 
   /**
    * Recalculate the Y axis positions of all SVG objects whose

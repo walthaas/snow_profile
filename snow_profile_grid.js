@@ -54,7 +54,7 @@ SnowProfile.Grid = function() {
 
     // Add a Depth label on the left side of the diagram
     SnowProfile.depthGroup.add(SnowProfile.drawing.text("Depth (cm)")
-      .attr("class", "snow_profile_depth")
+      .addClass("snow_profile_depth")
       .font({
         family: 'sans-serif',
         fill: SnowProfile.Cfg.LABEL_COLOR,
@@ -82,7 +82,7 @@ SnowProfile.Grid = function() {
           (SnowProfile.Cfg.HANDLE_SIZE / 2) +
           (cm * SnowProfile.Cfg.DEPTH_SCALE);
         SnowProfile.depthGroup.add(SnowProfile.drawing.text(String(cm))
-          .attr("class", "snow_profile_depth")
+          .addClass("snow_profile_depth")
           .font({
             fontSize: 12,
             fontStyle: 'bold',
@@ -93,7 +93,7 @@ SnowProfile.Grid = function() {
         // Draw a horizontal line every DEPTH_LINE_INT cm as a depth scale
         if (cm !== SnowProfile.pitDepth) {
           SnowProfile.depthGroup.add(SnowProfile.drawing.line(x0, y, x1, y)
-            .attr("class", "snow_profile_depth")
+            .addClass("snow_profile_depth")
             .stroke({
               color: SnowProfile.Cfg.GRID_COLOR,
               width: 1
@@ -114,7 +114,7 @@ SnowProfile.Grid = function() {
         y = SnowProfile.Cfg.TOP_LABEL_HT + (SnowProfile.Cfg.HANDLE_SIZE / 2) +
           ((SnowProfile.totalDepth - cm) * SnowProfile.Cfg.DEPTH_SCALE);
         SnowProfile.depthGroup.add(SnowProfile.drawing.text(String(cm))
-          .attr("class", "snow_profile_depth")
+          .addClass("snow_profile_depth")
           .font({
             fontSize: 12,
             fontStyle: 'bold',
@@ -125,7 +125,7 @@ SnowProfile.Grid = function() {
         // Draw a horizontal line every DEPTH_LINE_INT cm as a depth scale
         if (cm !== SnowProfile.totalDepth) {
           SnowProfile.depthGroup.add(SnowProfile.drawing.line(x0, y, x1, y)
-            .attr("class", "snow_profile_depth")
+            .addClass("snow_profile_depth")
             .stroke({
               color: SnowProfile.Cfg.GRID_COLOR,
               width: 1
@@ -152,7 +152,7 @@ SnowProfile.Grid = function() {
       SnowProfile.Cfg.DEPTH_LABEL_WD,
       SnowProfile.depth2y(SnowProfile.pitDepth) +
         (SnowProfile.Cfg.HANDLE_SIZE / 2))
-        .attr("class", "snow_profile_hardness")
+        .addClass("snow_profile_hardness")
         .stroke({
           color: SnowProfile.Cfg.LABEL_COLOR,
           width: 1
@@ -168,7 +168,7 @@ SnowProfile.Grid = function() {
       SnowProfile.depth2y(SnowProfile.pitDepth) +
         (SnowProfile.Cfg.HANDLE_SIZE / 2)
       )
-      .attr("class", "snow_profile_hardness")
+      .addClass("snow_profile_hardness")
       .stroke({
         color: SnowProfile.Cfg.LABEL_COLOR,
         width: 1
@@ -186,14 +186,14 @@ SnowProfile.Grid = function() {
         SnowProfile.hardnessGroup.add(SnowProfile.drawing.line(
           x, SnowProfile.Cfg.HANDLE_MIN_Y + (SnowProfile.Cfg.HANDLE_SIZE / 2),
           x, SnowProfile.handleMaxY + (SnowProfile.Cfg.HANDLE_SIZE / 2))
-          .attr("class", "snow_profile_hardness")
+          .addClass("snow_profile_hardness")
           .stroke({
           color: SnowProfile.Cfg.GRID_COLOR,
           width: 1
         }));
         SnowProfile.hardnessGroup.add(SnowProfile.drawing.text(
           SnowProfile.CAAML_HARD[i][0])
-          .attr("class", "snow_profile_hardness")
+          .addClass("snow_profile_hardness")
           .font({
             fontSize: 12,
             fontStyle: 'bold',
@@ -207,7 +207,7 @@ SnowProfile.Grid = function() {
 
     // Add 'Hand Hardness' label at bottom
     SnowProfile.hardnessGroup.add(SnowProfile.drawing.text('Hand Hardness')
-      .attr("class", "snow_profile_hardness")
+      .addClass("snow_profile_hardness")
       .font({
         fontSize: 18,
         fontStyle: 'bold',
@@ -281,9 +281,9 @@ SnowProfile.Grid = function() {
 
     // Create inner groups for depth and hardness scales
     SnowProfile.depthGroup = SnowProfile.gridGroup.group()
-      .attr("class", "snow_profile_depth");
+      .addClass("snow_profile_depth");
     SnowProfile.hardnessGroup = SnowProfile.gridGroup.group()
-      .attr("class", "snow_profile_hardness");
+      .addClass("snow_profile_hardness");
 
     // Set size of drawing
     SnowProfile.drawing.size(SnowProfile.Cfg.DRAWING_WD,

@@ -8,16 +8,16 @@ var sw = require('../node_modules/selenium-webdriver'),
   common = require('./lib'),
   chai = require("chai"),
   chaiWebdriver = require('chai-webdriver'),
-  test = require('../node_modules/selenium-webdriver/testing'),
-  depthLabels = [],
-  expectLabels = [],
-  driver;
+  test = require('../node_modules/selenium-webdriver/testing');
 
 // Test the reference grid
 test.describe('Snow Profile diagram reference grid', function() {
 
   // Store info read from the page being tested
   var hardnessLabels = [],
+    depthLabels = [],
+    expectLabels = [],
+    driver,
     SnowProfile = {};
 
   test.before(function() {
@@ -324,12 +324,13 @@ test.describe('Snow Profile diagram reference grid', function() {
         });
       });
   });
-}); // test.decribe('reference grid
 
-// When done, kill the browser
-test.after(function() {
-  driver.quit();
-});
+  // When done, kill the browser
+  test.after(function() {
+    driver.quit();
+  });
+
+}); // test.decribe('reference grid
 
 // Configure Emacs for Drupal JavaScript coding standards
 // Local Variables:

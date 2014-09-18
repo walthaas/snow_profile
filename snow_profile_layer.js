@@ -151,7 +151,7 @@ SnowProfile.Layer = function(depthArg) {
    */
   var handle = SnowProfile.drawing.rect(SnowProfile.Cfg.HANDLE_SIZE,
     SnowProfile.Cfg.HANDLE_SIZE)
-    .attr("class", "snow_profile_handle");
+    .addClass("snow_profile_handle");
 
   /**
    * Process handle drag
@@ -310,7 +310,7 @@ SnowProfile.Layer = function(depthArg) {
    * @todo Style
    */
   var layerOutline = SnowProfile.drawing.rect(0,0)
-    .attr('class', 'snow_profile_layer_outline')
+    .addClass('snow_profile_layer_outline')
   // .style({
   //   fill: "pink",
   //   opacity: 0.85,

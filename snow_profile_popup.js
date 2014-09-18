@@ -145,7 +145,7 @@ SnowProfile.PopUp = function(data) {
       }
     });
   }
-  $("#snow_profile_descr").dialog(editArgs);
+  $("#snow_profile_popup").dialog(editArgs);
 
   // Listen for changes to the primary grain shape
   // @todo Hide secondary grain shape until a primary shape selected
