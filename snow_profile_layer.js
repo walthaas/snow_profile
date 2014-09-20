@@ -64,6 +64,10 @@ SnowProfile.Layer = function(depthArg) {
    */
   var comment = "";
 
+  var layerDescr = SnowProfile.drawing.group()
+    .addClass('snow_profile_layer_descr')
+    .x(SnowProfile.Cfg.LAYER_DESCR_LEFT);
+
   /**
    * Text for the comment.
    *
@@ -75,7 +79,8 @@ SnowProfile.Layer = function(depthArg) {
    * @type {Object}
    * @todo Figure out how to manage width
    */
-  var commentDescr = SnowProfile.drawing.text("")
+  var commentDescr = layerDescr.text("")
+  .addClass('snow_profile_comment_descr')
   .style({
     fontSize: 14,
     fontFamily: 'sans-serif',
@@ -109,7 +114,8 @@ SnowProfile.Layer = function(depthArg) {
    * object for text giving the grain size of this snow layer.
    * @type {Object}
    */
-  var grainSizeText = SnowProfile.drawing.text("")
+  var grainSizeText = layerDescr.text("")
+  .addClass('snow_profile_grain_size')
   .style({
     fontSize: 14,
     fontFamily: 'sans-serif',
@@ -124,7 +130,8 @@ SnowProfile.Layer = function(depthArg) {
    * object holding icons describing the grain shape of this snow layer.
    * @type {Object}
    */
-  var grainIcons = SnowProfile.drawing.group()
+  var grainIcons = layerDescr.group()
+    .addClass('snow_profile_grain_icons')
     .x(SnowProfile.Cfg.GRAIN_ICON_LEFT);
 
   /**
@@ -136,11 +143,12 @@ SnowProfile.Layer = function(depthArg) {
    * snow layers.
    * @type {Object}
    */
-  var lineBelow = SnowProfile.drawing.line(0, 0, 0, 0)
-  .stroke({
-    color: SnowProfile.Cfg.GRID_COLOR,
-    width: 1
-  });
+  var lineBelow = layerDescr.line(0, 0, 0, 0)
+    .addClass('snow_profile_line_below')
+    .stroke({
+      color: SnowProfile.Cfg.GRID_COLOR,
+      width: 1
+    });
 
   /**
    * Handle for the line at the top of the layer.
@@ -372,16 +380,13 @@ SnowProfile.Layer = function(depthArg) {
     $(document).unbind("SnowProfileHideControls", handleInvisible);
     $(document).unbind("SnowProfileShowControls", handleVisible);
     $(document).unbind("SnowProfileAdjustGrid", self.draw);
-    handle.clear();
-    grainSizeText.clear();
-    grainIcons.clear();
-    commentDescr.clear();
-    lineBelow.clear();
-    handleLoc.clear();
-    layerOutline.clear();
-    diagLine.clear();
-    editButton.clear();
-    insertButton.clear();
+    handle.remove();
+    layerDescr.clear();
+    handleLoc.remove();
+    layerOutline.remove();
+    diagLine.remove();
+    editButton.destroy();
+    insertButton.destroy();
   }
 
   /**
@@ -653,8 +658,6 @@ SnowProfile.Layer = function(depthArg) {
             SnowProfile.CAAML_SHAPE[primaryShape].icon.image,
             SnowProfile.CAAML_SHAPE[primaryShape].icon.width,
             SnowProfile.CAAML_SHAPE[primaryShape].icon.height);
-          console.info("primaryIcon.bbox()=%o", primaryIcon.bbox());
-          console.info("primaryIcon.rbox()=%o", primaryIcon.rbox());
           iconCursor += SnowProfile.CAAML_SHAPE[primaryShape].icon.width;
         }
         container.add(primaryIcon);
@@ -943,10 +946,10 @@ SnowProfile.Layer = function(depthArg) {
       (SnowProfile.Cfg.HANDLE_SIZE / 2) + 3 +
         (i * SnowProfile.Cfg.DESCR_HEIGHT));
     lineBelow.plot(
-      SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
-      SnowProfile.Cfg.GRAPH_WIDTH + 1 + SnowProfile.Cfg.CTRLS_WD - 3,
-      SnowProfile.lineBelowY(i),
-      SnowProfile.Cfg.DRAWING_WD - 3,
+      -3, SnowProfile.lineBelowY(i),
+      SnowProfile.Cfg.GRAIN_FORM_WD + SnowProfile.Cfg.GRAIN_SPACE_WD +
+      SnowProfile.Cfg.GRAIN_SIZE_WD + SnowProfile.Cfg.COMMENT_SPACE_WD +
+      SnowProfile.Cfg.COMMENT_WD - 3,
       SnowProfile.lineBelowY(i)
     );
     diagLine.plot.apply(diagLine, diagLinePts());

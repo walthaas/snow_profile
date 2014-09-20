@@ -325,16 +325,26 @@ var SnowProfile = {};
     SnowProfile.Cfg.GRAPH_WIDTH + 150;
 
   /**
-   * X position of the left edge of the Grain icons area
+   * X position of the left edge of the layer description
    *
    * @const {number}
    * @memberof SnowProfile
    */
-  SnowProfile.Cfg.GRAIN_ICON_LEFT = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
+  SnowProfile.Cfg.LAYER_DESCR_LEFT = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
     SnowProfile.Cfg.GRAPH_WIDTH + 1 + SnowProfile.Cfg.CTRLS_WD;
 
   /**
+   * X position of the left edge of the Grain icons area
+   * within the layer description group
+   *
+   * @const {number}
+   * @memberof SnowProfile
+   */
+  SnowProfile.Cfg.GRAIN_ICON_LEFT = 0;
+
+  /**
    * X position of the left edge of the Grain size area
+   * within the layer description group
    *
    * @const {number}
    * @memberof SnowProfile
@@ -348,7 +358,7 @@ var SnowProfile = {};
    * @memberof SnowProfile
    */
   SnowProfile.Cfg.COMMENT_LEFT = SnowProfile.Cfg.GRAIN_SIZE_LEFT +
-    SnowProfile.Cfg.COMMENT_SPACE_WD;
+    SnowProfile.Cfg.GRAIN_SIZE_WD + SnowProfile.Cfg.COMMENT_SPACE_WD;
 
   /**
    * Snow stratigraphy snow layers.
@@ -1126,12 +1136,12 @@ var SnowProfile = {};
    * @const {Object}
    */
   SnowProfile.CAAML_SIZE = {
-    "very fine": "< 0.2\nmm",
-    "fine": "0.2-0.5\nmm",
-    "medium": "0.5-1.0\nmm",
-    "coarse": "1.0-2.0\nmm",
-    "very coarse": "2.0-5.0\nmm",
-    "extreme": "> 5.0\nmm"
+    "very fine": "< 0.2",
+    "fine": "0.2-0.5",
+    "medium": "0.5-1.0",
+    "coarse": "1.0-2.0",
+    "very coarse": "2.0-5.0",
+    "extreme": "> 5.0"
   };
 
   /**

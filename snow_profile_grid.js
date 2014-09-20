@@ -84,9 +84,9 @@ SnowProfile.Grid = function() {
         SnowProfile.depthGroup.add(SnowProfile.drawing.text(String(cm))
           .addClass("snow_profile_depth")
           .font({
-            fontSize: 12,
-            fontStyle: 'bold',
-            fontFamily: 'sans-serif',
+            size: 12,
+            style: 'bold',
+            family: 'sans-serif',
             fill: SnowProfile.Cfg.LABEL_COLOR})
           .move(40, y - 8));
 
@@ -116,9 +116,9 @@ SnowProfile.Grid = function() {
         SnowProfile.depthGroup.add(SnowProfile.drawing.text(String(cm))
           .addClass("snow_profile_depth")
           .font({
-            fontSize: 12,
-            fontStyle: 'bold',
-            fontFamily: 'sans-serif',
+            size: 12,
+            style: 'bold',
+            family: 'sans-serif',
             fill: SnowProfile.Cfg.LABEL_COLOR})
           .move(40, y - 8));
 
@@ -195,10 +195,10 @@ SnowProfile.Grid = function() {
           SnowProfile.CAAML_HARD[i][0])
           .addClass("snow_profile_hardness")
           .font({
-            fontSize: 12,
-            fontStyle: 'bold',
-            fontFamily: 'sans-serif',
-            fill: SnowProfile.LABEL_COLOR
+            size: 12,
+            style: 'bold',
+            family: 'sans-serif',
+            fill: SnowProfile.Cfg.LABEL_COLOR
           })
           .move(x - 1, SnowProfile.depth2y(SnowProfile.pitDepth) +
             (SnowProfile.Cfg.HANDLE_SIZE / 2) + 3));
@@ -209,9 +209,9 @@ SnowProfile.Grid = function() {
     SnowProfile.hardnessGroup.add(SnowProfile.drawing.text('Hand Hardness')
       .addClass("snow_profile_hardness")
       .font({
-        fontSize: 18,
-        fontStyle: 'bold',
-        fontFamily: 'sans-serif',
+        size: 18,
+        style: 'bold',
+        family: 'sans-serif',
         fill: SnowProfile.Cfg.LABEL_COLOR})
       .move(SnowProfile.Cfg.GRAPH_WIDTH / 2,
         SnowProfile.depth2y(SnowProfile.pitDepth) +
@@ -237,23 +237,48 @@ SnowProfile.Grid = function() {
       width: 1
     }));
 
-    // Add the label to the Grain Type column
-    SnowProfile.gridGroup.add(SnowProfile.drawing.text('Grain\nForm    Size')
+    // Add the label to the Grain Form column
+    SnowProfile.gridGroup.add(SnowProfile.drawing.text('Grain\nForm')
     .font({
-      fontSize: 14,
-      fontStyle: 'bold',
-      fontFamily: 'sans-serif',
-      fill: SnowProfile.Cfg.LABEL_COLOR})
-    .move(SnowProfile.Cfg.GRAIN_ICON_LEFT, 12));
+      size: 14,
+      leading: 1.1,
+      style: 'bold',
+      family: 'sans-serif',
+      fill: SnowProfile.Cfg.LABEL_COLOR
+    })
+    .move(SnowProfile.Cfg.LAYER_DESCR_LEFT, 10));
+
+    // Add the label to the Grain Size column
+    SnowProfile.gridGroup.add(SnowProfile.drawing.text('Size\n(mm)')
+    .font({
+      size: 14,
+      leading: 1.1,
+      style: 'bold',
+      family: 'sans-serif',
+      fill: SnowProfile.Cfg.LABEL_COLOR
+    })
+    .move(SnowProfile.Cfg.LAYER_DESCR_LEFT + SnowProfile.Cfg.GRAIN_SIZE_LEFT,
+      10));
 
     // Add the label to the Comment column
-    SnowProfile.gridGroup.add(SnowProfile.drawing.text('Comment')
-    .font({
-      fontSize: 14,
-      fontStyle: 'bold',
-      fontFamily: 'sans-serif',
-      fill: SnowProfile.Cfg.LABEL_COLOR})
-    .move(SnowProfile.Cfg.COMMENT_LEFT, 25));
+    var commentHeading = SnowProfile.drawing.text('Comment')
+      .font({
+        size: 14,
+        style: 'bold',
+        family: 'sans-serif',
+        fill: SnowProfile.Cfg.LABEL_COLOR
+      })
+      .move(SnowProfile.Cfg.LAYER_DESCR_LEFT + SnowProfile.Cfg.COMMENT_LEFT,
+        25);
+    SnowProfile.gridGroup.add(commentHeading);
+    // var chRbox = commentHeading.rbox();
+    // var commentBox = SnowProfile.drawing.rect(chRbox.width, chRbox.height)
+    //   .move(chRbox.x, chRbox.y)
+    //   .style({
+    //      "fill-opacity": 0,
+    //      stroke: 'red'
+    //   });
+    // SnowProfile.gridGroup.add(SnowProfile.drawing.rect());
   } // function drawLabels()
 
   /**
