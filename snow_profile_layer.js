@@ -64,7 +64,8 @@ SnowProfile.Layer = function(depthArg) {
    */
   var comment = "";
 
-  var layerDescr = SnowProfile.drawing.group()
+  var layerDescr = SnowProfile.drawing.group(SnowProfile.Cfg.LAYER_DESCR_WD,
+    SnowProfile.Cfg.DESCR_HEIGHT)
     .addClass('snow_profile_layer_descr')
     .x(SnowProfile.Cfg.LAYER_DESCR_LEFT)
     .y(SnowProfile.depth2y(depthVal) + (SnowProfile.Cfg.HANDLE_SIZE / 2));
@@ -974,22 +975,15 @@ SnowProfile.Layer = function(depthArg) {
    */
   this.setIndexPosition = function() {
     var i = self.getIndex();
-    grainSizeText.y(SnowProfile.Cfg.HANDLE_MIN_Y +
+    layerDescr.y(SnowProfile.Cfg.HANDLE_MIN_Y +
       (i * SnowProfile.Cfg.DESCR_HEIGHT) +
-      (SnowProfile.Cfg.HANDLE_SIZE / 2) + 3);
-    grainIcons.cy(SnowProfile.Cfg.HANDLE_MIN_Y +
-      (i * SnowProfile.Cfg.DESCR_HEIGHT) +
-      (SnowProfile.Cfg.DESCR_HEIGHT / 2));
-    commentDescr.y(SnowProfile.Cfg.HANDLE_MIN_Y +
-      (SnowProfile.Cfg.HANDLE_SIZE / 2) + 3 +
-        (i * SnowProfile.Cfg.DESCR_HEIGHT));
+      (SnowProfile.Cfg.HANDLE_SIZE / 2));
     lineBelow.plot(
-      -3,
-      SnowProfile.lineBelowY(i),
+      -3, SnowProfile.Cfg.DESCR_HEIGHT,
       SnowProfile.Cfg.GRAIN_FORM_WD + SnowProfile.Cfg.GRAIN_SPACE_WD +
         SnowProfile.Cfg.GRAIN_SIZE_WD + SnowProfile.Cfg.COMMENT_SPACE_WD +
         SnowProfile.Cfg.COMMENT_WD,
-      SnowProfile.lineBelowY(i)
+      SnowProfile.Cfg.DESCR_HEIGHT
     );
     diagLine.plot.apply(diagLine, diagLinePts());
     editButton.setY(SnowProfile.Cfg.HANDLE_MIN_Y +

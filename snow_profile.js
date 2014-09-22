@@ -333,6 +333,11 @@ var SnowProfile = {};
   SnowProfile.Cfg.LAYER_DESCR_LEFT = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
     SnowProfile.Cfg.GRAPH_WIDTH + 1 + SnowProfile.Cfg.CTRLS_WD;
 
+  SnowProfile.Cfg.LAYER_DESCR_WD = SnowProfile.Cfg.GRAIN_FORM_WD +
+    SnowProfile.Cfg.GRAIN_SPACE_WD + SnowProfile.Cfg.GRAIN_SIZE_WD +
+    SnowProfile.Cfg.COMMENT_SPACE_WD + SnowProfile.Cfg.COMMENT_WD;
+
+
   /**
    * X position of the left edge of the Grain icons area
    * within the layer description group
