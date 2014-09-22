@@ -1209,6 +1209,14 @@ var SnowProfile = {};
    */
   SnowProfile.drawing = SVG("snow_profile_diagram");
 
+  // For debugging, show the bounding box
+  SnowProfile.drawingBox = SnowProfile.drawing.rect(0, 0)
+    .style({
+       "fill-opacity": 0,
+       stroke: 'red'
+    });
+  SnowProfile.drawing.add(SnowProfile.drawingBox);
+
   /**
    * SnowProfile drawing grid group
    *

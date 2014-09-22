@@ -230,7 +230,7 @@ SnowProfile.Grid = function() {
     SnowProfile.gridGroup.add(SnowProfile.drawing.line(
       SnowProfile.Cfg.DEPTH_LABEL_WD + 1,
       SnowProfile.Cfg.HANDLE_MIN_Y + (SnowProfile.Cfg.HANDLE_SIZE / 2),
-      SnowProfile.Cfg.DRAWING_WD - 3,
+      SnowProfile.Cfg.DRAWING_WD,
       SnowProfile.Cfg.HANDLE_MIN_Y + (SnowProfile.Cfg.HANDLE_SIZE / 2))
     .stroke({
       color: SnowProfile.Cfg.GRID_COLOR,
@@ -271,14 +271,17 @@ SnowProfile.Grid = function() {
       .move(SnowProfile.Cfg.LAYER_DESCR_LEFT + SnowProfile.Cfg.COMMENT_LEFT,
         25);
     SnowProfile.gridGroup.add(commentHeading);
-    // var chRbox = commentHeading.rbox();
-    // var commentBox = SnowProfile.drawing.rect(chRbox.width, chRbox.height)
-    //   .move(chRbox.x, chRbox.y)
+
+    // // For debugging show the bounding box
+    // var chBbox = commentHeading.bbox();
+    // var commentBox = SnowProfile.drawing.rect(chBbox.width, chBbox.height)
+    //   .x(chBbox.x)
+    //   .y(chBbox.y)
     //   .style({
     //      "fill-opacity": 0,
     //      stroke: 'red'
     //   });
-    // SnowProfile.gridGroup.add(SnowProfile.drawing.rect());
+    // SnowProfile.gridGroup.add(commentBox);
   } // function drawLabels()
 
   /**
@@ -326,6 +329,13 @@ SnowProfile.Grid = function() {
 
     // Draw labels
     drawLabels();
+
+    // For debugging, show the bounding box
+    var drawingBbox = SnowProfile.drawing.bbox();
+    SnowProfile.drawingBox.width(drawingBbox.width);
+    SnowProfile.drawingBox.height(drawingBbox.height);
+    SnowProfile.drawingBox.x(drawingBbox.x);
+    SnowProfile.drawingBox.y(drawingBbox.y);
 
     // Trigger a custom event to let the rest of the code know
     $.event.trigger("SnowProfileDrawGrid");

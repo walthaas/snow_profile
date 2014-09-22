@@ -66,7 +66,8 @@ SnowProfile.Layer = function(depthArg) {
 
   var layerDescr = SnowProfile.drawing.group()
     .addClass('snow_profile_layer_descr')
-    .x(SnowProfile.Cfg.LAYER_DESCR_LEFT);
+    .x(SnowProfile.Cfg.LAYER_DESCR_LEFT)
+    .y(SnowProfile.depth2y(depthVal) + (SnowProfile.Cfg.HANDLE_SIZE / 2));
 
   /**
    * Text for the comment.
@@ -81,12 +82,21 @@ SnowProfile.Layer = function(depthArg) {
    */
   var commentDescr = layerDescr.text("")
   .addClass('snow_profile_comment_descr')
-  .style({
-    fontSize: 14,
-    fontFamily: 'sans-serif',
+  .font({
+    size: 14,
+    family: 'sans-serif',
     fill: "#000",
   })
   .x(SnowProfile.Cfg.COMMENT_LEFT);
+
+  // For debugging, show the bounding box
+  var cdBox = SnowProfile.drawing.rect(0, 0)
+    .addClass('snow_profile_cdbox')
+    .style({
+       "fill-opacity": 0,
+       stroke: 'red'
+    });
+  layerDescr.add(cdBox);
 
   /**
    * Has the user touched the handle since this layer was created?
@@ -116,12 +126,21 @@ SnowProfile.Layer = function(depthArg) {
    */
   var grainSizeText = layerDescr.text("")
   .addClass('snow_profile_grain_size')
-  .style({
-    fontSize: 14,
-    fontFamily: 'sans-serif',
+  .font({
+    size: 14,
+    family: 'sans-serif',
     fill: "#000"
   })
   .x(SnowProfile.Cfg.GRAIN_SIZE_LEFT);
+
+  // For debugging, show the bounding box
+  var gsBox = SnowProfile.drawing.rect(0, 0)
+    .addClass('snow_profile_gsbox')
+    .style({
+       "fill-opacity": 0,
+       stroke: 'red'
+    });
+  layerDescr.add(gsBox);
 
   /**
    * Group to hold the icons describing this layer's grains
@@ -133,6 +152,15 @@ SnowProfile.Layer = function(depthArg) {
   var grainIcons = layerDescr.group()
     .addClass('snow_profile_grain_icons')
     .x(SnowProfile.Cfg.GRAIN_ICON_LEFT);
+
+  // For debugging, show the bounding box
+  var giBox = SnowProfile.drawing.rect(0, 0)
+    .addClass('snow_profile_gibox')
+    .style({
+       "fill-opacity": 0,
+       stroke: 'red'
+    });
+  layerDescr.add(giBox);
 
   /**
    * Horizontal line below the description
@@ -255,18 +283,6 @@ SnowProfile.Layer = function(depthArg) {
       y: newY
     };
   });
-  // .style({
-  //   fill: '#000'
-  // })
-  // .move({
-  //   x: SnowProfile.HANDLE_MIN_X,
-  //   y: SnowProfile.Cfg.depth2y(depthVal)
-  // });
-
-  //   offsetX: SnowProfile.Cfg.HANDLE_SIZE / 2,
-  //   draggable: true,
-  //   dragBoundFunc:
-  // }); // handle = SnowProfile.drawing.rect()
 
   /**
    * Text to show current handle location.
@@ -279,10 +295,10 @@ SnowProfile.Layer = function(depthArg) {
    * @todo Style
    */
   var handleLoc = SnowProfile.drawing.text("")
-  .style({
-    fontSize: 12,
-    fontStyle: 'bold',
-    fontFamily: 'sans-serif',
+  .font({
+    size: 12,
+    style: 'bold',
+    family: 'sans-serif',
     fill: SnowProfile.Cfg.LABEL_COLOR,
   })
   .x(SnowProfile.Cfg.DEPTH_LABEL_WD + 1 + SnowProfile.Cfg.GRAPH_WIDTH + 10)
@@ -319,13 +335,8 @@ SnowProfile.Layer = function(depthArg) {
    */
   var layerOutline = SnowProfile.drawing.rect(0,0)
     .addClass('snow_profile_layer_outline')
-  // .style({
-  //   fill: "pink",
-  //   opacity: 0.85,
-  //   stroke: '#000'
-  // })
-  .x(SnowProfile.Cfg.DEPTH_LABEL_WD + 1)
-  .y(0);
+    .x(SnowProfile.Cfg.DEPTH_LABEL_WD + 1)
+    .y(0);
 
   /**
    * Get or set depth in cm of this snow layer
@@ -745,6 +756,7 @@ SnowProfile.Layer = function(depthArg) {
       }
     } // function sym2icons
 
+    // Main body of this.describe function
     if (data === undefined) {
 
       // Called with no argument, return an object with the values
@@ -758,7 +770,7 @@ SnowProfile.Layer = function(depthArg) {
         layer: self,
         numLayers: SnowProfile.snowLayers.length
       };
-    }
+    } // if (data === undefined)
     else {
 
       // Called with an argument so set values for layer
@@ -767,43 +779,67 @@ SnowProfile.Layer = function(depthArg) {
       secondaryGrainShape = data.secondaryGrainShape;
       secondaryGrainSubShape = data.secondaryGrainSubShape;
       grainSize = data.grainSize;
+      comment = data.comment;
 
-      // Empty the icon group and text description
-      grainSizeText.text("");
+      // Empty the grain shape icon group and text description
       grainIcons.clear();
-      if ((primaryGrainShape !== "") ||
-        (grainSize !== "")) {
+      if (primaryGrainShape !== "") {
 
-        // Build a text description from what we have
+        // The user gave us grain shape information.
+        // Build a text description of grain shape from what we have
         var text = sym2text(primaryGrainShape, primaryGrainSubShape,
           secondaryGrainShape, secondaryGrainSubShape);
         text = text; // to suppress JSHint "unused" error
 
-        // Build an iconic description from what we have
+        // Build an iconic description of grain shape from what we have
         sym2icons(primaryGrainShape, primaryGrainSubShape,
           secondaryGrainShape, secondaryGrainSubShape, grainIcons);
-        }
-        // Show the grain size
-        if (grainSize !== "") {
-
-          // Grain size information is available.
-          grainSizeText.text(SnowProfile.CAAML_SIZE[grainSize]);
-        }
       }
+
+      // For debugging show the grain shape icon bounding box
+      var giBbox = grainIcons.bbox();
+      giBox.width(giBbox.width);
+      giBox.height(giBbox.height);
+      giBox.x(giBbox.x);
+      giBox.y(giBbox.y);
+
+      // Empty the grain size text description
+      grainSizeText.text("");
+      if (grainSize !== "") {
+
+        // The user gave us grain size information.
+        // Build a text description of grain size from what we have.
+        grainSizeText.text(SnowProfile.CAAML_SIZE[grainSize]);
+      }
+
+      // For debugging show the grain size bounding box
+      var gsBbox = grainSizeText.bbox();
+      gsBox.width(gsBbox.width);
+      gsBox.height(gsBbox.height);
+      gsBox.x(gsBbox.x);
+      gsBox.y(gsBbox.y);
 
       // Comment description
-      comment = data.comment;
-      if (comment === "") {
-        commentDescr.text("");
-      }
-      else {
+      commentDescr.text("");
+      if (comment !== "") {
+
+        // The user gave us a comment.
+        // Build a text description of the comment from what we have.
         commentDescr.text(comment);
       }
 
-      // Re-draw the diagram with the updated information
-      self.setIndexPosition();
-      //self.draw();
-  };
+      // For debugging show the comment description bounding box
+      var cdBbox = commentDescr.bbox();
+      cdBox.width(cdBbox.width);
+      cdBox.height(cdBbox.height);
+      cdBox.x(cdBbox.x);
+      cdBox.y(cdBbox.y);
+    } // if (data === undefined) ... else
+
+    // Re-draw the diagram with the updated information
+    self.setIndexPosition();
+    //self.draw();
+  }; // this.describe = function(data) {
 
   /**
    Return the current X position of the handle
@@ -847,7 +883,9 @@ SnowProfile.Layer = function(depthArg) {
       // Not the bottom layer so bottom Y is top of next lower layer
       yBottom += SnowProfile.snowLayers[i+1].handleGetY();
     }
-    layerOutline.width(handle.x() - SnowProfile.Cfg.DEPTH_LABEL_WD - 1);
+    if (handle.x() !== SnowProfile.Cfg.HANDLE_INIT_X) {
+      layerOutline.width(handle.x() - SnowProfile.Cfg.DEPTH_LABEL_WD - 1);
+    }
     layerOutline.y(yTop);
     layerOutline.height(yBottom - yTop);
   };
@@ -946,10 +984,11 @@ SnowProfile.Layer = function(depthArg) {
       (SnowProfile.Cfg.HANDLE_SIZE / 2) + 3 +
         (i * SnowProfile.Cfg.DESCR_HEIGHT));
     lineBelow.plot(
-      -3, SnowProfile.lineBelowY(i),
+      -3,
+      SnowProfile.lineBelowY(i),
       SnowProfile.Cfg.GRAIN_FORM_WD + SnowProfile.Cfg.GRAIN_SPACE_WD +
-      SnowProfile.Cfg.GRAIN_SIZE_WD + SnowProfile.Cfg.COMMENT_SPACE_WD +
-      SnowProfile.Cfg.COMMENT_WD - 3,
+        SnowProfile.Cfg.GRAIN_SIZE_WD + SnowProfile.Cfg.COMMENT_SPACE_WD +
+        SnowProfile.Cfg.COMMENT_WD,
       SnowProfile.lineBelowY(i)
     );
     diagLine.plot.apply(diagLine, diagLinePts());
