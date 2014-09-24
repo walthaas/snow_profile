@@ -586,23 +586,27 @@ SnowProfile.Layer = function(depthArg) {
           SnowProfile.CAAML_SUBSHAPE.MF.MFcr.icon.image,
           SnowProfile.CAAML_SUBSHAPE.MF.MFcr.icon.height,
           SnowProfile.CAAML_SUBSHAPE.MF.MFcr.icon.width);
-        container.add(primaryIcon);
+        container.add(primaryIcon)
+          .cy(SnowProfile.Cfg.DESCR_HEIGHT / 2);
       }
       else {
 
         // There is a secondary shape, so use the alternative MFcr icon
-        primaryIcon = SnowProfile.drawing.image("data:image/png;base64," +
-          image, 52, 29)
-        .y((29 - SnowProfile.Cfg.DESCR_HEIGHT) / 2);
+        primaryIcon = SnowProfile.drawing.image(
+          "data:image/png;base64," + image, 52, 29)
+          .cy(SnowProfile.Cfg.DESCR_HEIGHT / 2);
+        console.debug('primaryIcon.y=', primaryIcon.y());
+        console.debug('primaryIcon.cy=', primaryIcon.cy());
         container.add(primaryIcon);
         if (secondarySubShape === "") {
           // User did not specify a secondary subshape
           secondaryIcon = SnowProfile.drawing.image("data:image/png;base64," +
             SnowProfile.CAAML_SHAPE[secondaryShape].icon.image,
             SnowProfile.CAAML_SHAPE[secondaryShape].icon.width,
-            SnowProfile.CAAML_SHAPE[secondaryShape].icon.height);
-          secondaryIcon.x(((SnowProfile.CAAML_SHAPE[secondaryShape]
-            .icon.width) / 2) + 24);
+            SnowProfile.CAAML_SHAPE[secondaryShape].icon.height)
+            .cx(((SnowProfile.CAAML_SHAPE[secondaryShape]
+              .icon.width) / 2) + 30)
+            .cy(SnowProfile.Cfg.DESCR_HEIGHT / 2);
         }
         else {
           // User specified a secondary subshape
@@ -612,10 +616,13 @@ SnowProfile.Layer = function(depthArg) {
             SnowProfile.CAAML_SUBSHAPE[secondaryShape][secondarySubShape].
             icon.width,
             SnowProfile.CAAML_SUBSHAPE[secondaryShape][secondarySubShape].
-            icon.height);
-          secondaryIcon.x(((SnowProfile.CAAML_SUBSHAPE[secondaryShape]
-            [secondarySubShape].icon.width) / 2) + 24);
+            icon.height)
+            .cx(((SnowProfile.CAAML_SUBSHAPE[secondaryShape]
+              [secondarySubShape].icon.width) / 2) + 30)
+            .cy(SnowProfile.Cfg.DESCR_HEIGHT / 2);
         }
+        console.debug('secondaryIcon.y=', secondaryIcon.y());
+        console.debug('secondaryIcon.cy=', secondaryIcon.cy());
         container.add(secondaryIcon);
       }
     } // function sym2iconsMFcr()
@@ -673,13 +680,16 @@ SnowProfile.Layer = function(depthArg) {
           iconCursor += SnowProfile.CAAML_SHAPE[primaryShape].icon.width;
         }
         container.add(primaryIcon);
+        primaryIcon.cy(SnowProfile.Cfg.DESCR_HEIGHT / 2);
         if (secondaryShape !== "") {
 
           // User specified a secondary grain shape
           // Add left paren to the icons
           iconCursor += 3;
           //FIXME vertical displacement should be calculated from bbox
-          container.add(SnowProfile.drawing.text("(").x(iconCursor).y(-6));
+          container.add(SnowProfile.drawing.text("(")
+            .x(iconCursor)
+            .cy(SnowProfile.Cfg.DESCR_HEIGHT / 2));
           iconCursor += 7;
 
           // Add secondary grain shape icon
@@ -710,11 +720,14 @@ SnowProfile.Layer = function(depthArg) {
             iconCursor += SnowProfile.CAAML_SHAPE[secondaryShape].icon.width;
           }
           container.add(secondaryIcon);
+          secondaryIcon.cy(SnowProfile.Cfg.DESCR_HEIGHT / 2);
 
           // Add right paren to the icons
           iconCursor += 3;
           //FIXME vertical displacement should be calculated from bbox
-          container.add(SnowProfile.drawing.text(")").x(iconCursor).y(-6));
+          container.add(SnowProfile.drawing.text(")")
+            .x(iconCursor)
+            .cy(SnowProfile.Cfg.DESCR_HEIGHT / 2));
         }
       }
     } // function sym2iconsNormal()
@@ -810,7 +823,8 @@ SnowProfile.Layer = function(depthArg) {
 
         // The user gave us grain size information.
         // Build a text description of grain size from what we have.
-        grainSizeText.text(SnowProfile.CAAML_SIZE[grainSize]);
+        grainSizeText.text(SnowProfile.CAAML_SIZE[grainSize])
+          .cy(SnowProfile.Cfg.DESCR_HEIGHT / 2);
       }
 
       // For debugging show the grain size bounding box
@@ -826,7 +840,8 @@ SnowProfile.Layer = function(depthArg) {
 
         // The user gave us a comment.
         // Build a text description of the comment from what we have.
-        commentDescr.text(comment);
+        commentDescr.text(comment).cy(SnowProfile.Cfg.DESCR_HEIGHT / 2);
+;
       }
 
       // For debugging show the comment description bounding box
