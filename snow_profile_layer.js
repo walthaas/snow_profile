@@ -193,7 +193,6 @@ SnowProfile.Layer = function(depthArg) {
    *
    * The user drags and drops this handle to adjust depth and hardness.
    * @type {Object}
-   * @todo Animate
    */
   var handle = SnowProfile.drawing.rect(SnowProfile.Cfg.HANDLE_SIZE,
     SnowProfile.Cfg.HANDLE_SIZE)
@@ -303,7 +302,9 @@ SnowProfile.Layer = function(depthArg) {
    *
    * For some reason this must be done after handle.draggable() not before.
    */
-  handle.animate().size(5,5).loop();
+  handle.animate({ease: SVG.easing.backInOut, duration: '1000'})
+    .size(SnowProfile.Cfg.HANDLE_SIZE / 1.4, SnowProfile.Cfg.HANDLE_SIZE / 1.4)
+    .loop();
 
   /**
    * Text to show current handle location.
