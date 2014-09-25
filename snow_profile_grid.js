@@ -237,8 +237,8 @@ SnowProfile.Grid = function() {
       width: 1
     }));
 
-    // Add the label to the Grain Form column
-    SnowProfile.gridGroup.add(SnowProfile.drawing.text('Grain\nForm')
+    // Add the label to the Grain Shape column
+    SnowProfile.gridGroup.add(SnowProfile.drawing.text('Grain\nShape')
     .font({
       size: 14,
       leading: 1.1,

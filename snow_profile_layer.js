@@ -70,6 +70,15 @@ SnowProfile.Layer = function(depthArg) {
     .x(SnowProfile.Cfg.LAYER_DESCR_LEFT)
     .y(SnowProfile.depth2y(depthVal) + (SnowProfile.Cfg.HANDLE_SIZE / 2));
 
+  // For debugging, show the bounding box
+  var ldBox = SnowProfile.drawing.rect(0, 0)
+    .addClass('snow_profile_ldbox')
+    .style({
+       "fill-opacity": 0,
+       stroke: 'blue'
+    });
+  layerDescr.add(ldBox);
+
   /**
    * Text for the comment.
    *
@@ -209,6 +218,10 @@ SnowProfile.Layer = function(depthArg) {
     var numLayers = SnowProfile.snowLayers.length;
     var mm;
 
+    // Stop the animation
+    handle.stop();
+    handle.size(SnowProfile.Cfg.HANDLE_SIZE, SnowProfile.Cfg.HANDLE_SIZE);
+
     // X (hardness) position is bound by the edges of the graph.
     if (x < SnowProfile.Cfg.HANDLE_MIN_X) {
       newX = SnowProfile.Cfg.HANDLE_MIN_X;
@@ -284,6 +297,13 @@ SnowProfile.Layer = function(depthArg) {
       y: newY
     };
   });
+
+  /**
+   * Animate the uninitialized handle to draw the user's attention
+   *
+   * For some reason this must be done after handle.draggable() not before.
+   */
+  handle.animate().size(5,5).loop();
 
   /**
    * Text to show current handle location.
@@ -494,10 +514,12 @@ SnowProfile.Layer = function(depthArg) {
    */
   this.describe = function(data) {
 
+      var cdBbox, giBbox, gsBbox, ldBbox;
+
     /**
-     * Generate a text description of grain forms from symbols
+     * Generate a text description of grain shapes from symbols
      *
-     * Accept grain form symbols selected by the user, if any, and
+     * Accept grain shape symbols selected by the user, if any, and
      * return a text description of the form.  The description is
      * constructed by looking up the symbols in CAAML_SHAPE and
      * CAAML_SUBSHAPE to find the equivalent text.
@@ -505,7 +527,7 @@ SnowProfile.Layer = function(depthArg) {
      * @param {string} primarySubShape Primary grain subshape symbol
      * @param {string} secondaryShape Secondary grain shape symbol
      * @param {string} secondarySubShape Secondary grain subshape symbol
-     * @returns {string} Text description of the grain forms
+     * @returns {string} Text description of the grain shapes
      * @memberof SnowProfile.Layer.describe
      */
     function sym2text(primaryShape, primarySubShape, secondaryShape,
@@ -595,8 +617,6 @@ SnowProfile.Layer = function(depthArg) {
         primaryIcon = SnowProfile.drawing.image(
           "data:image/png;base64," + image, 52, 29)
           .cy(SnowProfile.Cfg.DESCR_HEIGHT / 2);
-        console.debug('primaryIcon.y=', primaryIcon.y());
-        console.debug('primaryIcon.cy=', primaryIcon.cy());
         container.add(primaryIcon);
         if (secondarySubShape === "") {
           // User did not specify a secondary subshape
@@ -621,8 +641,6 @@ SnowProfile.Layer = function(depthArg) {
               [secondarySubShape].icon.width) / 2) + 30)
             .cy(SnowProfile.Cfg.DESCR_HEIGHT / 2);
         }
-        console.debug('secondaryIcon.y=', secondaryIcon.y());
-        console.debug('secondaryIcon.cy=', secondaryIcon.cy());
         container.add(secondaryIcon);
       }
     } // function sym2iconsMFcr()
@@ -630,7 +648,7 @@ SnowProfile.Layer = function(depthArg) {
     /**
      * Generate an icon description for normal case
      *
-     * Accept grain form symbols selected by the user, if any, and
+     * Accept grain shape symbols selected by the user, if any, and
      * return an icon description of the form.  The description is
      * constructed by looking up the symbols in
      * {@link SnowProfile.CAAML_SHAPE} and
@@ -733,9 +751,9 @@ SnowProfile.Layer = function(depthArg) {
     } // function sym2iconsNormal()
 
     /**
-     * Generate an icon description of grain forms from symbols
+     * Generate an icon description of grain shapes from symbols
      *
-     * Accept grain form symbols selected by the user, if any, and
+     * Accept grain shape symbols selected by the user, if any, and
      * return an icon description of the form.  The description is
      * constructed by looking up the symbols in
      * {@link SnowProfile.CAAML_SHAPE} and
@@ -792,8 +810,12 @@ SnowProfile.Layer = function(depthArg) {
       primaryGrainSubShape = data.primaryGrainSubShape;
       secondaryGrainShape = data.secondaryGrainShape;
       secondaryGrainSubShape = data.secondaryGrainSubShape;
+      giBbox = null;
       grainSize = data.grainSize;
+      gsBbox = null;
       comment = data.comment;
+      cdBbox = null;
+      ldBbox = null;
 
       // Empty the grain shape icon group and text description
       grainIcons.clear();
@@ -833,6 +855,7 @@ SnowProfile.Layer = function(depthArg) {
       gsBox.height(gsBbox.height);
       gsBox.x(gsBbox.x);
       gsBox.y(gsBbox.y);
+//      ldBbox = giBbox.merge(gsBbox);
 
       // Comment description
       commentDescr.text("");
@@ -841,7 +864,6 @@ SnowProfile.Layer = function(depthArg) {
         // The user gave us a comment.
         // Build a text description of the comment from what we have.
         commentDescr.text(comment).cy(SnowProfile.Cfg.DESCR_HEIGHT / 2);
-;
       }
 
       // For debugging show the comment description bounding box
@@ -851,6 +873,13 @@ SnowProfile.Layer = function(depthArg) {
       cdBox.x(cdBbox.x);
       cdBox.y(cdBbox.y);
     } // if (data === undefined) ... else
+
+    // For debugging show the layer description bounding box
+    // ldBox.width(ldBbox.width);
+    // ldBox.height(ldBbox.height);
+    // ldBox.x(ldBbox.x);
+    // ldBox.y(ldBbox.y);
+
 
     // Re-draw the diagram with the updated information
     self.setIndexPosition();
@@ -995,7 +1024,7 @@ SnowProfile.Layer = function(depthArg) {
       (SnowProfile.Cfg.HANDLE_SIZE / 2));
     lineBelow.plot(
       -3, SnowProfile.Cfg.DESCR_HEIGHT,
-      SnowProfile.Cfg.GRAIN_FORM_WD + SnowProfile.Cfg.GRAIN_SPACE_WD +
+      SnowProfile.Cfg.GRAIN_SHAPE_WD + SnowProfile.Cfg.GRAIN_SPACE_WD +
         SnowProfile.Cfg.GRAIN_SIZE_WD + SnowProfile.Cfg.COMMENT_SPACE_WD +
         SnowProfile.Cfg.COMMENT_WD,
       SnowProfile.Cfg.DESCR_HEIGHT

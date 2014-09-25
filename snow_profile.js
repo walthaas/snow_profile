@@ -26,7 +26,7 @@ var SnowProfile = {};
  * ___________________________________________________________________
  *       |             |          |       | |       |
  * Depth |             |          | Grain | | Grain |
- * Label | Graph       | Controls | Form  | | Size  | Comment
+ * Label | Graph       | Controls | Shape | | Size  | Comment
  *       |             |          |       | |       |
  *____________________________________________________________________
  *       | Hardness    |
@@ -92,14 +92,14 @@ var SnowProfile = {};
     CTRLS_WD: 200,
 
     /**
-     * Width in pixels of the area used by snow grain form
+     * Width in pixels of the area used by snow grain shape
      * @memberof SnowProfile
      * @const {number}
      */
-    GRAIN_FORM_WD: 60,
+    GRAIN_SHAPE_WD: 60,
 
     /**
-     * Width in pixels of the space between grain form and size
+     * Width in pixels of the space between grain shape and size
      * @memberof SnowProfile
      * @const {number}
      */
@@ -305,7 +305,7 @@ var SnowProfile = {};
    */
    SnowProfile.Cfg.DRAWING_WD = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
      SnowProfile.Cfg.GRAPH_WIDTH + 1 + SnowProfile.Cfg.CTRLS_WD + 1 +
-     SnowProfile.Cfg.GRAIN_FORM_WD + SnowProfile.Cfg.GRAIN_SPACE_WD +
+     SnowProfile.Cfg.GRAIN_SHAPE_WD + SnowProfile.Cfg.GRAIN_SPACE_WD +
      SnowProfile.Cfg.GRAIN_SIZE_WD + SnowProfile.Cfg.COMMENT_SPACE_WD +
      SnowProfile.Cfg.COMMENT_WD;
 
@@ -333,7 +333,7 @@ var SnowProfile = {};
   SnowProfile.Cfg.LAYER_DESCR_LEFT = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
     SnowProfile.Cfg.GRAPH_WIDTH + 1 + SnowProfile.Cfg.CTRLS_WD;
 
-  SnowProfile.Cfg.LAYER_DESCR_WD = SnowProfile.Cfg.GRAIN_FORM_WD +
+  SnowProfile.Cfg.LAYER_DESCR_WD = SnowProfile.Cfg.GRAIN_SHAPE_WD +
     SnowProfile.Cfg.GRAIN_SPACE_WD + SnowProfile.Cfg.GRAIN_SIZE_WD +
     SnowProfile.Cfg.COMMENT_SPACE_WD + SnowProfile.Cfg.COMMENT_WD;
 
@@ -355,7 +355,7 @@ var SnowProfile = {};
    * @memberof SnowProfile
    */
   SnowProfile.Cfg.GRAIN_SIZE_LEFT = SnowProfile.Cfg.GRAIN_ICON_LEFT +
-    SnowProfile.Cfg.GRAIN_FORM_WD + SnowProfile.Cfg.GRAIN_SPACE_WD;
+    SnowProfile.Cfg.GRAIN_SHAPE_WD + SnowProfile.Cfg.GRAIN_SPACE_WD;
 
   /**
    * X position of the left edge of the Comment text area
@@ -486,8 +486,8 @@ var SnowProfile = {};
           "v3uXAS1BF+wOTHbwmvmtakINtBL6HTGuzrLvIeNaUgjgScUZiAFPCfX+I" +
           "eghEGu8nDBV3wUZIDSONLK4H7Rf5L8Q/Kt1Cr4wgf2l0QO8Jl9FehEvVo" +
           "GGIOus68DJ3jE9orITi7h+BfPSUFU8uzJMwAAAABJRU5ErkJggg==",
-        height: 17,
-        width: 16
+        height: 16,
+        width: 17
       }
     },
     SH: {
