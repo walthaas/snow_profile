@@ -90,14 +90,17 @@ SnowProfile.Layer = function(depthArg) {
    * @type {Object}
    * @todo Figure out how to manage width
    */
-  var commentDescr = layerDescr.text("")
-  .addClass('snow_profile_comment_descr')
-  .font({
-    size: 14,
-    family: 'sans-serif',
-    fill: "#000",
-  })
-  .x(SnowProfile.Cfg.COMMENT_LEFT);
+  var commentDescr = SnowProfile.drawing.foreignObject()
+    .addClass('snow_profile_comment_descr')
+    .attr({
+      x: SnowProfile.Cfg.COMMENT_LEFT,
+      height: SnowProfile.Cfg.DESCR_HEIGHT,
+      width: SnowProfile.Cfg.COMMENT_WD
+    });
+  layerDescr.add(commentDescr);
+  commentDescr.appendChild('div', {
+    className: 'snow_profile_comment_descr'
+  });
 
   // For debugging, show the bounding box
   var cdBox = SnowProfile.drawing.rect(0, 0)
@@ -515,7 +518,7 @@ SnowProfile.Layer = function(depthArg) {
    */
   this.describe = function(data) {
 
-      var cdBbox, giBbox, gsBbox, ldBbox;
+    var cdBbox, giBbox, gsBbox, ldBbox;
 
     /**
      * Generate a text description of grain shapes from symbols
@@ -859,28 +862,24 @@ SnowProfile.Layer = function(depthArg) {
 //      ldBbox = giBbox.merge(gsBbox);
 
       // Comment description
-      commentDescr.text("");
+      commentDescr.getChild(0).textContent = "";
       if (comment !== "") {
 
         // The user gave us a comment.
         // Build a text description of the comment from what we have.
-        commentDescr.text(comment).cy(SnowProfile.Cfg.DESCR_HEIGHT / 2);
+        commentDescr.getChild(0).textContent = comment;
       }
 
       // For debugging show the comment description bounding box
-      var cdBbox = commentDescr.bbox();
+      cdBbox = commentDescr.node.firstChild.getBoundingClientRect();
+      console.info('cdBbox=', cdBbox);
+      ldBbox = layerDescr.node.getBoundingClientRect();
+      console.info('ldBbox=', ldBbox);
       cdBox.width(cdBbox.width);
       cdBox.height(cdBbox.height);
-      cdBox.x(cdBbox.x);
-      cdBox.y(cdBbox.y);
+      cdBox.x(cdBbox.x - ldBbox.x - SnowProfile.Cfg.COMMENT_SPACE_WD);
+      cdBox.y(cdBbox.y - ldBbox.y);
     } // if (data === undefined) ... else
-
-    // For debugging show the layer description bounding box
-    // ldBox.width(ldBbox.width);
-    // ldBox.height(ldBbox.height);
-    // ldBox.x(ldBbox.x);
-    // ldBox.y(ldBbox.y);
-
 
     // Re-draw the diagram with the updated information
     self.setIndexPosition();
