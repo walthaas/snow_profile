@@ -298,13 +298,16 @@ SnowProfile.Grid = function() {
     SnowProfile.gridGroup.clear();
 
     // Define background behind the reference grid
+    // NB: We must define the background fill in code not in the stylesheet
+    //   because the code to convert SVG to PNG doesn't interpret the
+    //   stylesheet.
     SnowProfile.gridGroup.add(
       SnowProfile.drawing.rect(
         SnowProfile.Cfg.GRAPH_WIDTH - (SnowProfile.Cfg.HANDLE_SIZE / 2),
         SnowProfile.pitDepth * SnowProfile.Cfg.DEPTH_SCALE)
         .dmove(SnowProfile.Cfg.DEPTH_LABEL_WD,
           SnowProfile.Cfg.TOP_LABEL_HT + (SnowProfile.Cfg.HANDLE_SIZE / 2) + 1)
-        .attr({id: 'snow_profile_grid_background'})
+        .style({fill: '#eef'})
     );
 
     // Create inner groups for depth and hardness scales

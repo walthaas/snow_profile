@@ -360,6 +360,11 @@ SnowProfile.Layer = function(depthArg) {
    */
   var layerOutline = SnowProfile.drawing.rect(0,0)
     .addClass('snow_profile_layer_outline')
+    .style({
+      fill: 'white',
+      opacity: 0.85,
+      stroke: '#000'
+     })
     .x(SnowProfile.Cfg.DEPTH_LABEL_WD + 1)
     .y(0);
 
@@ -396,16 +401,16 @@ SnowProfile.Layer = function(depthArg) {
    * Make the handle visible
    */
   function handleVisible() {
-    handle.setVisible(true);
-    self.draw();
+//    handle.setVisible(true);
+//    self.draw();
   }
 
   /**
    * Make the handle invisible
    */
   function handleInvisible() {
-    handle.setVisible(false);
-    self.draw();
+//    handle.setVisible(false);
+//    self.draw();
   }
 
   /**

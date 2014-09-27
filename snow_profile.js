@@ -1318,25 +1318,43 @@ var SnowProfile = {};
 
     // Hide the controls so they won't show in the PNG
     $.event.trigger("SnowProfileHideControls");
-    var scaleFactor = SnowProfile.IMAGE_WD / SnowProfile.stage.getWidth();
-    SnowProfile.stage.scale({x: scaleFactor, y: scaleFactor});
+//    var scaleFactor = SnowProfile.IMAGE_WD / SnowProfile.drawing.getWidth();
+//    SnowProfile.stage.scale({x: scaleFactor, y: scaleFactor});
 
-    // Open a new window and show the PNG in it
-    SnowProfile.stage.toDataURL({
-      x: 0,
-      y: 0,
-      width: SnowProfile.IMAGE_WD,
-      height: scaleFactor * SnowProfile.stage.getHeight(),
-      callback: function(dataUrl) {
-        var newWin = window.open(dataUrl, "_blank");
-        if (newWin === undefined) {
-          alert("You must enable pop-ups for this site to use" +
-            " the Preview button");
-        }
-        SnowProfile.stage.scale({x: 1, y: 1});
+    // var canvas = document.getElementsByTagName('canvas')[0];
+    // canvas.width = SnowProfile.Cfg.DRAWING_WD;
+    // canvas.height = SnowProfile.drawingHeight();
+    // var ctx = canvas.getContext('2d');
+    // var img = new Image;
+    // img.onload = function(){ ctx.drawImage(img,0,0); };
+    // img.src = 'data:image/svg+xml,'
+
+
+
+    var svg = document.getElementById("snow_profile_diagram").firstChild;
+    svg.toDataURL("image/png", {
+      callback: function(data) {
+        var newWin = window.open(data, "_blank");
         $.event.trigger("SnowProfileShowControls");
       }
     });
+
+    // // Open a new window and show the PNG in it
+    // SnowProfile.stage.toDataURL({
+    //   x: 0,
+    //   y: 0,
+    //   width: SnowProfile.Cfg.IMAGE_WD,
+    //   height: scaleFactor * SnowProfile.stage.getHeight(),
+    //   callback: function(dataUrl) {
+    //     var newWin = window.open(dataUrl, "_blank");
+    //     if (newWin === undefined) {
+    //       alert("You must enable pop-ups for this site to use" +
+    //         " the Preview button");
+    //     }
+    //     SnowProfile.stage.scale({x: 1, y: 1});
+    //     $.event.trigger("SnowProfileShowControls");
+    //   }
+    // });
   };
 
   /**
