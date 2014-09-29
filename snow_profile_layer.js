@@ -401,7 +401,7 @@ SnowProfile.Layer = function(depthArg) {
    * Make the handle visible
    */
   function handleVisible() {
-//    handle.setVisible(true);
+    handle.show();
 //    self.draw();
   }
 
@@ -409,7 +409,7 @@ SnowProfile.Layer = function(depthArg) {
    * Make the handle invisible
    */
   function handleInvisible() {
-//    handle.setVisible(false);
+    handle.hide();
 //    self.draw();
   }
 
