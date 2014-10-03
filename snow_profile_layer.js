@@ -69,6 +69,7 @@ SnowProfile.Layer = function(depthArg) {
     .addClass('snow_profile_layer_descr')
     .x(SnowProfile.Cfg.LAYER_DESCR_LEFT)
     .y(SnowProfile.depth2y(depthVal) + (SnowProfile.Cfg.HANDLE_SIZE / 2));
+  SnowProfile.mainGroup.add(layerDescr);
 
   // For debugging, show the bounding box
   var ldBox = SnowProfile.drawing.rect(0, 0)
@@ -98,6 +99,7 @@ SnowProfile.Layer = function(depthArg) {
     fill: "#000",
   })
   .x(SnowProfile.Cfg.COMMENT_LEFT);
+ // SnowProfile.mainGroup.add(commentDescr);
 
   // For debugging, show the bounding box
   var cdBox = SnowProfile.drawing.rect(0, 0)
@@ -198,6 +200,7 @@ SnowProfile.Layer = function(depthArg) {
     SnowProfile.Cfg.HANDLE_SIZE)
     .x(SnowProfile.Cfg.HANDLE_INIT_X)
     .addClass("snow_profile_handle");
+  SnowProfile.mainGroup.add(handle);
 
   /**
    * Process handle drag
@@ -318,15 +321,16 @@ SnowProfile.Layer = function(depthArg) {
    * @todo Style
    */
   var handleLoc = SnowProfile.drawing.text("")
-  .font({
-    size: 12,
-    style: 'bold',
-    family: 'sans-serif',
-    fill: SnowProfile.Cfg.LABEL_COLOR,
-  })
-  .x(SnowProfile.Cfg.DEPTH_LABEL_WD + 1 + SnowProfile.Cfg.GRAPH_WIDTH + 10)
-  .y(SnowProfile.depth2y(depthVal))
-  .hide();
+    .font({
+      size: 12,
+      style: 'bold',
+      family: 'sans-serif',
+      fill: SnowProfile.Cfg.LABEL_COLOR,
+    })
+    .x(SnowProfile.Cfg.DEPTH_LABEL_WD + 1 + SnowProfile.Cfg.GRAPH_WIDTH + 10)
+    .y(SnowProfile.depth2y(depthVal))
+    .hide();
+  SnowProfile.mainGroup.add(handleLoc);
 
   /**
    * "Edit" button
@@ -350,6 +354,7 @@ SnowProfile.Layer = function(depthArg) {
     color: SnowProfile.Cfg.GRID_COLOR,
     width: 1
   });
+  SnowProfile.mainGroup.add(diagLine);
 
   /**
    * Define a rectangle to outline the layer
@@ -365,6 +370,7 @@ SnowProfile.Layer = function(depthArg) {
      })
     .x(SnowProfile.Cfg.DEPTH_LABEL_WD + 1)
     .y(0);
+  SnowProfile.mainGroup.add(layerOutline);
 
   /**
    * Get or set depth in cm of this snow layer

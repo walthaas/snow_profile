@@ -26,6 +26,7 @@ SnowProfile.Button = function(textArg) {
    */
   var buttonGroup = SnowProfile.drawing.group()
     .addClass('snow_profile_button ' + textArg);
+  SnowProfile.mainGroup.add(buttonGroup);
 
   /**
    * Define the text of the button

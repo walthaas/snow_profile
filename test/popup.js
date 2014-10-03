@@ -77,7 +77,7 @@ test.describe('Snow Profile diagram popups:', function() {
 
     test.it('click on edit button creates popup', function() {
       driver.findElement(sw.By.xpath(
-        "//*[name()='svg']/*[name()='g'][@class='snow_profile_button Edit']"
+        "//*[name()='svg']/*[name()='g']/*[name()='g'][@class='snow_profile_button Edit']"
         ))
         .then(function(elmt) {
           elmt.click();
@@ -89,10 +89,6 @@ test.describe('Snow Profile diagram popups:', function() {
             chai.expect(displayed).to.be.true;
           });
         });
-    //      chai.expect('#snow_profile_popup')
-    //       .dom.to.have.count(1);
-    //    });
-    //  });
     });
   });  // test.describe('popup initial conditions
 

@@ -1215,6 +1215,8 @@ var SnowProfile = {};
   SnowProfile.diagram = document.getElementById('snow_profile_diagram');
   SnowProfile.drawing = SVG("snow_profile_diagram");
   SnowProfile.diagram.setAttribute('width', SnowProfile.Cfg.DRAWING_WD + 10);
+  SnowProfile.mainGroup = SnowProfile.drawing.group()
+    .attr('id', 'snow_profile_main_g');
 
   // For debugging, show the bounding box
   SnowProfile.drawingBox = SnowProfile.drawing.rect(0, 0)
@@ -1222,7 +1224,7 @@ var SnowProfile = {};
        "fill-opacity": 0,
        stroke: 'red'
     });
-  SnowProfile.drawing.add(SnowProfile.drawingBox);
+  SnowProfile.mainGroup.add(SnowProfile.drawingBox);
 
   /**
    * SnowProfile drawing grid group
@@ -1236,6 +1238,7 @@ var SnowProfile = {};
    */
   SnowProfile.gridGroup = SnowProfile.drawing.group()
     .addClass("snow_profile_grid");
+  SnowProfile.mainGroup.add(SnowProfile.gridGroup);
 
   /**
    * Recalculate the Y axis positions of all SVG objects whose
@@ -1317,17 +1320,13 @@ var SnowProfile = {};
    * @fires ShowProfileShowControls
    */
   SnowProfile.preview = function() {
-    var i,
-      numLayers = SnowProfile.snowLayers.length;
 
     // Hide the controls so they won't show in the PNG
     $.event.trigger("SnowProfileHideControls");
 
     // Scale the drawing to desired image size.
     var scaleFactor = SnowProfile.Cfg.IMAGE_WD / SnowProfile.drawing.width();
-//    for (i = 0; i < numLayers; i++) {
-//      SnowProfile.snowLayers[i].scale(scaleFactor);
-//    }
+    SnowProfile.mainGroup.scale(scaleFactor);
     var svg = SnowProfile.diagram.firstChild;
     svg.toDataURL("image/png", {
       callback: function(data) {
@@ -1340,28 +1339,10 @@ var SnowProfile = {};
         }
 
         // Restore normal drawing scale.
-//        for (i = 0; i < numLayers; i++) {
-//          SnowProfile.snowLayers[i].scale(1);
-//        }
+          SnowProfile.mainGroup.scale(1);
         $.event.trigger("SnowProfileShowControls");
       }
     });
-
-    // SnowProfile.stage.toDataURL({
-    //   x: 0,
-    //   y: 0,
-    //   width: SnowProfile.Cfg.IMAGE_WD,
-    //   height: scaleFactor * SnowProfile.stage.getHeight(),
-    //   callback: function(dataUrl) {
-    //     var newWin = window.open(dataUrl, "_blank");
-    //     if (newWin === undefined) {
-    //       alert("You must enable pop-ups for this site to use" +
-    //         " the Preview button");
-    //     }
-    //     SnowProfile.stage.scale({x: 1, y: 1});
-    //     $.event.trigger("SnowProfileShowControls");
-    //   }
-    // });
   };
 
   /**
