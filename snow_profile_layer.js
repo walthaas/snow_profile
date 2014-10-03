@@ -303,9 +303,9 @@ SnowProfile.Layer = function(depthArg) {
    *
    * For some reason this must be done after handle.draggable() not before.
    */
-//  handle.animate({ease: SVG.easing.backInOut, duration: '1000'})
-//    .size(SnowProfile.Cfg.HANDLE_SIZE / 1.4, SnowProfile.Cfg.HANDLE_SIZE / 1.4)
-//    .loop();
+ handle.animate({ease: SVG.easing.backInOut, duration: '1000'})
+   .size(SnowProfile.Cfg.HANDLE_SIZE / 1.4, SnowProfile.Cfg.HANDLE_SIZE / 1.4)
+   .loop();
 
   /**
    * Text to show current handle location.
