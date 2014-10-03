@@ -90,17 +90,14 @@ SnowProfile.Layer = function(depthArg) {
    * @type {Object}
    * @todo Figure out how to manage width
    */
-  var commentDescr = SnowProfile.drawing.foreignObject()
-    .addClass('snow_profile_comment_descr')
-    .attr({
-      x: SnowProfile.Cfg.COMMENT_LEFT,
-      height: SnowProfile.Cfg.DESCR_HEIGHT,
-      width: SnowProfile.Cfg.COMMENT_WD
-    });
-  layerDescr.add(commentDescr);
-  commentDescr.appendChild('div', {
-    className: 'snow_profile_comment_descr'
-  });
+  var commentDescr = layerDescr.text("")
+  .addClass('snow_profile_comment_descr')
+  .font({
+    size: 14,
+    family: 'sans-serif',
+    fill: "#000",
+  })
+  .x(SnowProfile.Cfg.COMMENT_LEFT);
 
   // For debugging, show the bounding box
   var cdBox = SnowProfile.drawing.rect(0, 0)
@@ -199,6 +196,7 @@ SnowProfile.Layer = function(depthArg) {
    */
   var handle = SnowProfile.drawing.rect(SnowProfile.Cfg.HANDLE_SIZE,
     SnowProfile.Cfg.HANDLE_SIZE)
+    .x(SnowProfile.Cfg.HANDLE_INIT_X)
     .addClass("snow_profile_handle");
 
   /**
@@ -305,9 +303,9 @@ SnowProfile.Layer = function(depthArg) {
    *
    * For some reason this must be done after handle.draggable() not before.
    */
-  handle.animate({ease: SVG.easing.backInOut, duration: '1000'})
-    .size(SnowProfile.Cfg.HANDLE_SIZE / 1.4, SnowProfile.Cfg.HANDLE_SIZE / 1.4)
-    .loop();
+//  handle.animate({ease: SVG.easing.backInOut, duration: '1000'})
+//    .size(SnowProfile.Cfg.HANDLE_SIZE / 1.4, SnowProfile.Cfg.HANDLE_SIZE / 1.4)
+//    .loop();
 
   /**
    * Text to show current handle location.
@@ -867,12 +865,12 @@ SnowProfile.Layer = function(depthArg) {
 //      ldBbox = giBbox.merge(gsBbox);
 
       // Comment description
-      commentDescr.getChild(0).textContent = "";
+      commentDescr.text("");
       if (comment !== "") {
 
         // The user gave us a comment.
         // Build a text description of the comment from what we have.
-        commentDescr.getChild(0).textContent = comment;
+        commentDescr.text(comment).cy(SnowProfile.Cfg.DESCR_HEIGHT / 2);
       }
 
       // For debugging show the comment description bounding box
@@ -906,6 +904,10 @@ SnowProfile.Layer = function(depthArg) {
   this.handleGetY = function() {
     return handle.y();
   };
+  this.scale = function(factor) {
+    layerDescr.scale(factor, factor);
+  };
+
 
   /**
    * Set position and length of the diagonal line at bottom of this layer

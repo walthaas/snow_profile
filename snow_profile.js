@@ -145,7 +145,7 @@ var SnowProfile = {};
      * @memberof SnowProfile
      * @const {number}
      */
-    HARD_LABEL_HT: 40,
+    HARD_LABEL_HT: 60,
 
     /**
      * Size in pixels of the handle square
@@ -155,7 +155,7 @@ var SnowProfile = {};
     HANDLE_SIZE: 11,
 
     /**
-     * Color of the background
+     * Color of the background of the graph
      * @memberof SnowProfile
      * @const {string}
      */
@@ -1212,7 +1212,9 @@ var SnowProfile = {};
    * @type {Object}
    * @memberof SnowProfile
    */
+  SnowProfile.diagram = document.getElementById('snow_profile_diagram');
   SnowProfile.drawing = SVG("snow_profile_diagram");
+  SnowProfile.diagram.setAttribute('width', SnowProfile.Cfg.DRAWING_WD + 10);
 
   // For debugging, show the bounding box
   SnowProfile.drawingBox = SnowProfile.drawing.rect(0, 0)
@@ -1315,31 +1317,36 @@ var SnowProfile = {};
    * @fires ShowProfileShowControls
    */
   SnowProfile.preview = function() {
+    var i,
+      numLayers = SnowProfile.snowLayers.length;
 
     // Hide the controls so they won't show in the PNG
     $.event.trigger("SnowProfileHideControls");
-//    var scaleFactor = SnowProfile.IMAGE_WD / SnowProfile.drawing.getWidth();
-//    SnowProfile.stage.scale({x: scaleFactor, y: scaleFactor});
 
-    // var canvas = document.getElementsByTagName('canvas')[0];
-    // canvas.width = SnowProfile.Cfg.DRAWING_WD;
-    // canvas.height = SnowProfile.drawingHeight();
-    // var ctx = canvas.getContext('2d');
-    // var img = new Image;
-    // img.onload = function(){ ctx.drawImage(img,0,0); };
-    // img.src = 'data:image/svg+xml,'
-
-
-
-    var svg = document.getElementById("snow_profile_diagram").firstChild;
+    // Scale the drawing to desired image size.
+    var scaleFactor = SnowProfile.Cfg.IMAGE_WD / SnowProfile.drawing.width();
+//    for (i = 0; i < numLayers; i++) {
+//      SnowProfile.snowLayers[i].scale(scaleFactor);
+//    }
+    var svg = SnowProfile.diagram.firstChild;
     svg.toDataURL("image/png", {
       callback: function(data) {
+
+        // Open a new window and show the PNG in it
         var newWin = window.open(data, "_blank");
+        if (newWin === undefined) {
+          alert("You must enable pop-ups for this site to use" +
+            " the Preview button");
+        }
+
+        // Restore normal drawing scale.
+//        for (i = 0; i < numLayers; i++) {
+//          SnowProfile.snowLayers[i].scale(1);
+//        }
         $.event.trigger("SnowProfileShowControls");
       }
     });
 
-    // // Open a new window and show the PNG in it
     // SnowProfile.stage.toDataURL({
     //   x: 0,
     //   y: 0,
@@ -1384,29 +1391,6 @@ var SnowProfile = {};
         evt.stopImmediatePropagation();
       }
     });
-
-    // Create an animation
-    // FIXME use a custom event to communicate with layers
-    // FIXME convert to SVG
-    // var anim = new Kinetic.Animation(function(frame) {
-    //   SnowProfile.showHandle = (frame.time % 1000) > 500;
-    //   if (SnowProfile.oldShowHandle === null) {
-    //       SnowProfile.oldShowHandle = SnowProfile.showHandle;
-    //   }
-    //   else {
-    //     if (SnowProfile.showHandle !== SnowProfile.oldShowHandle) {
-    //       SnowProfile.oldShowHandle = SnowProfile.showHandle;
-
-    //       // For each snow layer, if handle untouched, blink
-    //       numLayers = SnowProfile.snowLayers.length;
-    //       for (i = 0; i < numLayers; i++) {
-    //         SnowProfile.snowLayers[i].setHandleVisibility(
-    //           SnowProfile.showHandle);
-    //       }
-    //     }
-    //   }
-    // });
-    // anim.start();
 
     // When the "Preview" button is clicked, generate a preview
     $(document).ready(function() {
