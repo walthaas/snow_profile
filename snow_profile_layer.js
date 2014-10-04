@@ -5,6 +5,7 @@
  */
 
 /* global SnowProfile */
+/* global SVG */
 
 /**
  * Object describing a single snow stratigraphy layer.
@@ -92,14 +93,13 @@ SnowProfile.Layer = function(depthArg) {
    * @todo Figure out how to manage width
    */
   var commentDescr = layerDescr.text("")
-  .addClass('snow_profile_comment_descr')
-  .font({
-    size: 14,
-    family: 'sans-serif',
-    fill: "#000",
-  })
-  .x(SnowProfile.Cfg.COMMENT_LEFT);
- // SnowProfile.mainGroup.add(commentDescr);
+    .addClass('snow_profile_comment_descr')
+    .font({
+      size: 14,
+      family: 'sans-serif',
+      fill: "#000",
+    })
+    .x(SnowProfile.Cfg.COMMENT_LEFT);
 
   // For debugging, show the bounding box
   var cdBox = SnowProfile.drawing.rect(0, 0)
@@ -137,13 +137,13 @@ SnowProfile.Layer = function(depthArg) {
    * @type {Object}
    */
   var grainSizeText = layerDescr.text("")
-  .addClass('snow_profile_grain_size')
-  .font({
-    size: 14,
-    family: 'sans-serif',
-    fill: "#000"
-  })
-  .x(SnowProfile.Cfg.GRAIN_SIZE_LEFT);
+    .addClass('snow_profile_grain_size')
+    .font({
+      size: 14,
+      family: 'sans-serif',
+      fill: "#000"
+    })
+    .x(SnowProfile.Cfg.GRAIN_SIZE_LEFT);
 
   // For debugging, show the bounding box
   var gsBox = SnowProfile.drawing.rect(0, 0)
@@ -801,6 +801,76 @@ SnowProfile.Layer = function(depthArg) {
       }
     } // function sym2icons
 
+    /**
+     * Set the comment text from comment data provided by user
+     *
+     * @param {string} comment User comment string
+     */
+    function setCommentDescr(comment) {
+
+      var words = [],
+        testLine = [];
+      var testLineDescr = SnowProfile.drawing.text('')
+        .width(SnowProfile.Cfg.COMMENT_WD)
+        .build(false);
+      commentDescr.text("");
+      commentDescr.build(false);
+      cdBbox = null;
+
+      // Remove leading/trailing whitespace if any.
+      comment = comment.trim();
+      if (comment !== "") {
+
+        // The user gave us a comment.  Split into words.
+        words = comment.split(' ');
+        //NB zero-length word for multiple spaces
+        words.forEach(function(word, i) {
+          if (word.length !== 0) {
+            if (i !== 0) {
+            }
+            testLine.push(word);
+            testLineDescr.text(testLine.join(' '));
+            if (testLineDescr.bbox().width >= SnowProfile.Cfg.COMMENT_WD) {
+              if (testLine.length === 1) {
+                // Special case - single word wider than comment field
+                commentDescr.tspan(word).newLine();
+                commentDescr.build(true);
+                testLine = [];
+              }
+              else {
+                // Normal case - latest word overflowed so save for next line
+                testLine.pop();
+                commentDescr.tspan(testLine.join(' ')).newLine();
+                commentDescr.build(true);
+                testLine = [];
+                testLine.push(word);
+              }
+            }
+          }
+        }); // words.forEach(function(word, i) {
+        if (testLine.length > 0) {
+          // Words left over after last line filled.
+          commentDescr.tspan(testLine.join(' ')).newLine();
+        }
+
+        // Blank the test buffer
+        testLineDescr.text("");
+
+        // Build a text description of the comment from what we have.
+      //  commentDescr.text(comment).cy(SnowProfile.Cfg.DESCR_HEIGHT / 2);
+      }
+
+      // For debugging show the comment description bounding box
+      cdBbox = commentDescr.node.firstChild.getBoundingClientRect();
+      //console.info('cdBbox=', cdBbox);
+      ldBbox = layerDescr.node.getBoundingClientRect();
+      //console.info('ldBbox=', ldBbox);
+      cdBox.width(cdBbox.width);
+      cdBox.height(cdBbox.height);
+      cdBox.x(cdBbox.x - ldBbox.x - SnowProfile.Cfg.COMMENT_SPACE_WD);
+      cdBox.y(cdBbox.y - ldBbox.y);
+    }
+
     // Main body of this.describe function
     if (data === undefined) {
 
@@ -826,9 +896,8 @@ SnowProfile.Layer = function(depthArg) {
       giBbox = null;
       grainSize = data.grainSize;
       gsBbox = null;
-      comment = data.comment;
-      cdBbox = null;
       ldBbox = null;
+      comment = data.comment;
 
       // Empty the grain shape icon group and text description
       grainIcons.clear();
@@ -846,7 +915,7 @@ SnowProfile.Layer = function(depthArg) {
       }
 
       // For debugging show the grain shape icon bounding box
-      var giBbox = grainIcons.bbox();
+      giBbox = grainIcons.bbox();
       giBox.width(giBbox.width);
       giBox.height(giBbox.height);
       giBox.x(giBbox.x);
@@ -863,7 +932,7 @@ SnowProfile.Layer = function(depthArg) {
       }
 
       // For debugging show the grain size bounding box
-      var gsBbox = grainSizeText.bbox();
+      gsBbox = grainSizeText.bbox();
       gsBox.width(gsBbox.width);
       gsBox.height(gsBbox.height);
       gsBox.x(gsBbox.x);
@@ -871,23 +940,7 @@ SnowProfile.Layer = function(depthArg) {
 //      ldBbox = giBbox.merge(gsBbox);
 
       // Comment description
-      commentDescr.text("");
-      if (comment !== "") {
-
-        // The user gave us a comment.
-        // Build a text description of the comment from what we have.
-        commentDescr.text(comment).cy(SnowProfile.Cfg.DESCR_HEIGHT / 2);
-      }
-
-      // For debugging show the comment description bounding box
-      cdBbox = commentDescr.node.firstChild.getBoundingClientRect();
-      console.info('cdBbox=', cdBbox);
-      ldBbox = layerDescr.node.getBoundingClientRect();
-      console.info('ldBbox=', ldBbox);
-      cdBox.width(cdBbox.width);
-      cdBox.height(cdBbox.height);
-      cdBox.x(cdBbox.x - ldBbox.x - SnowProfile.Cfg.COMMENT_SPACE_WD);
-      cdBox.y(cdBbox.y - ldBbox.y);
+      setCommentDescr(comment);
     } // if (data === undefined) ... else
 
     // Re-draw the diagram with the updated information

@@ -90,6 +90,60 @@ test.describe('Snow Profile diagram popups:', function() {
           });
         });
     });
+    test.it('Primary Grain Shape selector is visible', function() {
+      driver.findElement(sw.By.id('snow_profile_primary_grain_shape'))
+        .then(function(promise) {
+          promise.isDisplayed()
+          .then(function(displayed) {
+            chai.expect(displayed).to.be.true;
+          });
+        });
+    });
+    test.it('Primary Grain Subshape selector not visible', function() {
+      driver.findElement(sw.By.id('snow_profile_primary_grain_subshape_PP'))
+        .then(function(promise) {
+          promise.isDisplayed()
+          .then(function(displayed) {
+            chai.expect(displayed).to.be.false;
+          });
+        });
+    });
+    test.it('Secondary Grain Shape selector is visible', function() {
+      driver.findElement(sw.By.id('snow_profile_secondary_grain_shape'))
+        .then(function(promise) {
+          promise.isDisplayed()
+          .then(function(displayed) {
+            chai.expect(displayed).to.be.true;
+          });
+        });
+    });
+    test.it('Secondary Grain Subshape selector not visible', function() {
+      driver.findElement(sw.By.id('snow_profile_secondary_grain_subshape_PP'))
+        .then(function(promise) {
+          promise.isDisplayed()
+          .then(function(displayed) {
+            chai.expect(displayed).to.be.false;
+          });
+        });
+    });
+    test.it('Grain Size selector is visible', function() {
+      driver.findElement(sw.By.id('snow_profile_grain_size'))
+        .then(function(promise) {
+          promise.isDisplayed()
+          .then(function(displayed) {
+            chai.expect(displayed).to.be.true;
+          });
+        });
+    });
+    test.it('Comment field is visible', function() {
+      driver.findElement(sw.By.id('snow_profile_comment'))
+        .then(function(promise) {
+          promise.isDisplayed()
+          .then(function(displayed) {
+            chai.expect(displayed).to.be.true;
+          });
+        });
+    });
   });  // test.describe('popup initial conditions
 
   // When done, kill the browser
