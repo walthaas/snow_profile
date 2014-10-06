@@ -696,7 +696,8 @@ SnowProfile.Layer = function(depthArg) {
             SnowProfile.CAAML_SUBSHAPE[primaryShape][primarySubShape].
             icon.width,
             SnowProfile.CAAML_SUBSHAPE[primaryShape][primarySubShape].
-            icon.height);
+            icon.height)
+            .attr('alt', primarySubShape);
           iconCursor += SnowProfile.CAAML_SUBSHAPE[primaryShape]
             [primarySubShape].icon.width;
         }
@@ -707,7 +708,8 @@ SnowProfile.Layer = function(depthArg) {
           primaryIcon = SnowProfile.drawing.image("data:image/png;base64," +
             SnowProfile.CAAML_SHAPE[primaryShape].icon.image,
             SnowProfile.CAAML_SHAPE[primaryShape].icon.width,
-            SnowProfile.CAAML_SHAPE[primaryShape].icon.height);
+            SnowProfile.CAAML_SHAPE[primaryShape].icon.height)
+            .attr('alt', primaryShape);
           iconCursor += SnowProfile.CAAML_SHAPE[primaryShape].icon.width;
         }
         container.add(primaryIcon);
@@ -735,7 +737,9 @@ SnowProfile.Layer = function(depthArg) {
               SnowProfile.CAAML_SUBSHAPE[secondaryShape][secondarySubShape].
               icon.width,
               SnowProfile.CAAML_SUBSHAPE[secondaryShape][secondarySubShape].
-              icon.height).x(iconCursor);
+              icon.height)
+              .x(iconCursor)
+            .attr('alt', secondarySubShape);
             iconCursor += SnowProfile.CAAML_SUBSHAPE[secondaryShape]
               [secondarySubShape].icon.width;
           }
@@ -747,7 +751,8 @@ SnowProfile.Layer = function(depthArg) {
               SnowProfile.CAAML_SHAPE[secondaryShape].icon.image,
               SnowProfile.CAAML_SHAPE[secondaryShape].icon.width,
               SnowProfile.CAAML_SHAPE[secondaryShape].icon.height)
-            .x(iconCursor);
+            .x(iconCursor)
+            .attr('alt', secondaryShape);
             iconCursor += SnowProfile.CAAML_SHAPE[secondaryShape].icon.width;
           }
           container.add(secondaryIcon);

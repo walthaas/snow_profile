@@ -77,7 +77,7 @@ test.describe('Snow Profile diagram popups:', function() {
 
     test.it('click on edit button creates popup', function() {
       driver.findElement(sw.By.xpath(
-        "//*[name()='svg']/*[name()='g']/*[name()='g'][@class='snow_profile_button Edit']"
+        "//*[name()='svg']/*[name()='g']/*[name()='g'][@class='snow_profile_button Edit'][1]"
         ))
         .then(function(elmt) {
           elmt.click();
@@ -145,6 +145,129 @@ test.describe('Snow Profile diagram popups:', function() {
         });
     });
   });  // test.describe('popup initial conditions
+
+  /**
+   * Test suite for "Cancel" button operation of popup
+   */
+  test.describe('popup "Cancel" button operation:', function() {
+
+    test.before(function() {
+      // Load the test page
+      driver.get(common.testURL);
+    });
+
+    test.it('click on edit button creates popup', function() {
+      driver.findElement(sw.By.xpath(
+        "//*[name()='svg']/*[name()='g']/*[name()='g'][@class='snow_profile_button Edit'][1]"
+        ))
+        .then(function(elmt) {
+          elmt.click();
+          });
+      driver.findElement(sw.By.id('snow_profile_popup'))
+        .then(function(promise) {
+          promise.isDisplayed()
+          .then(function(displayed) {
+            chai.expect(displayed).to.be.true;
+          });
+        });
+    });
+    test.it('Cancel button dismisses popup', function() {
+      driver.findElement(sw.By.xpath('//button[.="Cancel"]'))
+        .then(function(elmt) {
+          elmt.click();
+        });
+    });
+    test.it('#snow_profile_popup not displayed', function() {
+      driver.findElement(sw.By.id('snow_profile_popup'))
+        .then(function(promise) {
+          promise.isDisplayed()
+          .then(function(displayed) {
+            chai.expect(displayed).to.be.false;
+          });
+        });
+    });
+  });  // test.describe('popup "Cancel" button operation
+
+  /**
+   * Test suite for Primary Grain Shape operation of popup
+   */
+  test.describe('popup Primary Grain Shape operation:', function() {
+
+    test.before(function() {
+      // Load the test page
+      driver.get(common.testURL);
+    });
+
+    test.it('Select Primary Grain Shape PP displays PP icon', function() {
+      driver.findElement(sw.By.xpath(
+        "//*[name()='svg']/*[name()='g']/*[name()='g'][@class='snow_profile_button Edit'][1]"
+        ))
+        .then(function(elmt) {
+          elmt.click();
+          });
+      driver.findElement(sw.By.xpath('//select[@id="snow_profile_primary_grain_shape"]/option[@value="PP"]'))
+        .then(function(elmt) {
+          elmt.click();
+        });
+      driver.findElement(sw.By.id('snow_profile_primary_grain_subshape_PP'))
+        .then(function(promise) {
+          promise.isDisplayed()
+          .then(function(displayed) {
+            chai.expect(displayed).to.be.true;
+          });
+        });
+      driver.findElement(sw.By.xpath('//button[.="Done"]'))
+        .then(function(elmt) {
+          elmt.click();
+        });
+      driver.findElement(sw.By.css("g.snow_profile_grain_icons image"))
+        .then(function(image) {
+          image.getAttribute("alt")
+          .then(function(altAttr) {
+            chai.expect(altAttr).to.equal("PP");
+          });
+        });
+    });
+  }); // test.describe('popup Primary Grain Shape operation
+
+  /**
+   * Test suite for Primary Grain Subhape operation of popup
+   */
+  test.describe('popup Primary Grain Subhape operation:', function() {
+
+    test.before(function() {
+      // Load the test page
+      driver.get(common.testURL);
+    });
+
+    test.it('Select stellar displays PPsd icon', function() {
+      driver.findElement(sw.By.xpath(
+        "//*[name()='svg']/*[name()='g']/*[name()='g'][@class='snow_profile_button Edit'][1]"
+        ))
+        .then(function(elmt) {
+          elmt.click();
+          });
+      driver.findElement(sw.By.xpath('//select[@id="snow_profile_primary_grain_shape"]/option[@value="PP"]'))
+        .then(function(elmt) {
+          elmt.click();
+        });
+      driver.findElement(sw.By.xpath('//select[@id="snow_profile_primary_grain_subshape_PP"]/option[@value="PPsd"]'))
+        .then(function(elmt) {
+          elmt.click();
+        });
+      driver.findElement(sw.By.xpath('//button[.="Done"]'))
+        .then(function(elmt) {
+          elmt.click();
+        });
+      driver.findElement(sw.By.css("g.snow_profile_grain_icons image"))
+        .then(function(image) {
+          image.getAttribute("alt")
+          .then(function(altAttr) {
+            chai.expect(altAttr).to.equal("PPsd");
+          });
+        });
+    });
+  }); // test.describe('Select stellar displays PPsd icon
 
   // When done, kill the browser
   test.after(function() {
