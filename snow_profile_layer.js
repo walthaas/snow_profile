@@ -94,11 +94,6 @@ SnowProfile.Layer = function(depthArg) {
    */
   var commentDescr = layerDescr.text("")
     .addClass('snow_profile_comment_descr')
-    .font({
-      size: 14,
-      family: 'sans-serif',
-      fill: "#000",
-    })
     .x(SnowProfile.Cfg.COMMENT_LEFT);
 
   // For debugging, show the bounding box
@@ -138,11 +133,6 @@ SnowProfile.Layer = function(depthArg) {
    */
   var grainSizeText = layerDescr.text("")
     .addClass('snow_profile_grain_size')
-    .font({
-      size: 14,
-      family: 'sans-serif',
-      fill: "#000"
-    })
     .x(SnowProfile.Cfg.GRAIN_SIZE_LEFT);
 
   // For debugging, show the bounding box
@@ -528,6 +518,7 @@ SnowProfile.Layer = function(depthArg) {
   this.describe = function(data) {
 
     var cdBbox, giBbox, gsBbox, ldBbox;
+    var boxes = [giBbox, gsBbox, cdBbox];
 
     /**
      * Generate a text description of grain shapes from symbols
@@ -817,6 +808,7 @@ SnowProfile.Layer = function(depthArg) {
         testLine = [];
       var testLineDescr = SnowProfile.drawing.text('')
         .width(SnowProfile.Cfg.COMMENT_WD)
+        .addClass("snow_profile_comment_descr")
         .build(false);
       commentDescr.text("");
       commentDescr.build(false);
@@ -864,16 +856,6 @@ SnowProfile.Layer = function(depthArg) {
         // Build a text description of the comment from what we have.
       //  commentDescr.text(comment).cy(SnowProfile.Cfg.DESCR_HEIGHT / 2);
       }
-
-      // For debugging show the comment description bounding box
-      cdBbox = commentDescr.node.firstChild.getBoundingClientRect();
-      //console.info('cdBbox=', cdBbox);
-      ldBbox = layerDescr.node.getBoundingClientRect();
-      //console.info('ldBbox=', ldBbox);
-      cdBox.width(cdBbox.width);
-      cdBox.height(cdBbox.height);
-      cdBox.x(cdBbox.x - ldBbox.x - SnowProfile.Cfg.COMMENT_SPACE_WD);
-      cdBox.y(cdBbox.y - ldBbox.y);
     }
 
     // Main body of this.describe function
@@ -918,9 +900,9 @@ SnowProfile.Layer = function(depthArg) {
         sym2icons(primaryGrainShape, primaryGrainSubShape,
           secondaryGrainShape, secondaryGrainSubShape, grainIcons);
       }
+      giBbox = grainIcons.bbox();
 
       // For debugging show the grain shape icon bounding box
-      giBbox = grainIcons.bbox();
       giBox.width(giBbox.width);
       giBox.height(giBbox.height);
       giBox.x(giBbox.x);
@@ -935,17 +917,49 @@ SnowProfile.Layer = function(depthArg) {
         grainSizeText.text(SnowProfile.CAAML_SIZE[grainSize])
           .cy(SnowProfile.Cfg.DESCR_HEIGHT / 2);
       }
+      gsBbox = grainSizeText.bbox();
 
       // For debugging show the grain size bounding box
-      gsBbox = grainSizeText.bbox();
       gsBox.width(gsBbox.width);
       gsBox.height(gsBbox.height);
       gsBox.x(gsBbox.x);
       gsBox.y(gsBbox.y);
-//      ldBbox = giBbox.merge(gsBbox);
 
       // Comment description
       setCommentDescr(comment);
+      cdBbox = commentDescr.bbox() ;
+
+      // For debugging show the comment description bounding box
+      cdBox.width(cdBbox.width);
+      cdBox.height(cdBbox.height);
+      cdBox.x(cdBbox.x);
+      cdBox.y(cdBbox.y);
+
+      // Form a layer description bounding box by merging any of
+      // (giBbox, gsBbox, cdBbox) that are not empty.
+      for (var i in boxes) {
+        if (boxes[i].height !== 0) {
+          // This box must be merged
+          if (ldBbox === null) {
+            ldBbox = boxes[i];
+          }
+          else {
+            ldBbox = ldBbox.merge(boxes[i]);
+          }
+        }
+      }
+      if (ldBbox === null) {
+        ldBox.width(0);
+        ldBox.height(0);
+        ldBox.x(0);
+        ldBox.y(0);
+      }
+      else {
+        ldBox.width(ldBbox.width);
+        ldBox.height(ldBbox.height);
+        ldBox.x(ldBbox.x);
+        ldBox.y(ldBbox.y);
+      }
     } // if (data === undefined) ... else
 
     // Re-draw the diagram with the updated information

@@ -1327,6 +1327,8 @@ var SnowProfile = {};
     // Scale the drawing to desired image size.
     var scaleFactor = SnowProfile.Cfg.IMAGE_WD / SnowProfile.drawing.width();
     SnowProfile.mainGroup.scale(scaleFactor);
+    SnowProfile.drawing.size(SnowProfile.Cfg.DRAWING_WD * scaleFactor,
+      SnowProfile.drawingHeight() * scaleFactor);
     var svg = SnowProfile.diagram.firstChild;
     svg.toDataURL("image/png", {
       callback: function(data) {
@@ -1339,7 +1341,9 @@ var SnowProfile = {};
         }
 
         // Restore normal drawing scale.
-          SnowProfile.mainGroup.scale(1);
+        SnowProfile.drawing.size(SnowProfile.Cfg.DRAWING_WD,
+          SnowProfile.drawingHeight());
+        SnowProfile.mainGroup.scale(1);
         $.event.trigger("SnowProfileShowControls");
       }
     });
