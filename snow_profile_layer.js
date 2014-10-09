@@ -90,7 +90,6 @@ SnowProfile.Layer = function(depthArg) {
    * {@link SnowProfile.Layer~comment} plus additional
    * information to format this string on the browser window.
    * @type {Object}
-   * @todo Figure out how to manage width
    */
   var commentDescr = layerDescr.text("")
     .addClass('snow_profile_comment_descr')
@@ -289,14 +288,14 @@ SnowProfile.Layer = function(depthArg) {
       x: newX,
       y: newY
     };
-  });
+  }); // handle.draggable(function
 
   /**
    * Animate the uninitialized handle to draw the user's attention
    *
    * For some reason this must be done after handle.draggable() not before.
    */
- handle.animate({ease: SVG.easing.backInOut, duration: '1000'})
+  handle.animate({ease: SVG.easing.backInOut, duration: '1000'})
    .size(SnowProfile.Cfg.HANDLE_SIZE / 1.4, SnowProfile.Cfg.HANDLE_SIZE / 1.4)
    .loop();
 
@@ -308,7 +307,6 @@ SnowProfile.Layer = function(depthArg) {
    * grid scale.  This text is normally hidden, and shows when the mouse is
    * over the handle.
    * @type {Object}
-   * @todo Style
    */
   var handleLoc = SnowProfile.drawing.text("")
     .font({
@@ -340,16 +338,15 @@ SnowProfile.Layer = function(depthArg) {
    * @type {Object}
    */
   var diagLine = SnowProfile.drawing.line(0, 0, 0, 0)
-  .stroke({
-    color: SnowProfile.Cfg.GRID_COLOR,
-    width: 1
-  });
+    .stroke({
+      color: SnowProfile.Cfg.GRID_COLOR,
+      width: 1
+    });
   SnowProfile.mainGroup.add(diagLine);
 
   /**
    * Define a rectangle to outline the layer
    * @type {Object}
-   * @todo Style
    */
   var layerOutline = SnowProfile.drawing.rect(0,0)
     .addClass('snow_profile_layer_outline')
@@ -396,7 +393,6 @@ SnowProfile.Layer = function(depthArg) {
    */
   function handleVisible() {
     handle.show();
-//    self.draw();
   }
 
   /**
@@ -404,7 +400,6 @@ SnowProfile.Layer = function(depthArg) {
    */
   function handleInvisible() {
     handle.hide();
-//    self.draw();
   }
 
   /**
@@ -466,7 +461,7 @@ SnowProfile.Layer = function(depthArg) {
       SnowProfile.Cfg.GRAPH_WIDTH + 1 + SnowProfile.Cfg.CTRLS_WD - 3;
     points = [xLeft, yLeft, xRight, yRight];
     return points;
-  }
+  } // function diagLinePts()
 
   /**
    * Delete this layer and make necessary adjustments
@@ -503,7 +498,7 @@ SnowProfile.Layer = function(depthArg) {
     // Update location of SVG objects whose position
     // depends on the index of the layer
     SnowProfile.setIndexPositions();
-  };
+  }; // this.deleteLayer = function();
 
   /**
    * Get or set description of this snow layer
@@ -518,7 +513,6 @@ SnowProfile.Layer = function(depthArg) {
   this.describe = function(data) {
 
     var cdBbox, giBbox, gsBbox, ldBbox;
-    var boxes = [giBbox, gsBbox, cdBbox];
 
     /**
      * Generate a text description of grain shapes from symbols
@@ -611,7 +605,9 @@ SnowProfile.Layer = function(depthArg) {
         primaryIcon = SnowProfile.drawing.image("data:image/png;base64," +
           SnowProfile.CAAML_SUBSHAPE.MF.MFcr.icon.image,
           SnowProfile.CAAML_SUBSHAPE.MF.MFcr.icon.height,
-          SnowProfile.CAAML_SUBSHAPE.MF.MFcr.icon.width);
+          SnowProfile.CAAML_SUBSHAPE.MF.MFcr.icon.width)
+          .attr('alt', 'MFcr');
+
         container.add(primaryIcon)
           .cy(SnowProfile.Cfg.DESCR_HEIGHT / 2);
       }
@@ -620,6 +616,7 @@ SnowProfile.Layer = function(depthArg) {
         // There is a secondary shape, so use the alternative MFcr icon
         primaryIcon = SnowProfile.drawing.image(
           "data:image/png;base64," + image, 52, 29)
+          .attr('alt', 'MFcr')
           .cy(SnowProfile.Cfg.DESCR_HEIGHT / 2);
         container.add(primaryIcon);
         if (secondarySubShape === "") {
@@ -628,6 +625,7 @@ SnowProfile.Layer = function(depthArg) {
             SnowProfile.CAAML_SHAPE[secondaryShape].icon.image,
             SnowProfile.CAAML_SHAPE[secondaryShape].icon.width,
             SnowProfile.CAAML_SHAPE[secondaryShape].icon.height)
+            .attr('alt', secondaryShape)
             .cx(((SnowProfile.CAAML_SHAPE[secondaryShape]
               .icon.width) / 2) + 30)
             .cy(SnowProfile.Cfg.DESCR_HEIGHT / 2);
@@ -641,6 +639,7 @@ SnowProfile.Layer = function(depthArg) {
             icon.width,
             SnowProfile.CAAML_SUBSHAPE[secondaryShape][secondarySubShape].
             icon.height)
+            .attr('alt', secondarySubShape)
             .cx(((SnowProfile.CAAML_SUBSHAPE[secondaryShape]
               [secondarySubShape].icon.width) / 2) + 30)
             .cy(SnowProfile.Cfg.DESCR_HEIGHT / 2);
@@ -801,6 +800,7 @@ SnowProfile.Layer = function(depthArg) {
      * Set the comment text from comment data provided by user
      *
      * @param {string} comment User comment string
+     * @memberof SnowProfile.Layer.describe
      */
     function setCommentDescr(comment) {
 
@@ -852,11 +852,8 @@ SnowProfile.Layer = function(depthArg) {
 
         // Blank the test buffer
         testLineDescr.text("");
-
-        // Build a text description of the comment from what we have.
-      //  commentDescr.text(comment).cy(SnowProfile.Cfg.DESCR_HEIGHT / 2);
       }
-    }
+    } // function setCommentDescr(comment)
 
     // Main body of this.describe function
     if (data === undefined) {
@@ -937,6 +934,7 @@ SnowProfile.Layer = function(depthArg) {
 
       // Form a layer description bounding box by merging any of
       // (giBbox, gsBbox, cdBbox) that are not empty.
+      var boxes = [giBbox, gsBbox, cdBbox];
       for (var i in boxes) {
         if (boxes[i].height !== 0) {
           // This box must be merged
@@ -968,24 +966,20 @@ SnowProfile.Layer = function(depthArg) {
   }; // this.describe = function(data) {
 
   /**
-   Return the current X position of the handle
-   @returns {number}
+   * Return the current X position of the handle
+   * @returns {number}
    */
   this.handleGetX = function() {
     return handle.x();
   };
 
   /**
-   Return the current Y position of the handle
-   @returns {number}
+   * Return the current Y position of the handle
+   * @returns {number}
    */
   this.handleGetY = function() {
     return handle.y();
   };
-  this.scale = function(factor) {
-    layerDescr.scale(factor, factor);
-  };
-
 
   /**
    * Set position and length of the diagonal line at bottom of this layer

@@ -11,55 +11,56 @@
  * @function
  */
 (function() {
+
   "use strict";
 
-    var code;
+  var code;
 
-    // Populate the primary grain shape selector in the layer description pop-up
-    for (code in SnowProfile.CAAML_SHAPE) {
-      if (SnowProfile.CAAML_SHAPE.hasOwnProperty(code)) {
-        $("#snow_profile_primary_grain_shape").append("<option value=\"" +
-          code + "\">" + SnowProfile.CAAML_SHAPE[code].text + "</option>");
-        $("#snow_profile_secondary_grain_shape").append("<option value=\"" +
-          code + "\">" + SnowProfile.CAAML_SHAPE[code].text + "</option>");
-      }
+  // Populate the grain shape selects in the layer description pop-up
+  for (code in SnowProfile.CAAML_SHAPE) {
+    if (SnowProfile.CAAML_SHAPE.hasOwnProperty(code)) {
+      $("#snow_profile_primary_grain_shape").append("<option value=\"" +
+        code + "\">" + SnowProfile.CAAML_SHAPE[code].text + "</option>");
+      $("#snow_profile_secondary_grain_select").append("<option value=\"" +
+        code + "\">" + SnowProfile.CAAML_SHAPE[code].text + "</option>");
     }
+  }
 
-    // Create the <select>s for the grain subshape from the CAAML_SUBSHAPE
-    // table.
-    var primary_opts = "",
-      secondary_opts = "";
-    for (var shape in SnowProfile.CAAML_SUBSHAPE) {
-      if (SnowProfile.CAAML_SUBSHAPE.hasOwnProperty(shape)) {
-        primary_opts += "<select id=\"snow_profile_primary_grain_subshape_" +
-          shape + "\" style=\"display: none\"><option value=\"\"" +
-          " selected=\"selected\"></option>";
-        secondary_opts +=
-          "<select id=\"snow_profile_secondary_grain_subshape_" +
-          shape + "\" style=\"display: none\"><option value=\"\"" +
-          " selected=\"selected\"></option>";
-        for (var subShape in SnowProfile.CAAML_SUBSHAPE[shape]) {
-          if (SnowProfile.CAAML_SUBSHAPE[shape].hasOwnProperty(subShape)) {
-            primary_opts += "<option value=\"" + subShape + "\">" +
-              SnowProfile.CAAML_SUBSHAPE[shape][subShape].text + "</option>";
-            secondary_opts += "<option value=\"" + subShape + "\">" +
-              SnowProfile.CAAML_SUBSHAPE[shape][subShape].text + "</option>";
-          }
+  // Create the <select>s for the grain subshape from the CAAML_SUBSHAPE
+  // table.
+  var primary_opts = "",
+    secondary_opts = "";
+  for (var shape in SnowProfile.CAAML_SUBSHAPE) {
+    if (SnowProfile.CAAML_SUBSHAPE.hasOwnProperty(shape)) {
+      primary_opts += "<select id=\"snow_profile_primary_grain_subshape_" +
+        shape + "\" style=\"display: none\"><option value=\"\"" +
+        " selected=\"selected\"></option>";
+      secondary_opts +=
+        "<select id=\"snow_profile_secondary_grain_subshape_" +
+        shape + "\" style=\"display: none\"><option value=\"\"" +
+        " selected=\"selected\"></option>";
+      for (var subShape in SnowProfile.CAAML_SUBSHAPE[shape]) {
+        if (SnowProfile.CAAML_SUBSHAPE[shape].hasOwnProperty(subShape)) {
+          primary_opts += "<option value=\"" + subShape + "\">" +
+            SnowProfile.CAAML_SUBSHAPE[shape][subShape].text + "</option>";
+          secondary_opts += "<option value=\"" + subShape + "\">" +
+            SnowProfile.CAAML_SUBSHAPE[shape][subShape].text + "</option>";
         }
-        primary_opts += "</select>";
-        secondary_opts += "</select>";
       }
+      primary_opts += "</select>";
+      secondary_opts += "</select>";
     }
-    $("#snow_profile_primary_grain_subshape").append(primary_opts);
-    $("#snow_profile_secondary_grain_subshape").append(secondary_opts);
+  }
+  $("#snow_profile_primary_grain_subshape").append(primary_opts);
+  $("#snow_profile_secondary_grain_subshape").append(secondary_opts);
 
-    // Populate the grain size selector in the layer description pop-up
-    for (code in SnowProfile.CAAML_SIZE) {
-      if (SnowProfile.CAAML_SIZE.hasOwnProperty(code)) {
-        $("#snow_profile_grain_size").append("<option value=\"" + code +
-          "\">" + SnowProfile.CAAML_SIZE[code] + "</option>");
-      }
+  // Populate the grain size selector in the layer description pop-up
+  for (code in SnowProfile.CAAML_SIZE) {
+    if (SnowProfile.CAAML_SIZE.hasOwnProperty(code)) {
+      $("#snow_profile_grain_size").append("<option value=\"" + code +
+        "\">" + SnowProfile.CAAML_SIZE[code] + "</option>");
     }
+  }
 })();
 
 /**
@@ -80,8 +81,9 @@ SnowProfile.PopUp = function(data) {
   $("#snow_profile_primary_grain_subshape option").attr("selected", false);
   $("#snow_profile_primary_grain_subshape option[value=" +
     data.primaryGrainSubShape + "]").attr("selected", true);
-  $("#snow_profile_secondary_grain_shape option").attr("selected", false);
-  $("#snow_profile_secondary_grain_shape option[value=" +
+  $("#snow_profile_secondary_grain_subshape select").css("display", "none");
+  $("#snow_profile_secondary_grain_select option").attr("selected", false);
+  $("#snow_profile_secondary_grain_select option[value=" +
     data.secondaryGrainShape + "]").attr("selected", true);
   $("#snow_profile_secondary_grain_subshape select").css("display", "none");
   $("#snow_profile_secondary_grain_subshape_" + data.secondaryGrainShape).
@@ -106,10 +108,10 @@ SnowProfile.PopUp = function(data) {
             primaryGrainShape: $("#snow_profile_primary_grain_shape").val(),
             primaryGrainSubShape: $("#snow_profile_primary_grain_subshape_" +
               $("#snow_profile_primary_grain_shape").val()).val(),
-            secondaryGrainShape: $("#snow_profile_secondary_grain_shape").val(),
+            secondaryGrainShape: $("#snow_profile_secondary_grain_select").val(),
             secondaryGrainSubShape: $(
               "#snow_profile_secondary_grain_subshape_" +
-              $("#snow_profile_secondary_grain_shape").val()).val(),
+              $("#snow_profile_secondary_grain_select").val()).val(),
             grainSize: $("#snow_profile_grain_size").val(),
             comment: $("#snow_profile_comment").val()
           });
@@ -148,7 +150,6 @@ SnowProfile.PopUp = function(data) {
   $("#snow_profile_popup").dialog(editArgs);
 
   // Listen for changes to the primary grain shape
-  // @todo Hide secondary grain shape until a primary shape selected
   $("#snow_profile_primary_grain_shape").change(function() {
 
     // Primary grain shape selection has changed, so adjust sub-shape <select>
@@ -158,8 +159,10 @@ SnowProfile.PopUp = function(data) {
     $("#snow_profile_primary_grain_subshape option").attr("selected", false);
     $("#snow_profile_primary_grain_subshape option[value='']").attr(
       "selected", true);
-    $("#snow_profile_secondary_grain_shape option").attr("selected", false);
-    $("#snow_profile_secondary_grain_shape option[value='']").attr(
+    $("#snow_profile_secondary_grain_shape")
+      .attr("style", "display:none;");
+    $("#snow_profile_secondary_grain_select option").attr("selected", false);
+    $("#snow_profile_secondary_grain_select option[value='']").attr(
       "selected", true);
     $("#snow_profile_secondary_grain_subshape select").attr(
       "style", "display:none;");
@@ -173,11 +176,13 @@ SnowProfile.PopUp = function(data) {
       $("#snow_profile_primary_grain_subshape_" +
         $("#snow_profile_primary_grain_shape").val()).attr(
        "style", "display:block;");
+      $("#snow_profile_secondary_grain_shape")
+        .attr("style", "display:block;");
     }
   });
 
   // Listen for changes to the secondary grain shape
-  $("#snow_profile_secondary_grain_shape").change(function() {
+  $("#snow_profile_secondary_grain_select").change(function() {
 
     // Secondary grain shape selection has changed, so adjust
     // secondary sub-shape <select>.
@@ -186,12 +191,12 @@ SnowProfile.PopUp = function(data) {
     $("#snow_profile_secondary_grain_subshape option").attr("selected", false);
     $("#snow_profile_secondary_grain_subshape option[value='']").attr(
       "selected", true);
-    if ($("#snow_profile_secondary_grain_shape").val()) {
+    if ($("#snow_profile_secondary_grain_select").val()) {
 
       // A non-null secondary grain shape has been selected.
       // Display the secondary sub-shape.
       $("#snow_profile_secondary_grain_subshape_" +
-        $("#snow_profile_secondary_grain_shape").val()).attr(
+        $("#snow_profile_secondary_grain_select").val()).attr(
        "style", "display:block;");
     }
   });

@@ -11,7 +11,7 @@ var sw = require('../node_modules/selenium-webdriver'),
   test = require('../node_modules/selenium-webdriver/testing');
 
 // Test the reference grid
-test.describe('Snow Profile diagram reference grid', function() {
+test.describe('Reference grid:', function() {
 
   // Store info read from the page being tested
   var hardnessLabels = [],

@@ -792,3 +792,11 @@
     ['I',     1]
   ];
 })();
+
+// Configure Emacs for Drupal JavaScript coding standards
+// Local Variables:
+// js2-basic-offset: 2
+// indent-tabs-mode: nil
+// fill-column: 78
+// show-trailing-whitespace: t
+// End:

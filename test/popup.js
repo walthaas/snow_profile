@@ -13,7 +13,7 @@ var sw = require('../node_modules/selenium-webdriver'),
     driver;
 
 // Test the popups
-test.describe('Snow Profile diagram popups:', function() {
+test.describe('Popup:', function() {
 
   /**
    * Initialize, load the test page and read
@@ -108,12 +108,12 @@ test.describe('Snow Profile diagram popups:', function() {
           });
         });
     });
-    test.it('Secondary Grain Shape selector is visible', function() {
+    test.it('Secondary Grain Shape selector is not visible', function() {
       driver.findElement(sw.By.id('snow_profile_secondary_grain_shape'))
         .then(function(promise) {
           promise.isDisplayed()
           .then(function(displayed) {
-            chai.expect(displayed).to.be.true;
+            chai.expect(displayed).to.be.false;
           });
         });
     });
@@ -216,6 +216,13 @@ test.describe('Snow Profile diagram popups:', function() {
             chai.expect(displayed).to.be.true;
           });
         });
+      driver.findElement(sw.By.id('snow_profile_secondary_grain_shape'))
+        .then(function(promise) {
+          promise.isDisplayed()
+          .then(function(displayed) {
+            chai.expect(displayed).to.be.true;
+          });
+        });
       driver.findElement(sw.By.xpath('//button[.="Done"]'))
         .then(function(elmt) {
           elmt.click();
@@ -231,9 +238,9 @@ test.describe('Snow Profile diagram popups:', function() {
   }); // test.describe('popup Primary Grain Shape operation
 
   /**
-   * Test suite for Primary Grain Subhape operation of popup
+   * Test suite for Primary Grain Subshape operation of popup
    */
-  test.describe('popup Primary Grain Subhape operation:', function() {
+  test.describe('popup Primary Grain Subshape operation:', function() {
 
     test.before(function() {
       // Load the test page

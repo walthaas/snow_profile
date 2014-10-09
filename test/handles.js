@@ -16,7 +16,7 @@ var sw = require('../node_modules/selenium-webdriver'),
     driver;
 
 // Test the handles
-test.describe('Snow Profile diagram handles', function() {
+test.describe('Handles:', function() {
 
   test.before(function() {
     driver = new sw.Builder()
