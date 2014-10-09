@@ -322,12 +322,18 @@ SnowProfile.Layer = function(depthArg) {
 
   /**
    * "Edit" button
+   *
+   * When the user clicks this button, a modal dialogue appears which allows
+   * the user to describe this layer.
    * @type {Object}
    */
   var editButton = new SnowProfile.Button("Edit");
 
   /**
    * "Insert" button
+   *
+   * Insert button at the bottom of this layer.  When clicked, another layer
+   * is inserted below this layer.
    * @type {Object}
    */
   var insertButton = new SnowProfile.Button("Insert");
@@ -1261,9 +1267,9 @@ SnowProfile.Layer.prototype.code2x = function(code) {
 };
 
 /**
- Convert an X axis position to a hardness code
- @param {number} x X axis position.
- @returns {string} CAAML hardness code.
+ * Convert an X axis position to a hardness code
+ * @param {number} x X axis position.
+ * @returns {string} CAAML hardness code.
  */
 SnowProfile.Layer.prototype.x2code = function(x) {
   "use strict";

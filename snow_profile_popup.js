@@ -64,9 +64,23 @@
 })();
 
 /**
-  Object for a jQueryUI modal dialog to enter data describing a snow layer.
-  @constructor
-  @todo Document data parameter
+ * Object for a jQueryUI modal dialog to enter data describing a snow layer.
+ *
+ * The modal dialog popup offers the user the opportunity to enter data about:
+ * + Grain shape
+ * + Grain size
+ * + comments
+ *
+ * Grain shape is entered by &lt;select&gt;s which offer options for primary
+ * and secondary grain shape and subshape according to the
+ * [IACS 2009 Standard]{@link http://www.cryosphericsciences.org/products/snowClassification/snowclass_2009-11-23-tagged-highres.pdf}.
+ * The primary grain subshape and secondary grain &lt;select&gt;s are
+ * available only when a primary grain shape is selected.  The secondary grain
+ * subshape &lt;select&gt; is available only when a secondary grain shape is
+ * selected.
+ * @constructor
+ * @param {Object} data Initial values to display.  The object is the value
+ * returned by SnowProfile.Layer#describe.
  */
 SnowProfile.PopUp = function(data) {
   "use strict";

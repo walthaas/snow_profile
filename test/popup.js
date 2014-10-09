@@ -38,23 +38,21 @@ test.describe('Popup:', function() {
   /**
    * Test suite for initial conditions of a fresh page
    */
-  test.describe('page initial conditions:', function() {
+  test.describe('popup page initial conditions:', function() {
 
     test.before(function() {
       // Load the test page
       driver.get(common.testURL);
     });
 
-    test.it('page should have one <svg> element', function() {
-      chai.expect('#snow_profile_diagram svg').dom.to.have.count(1);
-    });
-
     test.it('right initial number of buttons', function() {
-      chai.expect('g.snow_profile_button')
-        .dom.to.have.count((2 * SnowProfile.Cfg.NUM_INIT_LAYERS) + 1);
+      driver.findElements(sw.By.css('g.snow_profile_button'))
+        .then(function(done) {
+          chai.expect(done.length).to.equal((2 * SnowProfile.Cfg.NUM_INIT_LAYERS) + 1);
+        });
     });
 
-    test.it('#snow_profile_popup not displayed', function() {
+    test.it('popup is not displayed', function() {
       driver.findElement(sw.By.id('snow_profile_popup'))
         .then(function(promise) {
           promise.isDisplayed()
@@ -63,6 +61,7 @@ test.describe('Popup:', function() {
           });
         });
     });
+
   });  // test.describe('page initial conditions
 
   /**
@@ -177,7 +176,7 @@ test.describe('Popup:', function() {
           elmt.click();
         });
     });
-    test.it('#snow_profile_popup not displayed', function() {
+    test.it('popup no longer displayed', function() {
       driver.findElement(sw.By.id('snow_profile_popup'))
         .then(function(promise) {
           promise.isDisplayed()
