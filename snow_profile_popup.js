@@ -80,7 +80,7 @@
  * selected.
  * @constructor
  * @param {Object} data Initial values to display.  The object is the value
- * returned by SnowProfile.Layer#describe.
+ * returned by SnowProfile.Features#describe.
  */
 SnowProfile.PopUp = function(data) {
   "use strict";

@@ -330,10 +330,10 @@ var SnowProfile = {};
    * @const {number}
    * @memberof SnowProfile
    */
-  SnowProfile.Cfg.LAYER_DESCR_LEFT = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
+  SnowProfile.Cfg.FEAT_DESCR_LEFT = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
     SnowProfile.Cfg.GRAPH_WIDTH + 1 + SnowProfile.Cfg.CTRLS_WD;
 
-  SnowProfile.Cfg.LAYER_DESCR_WD = SnowProfile.Cfg.GRAIN_SHAPE_WD +
+  SnowProfile.Cfg.FEAT_DESCR_WD = SnowProfile.Cfg.GRAIN_SHAPE_WD +
     SnowProfile.Cfg.GRAIN_SPACE_WD + SnowProfile.Cfg.GRAIN_SIZE_WD +
     SnowProfile.Cfg.COMMENT_SPACE_WD + SnowProfile.Cfg.COMMENT_WD;
 
@@ -563,6 +563,16 @@ var SnowProfile = {};
   };
 
   /**
+   * Create a new snow layer with associated Features object
+   */
+  SnowProfile.newLayer = function(depth) {
+    var layer = new SnowProfile.Layer(depth);
+    var features = new SnowProfile.Features(layer);
+    layer.features(features);
+    SnowProfile.setIndexPositions();
+  };
+
+  /**
    * Initialize the SVG drawing and the grid group
    *
    * @method
@@ -572,7 +582,6 @@ var SnowProfile = {};
    * @todo Replace references Kinetic
    */
   SnowProfile.init = function() {
-
     // Add the reference grid to the SVG drawing
     new SnowProfile.Grid();
 
@@ -585,7 +594,7 @@ var SnowProfile = {};
     // When Insert button clicked, insert a new snow layer at depth zero.
     $(document).bind("SnowProfileButtonClick", function(evt, extra) {
       if (extra.buttonObj === insertButton) {
-        new SnowProfile.Layer(0);
+        SnowProfile.newLayer(0);
         evt.stopImmediatePropagation();
       }
     });

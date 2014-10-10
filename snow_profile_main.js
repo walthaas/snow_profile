@@ -14,7 +14,7 @@ if (SVG.supported) {
   var i;
   SnowProfile.init();
   for (i=0; i < SnowProfile.Cfg.NUM_INIT_LAYERS; i++) {
-    new SnowProfile.Layer(i * SnowProfile.Cfg.INT_INIT_LAYERS);
+    SnowProfile.newLayer(i * SnowProfile.Cfg.INT_INIT_LAYERS);
   }
 } else {
   alert('Your browser does not support SVG, required by the snow profile editor');

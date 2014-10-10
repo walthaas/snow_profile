@@ -246,7 +246,7 @@ SnowProfile.Grid = function() {
       family: 'sans-serif',
       fill: SnowProfile.Cfg.LABEL_COLOR
     })
-    .move(SnowProfile.Cfg.LAYER_DESCR_LEFT, 10));
+    .move(SnowProfile.Cfg.FEAT_DESCR_LEFT, 10));
 
     // Add the label to the Grain Size column
     SnowProfile.gridGroup.add(SnowProfile.drawing.text('Size\n(mm)')
@@ -257,7 +257,7 @@ SnowProfile.Grid = function() {
       family: 'sans-serif',
       fill: SnowProfile.Cfg.LABEL_COLOR
     })
-    .move(SnowProfile.Cfg.LAYER_DESCR_LEFT + SnowProfile.Cfg.GRAIN_SIZE_LEFT,
+    .move(SnowProfile.Cfg.FEAT_DESCR_LEFT + SnowProfile.Cfg.GRAIN_SIZE_LEFT,
       10));
 
     // Add the label to the Comment column
@@ -268,7 +268,7 @@ SnowProfile.Grid = function() {
         family: 'sans-serif',
         fill: SnowProfile.Cfg.LABEL_COLOR
       })
-      .move(SnowProfile.Cfg.LAYER_DESCR_LEFT + SnowProfile.Cfg.COMMENT_LEFT,
+      .move(SnowProfile.Cfg.FEAT_DESCR_LEFT + SnowProfile.Cfg.COMMENT_LEFT,
         25);
     SnowProfile.gridGroup.add(commentHeading);
 
@@ -444,7 +444,6 @@ SnowProfile.Grid = function() {
     SnowProfile.depthRef = $("#snow_profile_ref_select").val();
     drawGrid();
   });
-
   drawGrid();
 };
 
