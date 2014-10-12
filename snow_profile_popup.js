@@ -16,7 +16,7 @@
 
   var code;
 
-  // Populate the grain shape selects in the layer description pop-up
+  // Populate the grain shape <select>s in the layer description pop-up
   for (code in SnowProfile.CAAML_SHAPE) {
     if (SnowProfile.CAAML_SHAPE.hasOwnProperty(code)) {
       $("#snow_profile_primary_grain_shape").append("<option value=\"" +
@@ -118,7 +118,7 @@ SnowProfile.PopUp = function(data) {
         text: "Done",
         click: function() {
           // Store description in layer
-          data.layer.describe({
+          data.featObj.describe({
             primaryGrainShape: $("#snow_profile_primary_grain_shape").val(),
             primaryGrainSubShape: $("#snow_profile_primary_grain_subshape_" +
               $("#snow_profile_primary_grain_shape").val()).val(),
@@ -153,7 +153,7 @@ SnowProfile.PopUp = function(data) {
         if (confirm("This action cannot be reversed.  Delete?")) {
 
           // Delete this layer
-          data.layer.deleteLayer();
+          data.layerObj.deleteLayer();
         }
 
         // Close the popup
