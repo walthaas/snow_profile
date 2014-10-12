@@ -71,23 +71,28 @@ SnowProfile.Features = function(layerArg) {
    */
   var comment = "";
 
+  /**
+   * Group to hold all components of the feature description
+   * @type {object}
+   */
   var featDescr = SnowProfile.drawing.group(SnowProfile.Cfg.FEAT_DESCR_WD,
     SnowProfile.Cfg.DESCR_HEIGHT)
     .addClass('snow_profile_feat_descr')
     .x(SnowProfile.Cfg.FEAT_DESCR_LEFT)
-    .y(SnowProfile.depth2y(layerObj.depth()) + (SnowProfile.Cfg.HANDLE_SIZE / 2));
+    .y(SnowProfile.depth2y(layerObj.depth()) +
+      (SnowProfile.Cfg.HANDLE_SIZE / 2));
   SnowProfile.mainGroup.add(featDescr);
 
   // For debugging, show the bounding box
-  var ldBox = SnowProfile.drawing.rect(0, 0)
-    .addClass('snow_profile_ldbox')
+  var fdBox = SnowProfile.drawing.rect(0, 0)
+    .addClass('snow_profile_fdbox')
     .style({
        "fill-opacity": 0,
        stroke: 'blue'
     });
-  featDescr.add(ldBox);
+  featDescr.add(fdBox);
 
-  /**
+   /**
    * Text for the comment.
    *
    * [SVG.Text]{@link http://documentup.com/wout/svg.js#text/text}
@@ -98,7 +103,8 @@ SnowProfile.Features = function(layerArg) {
    */
   var commentDescr = featDescr.text("")
     .addClass('snow_profile_comment_descr')
-    .x(SnowProfile.Cfg.COMMENT_LEFT);
+    .x(SnowProfile.Cfg.COMMENT_LEFT)
+    .y(-5);
 
   // For debugging, show the bounding box
   var cdBox = SnowProfile.drawing.rect(0, 0)
@@ -128,7 +134,8 @@ SnowProfile.Features = function(layerArg) {
    */
   var grainSizeText = featDescr.text("")
     .addClass('snow_profile_grain_size')
-    .x(SnowProfile.Cfg.GRAIN_SIZE_LEFT);
+    .x(SnowProfile.Cfg.GRAIN_SIZE_LEFT)
+    .y(-5);
 
   // For debugging, show the bounding box
   var gsBox = SnowProfile.drawing.rect(0, 0)
@@ -151,7 +158,8 @@ SnowProfile.Features = function(layerArg) {
    */
   var grainIcons = featDescr.group()
     .addClass('snow_profile_grain_icons')
-    .x(SnowProfile.Cfg.GRAIN_ICON_LEFT);
+    .x(SnowProfile.Cfg.GRAIN_ICON_LEFT)
+    .y(5);
 
   // For debugging, show the bounding box
   var giBox = SnowProfile.drawing.rect(0, 0)
@@ -166,6 +174,12 @@ SnowProfile.Features = function(layerArg) {
    * Y position of top of bounding box
    */
   var yPos;
+
+  /**
+   * Height of the feature description bounding box
+   * @type {number}
+   */
+  this.height = 0;
 
   /**
    * Get or set Y value.
@@ -288,18 +302,18 @@ SnowProfile.Features = function(layerArg) {
         SnowProfile.CAAML_SUBSHAPE.MF.MFcr.icon.image,
         SnowProfile.CAAML_SUBSHAPE.MF.MFcr.icon.height,
         SnowProfile.CAAML_SUBSHAPE.MF.MFcr.icon.width)
+        .y(-5)
         .attr('alt', 'MFcr');
 
-      container.add(primaryIcon)
-        .cy(SnowProfile.Cfg.DESCR_HEIGHT / 2);
+      container.add(primaryIcon);
     }
     else {
 
       // There is a secondary shape, so use the alternative MFcr icon
       primaryIcon = SnowProfile.drawing.image(
         "data:image/png;base64," + image, 52, 29)
-        .attr('alt', 'MFcr')
-        .cy(SnowProfile.Cfg.DESCR_HEIGHT / 2);
+        .y(-5)
+        .attr('alt', 'MFcr');
       container.add(primaryIcon);
       if (secondarySubShape === "") {
         // User did not specify a secondary subshape
@@ -310,7 +324,7 @@ SnowProfile.Features = function(layerArg) {
           .attr('alt', secondaryShape)
           .cx(((SnowProfile.CAAML_SHAPE[secondaryShape]
             .icon.width) / 2) + 30)
-          .cy(SnowProfile.Cfg.DESCR_HEIGHT / 2);
+          .cy(10);
       }
       else {
         // User specified a secondary subshape
@@ -324,7 +338,7 @@ SnowProfile.Features = function(layerArg) {
           .attr('alt', secondarySubShape)
           .cx(((SnowProfile.CAAML_SUBSHAPE[secondaryShape]
             [secondarySubShape].icon.width) / 2) + 30)
-          .cy(SnowProfile.Cfg.DESCR_HEIGHT / 2);
+          .cy(10);
       }
       container.add(secondaryIcon);
     }
@@ -384,16 +398,13 @@ SnowProfile.Features = function(layerArg) {
         iconCursor += SnowProfile.CAAML_SHAPE[primaryShape].icon.width;
       }
       container.add(primaryIcon);
-      primaryIcon.cy(SnowProfile.Cfg.DESCR_HEIGHT / 2);
       if (secondaryShape !== "") {
 
         // User specified a secondary grain shape
         // Add left paren to the icons
         iconCursor += 3;
-        //FIXME vertical displacement should be calculated from bbox
         container.add(SnowProfile.drawing.text("(")
-          .x(iconCursor)
-          .cy(SnowProfile.Cfg.DESCR_HEIGHT / 2));
+          .x(iconCursor).y(-5));
         iconCursor += 7;
 
         // Add secondary grain shape icon
@@ -427,14 +438,10 @@ SnowProfile.Features = function(layerArg) {
           iconCursor += SnowProfile.CAAML_SHAPE[secondaryShape].icon.width;
         }
         container.add(secondaryIcon);
-        secondaryIcon.cy(SnowProfile.Cfg.DESCR_HEIGHT / 2);
 
         // Add right paren to the icons
         iconCursor += 3;
-        //FIXME vertical displacement should be calculated from bbox
-        container.add(SnowProfile.drawing.text(")")
-          .x(iconCursor)
-          .cy(SnowProfile.Cfg.DESCR_HEIGHT / 2));
+        container.add(SnowProfile.drawing.text(")").x(iconCursor).y(-5));
       }
     }
   } // function sym2iconsNormal()
@@ -477,7 +484,29 @@ SnowProfile.Features = function(layerArg) {
   } // function sym2icons
 
   /**
-   * Set the comment text from comment data provided by user
+   * Set the grain description.
+   */
+  function setGrainDescr(primaryShape, primarySubShape, secondaryShape,
+    secondarySubShape) {
+
+    // Empty the grain shape icon group and text description
+    grainIcons.clear();
+    if (primaryGrainShape !== "") {
+
+      // The user gave us grain shape information.
+      // Build a text description of grain shape from what we have
+      var text = sym2text(primaryShape, primarySubShape,
+        secondaryShape, secondarySubShape);
+      text = text; // to suppress JSHint "unused" error
+
+      // Build an iconic description of grain shape from what we have
+      sym2icons(primaryShape, primarySubShape,
+        secondaryShape, secondarySubShape, grainIcons);
+    }
+  }
+
+  /**
+   * Set the comment text from comment data provided by user.
    *
    * @param {string} comment User comment string
    */
@@ -543,7 +572,7 @@ SnowProfile.Features = function(layerArg) {
    */
   this.describe = function(data) {
 
-    var cdBbox, giBbox, gsBbox, ldBbox;
+    var cdBbox, giBbox, gsBbox, fdBbox;
 
     // Main body of this.describe function
     if (data === undefined) {
@@ -568,26 +597,12 @@ SnowProfile.Features = function(layerArg) {
       primaryGrainSubShape = data.primaryGrainSubShape;
       secondaryGrainShape = data.secondaryGrainShape;
       secondaryGrainSubShape = data.secondaryGrainSubShape;
-      giBbox = null;
       grainSize = data.grainSize;
-      gsBbox = null;
-      ldBbox = null;
       comment = data.comment;
 
-      // Empty the grain shape icon group and text description
-      grainIcons.clear();
-      if (primaryGrainShape !== "") {
-
-        // The user gave us grain shape information.
-        // Build a text description of grain shape from what we have
-        var text = sym2text(primaryGrainShape, primaryGrainSubShape,
-          secondaryGrainShape, secondaryGrainSubShape);
-        text = text; // to suppress JSHint "unused" error
-
-        // Build an iconic description of grain shape from what we have
-        sym2icons(primaryGrainShape, primaryGrainSubShape,
-          secondaryGrainShape, secondaryGrainSubShape, grainIcons);
-      }
+      // Set the grain icon description
+      setGrainDescr(primaryGrainShape, primaryGrainSubShape,
+        secondaryGrainShape, secondaryGrainSubShape);
       giBbox = grainIcons.bbox();
 
       // For debugging show the grain shape icon bounding box
@@ -602,8 +617,7 @@ SnowProfile.Features = function(layerArg) {
 
         // The user gave us grain size information.
         // Build a text description of grain size from what we have.
-        grainSizeText.text(SnowProfile.CAAML_SIZE[grainSize])
-          .cy(SnowProfile.Cfg.DESCR_HEIGHT / 2);
+        grainSizeText.text(SnowProfile.CAAML_SIZE[grainSize]);
       }
       gsBbox = grainSizeText.bbox();
 
@@ -625,29 +639,40 @@ SnowProfile.Features = function(layerArg) {
 
       // Form a layer description bounding box by merging any of
       // (giBbox, gsBbox, cdBbox) that are not empty.
+      fdBbox = null;
       var boxes = [giBbox, gsBbox, cdBbox];
       for (var i in boxes) {
         if (boxes[i].height !== 0) {
           // This box must be merged
-          if (ldBbox === null) {
-            ldBbox = boxes[i];
+          if (fdBbox === null) {
+            fdBbox = boxes[i];
           }
           else {
-            ldBbox = ldBbox.merge(boxes[i]);
+            fdBbox = fdBbox.merge(boxes[i]);
           }
         }
       }
-      if (ldBbox === null) {
-        ldBox.width(0);
-        ldBox.height(0);
-        ldBox.x(0);
-        ldBox.y(0);
+
+      // Make height of the feature description bounding box public
+      if (fdBbox === null) {
+        self.height = 0;
       }
       else {
-        ldBox.width(ldBbox.width);
-        ldBox.height(ldBbox.height);
-        ldBox.x(ldBbox.x);
-        ldBox.y(ldBbox.y);
+        self.height = fdBbox.height;
+      }
+
+      // For debugging, make bounding box visible
+      if (fdBbox === null) {
+        fdBox.width(0);
+        fdBox.height(0);
+        fdBox.x(0);
+        fdBox.y(0);
+      }
+      else {
+        fdBox.width(fdBbox.width);
+        fdBox.height(fdBbox.height);
+        fdBox.x(fdBbox.x);
+        fdBox.y(fdBbox.y);
       }
     } // if (data === undefined) ... else
 

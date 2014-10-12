@@ -122,7 +122,8 @@ SnowProfile.PopUp = function(data) {
             primaryGrainShape: $("#snow_profile_primary_grain_shape").val(),
             primaryGrainSubShape: $("#snow_profile_primary_grain_subshape_" +
               $("#snow_profile_primary_grain_shape").val()).val(),
-            secondaryGrainShape: $("#snow_profile_secondary_grain_select").val(),
+            secondaryGrainShape: $("#snow_profile_secondary_grain_select")
+              .val(),
             secondaryGrainSubShape: $(
               "#snow_profile_secondary_grain_subshape_" +
               $("#snow_profile_secondary_grain_select").val()).val(),
