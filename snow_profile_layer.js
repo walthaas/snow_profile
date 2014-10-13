@@ -478,7 +478,8 @@ SnowProfile.Layer = function(depthArg) {
    * Push this layer down to make room to insert a layer above.
    *
    * Add an increment to the depth of this layer and all layers below
-   * to the bottom.
+   * until there is enough space or the bottom is reached.
+   * @return {boolean} Insert successful?
    */
   this.pushDown = function() {
     var i = self.getIndex();
@@ -492,13 +493,22 @@ SnowProfile.Layer = function(depthArg) {
       if (spaceBelow < (2 * SnowProfile.Cfg.INS_INCR)) {
 
         // Not enough so we need to make space below this snow layer.
-        SnowProfile.snowLayers[i + 1].pushDown();
+        if (!SnowProfile.snowLayers[i + 1].pushDown()) {
+          return false;
+        }
       }
+    }
+
+    // Refuse to push below the bottom of the pit
+    if ((depthVal + SnowProfile.Cfg.INS_INCR) >= SnowProfile.pitDepth) {
+      alert('No room to insert another layer!');
+      return false;
     }
 
     // Add the insertion increment to this layer
     depthVal += SnowProfile.Cfg.INS_INCR;
     self.draw();
+    return true;
   };
 
   /**
@@ -546,6 +556,13 @@ SnowProfile.Layer = function(depthArg) {
 
         // Not enough so we need to make space below this snow layer.
         SnowProfile.snowLayers[i].pushDown();
+      }
+
+      // Refuse to push below the bottom of the pit
+      if ((depthVal + SnowProfile.Cfg.INS_INCR) >= SnowProfile.pitDepth) {
+        alert('No room to insert another layer!');
+        inserted = true;
+        break;
       }
 
       // Insert this snow layer.
@@ -614,7 +631,16 @@ SnowProfile.Layer = function(depthArg) {
       var numLayers = SnowProfile.snowLayers.length;
 
       // Is this the bottom layer?
-      if (i !== (numLayers - 1)) {
+      if (i === (numLayers - 1)) {
+        // Inserting below the bottom layer
+        if ((depthVal + SnowProfile.Cfg.INS_INCR) >= SnowProfile.pitDepth) {
+
+          // Can't insert, no room
+          alert('No room to insert another layer!');
+          return;
+        }
+      }
+      else {
 
         // We need space for a layer below this one.  Calculate the space
         // available between this layer and the layer below it.
@@ -622,8 +648,11 @@ SnowProfile.Layer = function(depthArg) {
         if (spaceBelow < ( 2 * SnowProfile.Cfg.INS_INCR)) {
 
           // Not enough so we need to make space below this snow layer.
-          SnowProfile.snowLayers[i + 1].pushDown();
-          SnowProfile.snowLayers[i + 1].pushDown();
+          if (!SnowProfile.snowLayers[i + 1].pushDown()) {
+
+            // Couldn't make space, insertion fails
+            return;
+          }
         }
       }
       SnowProfile.newLayer(depthVal + SnowProfile.Cfg.INS_INCR);

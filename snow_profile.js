@@ -183,14 +183,6 @@ var SnowProfile = {};
     DEPTH_SCALE: 5,
 
     /**
-     * Depth increment in cm to allow when inserting a layer above
-     * or below another layer.
-     * @memberof SnowProfile
-     * @const {number}
-     */
-    INS_INCR: 5,
-
-    /**
      * Number of layers initially shown on a fresh copy of the page.
      */
     NUM_INIT_LAYERS: 3,
@@ -251,6 +243,15 @@ var SnowProfile = {};
      * @see SnowProfile.Grid~depthScaleGrp
      */
   SnowProfile.depthRef = "s";
+
+  /**
+   * Depth increment in cm to allow when inserting a layer above
+   * or below another layer.
+   * @memberof SnowProfile
+   * @const {number}
+   */
+  SnowProfile.Cfg.INS_INCR = (SnowProfile.Cfg.HANDLE_SIZE + 1) /
+    SnowProfile.Cfg.DEPTH_SCALE;
 
   /**
    * Central x of the data plotting area.
