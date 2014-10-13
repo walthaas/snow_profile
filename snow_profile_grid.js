@@ -424,8 +424,40 @@ SnowProfile.Grid = function() {
       $("#snow_profile_pit_depth").val(SnowProfile.pitDepth);
       return;
     }
+
+    // If reducing pit depth and that will cause bottom layer(s) to be lost,
+    // get user confirmation.
+    if (Number(pitDepth) < SnowProfile.pitDepth) {
+      // User is reducing the depth of the pit, check lower layers
+      if (SnowProfile.snowLayers[SnowProfile.snowLayers.length - 1]
+        .depth() > pitDepth) {
+        if (confirm('New pit depth will cause lower layer(s) to be discarded')) {
+          // Remove snow layers from the bottom of the pit until we get to a
+          // layer that is above the new pit depth.  That could potentially be
+          // the top layer of the pit.
+          do {
+            SnowProfile.snowLayers[SnowProfile.snowLayers.length - 1]
+              .deleteLayer();
+          } while (SnowProfile.snowLayers[SnowProfile.snowLayers.length - 1]
+             .depth() > pitDepth);
+         }
+        else {
+          $("#snow_profile_pit_depth").val(SnowProfile.pitDepth);
+          return;
+        }
+      }
+    }
+
     SnowProfile.pitDepth = Number(pitDepth);
+    SnowProfile.handleMaxY = SnowProfile.Cfg.TOP_LABEL_HT + 1 +
+      (SnowProfile.Cfg.DEPTH_SCALE * SnowProfile.pitDepth);
+
+    // Redraw the grid with new dimensions
     drawGrid();
+
+   // Redraw the new bottom layer
+   SnowProfile.snowLayers[SnowProfile.snowLayers.length - 1]
+     .draw();
   } // function pitDepthChange()
 
   // Set controls to default values

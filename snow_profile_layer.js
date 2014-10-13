@@ -307,6 +307,7 @@ SnowProfile.Layer = function(depthArg) {
     handleLoc.remove();
     layerOutline.remove();
     diagLine.remove();
+    lineBelow.remove();
     featObj.destroy();
     insertButton.destroy();
   }
@@ -450,7 +451,6 @@ SnowProfile.Layer = function(depthArg) {
    */
   this.draw = function() {
     var i = self.getIndex();
-
     // Set handle X from hardness
     if (handleTouched) {
       handle.x(self.code2x(featObj.hardness()));
