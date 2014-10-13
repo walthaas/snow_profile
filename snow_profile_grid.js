@@ -371,6 +371,31 @@ SnowProfile.Grid = function() {
       return;
     }
 
+    // If reducing total depth and that will cause bottom layer(s) to be lost,
+    // get user confirmation.
+    if ((Number(totalDepth) < SnowProfile.totalDepth)
+      || (Number(totalDepth) < SnowProfile.pitDepth)) {
+
+      // User is reducing the total snow depth, check lower layers
+      if (SnowProfile.snowLayers[SnowProfile.snowLayers.length - 1]
+        .depth() > Number(totalDepth)) {
+        if (confirm('New total depth will cause lower layer(s) to be discarded')) {
+          // Remove snow layers from the bottom of the pit until we get to a
+          // layer that is above the new total depth.  That could potentially
+          // be the top layer of the pit.
+          do {
+            SnowProfile.snowLayers[SnowProfile.snowLayers.length - 1]
+              .deleteLayer();
+          } while (SnowProfile.snowLayers[SnowProfile.snowLayers.length - 1]
+             .depth() > Number(totalDepth));
+         }
+        else {
+          $("#snow_profile_total_depth").val(SnowProfile.totalDepth);
+          return;
+        }
+      }
+    }
+
     // If this is the first time total snow depth is provided,
     // then set the depth reference to "ground"
     if (SnowProfile.totalDepth === null) {
@@ -390,8 +415,15 @@ SnowProfile.Grid = function() {
       SnowProfile.pitDepth = Number(totalDepth);
     }
 
-    // Draw the grid with the new total snow depth
+    SnowProfile.handleMaxY = SnowProfile.Cfg.TOP_LABEL_HT + 1 +
+      (SnowProfile.Cfg.DEPTH_SCALE * SnowProfile.pitDepth);
+
+    // Redraw the grid with new dimensions
     drawGrid();
+
+   // Redraw the new bottom layer
+   SnowProfile.snowLayers[SnowProfile.snowLayers.length - 1]
+     .draw();
   } // function totalDepthChange()
 
   /**
@@ -430,7 +462,7 @@ SnowProfile.Grid = function() {
     if (Number(pitDepth) < SnowProfile.pitDepth) {
       // User is reducing the depth of the pit, check lower layers
       if (SnowProfile.snowLayers[SnowProfile.snowLayers.length - 1]
-        .depth() > pitDepth) {
+        .depth() > Number(pitDepth)) {
         if (confirm('New pit depth will cause lower layer(s) to be discarded')) {
           // Remove snow layers from the bottom of the pit until we get to a
           // layer that is above the new pit depth.  That could potentially be
@@ -439,7 +471,7 @@ SnowProfile.Grid = function() {
             SnowProfile.snowLayers[SnowProfile.snowLayers.length - 1]
               .deleteLayer();
           } while (SnowProfile.snowLayers[SnowProfile.snowLayers.length - 1]
-             .depth() > pitDepth);
+             .depth() > Number(pitDepth));
          }
         else {
           $("#snow_profile_pit_depth").val(SnowProfile.pitDepth);
