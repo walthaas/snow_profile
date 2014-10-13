@@ -539,6 +539,7 @@ SnowProfile.Layer = function(depthArg) {
     handle.front();
   };
 
+  // Main line of constructor
   // Insert this Layer in the appropriate place in the snow pack.
   var i,
     numLayers = SnowProfile.snowLayers.length,
@@ -550,22 +551,6 @@ SnowProfile.Layer = function(depthArg) {
     if (SnowProfile.snowLayers[i].depth() >= depthVal) {
 
       // Insertion point found, we need to insert above snowLayers[i].
-      // How much space is there between this layer and that layer?
-      var spaceBelow = SnowProfile.snowLayers[i].depth() - depthVal;
-      if (spaceBelow < SnowProfile.Cfg.INS_INCR) {
-
-        // Not enough so we need to make space below this snow layer.
-        SnowProfile.snowLayers[i].pushDown();
-      }
-
-      // Refuse to push below the bottom of the pit
-      if ((depthVal + SnowProfile.Cfg.INS_INCR) >= SnowProfile.pitDepth) {
-        alert('No room to insert another layer!');
-        inserted = true;
-        break;
-      }
-
-      // Insert this snow layer.
       SnowProfile.snowLayers.splice(i, 0, this);
       inserted = true;
       break;
