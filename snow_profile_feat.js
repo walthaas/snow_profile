@@ -179,7 +179,7 @@ SnowProfile.Features = function(layerArg) {
    * Height of the feature description bounding box
    * @type {number}
    */
-  this.height = 0;
+  this.height = SnowProfile.Cfg.DESCR_HEIGHT;
 
   /**
    * Get or set Y value.
@@ -655,7 +655,7 @@ SnowProfile.Features = function(layerArg) {
 
       // Make height of the feature description bounding box public
       if (fdBbox === null) {
-        self.height = 0;
+        self.height = SnowProfile.Cfg.DESCR_HEIGHT;
       }
       else {
         self.height = fdBbox.height;
@@ -677,6 +677,7 @@ SnowProfile.Features = function(layerArg) {
     } // if (data === undefined) ... else
 
     // Re-draw the diagram with the updated information
+    SnowProfile.setDrawingSize();
     layerObj.setIndexPosition();
 
   }; // this.describe = function(data) {

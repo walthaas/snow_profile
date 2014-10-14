@@ -310,6 +310,7 @@ SnowProfile.Layer = function(depthArg) {
     lineBelow.remove();
     featObj.destroy();
     insertButton.destroy();
+    SnowProfile.setDrawingHeight();
   }
 
   /**

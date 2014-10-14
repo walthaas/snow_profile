@@ -134,9 +134,9 @@ var SnowProfile = {};
     TOP_LABEL_HT: 40,
 
     /**
-      Height in pixels of the text description area for one snow layer
+     * Minimum height in pixels of the features area for one snow layer.
      * @memberof SnowProfile
-      @const {number}
+     * @const {number}
      */
     DESCR_HEIGHT: 40,
 
@@ -397,15 +397,49 @@ var SnowProfile = {};
   SnowProfile.oldShowHandle = null;
 
   /**
+   * Vertical height in pixels of the grid (left side) of the SVG drawing.
+   *
+   * This height is the pixel equivalent of the pit depth set by the user,
+   * plus the height of the various labels.
+   * @method
+   * @memberof SnowProfile
+   * @returns {number} Drawing height in pixels.
+   */
+  SnowProfile.gridHeight = function() {
+    return  SnowProfile.Cfg.TOP_LABEL_HT + 1 + (SnowProfile.pitDepth *
+      SnowProfile.Cfg.DEPTH_SCALE) + 1 + SnowProfile.Cfg.HARD_LABEL_HT;
+  };
+
+  /**
+   * Vertical height in pixels of the features (right side) of the drawing.
+   *
+   * This height is the sum of the pixel heights of the features of each
+   * snow layer.
+   * @method
+   * @memberof SnowProfile
+   * @returns {number} Drawing height in pixels.
+   */
+  SnowProfile.featuresHeight = function() {
+
+    var i,
+      sum = SnowProfile.Cfg.TOP_LABEL_HT + 1 + SnowProfile.Cfg.DESCR_HEIGHT;
+    for (i = 0; i < SnowProfile.snowLayers.length; i++) {
+      sum += SnowProfile.snowLayers[i].features().height;
+    }
+    return sum;
+  };
+
+  /**
    * Vertical height in pixels of the SVG drawing
    *
    * @method
    * @memberof SnowProfile
    * @returns {number} Drawing height in pixels.
    */
-  SnowProfile.drawingHeight = function() {
-    return  SnowProfile.Cfg.TOP_LABEL_HT + 1 + (SnowProfile.pitDepth *
-      SnowProfile.Cfg.DEPTH_SCALE) + 1 + SnowProfile.Cfg.HARD_LABEL_HT;
+  SnowProfile.setDrawingHeight = function() {
+    var max = Math.max(SnowProfile.gridHeight(), SnowProfile.featuresHeight());
+    SnowProfile.drawing.size(SnowProfile.Cfg.DRAWING_WD, max);
+    SnowProfile.diagram.setAttribute('height', max + 10);
   };
 
   /**
@@ -571,6 +605,7 @@ var SnowProfile = {};
     var features = new SnowProfile.Features(layer);
     layer.features(features);
     SnowProfile.setIndexPositions();
+    SnowProfile.setDrawingHeight();
   };
 
   /**

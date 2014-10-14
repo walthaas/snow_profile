@@ -317,10 +317,7 @@ SnowProfile.Grid = function() {
       .addClass("snow_profile_hardness");
 
     // Set size of drawing
-    SnowProfile.drawing.size(SnowProfile.Cfg.DRAWING_WD,
-      SnowProfile.drawingHeight());
-    SnowProfile.diagram.setAttribute('height',
-      SnowProfile.drawingHeight() + 10);
+    SnowProfile.setDrawingHeight();
 
     // Set the maximum Y value to which a handle may be dragged
     SnowProfile.handleMaxY = SnowProfile.Cfg.TOP_LABEL_HT + 1 +
