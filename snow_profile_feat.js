@@ -677,7 +677,7 @@ SnowProfile.Features = function(layerArg) {
     } // if (data === undefined) ... else
 
     // Re-draw the diagram with the updated information
-    SnowProfile.setDrawingSize();
+    SnowProfile.setDrawingHeight();
     layerObj.setIndexPosition();
 
   }; // this.describe = function(data) {

@@ -569,14 +569,18 @@ var SnowProfile = {};
    */
   SnowProfile.preview = function() {
 
+    var saveWidth, saveHeight;
+
     // Hide the controls so they won't show in the PNG
     $.event.trigger("SnowProfileHideControls");
 
     // Scale the drawing to desired image size.
     var scaleFactor = SnowProfile.Cfg.IMAGE_WD / SnowProfile.drawing.width();
+    saveWidth = SnowProfile.drawing.width();
+    saveHeight = SnowProfile.drawing.height();
     SnowProfile.mainGroup.scale(scaleFactor);
     SnowProfile.drawing.size(SnowProfile.Cfg.DRAWING_WD * scaleFactor,
-      SnowProfile.drawingHeight() * scaleFactor);
+      SnowProfile.drawing.height() * scaleFactor);
     var svg = SnowProfile.diagram.firstChild;
     svg.toDataURL("image/png", {
       callback: function(data) {
@@ -589,8 +593,8 @@ var SnowProfile = {};
         }
 
         // Restore normal drawing scale.
-        SnowProfile.drawing.size(SnowProfile.Cfg.DRAWING_WD,
-          SnowProfile.drawingHeight());
+        SnowProfile.drawing.width(saveWidth);
+        SnowProfile.drawing.height(saveHeight);
         SnowProfile.mainGroup.scale(1);
         $.event.trigger("SnowProfileShowControls");
       }

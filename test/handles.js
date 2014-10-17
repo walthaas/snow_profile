@@ -46,15 +46,11 @@ test.describe('Handles:', function() {
   /**
    * Test suite for initial conditions of a fresh page
    */
-  test.describe('starting conditions', function() {
+  test.describe('handles starting conditions', function() {
 
     test.before(function() {
       // Load the test page
       driver.get(common.testURL);
-    });
-
-    test.it('page should have one <svg> element', function() {
-      chai.expect('#snow_profile_diagram svg').dom.to.have.count(1);
     });
 
     test.it('page should have 3 handles', function() {
@@ -102,7 +98,7 @@ test.describe('Handles:', function() {
 
   // When done, kill the browser
   test.after(function() {
-    driver.quit();
+//    driver.quit();
   }); // test.after(
 
 }); // test.decribe('Snow Profile diagram handles'

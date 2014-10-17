@@ -30,7 +30,6 @@
  *   point in the snowpack is always handled internally as cm from the
  *   snow surface because that's the way that CAAML represents depth.
  * @constructor
- * @todo "Hand Hardness" label doesn't fit in space at bottom
  */
 SnowProfile.Grid = function() {
   "use strict";
@@ -48,8 +47,7 @@ SnowProfile.Grid = function() {
 
     var cm,
       x0 = SnowProfile.Cfg.DEPTH_LABEL_WD + 1,
-      x1 = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 + SnowProfile.Cfg.GRAPH_WIDTH -
-              SnowProfile.Cfg.HANDLE_SIZE / 2,
+      x1 = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 + SnowProfile.Cfg.GRAPH_WIDTH,
       y;
 
     // Add a Depth label on the left side of the diagram
@@ -179,7 +177,7 @@ SnowProfile.Grid = function() {
     for (i = 0; i < SnowProfile.CAAML_HARD.length; i++) {
       x = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
         (SnowProfile.Cfg.HARD_BAND_WD * i) +
-        (SnowProfile.Cfg.HANDLE_SIZE / 2);
+        SnowProfile.Cfg.HANDLE_SIZE;
       if (SnowProfile.CAAML_HARD[i][1]) {
 
         // Add a vertical line to show SnowProfile hardness value
@@ -303,7 +301,7 @@ SnowProfile.Grid = function() {
     //   stylesheet.
     SnowProfile.gridGroup.add(
       SnowProfile.drawing.rect(
-        SnowProfile.Cfg.GRAPH_WIDTH - (SnowProfile.Cfg.HANDLE_SIZE / 2),
+        SnowProfile.Cfg.GRAPH_WIDTH,
         SnowProfile.pitDepth * SnowProfile.Cfg.DEPTH_SCALE)
         .dmove(SnowProfile.Cfg.DEPTH_LABEL_WD,
           SnowProfile.Cfg.TOP_LABEL_HT + (SnowProfile.Cfg.HANDLE_SIZE / 2) + 1)

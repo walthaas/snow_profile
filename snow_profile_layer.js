@@ -84,6 +84,7 @@ SnowProfile.Layer = function(depthArg) {
   var handle = SnowProfile.drawing.rect(SnowProfile.Cfg.HANDLE_SIZE,
     SnowProfile.Cfg.HANDLE_SIZE)
     .x(SnowProfile.Cfg.HANDLE_INIT_X)
+    .y(SnowProfile.depth2y(depthVal))
     .addClass("snow_profile_handle");
   SnowProfile.mainGroup.add(handle);
 
@@ -155,9 +156,6 @@ SnowProfile.Layer = function(depthArg) {
     // Adjust the vertical (depth) position
     depthVal = self.y2depth(newY);
 
-    // Draw the outline rectangle
-    self.setLayerOutline();
-
     // Set the text information floating to the right of the graph
     if (SnowProfile.depthRef === "s") {
 
@@ -172,14 +170,25 @@ SnowProfile.Layer = function(depthArg) {
     handleLoc.text( '(' + mm + ', ' +
       self.x2code(newX) + ')');
     handleLoc.y(newY);
+    // var saveY = handleLoc.y();
+    // var diff = Math.abs(newY - saveY);
+    // if (diff > 1) {
+    //   console.debug('newY=%d  handleLoc.y()=%d', newY, saveY);
+    // }
+    //depthVal = self.y2depth(newY);
 
-    // If this is not the top snow layer, update the diagonal line
-    // owned by the snow layer above.
+    // Adjust the rectangle that outlines this layer
+    self.setLayerOutline();
+
+    // Adjust the diagonal line to the description area
+    self.setDiagLine();
+
+    // If this is not the top snow layer, update the snow layer above.
     if (i !== 0) {
       SnowProfile.snowLayers[i - 1].setDiagLine();
+      SnowProfile.snowLayers[i - 1].setLayerOutline();
     }
-    //depthVal = self.y2depth(newY);
-    self.draw();
+
     return {
       x: newX,
       y: newY
@@ -438,7 +447,8 @@ SnowProfile.Layer = function(depthArg) {
       yBottom += SnowProfile.snowLayers[i+1].handleGetY();
     }
     if (handle.x() !== SnowProfile.Cfg.HANDLE_INIT_X) {
-      layerOutline.width(handle.x() - SnowProfile.Cfg.DEPTH_LABEL_WD - 1);
+      layerOutline.width(handle.x() - SnowProfile.Cfg.DEPTH_LABEL_WD - 1 +
+        (SnowProfile.Cfg.HANDLE_SIZE / 2));
     }
     layerOutline.y(yTop);
     layerOutline.height(yBottom - yTop);
@@ -602,12 +612,16 @@ SnowProfile.Layer = function(depthArg) {
   });
 
   /**
-   When the mouse releases the handle, stop showing its location.
-   @callback
+   * When the mouse releases the handle, stop showing its location.
+   * Then draw the layer from stored hardness code and depth value.
+   * This has the effect of causing the handle and layer outline X values
+   * to snap to the next lowest discrete hardness code.
+   * @callback
    */
   handle.mouseup(function() {
     handleLoc.hide();
     handle.x(self.code2x(featObj.hardness()));
+    self.draw();
   });
 
   // When Insert button clicked, insert a snow layer below this one.
