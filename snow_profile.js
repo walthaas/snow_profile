@@ -494,6 +494,56 @@ var SnowProfile = {};
   };
 
   /**
+   * Convert a hardness code to an X axis position.
+   * @param {string} code A CAAML hardness code from the CAAML_HARD table.
+   * @returns {number} X axis position
+   */
+  SnowProfile.code2x = function(code) {
+    var x = SnowProfile.Cfg.DEPTH_LABEL_WD + 1;
+    if (code !== null) {
+      for (var i = 0; i < SnowProfile.CAAML_HARD.length; i++) {
+        if (code === SnowProfile.CAAML_HARD[i][0]) {
+          x = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
+            (SnowProfile.Cfg.HARD_BAND_WD * i) +
+            (SnowProfile.Cfg.HANDLE_SIZE / 2);
+          break;
+        }
+      }
+    }
+    return x;
+  };
+
+  /**
+   * Convert an X axis position to a hardness code
+   * @param {number} x X axis position.
+   * @returns {string} CAAML hardness code.
+   */
+  SnowProfile.x2code = function(x) {
+    var code = 'I';
+
+    for (var i = 0; i < SnowProfile.CAAML_HARD.length - 1; i++) {
+      if ((x >= (SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
+          (SnowProfile.Cfg.HARD_BAND_WD * i) + (SnowProfile.Cfg.HANDLE_SIZE / 2)) &&
+         (x < (SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
+          (SnowProfile.Cfg.HARD_BAND_WD * (i + 1)) +
+          (SnowProfile.Cfg.HANDLE_SIZE / 2))))) {
+        code = SnowProfile.CAAML_HARD[i][0];
+        break;
+      }
+    }
+    return code;
+  };
+
+  /**
+   * Convert a Y axis position to a depth in cm.
+   * @param {number} y Y axis position.
+   * @returns {number} Depth of this layer in cm.
+   */
+  SnowProfile.y2depth = function(y) {
+    return (y - SnowProfile.Cfg.HANDLE_MIN_Y) / SnowProfile.Cfg.DEPTH_SCALE;
+  };
+
+  /**
    * Convert a snow layer depth value to a drawing Y axis position
    *
    * @method

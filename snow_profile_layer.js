@@ -151,10 +151,10 @@ SnowProfile.Layer = function(depthArg) {
     }
 
     // Adjust the horizontal (hardness) position
-    featObj.hardness(self.x2code(newX));
+    featObj.hardness(SnowProfile.x2code(newX));
 
     // Adjust the vertical (depth) position
-    depthVal = self.y2depth(newY);
+    depthVal = SnowProfile.y2depth(newY);
 
     // Set the text information floating to the right of the graph
     if (SnowProfile.depthRef === "s") {
@@ -168,14 +168,13 @@ SnowProfile.Layer = function(depthArg) {
       mm = Math.round((SnowProfile.totalDepth - depthVal) * 10) / 10;
     }
     handleLoc.text( '(' + mm + ', ' +
-      self.x2code(newX) + ')');
+      SnowProfile.x2code(newX) + ')');
     handleLoc.y(newY);
     // var saveY = handleLoc.y();
     // var diff = Math.abs(newY - saveY);
     // if (diff > 1) {
     //   console.debug('newY=%d  handleLoc.y()=%d', newY, saveY);
     // }
-    //depthVal = self.y2depth(newY);
 
     // Adjust the rectangle that outlines this layer
     self.setLayerOutline();
@@ -446,6 +445,7 @@ SnowProfile.Layer = function(depthArg) {
       // Not the bottom layer so bottom Y is top of next lower layer
       yBottom += SnowProfile.snowLayers[i+1].handleGetY();
     }
+
     if (handle.x() !== SnowProfile.Cfg.HANDLE_INIT_X) {
       layerOutline.width(handle.x() - SnowProfile.Cfg.DEPTH_LABEL_WD - 1 +
         (SnowProfile.Cfg.HANDLE_SIZE / 2));
@@ -464,7 +464,7 @@ SnowProfile.Layer = function(depthArg) {
     var i = self.getIndex();
     // Set handle X from hardness
     if (handleTouched) {
-      handle.x(self.code2x(featObj.hardness()));
+      handle.x(SnowProfile.code2x(featObj.hardness()));
     }
     else {
       handle.x(SnowProfile.Cfg.HANDLE_INIT_X);
@@ -620,7 +620,7 @@ SnowProfile.Layer = function(depthArg) {
    */
   handle.mouseup(function() {
     handleLoc.hide();
-    handle.x(self.code2x(featObj.hardness()));
+    handle.x(SnowProfile.code2x(featObj.hardness()));
     self.draw();
   });
 
@@ -665,59 +665,6 @@ SnowProfile.Layer = function(depthArg) {
   // Set the location of SVG objects dependent on index of layer
   // for all layers, since inserting a layer disarranged those objects.
 }; // function SnowProfile.Layer()
-
-/**
- Convert a hardness code to an X axis position.
- @param {string} code A CAAML hardness code from the CAAML_HARD table.
- @returns {number} X axis position
- */
-SnowProfile.Layer.prototype.code2x = function(code) {
-  "use strict";
-  var x = SnowProfile.Cfg.DEPTH_LABEL_WD + 1;
-  if (code !== null) {
-    for (var i = 0; i < SnowProfile.CAAML_HARD.length; i++) {
-      if (code === SnowProfile.CAAML_HARD[i][0]) {
-        x = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
-          (SnowProfile.Cfg.HARD_BAND_WD * i) +
-          (SnowProfile.Cfg.HANDLE_SIZE / 2);
-        break;
-      }
-    }
-  }
-  return x;
-};
-
-/**
- * Convert an X axis position to a hardness code
- * @param {number} x X axis position.
- * @returns {string} CAAML hardness code.
- */
-SnowProfile.Layer.prototype.x2code = function(x) {
-  "use strict";
-  var code = 'I';
-
-  for (var i = 0; i < SnowProfile.CAAML_HARD.length - 1; i++) {
-    if ((x >= (SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
-        (SnowProfile.Cfg.HARD_BAND_WD * i) + (SnowProfile.Cfg.HANDLE_SIZE / 2)) &&
-       (x < (SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
-        (SnowProfile.Cfg.HARD_BAND_WD * (i + 1)) +
-        (SnowProfile.Cfg.HANDLE_SIZE / 2))))) {
-      code = SnowProfile.CAAML_HARD[i][0];
-      break;
-    }
-  }
-  return code;
-};
-
-/**
- Convert a Y axis position to a depth in cm.
- @param {number} y Y axis position.
- @returns {number} Depth of this layer in cm.
- */
-SnowProfile.Layer.prototype.y2depth = function(y) {
-  "use strict";
-  return (y - SnowProfile.Cfg.HANDLE_MIN_Y) / SnowProfile.Cfg.DEPTH_SCALE;
-};
 
 // Configure Emacs for Drupal JavaScript coding standards
 // Local Variables:
