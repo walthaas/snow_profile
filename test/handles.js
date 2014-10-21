@@ -10,15 +10,13 @@ var sw = require('../node_modules/selenium-webdriver'),
   chaiWebdriver = require('chai-webdriver'),
   test = require('../node_modules/selenium-webdriver/testing');
   var SnowProfile = {},
-    bodyLoc,
-    containerLoc,
     diagramLoc,
     driver;
 
 /**
- * Move a handle to specified depth and hardness
+ * Schedule command to move a handle to specified depth and hardness
  *
- * @param {number} handle Handle number. Top handle is zero.
+ * @param {number} index Handle number. Top handle is zero.
  * @param {number} depth Target depth to move to, in cm
  * @param {string} hardness Hand hardness code
  */
@@ -52,9 +50,9 @@ function moveHandle(index, depth, hardness) {
 }
 
 /**
- * Test position of a handle in units of depth and hand hardness
+ * Schedule command to test position of a handle.
  *
- * @param {number} handle Handle number. Top handle is zero.
+ * @param {number} index Handle number. Top handle is zero.
  * @param {number} depth Expected depth in cm
  * @param {string} hardness Expected hand hardness code
  */
@@ -70,7 +68,7 @@ function testHandle(index, depth, hardness) {
            (currentLoc.y - diagramLoc.y) + "')");
          var hardnessPromise =
            driver.executeScript("return window.SnowProfile.x2code('" +
-             (currentLoc.x - diagramLoc.x) + "')");
+             Math.ceil(currentLoc.x - diagramLoc.x) + "')");
          sw.promise.all([depthPromise, hardnessPromise])
            .then(function(arr) {
              chai.expect(arr[0]).to.equal(depth);
@@ -78,6 +76,37 @@ function testHandle(index, depth, hardness) {
            });
          });
    });
+}
+
+/**
+ * Schedule command to click an Insert button
+ *
+ * @param {number} index Button number. Top button is zero.
+ */
+function clickInsert(index) {
+  driver.findElement(sw.By.xpath(
+    "//*[name()='svg']/*[name()='g']/*[name()='g']" +
+      "[@class='snow_profile_button Insert'][" + (index + 1) + "]"))
+   .then(function(button) {
+     button.click();
+   });
+}
+
+/**
+ * Schedule command to click the last Insert button
+ */
+function clickLastInsert() {
+  driver.findElements(sw.By.xpath(
+    "//*[name()='svg']/*[name()='g']/*[name()='g']" +
+    "[@class='snow_profile_button Insert']"))
+    .then(function(buttons) {
+      driver.findElement(sw.By.xpath(
+        "//*[name()='svg']/*[name()='g']/*[name()='g']" +
+        "[@class='snow_profile_button Insert'][" + buttons.length + "]"))
+        .then(function(button){
+          button.click();
+        });
+    });
 }
 
 // Test the handles
@@ -177,11 +206,16 @@ test.describe('Handles:', function() {
       moveHandle(1, 10, 'I');
       testHandle(1, 10, 'I');
     });
+    test.it('create a fourth layer at depth 40', function() {
+      clickLastInsert();
+      moveHandle(3, 40, 'K');
+      testHandle(3, 40, 'K');
+    });
   }); // test.describe('drag and drop handles',
 
   // When done, kill the browser
   test.after(function() {
-//    driver.quit();
+    driver.quit();
   }); // test.after(
 
 }); // test.decribe('Snow Profile diagram handles'
