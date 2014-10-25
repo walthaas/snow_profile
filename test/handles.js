@@ -180,18 +180,22 @@ test.describe('Handles:', function() {
     // Move handles around, test where they end up
     test.it('dragNdrop top handle to hardness 4F', function() {
       moveHandle(0, 0, '4F');
+      driver.sleep(200);
       testHandle(0, 0, '4F');
     });
     test.it('dragNdrop second handle to depth 10, hardness 1F', function() {
       moveHandle(1, 10, '1F');
+      driver.sleep(200);
       testHandle(1, 10, '1F');
     });
     test.it('dragNdrop third handle to depth 20, hardness P', function() {
       moveHandle(2, 20, 'P');
+      driver.sleep(200);
       testHandle(2, 20, 'P');
     });
     test.it('dragNdrop second handle to depth 30, hardness 1F', function() {
       moveHandle(1, 30, '1F');
+      driver.sleep(200);
       testHandle(1, 19.8, '1F');
     });
     test.it('dragNdrop second handle to depth 0, hardness 1F', function() {
