@@ -5,7 +5,7 @@
  */
 
 var sw = require('../node_modules/selenium-webdriver'),
-  common = require('./lib'),
+  com = require('./lib'),
   chai = require("chai"),
   chaiWebdriver = require('chai-webdriver'),
   test = require('../node_modules/selenium-webdriver/testing');
@@ -119,7 +119,7 @@ test.describe('Handles:', function() {
     chai.use(chaiWebdriver(driver));
 
     // Load the test page
-    driver.get(common.testURL);
+    driver.get(com.testURL);
 
     // Get configuration SnowProfile.Cfg from the page JS
     driver.executeScript('return window.SnowProfile.Cfg')
@@ -144,7 +144,7 @@ test.describe('Handles:', function() {
 
     test.before(function() {
       // Load the test page
-      driver.get(common.testURL);
+      driver.get(com.testURL);
     });
 
     test.it('page should have 3 handles', function() {
@@ -174,7 +174,7 @@ test.describe('Handles:', function() {
 
     test.before(function() {
       // Load the test page
-      driver.get(common.testURL);
+      driver.get(com.testURL);
     });
 
     // Move handles around, test where they end up

@@ -5,7 +5,7 @@
  */
 
 var sw = require('../node_modules/selenium-webdriver'),
-  common = require('./lib'),
+  com = require('./lib'),
   chai = require("chai"),
   chaiWebdriver = require('chai-webdriver'),
   test = require('../node_modules/selenium-webdriver/testing');
@@ -26,7 +26,7 @@ test.describe('Popup:', function() {
     chai.use(chaiWebdriver(driver));
 
     // Load the test page
-    driver.get(common.testURL);
+    driver.get(com.testURL);
 
     // Get configuration SnowProfile.Cfg from the page JS
     driver.executeScript('return window.SnowProfile.Cfg')
@@ -42,7 +42,7 @@ test.describe('Popup:', function() {
 
     test.before(function() {
       // Load the test page
-      driver.get(common.testURL);
+      driver.get(com.testURL);
     });
 
     test.it('right initial number of buttons', function() {
@@ -71,7 +71,7 @@ test.describe('Popup:', function() {
 
     test.before(function() {
       // Load the test page
-      driver.get(common.testURL);
+      driver.get(com.testURL);
     });
 
     test.it('click on edit button creates popup', function() {
@@ -152,7 +152,7 @@ test.describe('Popup:', function() {
 
     test.before(function() {
       // Load the test page
-      driver.get(common.testURL);
+      driver.get(com.testURL);
     });
 
     test.it('click on edit button creates popup', function() {
@@ -194,7 +194,7 @@ test.describe('Popup:', function() {
 
     test.before(function() {
       // Load the test page
-      driver.get(common.testURL);
+      driver.get(com.testURL);
     });
 
     test.it('Select Primary Grain Shape PP displays PP icon', function() {
@@ -243,7 +243,7 @@ test.describe('Popup:', function() {
 
     test.before(function() {
       // Load the test page
-      driver.get(common.testURL);
+      driver.get(com.testURL);
     });
 
     test.it('Select stellar displays PPsd icon', function() {

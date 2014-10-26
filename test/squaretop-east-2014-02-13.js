@@ -5,7 +5,7 @@
  */
 
 var sw = require('../node_modules/selenium-webdriver'),
-  common = require('./lib'),
+  com = require('./lib'),
   chai = require("chai"),
   chaiWebdriver = require('chai-webdriver'),
   test = require('../node_modules/selenium-webdriver/testing');
@@ -17,10 +17,10 @@ var sw = require('../node_modules/selenium-webdriver'),
  * Schedule command to move a handle to specified depth and hardness
  *
  * @param {number} index Handle number. Top handle is zero.
- * @param {number} depth Target depth to move to, in cm
- * @param {string} hardness Hand hardness code
+ * @param {number} depth Target depth to move to, in cm from surface.
+ * @param {string} hardness Hand hardness code.
  */
-function moveHandle(index, depth, hardness) {
+function moveHandle(index, depth, hardness, comment) {
   "use strict";
   // console.info('queueing command to find handle', index);
 
@@ -123,115 +123,6 @@ function clickLastInsert() {
    });
 }
 
-/**
- * Schedule command to set layer features
- *
- * @param {number} index Layer number. Top layer is zero.
- * @param {string} shape
- * @param {number} size
- * @param {string} comment
- */
-function setFeatures(index, shape, size, comment) {
-
-  var primaryShape,
-    primarySubShape,
-    secondaryShape,
-    secondarySubShape,
-    popupDisplayed;
-
-  // Shape is a string specifying primary shape, or an array of two
-  // strings specifying primary or seconday shape.  May be null.
-  if ((shape !== null) && (shape !== undefined)) {
-
-    // If shape info was supplied, parse the info into
-    // primary and secondary shape and subshape
-    if (Object.prototype.toString.call(shape) === '[object Array]') {
-      if (shape[0].length === 4) {
-        primaryShape = shape[0].substr(0,2);
-        primarySubShape = shape[0];
-      }
-      else {
-        primaryShape = shape[0];
-      }
-      if (shape[1].length === 4) {
-        secondaryShape = shape[1].substr(0,2);
-        secondarySubShape = shape[1];
-      }
-      else {
-        secondaryShape = shape[1];
-      }
-    }
-    else {
-      if (shape.length === 4) {
-        primaryShape = shape.substr(0,2);
-        primarySubShape = shape;
-      }
-      else {
-        primaryShape = shape;
-      }
-    }
-  }
-
-  // Click the Edit button for the layer to open the popup.
-  driver.findElement(sw.By.xpath(
-    "//*[name()='svg']/*[name()='g']/*[name()='g']" +
-      "[@class='snow_profile_button Edit'][" + (index + 1) + "]")).click();
-  driver.wait(function() {
-    return driver.findElement(sw.By.css('div#snow_profile_popup')).isDisplayed();
-    }, 2000, 'div#snow_profile_popup not found')
-    .then(function() {
-      if (primaryShape !== undefined) {
-
-        // Set popup <select>s to shape values
-        driver.findElement(sw.By.xpath('//select[@id="snow_profile_primary_grain_shape"]/option[@value="' + primaryShape + '"]')).click();
-        if (primarySubShape !== undefined) {
-          driver.wait(function() {
-            return driver.isElementPresent(sw.By.xpath('//select[@id="snow_profile_primary_grain_subshape_' + primaryShape + '"]'));
-            }, 2000, 'subselect for ' + primaryShape + ' not found')
-            .then(function() {
-              driver.findElement(sw.By.xpath('//select[@id="snow_profile_primary_grain_subshape_' + primaryShape + '"]/option[@value="' + primarySubShape + '"]')).click();
-            });
-        }
-        if (secondaryShape !== undefined) {
-          driver.wait(function() {
-            return driver.isElementPresent(sw.By.xpath('//select[@id="snow_profile_secondary_grain_select"]'))
-            },
-            2000, 'select secondary_grain_select not found')
-            .then(function() {
-              driver.findElement(sw.By.xpath('//select[@id="snow_profile_secondary_grain_select"]/option[@value="' + secondaryShape + '"]')).click();
-              });
-          if (secondarySubShape !== undefined) {
-            driver.wait(function() {
-              return driver.isElementPresent(sw.By.xpath('//select[@id="snow_profile_secondary_grain_subshape_' + secondaryShape + '"]'));
-            },
-            2000, 'select secondary_grain_subshape not found')
-            .then(function() {
-              driver.findElement(sw.By.xpath('//select[@id="snow_profile_secondary_grain_subshape_'+ secondaryShape +'"]/option[@value="' + secondarySubShape + '"]')).click();
-              });
-          }
-        }
-      }
-
-      // Size is a number specifying grain size, or an array of two
-      // strings specifying size range.  May be null.
-      if ((size !== null) && (size !== undefined)){
-        var sizeClass = Object.prototype.toString.call(size);
-        console.info('sizeClass=', sizeClass);
-      }
-      // Click the Done button to save the features
-      driver.findElement(sw.By.xpath('//button[.="Done"]')).click();
-
-      // Wait for the popup to disappear
-      driver.wait(function() {
-        driver.findElement(sw.By.css('div#snow_profile_popup'))
-          .then(function(popup) {
-            popupDisplayed = popup.isDisplayed();
-          });
-        return !popupDisplayed;
-      }, 2000, "popup didn't go away");
-    });
-}
-
 //
 test.describe('Square Top Feb 13, 2014:', function() {
 
@@ -242,7 +133,7 @@ test.describe('Square Top Feb 13, 2014:', function() {
     chai.use(chaiWebdriver(driver));
 
     // Load the test page
-    driver.get(common.testURL);
+    driver.get(com.testURL);
 
     // Get configuration SnowProfile.Cfg from the page JS
     driver.executeScript('return window.SnowProfile.Cfg')
@@ -268,7 +159,7 @@ test.describe('Square Top Feb 13, 2014:', function() {
     test.before(function() {
 
       // Load the test page
-      driver.get(common.testURL);
+      driver.get(com.testURL);
 
       // Set total depth to 180 cm
       driver.findElement(sw.By.css('#snow_profile_total_depth'))
@@ -305,19 +196,19 @@ test.describe('Square Top Feb 13, 2014:', function() {
       moveHandle(0, 0, 'F-');
 // FIXME: this test fails but the handle is in the right place
 //      testHandle(0, 0, 'F-');
-      setFeatures(0, ['PP', 'PPgp'], [1.0, 3.0]);
+      com.setFeatures(sw, driver, 0, ['PP', 'PPgp'], [1.0, 3.0]);
     });
 
     test.it('second layer 172cm, F-, PP, 0.5', function() {
       moveHandle(1, 8, 'F-');
 //      testHandle(1, 8, 'F-');
-      setFeatures(1, 'PP', 0.5);
+      com.setFeatures(sw, driver, 1, 'PP', 0.5);
     });
 
     test.it('third layer 165 cm F DFdc (PP)', function() {
       moveHandle(2, 15, 'F');
 //      testHandle(2, 15, 'F');
-      setFeatures(2, ['DFdc', 'PP']);
+      com.setFeatures(sw, driver, 2, ['DFdc', 'PP']);
     });
 
     test.it('fourth layer 149 cm F PPgp', function() {
