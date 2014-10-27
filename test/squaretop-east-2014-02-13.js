@@ -24,6 +24,9 @@ function moveHandle(index, depth, hardness, comment) {
   "use strict";
   // console.info('queueing command to find handle', index);
 
+  var moveStarted = false,
+    moveDone = false;
+
   var handleXpath = "//*[name()='svg']/*[name()='g']/*[name()='rect']" +
     "[@class='snow_profile_handle'][" + (index + 1) + "]";
 
@@ -31,35 +34,46 @@ function moveHandle(index, depth, hardness, comment) {
   driver.wait(function() {
     return driver.isElementPresent(sw.By.xpath(handleXpath));
   }, 2000, "handle " + index + " didn't appear");
-  var handleProm = driver.findElement(sw.By.xpath(handleXpath));
 
-  // console.info('queueing command depth2y', depth);
-  var depthProm = driver.executeScript("return window.SnowProfile.depth2y('" +
-    depth + "')");
+  driver.wait(function() {
+    if (!moveStarted) {
+      moveStarted = true;
+      var handleProm = driver.findElement(sw.By.xpath(handleXpath));
 
-  // console.info('queueing command code2x', hardness);
-  var hardProm = driver.executeScript("return window.SnowProfile.code2x('" +
-    hardness + "')");
+      // console.info('queueing command depth2y', depth);
+      var depthProm = driver.executeScript(
+        "return window.SnowProfile.depth2y('" +
+        depth + "')");
 
-  // console.info('queuing promise.all');
-  sw.promise.all([handleProm, depthProm, hardProm])
-    .then(function(arr) {
-      var handle = arr[0];
-      var newX = arr[2] + diagramLoc.x;
-      var newY = arr[1] + diagramLoc.y;
-      // console.info('newX=', newX, '  newY=', newY);
-      handle.getLocation()
-        .then(function(currentLoc) {
-           var offsetX = Math.ceil(newX - currentLoc.x);
-           var offsetY = Math.ceil(newY - currentLoc.y);
-           // console.info('currentLoc=', currentLoc);
-           // console.info('queueing command to move handle', index);
-           new sw.ActionSequence(driver)
-             .dragAndDrop(handle, {x: offsetX, y: offsetY})
-             .perform();
+      // console.info('queueing command code2x', hardness);
+      var hardProm = driver.executeScript("return window.SnowProfile.code2x('" +
+        hardness + "')");
+
+      // console.info('queuing promise.all');
+      sw.promise.all([handleProm, depthProm, hardProm])
+        .then(function(arr) {
+          var handle = arr[0];
+          var newX = arr[2] + diagramLoc.x;
+          var newY = arr[1] + diagramLoc.y;
+//          console.info('newX=', newX, '  newY=', newY);
+          handle.getLocation()
+            .then(function(currentLoc) {
+               var offsetX = Math.ceil(newX - currentLoc.x);
+               var offsetY = Math.ceil(newY - currentLoc.y);
+//               console.info('currentLoc=', currentLoc);
+//               console.info('offsetX=', offsetX, 'offsetY=', offsetY);
+               // console.info('queueing command to move handle', index);
+               new sw.ActionSequence(driver)
+                 .dragAndDrop(handle, {x: offsetX, y: offsetY})
+                 .perform()
+                .then(function() {
+                   moveDone = true;
+                });
+            });
         });
-    });
-  driver.sleep(200);
+      }
+      return moveDone;
+    }, 2000, "didn't complete move");
 }
 
 /**
@@ -107,6 +121,7 @@ function clickInsert(index) {
 
 /**
  * Schedule command to click the last Insert button
+ * @TODO wait until new layer is created
  */
 function clickLastInsert() {
   driver.findElements(sw.By.xpath(
