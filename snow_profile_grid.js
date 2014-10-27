@@ -331,11 +331,11 @@ SnowProfile.Grid = function() {
     drawLabels();
 
     // For debugging, show the bounding box
-    var drawingBbox = SnowProfile.drawing.bbox();
-    SnowProfile.drawingBox.width(drawingBbox.width);
-    SnowProfile.drawingBox.height(drawingBbox.height);
-    SnowProfile.drawingBox.x(drawingBbox.x);
-    SnowProfile.drawingBox.y(drawingBbox.y);
+    // var drawingBbox = SnowProfile.drawing.bbox();
+    // SnowProfile.drawingBox.width(drawingBbox.width);
+    // SnowProfile.drawingBox.height(drawingBbox.height);
+    // SnowProfile.drawingBox.x(drawingBbox.x);
+    // SnowProfile.drawingBox.y(drawingBbox.y);
 
     // Trigger a custom event to let the rest of the code know
     $.event.trigger("SnowProfileDrawGrid");

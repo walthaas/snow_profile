@@ -456,12 +456,12 @@ var SnowProfile = {};
     .attr('id', 'snow_profile_main_g');
 
   // For debugging, show the bounding box
-  SnowProfile.drawingBox = SnowProfile.drawing.rect(0, 0)
-    .style({
-       "fill-opacity": 0,
-       stroke: 'red'
-    });
-  SnowProfile.mainGroup.add(SnowProfile.drawingBox);
+  // SnowProfile.drawingBox = SnowProfile.drawing.rect(0, 0)
+  //   .style({
+  //      "fill-opacity": 0,
+  //      stroke: 'red'
+  //   });
+  // SnowProfile.mainGroup.add(SnowProfile.drawingBox);
 
   /**
    * SnowProfile drawing grid group

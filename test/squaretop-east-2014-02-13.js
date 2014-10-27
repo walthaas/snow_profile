@@ -193,100 +193,116 @@ test.describe('Square Top Feb 13, 2014:', function() {
     });
 
     test.it('top layer 180cm, F-, PP (PPgp), 1.0-3.0', function() {
-      moveHandle(0, 0, 'F-');
+      moveHandle(0, 180 - 180, 'F-');
 // FIXME: this test fails but the handle is in the right place
-//      testHandle(0, 0, 'F-');
+//      testHandle(0, 180 - 180, 'F-');
       com.setFeatures(sw, driver, 0, ['PP', 'PPgp'], [1.0, 3.0]);
     });
 
     test.it('second layer 172cm, F-, PP, 0.5', function() {
-      moveHandle(1, 8, 'F-');
-//      testHandle(1, 8, 'F-');
+      moveHandle(1, 180 - 172, 'F-');
+//      testHandle(1, 180 - 172, 'F-');
       com.setFeatures(sw, driver, 1, 'PP', 0.5);
     });
 
-    test.it('third layer 165 cm F DFdc (PP)', function() {
-      moveHandle(2, 15, 'F');
-//      testHandle(2, 15, 'F');
-      com.setFeatures(sw, driver, 2, ['DFdc', 'PP']);
+    test.it('third layer 165 cm F DFdc (PP), 0.5 - 1.0', function() {
+      moveHandle(2, 180 - 165, 'F');
+//      testHandle(2, 180 - 165, 'F');
+      com.setFeatures(sw, driver, 2, ['DFdc', 'PP'], [0.5, 1.0]);
     });
 
-    test.it('fourth layer 149 cm F PPgp', function() {
+    test.it('fourth layer 149 cm F PPgp, 2.0 - 4.0', function() {
       clickLastInsert();
       moveHandle(3, 31, 'F');
-      testHandle(3, 31, 'F');
+//      testHandle(3, 31, 'F');
+      com.setFeatures(sw, driver, 3, 'PPgp', [2.0, 4.0]);
     });
 
-    test.it('fifth layer 148 cm F-4F DFdc', function() {
+    test.it('fifth layer 148 cm F-4F DFdc, 0.3 - 0.5', function() {
       clickLastInsert();
       moveHandle(4, 32, 'F-4F');
-      testHandle(4, 32, 'F-4F');
+//      testHandle(4, 32, 'F-4F');
+      com.setFeatures(sw, driver, 4, 'DFdc', [0.3, 0.5]);
     });
 
-    test.it('sixth layer 133 cm 4F DFdc (RGlr)', function() {
+    test.it('sixth layer 133 cm 4F DFdc (RGlr), 0.3 - 0.5', function() {
       clickLastInsert();
       moveHandle(5, 47, '4F');
-      testHandle(5, 47, '4F');
+//      testHandle(5, 47, '4F');
+      com.setFeatures(sw, driver, 5, ['DFdc', 'RGlr'], [0.3, 0.5]);
     });
 
     test.it('seventh layer 121 cm 1F DFdc (RGlr)', function() {
       clickLastInsert();
       moveHandle(6, 59, '1F');
-      testHandle(6, 59, '1F');
+//      testHandle(6, 59, '1F');
+      com.setFeatures(sw, driver, 6, ['DFdc', 'RGlr']);
     });
 
-    test.it('eighth layer 106 cm P RGlr', function() {
+    test.it('eighth layer 106 cm P RGlr, 0.3', function() {
       clickLastInsert();
       moveHandle(7, 74, 'P');
-      testHandle(7, 74, 'P');
+//      testHandle(7, 74, 'P');
+      com.setFeatures(sw, driver, 7, 'RGlr', 0.3);
     });
 
-    test.it('ninth layer 100 cm 1F FCxr (RGlr)', function() {
+    test.it('ninth layer 100 cm 1F FCxr (RGlr), 0.5 - 1.0', function() {
       clickLastInsert();
       moveHandle(8, 80, '1F');
-      testHandle(8, 80, '1F');
+//      testHandle(8, 80, '1F');
+      com.setFeatures(sw, driver, 8, ['FCxr', 'RGlr'], [0.5, 1.0]);
     });
 
     test.it('tenth layer 88 cm P+ IF', function() {
       clickLastInsert();
       moveHandle(9, 92, 'P+');
-      testHandle(9, 92, 'P+');
+//      testHandle(9, 92, 'P+');
+      com.setFeatures(sw, driver, 9, 'IF');
     });
 
-    test.it('eleventh layer 87 cm 4F FXcr', function() {
+    test.it('eleventh layer 87 cm 4F FCxr, 0.5 - 1.0', function() {
       clickLastInsert();
       moveHandle(10, 93, '4F');
-      testHandle(10, 93, '4F');
+//      testHandle(10, 93, '4F');
+      com.setFeatures(sw, driver, 10, 'FCxr', [0.5, 1.0],
+        "ECTP30 Q1 Depth: (cm) 81");
     });
 
     test.it('twelfth layer 81 cm P+ IFrc', function() {
       clickLastInsert();
       moveHandle(11, 99, 'P+');
-      testHandle(11, 99, 'P+');
+//      testHandle(11, 99, 'P+');
+      com.setFeatures(sw, driver, 11, 'IFrc');
     });
 
-    test.it('thirteenth layer 80 cm F FC', function() {
+    test.it('thirteenth layer 80 cm F FC, 1.0 - 2.0', function() {
       clickLastInsert();
       moveHandle(12, 100, 'F');
-      testHandle(12, 100, 'F');
+//      testHandle(12, 100, 'F');
+      com.setFeatures(sw, driver, 12, 'FC', [1.0, 2.0]);
     });
 
-    test.it('fourteenth layer 69 cm 4F FC', function() {
+    test.it('fourteenth layer 69 cm 4F FC, 1.0 - 3.0', function() {
       clickLastInsert();
       moveHandle(13, 111, '4F');
-      testHandle(13, 111, '4F');
+//      testHandle(13, 111, '4F');
+      com.setFeatures(sw, driver, 13, 'FC', [1.0, 3.0],
+        "ECTP30 Q1 Depth: (cm) 55");
     });
 
-    test.it('fifteenth layer 55 cm F FC', function() {
+    test.it('fifteenth layer 55 cm F FC, 2.0 - 3.0', function() {
       clickLastInsert();
       moveHandle(14, 125, 'F');
-      testHandle(14, 125, 'F');
+//      testHandle(14, 125, 'F');
+      com.setFeatures(sw, driver, 14, 'FC', [2.0, 3.0],
+        "CTM Q1 Depth (cm) 55 CT score: 15");
     });
 
-    test.it('sixteenth layer 25 cm 4F FC (DH)', function() {
+    test.it('sixteenth layer 25 cm 4F FC (DH), 2.0 - 3.0', function() {
       clickLastInsert();
       moveHandle(15, 155, '4F');
-      testHandle(15, 155, '4F');
+//      testHandle(15, 155, '4F');
+      com.setFeatures(sw, driver, 15, ['FC', 'DH'], [2.0, 3.0]);
     });
 
   });

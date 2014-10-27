@@ -606,10 +606,10 @@ SnowProfile.Features = function(layerArg) {
       giBbox = grainIcons.bbox();
 
       // For debugging show the grain shape icon bounding box
-      giBox.width(giBbox.width);
-      giBox.height(giBbox.height);
-      giBox.x(giBbox.x);
-      giBox.y(giBbox.y);
+      // giBox.width(giBbox.width);
+      // giBox.height(giBbox.height);
+      // giBox.x(giBbox.x);
+      // giBox.y(giBbox.y);
 
       // Empty the grain size text description
       grainSizeText.text("");
@@ -622,20 +622,20 @@ SnowProfile.Features = function(layerArg) {
       gsBbox = grainSizeText.bbox();
 
       // For debugging show the grain size bounding box
-      gsBox.width(gsBbox.width);
-      gsBox.height(gsBbox.height);
-      gsBox.x(gsBbox.x);
-      gsBox.y(gsBbox.y);
+      // gsBox.width(gsBbox.width);
+      // gsBox.height(gsBbox.height);
+      // gsBox.x(gsBbox.x);
+      // gsBox.y(gsBbox.y);
 
       // Comment description
       setCommentDescr(comment);
       cdBbox = commentDescr.bbox() ;
 
       // For debugging show the comment description bounding box
-      cdBox.width(cdBbox.width);
-      cdBox.height(cdBbox.height);
-      cdBox.x(cdBbox.x);
-      cdBox.y(cdBbox.y);
+      // cdBox.width(cdBbox.width);
+      // cdBox.height(cdBbox.height);
+      // cdBox.x(cdBbox.x);
+      // cdBox.y(cdBbox.y);
 
       // Form a layer description bounding box by merging any of
       // (giBbox, gsBbox, cdBbox) that are not empty.
@@ -669,10 +669,10 @@ SnowProfile.Features = function(layerArg) {
         fdBox.y(0);
       }
       else {
-        fdBox.width(fdBbox.width);
-        fdBox.height(fdBbox.height);
-        fdBox.x(fdBbox.x);
-        fdBox.y(fdBbox.y);
+        // fdBox.width(fdBbox.width);
+        // fdBox.height(fdBbox.height);
+        // fdBox.x(fdBbox.x);
+        // fdBox.y(fdBbox.y);
       }
     } // if (data === undefined) ... else
 
