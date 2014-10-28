@@ -18,7 +18,9 @@ exports.testURL = 'file://' + process.cwd() + '/test/lib/test.html';
 exports.setFeatures = function setFeatures(sw, driver, index, shape, size,
   comment) {
 
-  var primaryShape,
+  var cmdStr = [],
+    i,
+    primaryShape,
     primarySubShape,
     secondaryShape,
     secondarySubShape,
@@ -115,6 +117,27 @@ exports.setFeatures = function setFeatures(sw, driver, index, shape, size,
               });
           }
         }
+      }
+
+      // Store the comment
+      if (comment !== undefined) {
+
+        // If there is existing comment text, erase it
+	driver.executeScript('return $("#snow_profile_comment").val()')
+	  .then(function(val) {
+	    for (i = 0; i < val.length; i++) {
+	      cmdStr.push(sw.Key.BACK_SPACE);
+	    }
+	    cmdStr.push(sw.Key.NULL);
+	  });
+
+	// After backspacing over existing contents of input box,
+	// type in the minimum pit depth
+        driver.findElement(sw.By.css('#snow_profile_comment'))
+          .then(function(elmt) {
+            cmdStr.push(comment);
+            elmt.sendKeys.apply(elmt, cmdStr);
+          });
       }
 
       // Click the Done button to save the features
