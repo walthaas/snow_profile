@@ -14,15 +14,15 @@ var sw = require('../node_modules/selenium-webdriver'),
     driver;
 
 /**
- * Schedule command to move a handle to specified depth and hardness
+ * Move a handle to specified depth and hardness
  *
+ * Returns when the move is complete.
  * @param {number} index Handle number. Top handle is zero.
  * @param {number} depth Target depth to move to, in cm from surface.
  * @param {string} hardness Hand hardness code.
  */
 function moveHandle(index, depth, hardness, comment) {
   "use strict";
-  // console.info('queueing command to find handle', index);
 
   var moveStarted = false,
     moveDone = false;
@@ -40,29 +40,21 @@ function moveHandle(index, depth, hardness, comment) {
       moveStarted = true;
       var handleProm = driver.findElement(sw.By.xpath(handleXpath));
 
-      // console.info('queueing command depth2y', depth);
-      var depthProm = driver.executeScript(
-        "return window.SnowProfile.depth2y('" +
-        depth + "')");
+      var script= "return window.SnowProfile.depth2y(" + depth + ");";
+      var depthProm = driver.executeScript(script);
 
-      // console.info('queueing command code2x', hardness);
       var hardProm = driver.executeScript("return window.SnowProfile.code2x('" +
         hardness + "')");
 
-      // console.info('queuing promise.all');
       sw.promise.all([handleProm, depthProm, hardProm])
         .then(function(arr) {
           var handle = arr[0];
           var newX = arr[2] + diagramLoc.x;
           var newY = arr[1] + diagramLoc.y;
-//          console.info('newX=', newX, '  newY=', newY);
           handle.getLocation()
             .then(function(currentLoc) {
                var offsetX = Math.ceil(newX - currentLoc.x);
                var offsetY = Math.ceil(newY - currentLoc.y);
-//               console.info('currentLoc=', currentLoc);
-//               console.info('offsetX=', offsetX, 'offsetY=', offsetY);
-               // console.info('queueing command to move handle', index);
                new sw.ActionSequence(driver)
                  .dragAndDrop(handle, {x: offsetX, y: offsetY})
                  .perform()
@@ -90,7 +82,6 @@ function testHandle(index, depth, hardness) {
    .then(function(handle) {
      handle.getLocation()
        .then(function(currentLoc) {
-         // console.info('currentLoc=', currentLoc);
          var depthPromise =
            driver.executeScript("return window.SnowProfile.y2depth('" +
            (currentLoc.y - diagramLoc.y) + "')");
@@ -120,22 +111,36 @@ function clickInsert(index) {
 }
 
 /**
- * Schedule command to click the last Insert button
- * @TODO wait until new layer is created
+ * Click last Insert button, wait until layer is created.
  */
 function clickLastInsert() {
-  driver.findElements(sw.By.xpath(
-    "//*[name()='svg']/*[name()='g']/*[name()='g']" +
-    "[@class='snow_profile_button Insert']"))
-    .then(function(buttons) {
-      driver.findElement(sw.By.xpath(
+
+  var numButtons,
+    insertStarted = false,
+    insertDone = false;
+
+  driver.wait(function() {
+    if (!insertStarted) {
+      insertStarted = true;
+      driver.findElements(sw.By.xpath(
         "//*[name()='svg']/*[name()='g']/*[name()='g']" +
-        "[@class='snow_profile_button Insert'][" + buttons.length + "]"))
-        .click();
-    })
-   .then(function() {
-     driver.sleep(200);
-   });
+        "[@class='snow_profile_button Insert']"))
+        .then(function(buttons) {
+          numButtons = buttons.length;
+          driver.findElement(sw.By.xpath(
+            "//*[name()='svg']/*[name()='g']/*[name()='g']" +
+            "[@class='snow_profile_button Insert'][" + numButtons + "]"))
+          .click();
+        });
+    }
+    driver.isElementPresent(sw.By.xpath(
+      "//*[name()='svg']/*[name()='g']/*[name()='g']" +
+      "[@class='snow_profile_button Edit'][" + numButtons + "]"))
+      .then(function(done) {
+        insertDone = done;
+      });
+    return insertDone;
+    }, 2000, "clickLastInsert didn't finish");
 }
 
 //
@@ -222,101 +227,102 @@ test.describe('Square Top Feb 13, 2014:', function() {
 
     test.it('third layer 165 cm F DFdc (PP), 0.5 - 1.0', function() {
       moveHandle(2, 180 - 165, 'F');
+// FIXME: this handle ends up about 160cm
 //      testHandle(2, 180 - 165, 'F');
       com.setFeatures(sw, driver, 2, ['DFdc', 'PP'], [0.5, 1.0]);
     });
 
     test.it('fourth layer 149 cm F PPgp, 2.0 - 4.0', function() {
       clickLastInsert();
-      moveHandle(3, 31, 'F');
-//      testHandle(3, 31, 'F');
+      moveHandle(3, 180 - 149, 'F');
+//      testHandle(3, 180 - 149, 'F');
       com.setFeatures(sw, driver, 3, 'PPgp', [2.0, 4.0]);
     });
 
     test.it('fifth layer 148 cm F-4F DFdc, 0.3 - 0.5', function() {
       clickLastInsert();
-      moveHandle(4, 32, 'F-4F');
-//      testHandle(4, 32, 'F-4F');
+      moveHandle(4, 180 - 148, 'F-4F');
+//      testHandle(4, 180 - 148, 'F-4F');
       com.setFeatures(sw, driver, 4, 'DFdc', [0.3, 0.5]);
     });
 
     test.it('sixth layer 133 cm 4F DFdc (RGlr), 0.3 - 0.5', function() {
       clickLastInsert();
-      moveHandle(5, 47, '4F');
-//      testHandle(5, 47, '4F');
+      moveHandle(5, 180 - 133, '4F');
+//      testHandle(5, 180 - 133, '4F');
       com.setFeatures(sw, driver, 5, ['DFdc', 'RGlr'], [0.3, 0.5]);
     });
 
     test.it('seventh layer 121 cm 1F DFdc (RGlr)', function() {
       clickLastInsert();
-      moveHandle(6, 59, '1F');
-//      testHandle(6, 59, '1F');
+      moveHandle(6, 180 - 121, '1F');
+//      testHandle(6, 180 - 121, '1F');
       com.setFeatures(sw, driver, 6, ['DFdc', 'RGlr']);
     });
 
     test.it('eighth layer 106 cm P RGlr, 0.3', function() {
       clickLastInsert();
-      moveHandle(7, 74, 'P');
-//      testHandle(7, 74, 'P');
+      moveHandle(7, 180 - 106, 'P');
+//      testHandle(7, 180 - 106, 'P');
       com.setFeatures(sw, driver, 7, 'RGlr', 0.3);
     });
 
     test.it('ninth layer 100 cm 1F FCxr (RGlr), 0.5 - 1.0', function() {
       clickLastInsert();
-      moveHandle(8, 80, '1F');
-//      testHandle(8, 80, '1F');
+      moveHandle(8, 180 - 100, '1F');
+//      testHandle(8, 180 - 100, '1F');
       com.setFeatures(sw, driver, 8, ['FCxr', 'RGlr'], [0.5, 1.0]);
     });
 
     test.it('tenth layer 88 cm P+ IF', function() {
       clickLastInsert();
-      moveHandle(9, 92, 'P+');
-//      testHandle(9, 92, 'P+');
+      moveHandle(9, 180 - 88, 'P+');
+//      testHandle(9, 180 - 88, 'P+');
       com.setFeatures(sw, driver, 9, 'IF');
     });
 
     test.it('eleventh layer 87 cm 4F FCxr, 0.5 - 1.0', function() {
       clickLastInsert();
-      moveHandle(10, 93, '4F');
-//      testHandle(10, 93, '4F');
+      moveHandle(10, 180 - 87, '4F');
+//      testHandle(10, 180 - 87, '4F');
       com.setFeatures(sw, driver, 10, 'FCxr', [0.5, 1.0],
         "ECTP30 Q1 Depth: (cm) 81");
     });
 
     test.it('twelfth layer 81 cm P+ IFrc', function() {
       clickLastInsert();
-      moveHandle(11, 99, 'P+');
-//      testHandle(11, 99, 'P+');
+      moveHandle(11, 180 - 81, 'P+');
+//      testHandle(11, 180 - 81, 'P+');
       com.setFeatures(sw, driver, 11, 'IFrc');
     });
 
     test.it('thirteenth layer 80 cm F FC, 1.0 - 2.0', function() {
       clickLastInsert();
-      moveHandle(12, 100, 'F');
-//      testHandle(12, 100, 'F');
+      moveHandle(12, 180 - 80, 'F');
+//      testHandle(12, 180 - 80, 'F');
       com.setFeatures(sw, driver, 12, 'FC', [1.0, 2.0]);
     });
 
     test.it('fourteenth layer 69 cm 4F FC, 1.0 - 3.0', function() {
       clickLastInsert();
-      moveHandle(13, 111, '4F');
-//      testHandle(13, 111, '4F');
+      moveHandle(13, 180 - 69, '4F');
+//      testHandle(13, 180 - 69, '4F');
       com.setFeatures(sw, driver, 13, 'FC', [1.0, 3.0],
         "ECTP30 Q1 Depth: (cm) 55");
     });
 
     test.it('fifteenth layer 55 cm F FC, 2.0 - 3.0', function() {
       clickLastInsert();
-      moveHandle(14, 125, 'F');
-//      testHandle(14, 125, 'F');
+      moveHandle(14, 180 - 55, 'F');
+//      testHandle(14, 180 - 55, 'F');
       com.setFeatures(sw, driver, 14, 'FC', [2.0, 3.0],
         "CTM Q1 Depth (cm) 55 CT score: 15");
     });
 
     test.it('sixteenth layer 25 cm 4F FC (DH), 2.0 - 3.0', function() {
       clickLastInsert();
-      moveHandle(15, 155, '4F');
-//      testHandle(15, 155, '4F');
+      moveHandle(15, 180 - 25, '4F');
+//      testHandle(15, 180 - 25, '4F');
       com.setFeatures(sw, driver, 15, ['FC', 'DH'], [2.0, 3.0]);
     });
 

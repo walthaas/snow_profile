@@ -552,8 +552,9 @@ var SnowProfile = {};
    * @returns {number} Y position.
    */
   SnowProfile.depth2y = function(depthArg) {
-    return (depthArg * SnowProfile.Cfg.DEPTH_SCALE) +
+    var y = (depthArg * SnowProfile.Cfg.DEPTH_SCALE) +
       SnowProfile.Cfg.HANDLE_MIN_Y;
+    return y;
   };
 
   /**
