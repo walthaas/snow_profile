@@ -57,10 +57,11 @@
           <div id="snow_profile_secondary_grain_subshape"></div>
         </div>
         <label for="snow_profile_grain_size">Grain Size (mm):</label>
-	<select id="snow_profile_grain_size" style="display: block;">
-	  <option value="" selected="selected"></option>
-	</select>
-	<label for="snow_profile_comment">Comment:</label><br />
+        <div id="snow_profile_grain_size" style="display: block">
+          <input type="text" size="3" id="snow_profile_grain_size_min" /> -
+          <input type="text" size="3" id="snow_profile_grain_size_max" />
+        </div>
+        <label for="snow_profile_comment">Comment:</label><br />
 	<textarea id="snow_profile_comment" columns="30" rows="5"></textarea>
       </form>
     </div>

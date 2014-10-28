@@ -60,7 +60,8 @@ SnowProfile.Features = function(layerArg) {
    * GrainSizeBaseEnumType as stored in {@link SnowProfile.CAAML_SIZE}.
    * @type {string}
    */
-  var grainSize = "";
+  var grainSizeMin = "",
+    grainSizeMax = "";
 
   /**
    * User's comment about this snow layer
@@ -583,7 +584,8 @@ SnowProfile.Features = function(layerArg) {
         primaryGrainSubShape: primaryGrainSubShape,
         secondaryGrainShape: secondaryGrainShape,
         secondaryGrainSubShape: secondaryGrainSubShape,
-        grainSize: grainSize,
+        grainSizeMin: grainSizeMin,
+        grainSizeMax: grainSizeMax,
         comment: comment,
         featObj: self,
         layerObj: layerObj,
@@ -597,7 +599,8 @@ SnowProfile.Features = function(layerArg) {
       primaryGrainSubShape = data.primaryGrainSubShape;
       secondaryGrainShape = data.secondaryGrainShape;
       secondaryGrainSubShape = data.secondaryGrainSubShape;
-      grainSize = data.grainSize;
+      grainSizeMin = data.grainSizeMin;
+      grainSizeMax = data.grainSizeMax;
       comment = data.comment;
 
       // Set the grain icon description
@@ -613,11 +616,12 @@ SnowProfile.Features = function(layerArg) {
 
       // Empty the grain size text description
       grainSizeText.text("");
-      if (grainSize !== "") {
+      if ((grainSizeMin !== "") || (grainSizeMax !== "")) {
 
         // The user gave us grain size information.
         // Build a text description of grain size from what we have.
-        grainSizeText.text(SnowProfile.CAAML_SIZE[grainSize]);
+        grainSizeText.text(grainSizeMin +
+          (grainSizeMax !== '' ? (' - ' + grainSizeMax) : ''));
       }
       gsBbox = grainSizeText.bbox();
 

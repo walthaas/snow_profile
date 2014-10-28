@@ -18,7 +18,9 @@ exports.testURL = 'file://' + process.cwd() + '/test/lib/test.html';
 exports.setFeatures = function setFeatures(sw, driver, index, shape, size,
   comment) {
 
-  var cmdStr = [],
+  var cmdStrMin = [],
+    cmdStrMax = [],
+    cmdStrComment = [],
     i,
     primaryShape,
     primarySubShape,
@@ -27,6 +29,7 @@ exports.setFeatures = function setFeatures(sw, driver, index, shape, size,
     sizeMin,
     sizeMax,
     popupDisplayed;
+
 
   // Shape is a string specifying primary shape, or an array of two
   // strings specifying primary or seconday shape.  May be null.
@@ -71,12 +74,6 @@ exports.setFeatures = function setFeatures(sw, driver, index, shape, size,
     else {
       sizeMin = size;
     }
-    console.info('size=', sizeMin, (sizeMax !== undefined) ? (' - ' + sizeMax) : '');
-  }
-
-  // Comment is a string or null
-  if ((comment !== null) && (comment !== undefined)) {
-    console.info('comment=', comment);
   }
 
   // Click the Edit button for the layer to open the popup.
@@ -119,24 +116,70 @@ exports.setFeatures = function setFeatures(sw, driver, index, shape, size,
         }
       }
 
-      // Store the comment
-      if (comment !== undefined) {
+      // Grain size is one number or a range
+      if (sizeMin !== undefined) {
+
+        // If there is existing minimum grain size, erase it
+	driver.executeScript('return $("#snow_profile_grain_size_min").val()')
+	  .then(function(val) {
+            if (val.length > 0) {
+              for (i = 0; i < val.length; i++) {
+                cmdStrMin.push(sw.Key.BACK_SPACE);
+              }
+              cmdStrMin.push(sw.Key.NULL);
+          }
+	  });
+
+	// After backspacing over existing contents of input box,
+	// type in the minimum grain size
+        driver.findElement(sw.By.css('#snow_profile_grain_size_min'))
+          .then(function(elmt) {
+            cmdStrMin.push(sizeMin);
+            elmt.sendKeys.apply(elmt, cmdStrMin);
+          });
+      }
+
+      if (sizeMax !== undefined) {
+        // If there is existing maximum grain size, erase it
+	driver.executeScript('return $("#snow_profile_grain_size_max").val()')
+	  .then(function(val) {
+            if (val.length > 0) {
+              for (i = 0; i < val.length; i++) {
+                cmdStrMax.push(sw.Key.BACK_SPACE);
+              }
+              cmdStrMax.push(sw.Key.NULL);
+            }
+	  });
+
+	// After backspacing over existing contents of input box,
+	// type in the maximum grain size
+        driver.findElement(sw.By.css('#snow_profile_grain_size_max'))
+          .then(function(elmt) {
+            cmdStrMax.push(sizeMax);
+            elmt.sendKeys.apply(elmt, cmdStrMax);
+          });
+      }
+
+      // Comment is a string or null
+      if ((comment !== null) && (comment !== undefined)) {
 
         // If there is existing comment text, erase it
 	driver.executeScript('return $("#snow_profile_comment").val()')
 	  .then(function(val) {
-	    for (i = 0; i < val.length; i++) {
-	      cmdStr.push(sw.Key.BACK_SPACE);
-	    }
-	    cmdStr.push(sw.Key.NULL);
+            if (val.length > 0) {
+              for (i = 0; i < val.length; i++) {
+                cmdStrComment.push(sw.Key.BACK_SPACE);
+              }
+	      cmdStrComment.push(sw.Key.NULL);
+            }
 	  });
 
 	// After backspacing over existing contents of input box,
-	// type in the minimum pit depth
+	// type in the comment
         driver.findElement(sw.By.css('#snow_profile_comment'))
           .then(function(elmt) {
-            cmdStr.push(comment);
-            elmt.sendKeys.apply(elmt, cmdStr);
+            cmdStrComment.push(comment);
+            elmt.sendKeys.apply(elmt, cmdStrComment);
           });
       }
 

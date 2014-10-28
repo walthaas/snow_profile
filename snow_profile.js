@@ -110,7 +110,7 @@ var SnowProfile = {};
      * @memberof SnowProfile
      * @const {number}
      */
-    GRAIN_SIZE_WD: 50,
+    GRAIN_SIZE_WD: 70,
 
     /**
      * Width in pixels of the space between grain size and comment
