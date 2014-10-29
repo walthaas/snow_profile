@@ -4,6 +4,49 @@
  * @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPLv2}
  */
 exports.testURL = 'file://' + process.cwd() + '/test/lib/test.html';
+//exports.testURL = 'file://' + process.cwd() + '/snow_profile.html';
+
+/**
+ * Store comment into popup comment field.
+ */
+function setFeaturesComment(sw, driver, comment) {
+  var cmdStrComment = [],
+    commentStarted = false,
+    commentDone = false;
+
+  driver.wait(function() {
+    if (!commentStarted) {
+      commentStarted = true;
+      // If there is existing comment text, erase it
+      driver.executeScript('return $("#snow_profile_comment").val()')
+	.then(function(val) {
+	  if (val.length > 0) {
+	    for (i = 0; i < val.length; i++) {
+	      cmdStrComment.push(sw.Key.BACK_SPACE);
+	    }
+	    cmdStrComment.push(sw.Key.NULL);
+	  }
+	});
+
+      // After backspacing over existing contents of input box,
+      // type in the comment
+      driver.findElement(sw.By.css('#snow_profile_comment'))
+	.then(function(elmt) {
+	  cmdStrComment.push(comment);
+	  elmt.sendKeys.apply(elmt, cmdStrComment);
+	});
+    }
+
+    // Check whether new text is stored
+    driver.executeScript('return $("#snow_profile_comment").val()')
+      .then(function(val) {
+	if (val === comment) {
+	  commentDone = true;
+	}
+      });
+    return commentDone;
+  }, 2000, "comment wasn't stored");
+}
 
 /**
  * Set layer features
@@ -20,7 +63,6 @@ exports.setFeatures = function setFeatures(sw, driver, index, shape, size,
 
   var cmdStrMin = [],
     cmdStrMax = [],
-    cmdStrComment = [],
     i,
     primaryShape,
     primarySubShape,
@@ -79,7 +121,9 @@ exports.setFeatures = function setFeatures(sw, driver, index, shape, size,
   // Click the Edit button for the layer to open the popup.
   driver.findElement(sw.By.xpath(
     "//*[name()='svg']/*[name()='g']/*[name()='g']" +
-      "[@class='snow_profile_button Edit'][" + (index + 1) + "]")).click();
+      "[@class='snow_profile_button Edit'][" + (index + 1) + "]"))
+  .click();
+
   driver.wait(function() {
     return driver.findElement(sw.By.css('div#snow_profile_popup')).isDisplayed();
     }, 2000, 'div#snow_profile_popup not found')
@@ -162,25 +206,7 @@ exports.setFeatures = function setFeatures(sw, driver, index, shape, size,
 
       // Comment is a string or null
       if ((comment !== null) && (comment !== undefined)) {
-
-        // If there is existing comment text, erase it
-	driver.executeScript('return $("#snow_profile_comment").val()')
-	  .then(function(val) {
-            if (val.length > 0) {
-              for (i = 0; i < val.length; i++) {
-                cmdStrComment.push(sw.Key.BACK_SPACE);
-              }
-	      cmdStrComment.push(sw.Key.NULL);
-            }
-	  });
-
-	// After backspacing over existing contents of input box,
-	// type in the comment
-        driver.findElement(sw.By.css('#snow_profile_comment'))
-          .then(function(elmt) {
-            cmdStrComment.push(comment);
-            elmt.sendKeys.apply(elmt, cmdStrComment);
-          });
+        setFeaturesComment(sw, driver, comment);
       }
 
       // Click the Done button to save the features
