@@ -10,6 +10,7 @@ exports.testURL = 'file://' + process.cwd() + '/test/lib/test.html';
  * Store comment into popup comment field.
  */
 function setFeaturesComment(sw, driver, comment) {
+  "use strict";
 
   var cmdStr = [],
     commentDone = false,
@@ -23,10 +24,10 @@ function setFeaturesComment(sw, driver, comment) {
   driver.executeScript('return $("#snow_profile_comment").val()')
     .then(function(val) {
       if (val.length > 0) {
-	for (i = 0; i < val.length; i++) {
-	  cmdStr.push(sw.Key.BACK_SPACE);
-	}
-	cmdStr.push(sw.Key.NULL);
+        for (i = 0; i < val.length; i++) {
+          cmdStr.push(sw.Key.BACK_SPACE);
+        }
+        cmdStr.push(sw.Key.NULL);
       }
     });
 
@@ -42,9 +43,9 @@ function setFeaturesComment(sw, driver, comment) {
   driver.wait(function() {
     driver.executeScript('return $("#snow_profile_comment").val()')
       .then(function(val) {
-	if (val === comment) {
-	  commentDone = true;
-	}
+        if (val === comment) {
+          commentDone = true;
+        }
     });
     return commentDone;
   }, 2000, "comment wasn't stored");
@@ -54,6 +55,7 @@ function setFeaturesComment(sw, driver, comment) {
  * Set grain shape.
  */
 function setFeaturesShape(sw, driver, shape) {
+  "use strict";
 
   var primaryShape,
     primarySubShape,
@@ -108,7 +110,7 @@ function setFeaturesShape(sw, driver, shape) {
         '"]'));
       }, 2000, 'subselect for ' + primaryShape + ' not found')
       .then(function() {
-	driver.findElement(sw.By.xpath(
+         driver.findElement(sw.By.xpath(
           '//select[@id="snow_profile_primary_grain_subshape_' +
           primaryShape + '"]/option[@value="' + primarySubShape + '"]'))
           .click();
@@ -122,24 +124,24 @@ function setFeaturesShape(sw, driver, shape) {
         '//select[@id="snow_profile_secondary_grain_select"]'));
       }, 2000, 'snow_profile_secondary_grain_select not found')
       .then(function() {
-	driver.findElement(sw.By.xpath(
+        driver.findElement(sw.By.xpath(
           '//select[@id="snow_profile_secondary_grain_select"]/option[@value="'
           + secondaryShape + '"]'))
           .click();
-	});
+      });
     if (secondarySubShape !== undefined) {
       driver.wait(function() {
-	return driver.isElementPresent(sw.By.xpath(
+        return driver.isElementPresent(sw.By.xpath(
           '//select[@id="snow_profile_secondary_grain_subshape_' +
           secondaryShape + '"]'));
       }, 2000, 'snow_profile_secondary_grain_subshape select not found')
       .then(function() {
-	driver.findElement(sw.By.xpath(
+        driver.findElement(sw.By.xpath(
           '//select[@id="snow_profile_secondary_grain_subshape_' +
           secondaryShape +'"]/option[@value="' + secondarySubShape +
           '"]'))
           .click();
-	});
+      });
     }
   }
 }
@@ -148,6 +150,8 @@ function setFeaturesShape(sw, driver, shape) {
  * Set grain size.
  */
 function setFeaturesSize(sw, driver, size) {
+  "use strict";
+
   var cmdStrMin = [],
     cmdStrMax = [],
     i,
@@ -174,10 +178,10 @@ function setFeaturesSize(sw, driver, size) {
   driver.executeScript('return $("#snow_profile_grain_size_min").val()')
     .then(function(val) {
       if (val.length > 0) {
-	for (i = 0; i < val.length; i++) {
-	  cmdStrMin.push(sw.Key.BACK_SPACE);
-	}
-	cmdStrMin.push(sw.Key.NULL);
+        for (i = 0; i < val.length; i++) {
+          cmdStrMin.push(sw.Key.BACK_SPACE);
+        }
+        cmdStrMin.push(sw.Key.NULL);
       }
     });
 
@@ -193,9 +197,9 @@ function setFeaturesSize(sw, driver, size) {
   driver.wait(function() {
     driver.executeScript('return $("#snow_profile_grain_size_min").val()')
       .then(function(val) {
-	if (val === sizeMin) {
-	  minDone = true;
-	}
+        if (val === sizeMin) {
+          minDone = true;
+        }
     });
     return minDone;
   }, 2000, "minimum grain size wasn't stored");
@@ -204,29 +208,29 @@ function setFeaturesSize(sw, driver, size) {
     // If there is existing maximum grain size, erase it
     driver.executeScript('return $("#snow_profile_grain_size_max").val()')
       .then(function(val) {
-	if (val.length > 0) {
-	  for (i = 0; i < val.length; i++) {
-	    cmdStrMax.push(sw.Key.BACK_SPACE);
-	  }
-	  cmdStrMax.push(sw.Key.NULL);
-	}
+        if (val.length > 0) {
+          for (i = 0; i < val.length; i++) {
+            cmdStrMax.push(sw.Key.BACK_SPACE);
+          }
+          cmdStrMax.push(sw.Key.NULL);
+        }
       });
 
     // After backspacing over existing contents of input box,
     // type in the maximum grain size
     driver.findElement(sw.By.css('#snow_profile_grain_size_max'))
       .then(function(elmt) {
-	cmdStrMax.push(sizeMax);
-	elmt.sendKeys.apply(elmt, cmdStrMax);
+        cmdStrMax.push(sizeMax);
+        elmt.sendKeys.apply(elmt, cmdStrMax);
       });
 
     // Wait until new maximum size is stored
     driver.wait(function() {
       driver.executeScript('return $("#snow_profile_grain_size_max").val()')
-	.then(function(val) {
-	  if (val === sizeMax) {
-	    maxDone = true;
-	  }
+        .then(function(val) {
+          if (val === sizeMax) {
+            maxDone = true;
+          }
       });
       return maxDone;
     }, 2000, "maximum grain size wasn't stored");
@@ -245,6 +249,7 @@ function setFeaturesSize(sw, driver, size) {
  */
 exports.setFeatures = function setFeatures(sw, driver, index, shape, size,
   comment) {
+  "use strict";
 
   var popupDisplayed;
 
@@ -284,7 +289,82 @@ exports.setFeatures = function setFeatures(sw, driver, index, shape, size,
     });
 }
 
+/**
+ * Move a handle to specified depth and hardness
+ *
+ * Returns when the move is complete.
+ * @param {Object} sw
+ * @param {Object} driver
+ * @param {number} index Handle number. Top handle is zero.
+ * @param {number} depth Target depth to move to, in cm from surface.
+ * @param {string} hardness Hand hardness code.
+ */
+exports.moveHandle = function moveHandle(sw, driver, index,
+  depth, hardness, comment) {
+  "use strict";
 
+  var depthProm,
+    handle,
+    handleProm,
+    hardProm,
+    moveDone = false,
+    moveStarted = false,
+    newX,
+    newY,
+    offsetX,
+    offsetY,
+    xNow,
+    yNow;
 
+  var handleXpath = "//*[name()='svg']/*[name()='g']/*[name()='rect']" +
+    "[@class='snow_profile_handle'][" + String(index + 1) + "]";
 
+  // Wait for the handle to appear
+  driver.wait(function() {
+    return driver.isElementPresent(sw.By.xpath(handleXpath));
+  }, 2000, "handle " + index + " didn't appear")
+    .then(function() {
+      driver.wait(function() {
+        if (!moveStarted) {
+          handleProm = driver.findElement(sw.By.xpath(handleXpath));
+          depthProm = driver.executeScript(
+            "return window.SnowProfile.depth2y(" + depth + ");");
+          hardProm = driver.executeScript(
+            "return window.SnowProfile.code2x('" + hardness + "')");
+          sw.promise.all([handleProm, depthProm, hardProm])
+            .then(function(arr) {
+              handle = arr[0];
+              newX = arr[2];
+              newY = arr[1];
+              handle.getAttribute('x')
+                .then(function(x) {
+                  xNow = x;
+                })
+                .then(function() {
+                  handle.getAttribute('y')
+                    .then(function(y) {
+                      yNow = y;
+                      offsetX = Math.ceil(newX - xNow);
+                      offsetY = Math.ceil(newY - yNow);
+                      new sw.ActionSequence(driver)
+                        .dragAndDrop(handle, {x: offsetX, y: offsetY})
+                        .perform()
+                        .then(function() {
+                          moveDone = true;
+                        });
+                    });
+                });
+            });
+        }
+        return moveDone;
+      }, 2000, "handle didn't move");
+    });
+}
 
+// Configure Emacs for Drupal JavaScript coding standards
+// Local Variables:
+// js2-basic-offset: 2
+// indent-tabs-mode: nil
+// fill-column: 78
+// show-trailing-whitespace: t
+// End:
