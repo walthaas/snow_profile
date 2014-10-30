@@ -102,10 +102,16 @@ SnowProfile.Features = function(layerArg) {
    * information to format this string on the browser window.
    * @type {Object}
    */
-  var commentDescr = featDescr.text("")
+  var commentDescr = SnowProfile.drawing.text("")
     .addClass('snow_profile_comment_descr')
+    .font({
+      size: 12,
+      family: 'sans-serif',
+      fill: '#000'
+    })
     .x(SnowProfile.Cfg.COMMENT_LEFT)
     .y(-5);
+  featDescr.add(commentDescr);
 
   // For debugging, show the bounding box
   var cdBox = SnowProfile.drawing.rect(0, 0)
@@ -133,10 +139,16 @@ SnowProfile.Features = function(layerArg) {
    * object for text giving the grain size of this snow layer.
    * @type {Object}
    */
-  var grainSizeText = featDescr.text("")
+  var grainSizeText = SnowProfile.drawing.text("")
     .addClass('snow_profile_grain_size')
+    .font({
+      size: 12,
+      family: 'sans-serif',
+      fill: '#000'
+    })
     .x(SnowProfile.Cfg.GRAIN_SIZE_LEFT)
     .y(-5);
+  featDescr.add(grainSizeText);
 
   // For debugging, show the bounding box
   var gsBox = SnowProfile.drawing.rect(0, 0)
@@ -177,10 +189,12 @@ SnowProfile.Features = function(layerArg) {
   var yPos;
 
   /**
-   * Height of the feature description bounding box
+   * Height needed by the feature description, in pixels
+   *
+   * Based on the bounding box of the description plus padding.
    * @type {number}
    */
-  this.height = SnowProfile.Cfg.DESCR_HEIGHT;
+  this.height = 2 * SnowProfile.Cfg.MIN_FEAT_PAD;
 
   /**
    * Get or set Y value.
@@ -405,6 +419,11 @@ SnowProfile.Features = function(layerArg) {
         // Add left paren to the icons
         iconCursor += 3;
         container.add(SnowProfile.drawing.text("(")
+          .font({
+            size: 18,
+            family: 'sans-serif',
+            fill: '#000'
+          })
           .x(iconCursor).y(-5));
         iconCursor += 7;
 
@@ -442,7 +461,13 @@ SnowProfile.Features = function(layerArg) {
 
         // Add right paren to the icons
         iconCursor += 3;
-        container.add(SnowProfile.drawing.text(")").x(iconCursor).y(-5));
+        container.add(SnowProfile.drawing.text(")")
+          .font({
+            size: 18,
+            family: 'sans-serif',
+            fill: '#000'
+          })
+          .x(iconCursor).y(-5));
       }
     }
   } // function sym2iconsNormal()
@@ -659,10 +684,10 @@ SnowProfile.Features = function(layerArg) {
 
       // Make height of the feature description bounding box public
       if (fdBbox === null) {
-        self.height = SnowProfile.Cfg.DESCR_HEIGHT;
+        self.height = 2 * SnowProfile.Cfg.MIN_FEAT_PAD;
       }
       else {
-        self.height = fdBbox.height;
+        self.height = fdBbox.height + (2 * SnowProfile.Cfg.MIN_FEAT_PAD);
       }
 
       // For debugging, make bounding box visible
@@ -673,10 +698,10 @@ SnowProfile.Features = function(layerArg) {
         fdBox.y(0);
       }
       else {
-        // fdBox.width(fdBbox.width);
-        // fdBox.height(fdBbox.height);
-        // fdBox.x(fdBbox.x);
-        // fdBox.y(fdBbox.y);
+        fdBox.width(fdBbox.width);
+        fdBox.height(fdBbox.height);
+        fdBox.x(fdBbox.x);
+        fdBox.y(fdBbox.y);
       }
     } // if (data === undefined) ... else
 
