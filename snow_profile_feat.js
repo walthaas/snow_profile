@@ -14,7 +14,9 @@
  * [IACS 2009 Standard]{@link http://www.cryosphericsciences.org/products/snowClassification/snowclass_2009-11-23-tagged-highres.pdf}.
  * Each Layer object has one Features object, and each Features object
  * is owned by one Layer object.  The separation is made to improve
- * the organization and readability of the code.
+ * the organization and readability of the code.  The Layer object has been
+ * constructed and spliced into the snowLayers array before this constructor
+ * is called.
  * @constructor
  * @param {Object} layerArg The Layer object that owns this object
  */
@@ -37,6 +39,14 @@ SnowProfile.Features = function(layerArg) {
    * @type {Object}
    */
   var editButton = new SnowProfile.Button("Edit");
+  var i = layerObj.getIndex();
+  var thisEdit = SnowProfile.editGroup.get(i);
+  if (thisEdit === undefined) {
+    SnowProfile.editGroup.add(editButton.getButtonGroup());
+  }
+  else {
+    thisEdit.before(editButton.getButtonGroup());
+  }
 
   /**
    * Grain shape of this snow layer.
@@ -53,11 +63,10 @@ SnowProfile.Features = function(layerArg) {
   var secondaryGrainSubShape = "";
 
   /**
-   * Grain size of this snow layer.
+   * Grain size of this snow layer in mm.
    *
-   * Code from the
-   * [CAAMLv5 IACS Snow Profile schema definition]{@link http://caaml.org/Schemas/V5.0/Profiles/SnowProfileIACS/CAAMLv5_SnowProfileIACS.xsd}
-   * GrainSizeBaseEnumType as stored in {@link SnowProfile.CAAML_SIZE}.
+   * A single grain size is stored in grainSizeMin.  A rane of grain sizes
+   * is stored in grainSizeMin and grainSizeMax.
    * @type {string}
    */
   var grainSizeMin = "",
@@ -73,7 +82,12 @@ SnowProfile.Features = function(layerArg) {
   var comment = "";
 
   /**
-   * Group to hold all components of the feature description
+   * SVG group to hold all displayable components of the feature description.
+   *
+   * This group is positioned as a unit.  It includes:
+   * + Grain shape
+   * + Grain size
+   * + Comment
    * @type {object}
    */
   var featDescr = SnowProfile.drawing.group(SnowProfile.Cfg.FEAT_DESCR_WD,
@@ -85,13 +99,13 @@ SnowProfile.Features = function(layerArg) {
   SnowProfile.mainGroup.add(featDescr);
 
   // For debugging, show the bounding box
-  var fdBox = SnowProfile.drawing.rect(0, 0)
-    .addClass('snow_profile_fdbox')
-    .style({
-       "fill-opacity": 0,
-       stroke: 'blue'
-    });
-  featDescr.add(fdBox);
+  // var fdBox = SnowProfile.drawing.rect(0, 0)
+  //   .addClass('snow_profile_fdbox')
+  //   .style({
+  //      "fill-opacity": 0,
+  //      stroke: 'blue'
+  //   });
+  // featDescr.add(fdBox);
 
    /**
    * Text for the comment.
@@ -197,9 +211,10 @@ SnowProfile.Features = function(layerArg) {
   this.height = 2 * SnowProfile.Cfg.MIN_FEAT_PAD;
 
   /**
-   * Get or set Y value.
+   * Get or set Y value of the feature description.
    *
    * @param {number} yArg Y value of the top of the bounding box of features.
+   * @TODO move edit button to center line of description.
    */
   this.y = function(yArg) {
     if (yArg === undefined) {
@@ -207,8 +222,8 @@ SnowProfile.Features = function(layerArg) {
     }
     else {
       yPos = yArg;
-      editButton.setY(yArg + (SnowProfile.Cfg.DESCR_HEIGHT / 2));
-      featDescr.y(yArg);
+      editButton.setY(yArg + SnowProfile.Cfg.MIN_FEAT_PAD);
+      featDescr.y(yArg + SnowProfile.Cfg.MIN_FEAT_PAD);
     }
   };
 
@@ -216,7 +231,6 @@ SnowProfile.Features = function(layerArg) {
    * Get or set the layer hardness
    * @param {string} [code] A CAAML hardness code from the CAAML_HARD table.
    * @returns {string} Hardness code if param omitted.
-
    */
   this.hardness = function(code) {
     if (code === undefined) {
@@ -691,31 +705,76 @@ SnowProfile.Features = function(layerArg) {
       }
 
       // For debugging, make bounding box visible
-      if (fdBbox === null) {
-        fdBox.width(0);
-        fdBox.height(0);
-        fdBox.x(0);
-        fdBox.y(0);
-      }
-      else {
-        fdBox.width(fdBbox.width);
-        fdBox.height(fdBbox.height);
-        fdBox.x(fdBbox.x);
-        fdBox.y(fdBbox.y);
-      }
+      // if (fdBbox === null) {
+      //   fdBox.width(0);
+      //   fdBox.height(0);
+      //   fdBox.x(0);
+      //   fdBox.y(0);
+      // }
+      // else {
+      //   fdBox.width(fdBbox.width);
+      //   fdBox.height(fdBbox.height);
+      //   fdBox.x(fdBbox.x);
+      //   fdBox.y(fdBbox.y);
+      // }
     } // if (data === undefined) ... else
 
     // Re-draw the diagram with the updated information
-    SnowProfile.setDrawingHeight();
-    layerObj.setIndexPosition();
+    SnowProfile.layout();
 
   }; // this.describe = function(data) {
+
+
+  /**
+   * Horizontal line below the features description
+   *
+   * [SVG.Line]{@link http://documentup.com/wout/svg.js#line}
+   * object for a horizontal line below the text description of this snow
+   * layer.  This line visually separates the descriptions of the various
+   * snow layers.  Its position is set independently of the position of the
+   * feature description, so it is not part of the featDescr group.
+   * @type {Object}
+   */
+  var lineBelow = SnowProfile.drawing.line(0, 0, 0, 0)
+    .addClass('snow_profile_line_below')
+    .stroke({
+      color: SnowProfile.Cfg.GRID_COLOR,
+      width: 1
+    });
+  SnowProfile.mainGroup.add(lineBelow);
+
+  /**
+   * Y value of the line below the description of a layer.
+   */
+  var lineBelowYvalue = SnowProfile.Cfg.HANDLE_MIN_Y + self.height;
+
+  /**
+   * Get or set the Y axis value for the line below the description of a layer.
+   * @param {number} [yArg] Y axis value of the line below the area designated
+   *   for the feature description.
+   * @returns {number} Y axis value of the line if param omitted.
+   */
+  this.lineBelowY = function(yArg) {
+    if (yArg === undefined) {
+      return lineBelowYvalue;
+    }
+    else {
+      lineBelowYvalue = yArg;
+      lineBelow.plot(
+        SnowProfile.Cfg.FEAT_DESCR_LEFT - 3,
+        yArg,
+        SnowProfile.Cfg.FEAT_DESCR_LEFT + SnowProfile.Cfg.FEAT_DESCR_WD,
+        yArg);
+      layerObj.insertButton.setCy(yArg);
+    }
+  };
 
   /**
    * Remove and destroy all SVG objects belonging to this Features object.
    */
   this.destroy = function() {
     editButton.destroy();
+    lineBelow.remove();
     featDescr.clear();
   };
 

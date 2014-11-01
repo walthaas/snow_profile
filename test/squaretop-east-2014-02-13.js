@@ -19,6 +19,7 @@ var sw = require('../node_modules/selenium-webdriver'),
  * @param {number} index Handle number. Top handle is zero.
  * @param {number} depth Expected depth in cm
  * @param {string} hardness Expected hand hardness code
+ * @TODO replace references to getLocation()
  */
 function testHandle(index, depth, hardness) {
   driver.findElement(sw.By.xpath(
@@ -68,18 +69,18 @@ function clickLastInsert() {
     if (!insertStarted) {
       insertStarted = true;
       driver.findElements(sw.By.xpath(
-        "//*[name()='svg']/*[name()='g']/*[name()='g']" +
+        "//*[name()='svg']/*[name()='g']/*[name()='g']/*[name()='g']/*[name()='g']" +
         "[@class='snow_profile_button Insert']"))
         .then(function(buttons) {
           numButtons = buttons.length;
           driver.findElement(sw.By.xpath(
-            "//*[name()='svg']/*[name()='g']/*[name()='g']" +
+            "//*[name()='svg']/*[name()='g']/*[name()='g']/*[name()='g']/*[name()='g']" +
             "[@class='snow_profile_button Insert'][" + numButtons + "]"))
           .click();
         });
     }
     driver.isElementPresent(sw.By.xpath(
-      "//*[name()='svg']/*[name()='g']/*[name()='g']" +
+      "//*[name()='svg']/*[name()='g']/*[name()='g']/*[name()='g']/*[name()='g']" +
       "[@class='snow_profile_button Edit'][" + numButtons + "]"))
       .then(function(done) {
         insertDone = done;
@@ -172,7 +173,6 @@ test.describe('Square Top Feb 13, 2014:', function() {
 
     test.it('third layer 165 cm F DFdc (PP), 0.5 - 1.0', function() {
       com.moveHandle(sw, driver, 2, 180 - 165, 'F');
-// FIXME: this handle ends up about 160cm
 //      testHandle(2, 180 - 165, 'F');
       com.setFeatures(sw, driver, 2, ['DFdc', 'PP'], [0.5, 1.0]);
     });

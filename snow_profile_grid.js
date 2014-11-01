@@ -368,8 +368,8 @@ SnowProfile.Grid = function() {
 
     // If reducing total depth and that will cause bottom layer(s) to be lost,
     // get user confirmation.
-    if ((Number(totalDepth) < SnowProfile.totalDepth)
-      || (Number(totalDepth) < SnowProfile.pitDepth)) {
+    if ((Number(totalDepth) < SnowProfile.totalDepth) ||
+      (Number(totalDepth) < SnowProfile.pitDepth)) {
 
       // User is reducing the total snow depth, check lower layers
       if (SnowProfile.snowLayers[SnowProfile.snowLayers.length - 1]

@@ -3,8 +3,8 @@
  * @copyright Walt Haas <haas@xmission.com>
  * @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPLv2}
  */
-exports.testURL = 'file://' + process.cwd() + '/test/lib/test.html';
-//exports.testURL = 'file://' + process.cwd() + '/snow_profile.html';
+//exports.testURL = 'file://' + process.cwd() + '/test/lib/test.html';
+exports.testURL = 'file://' + process.cwd() + '/snow_profile.html';
 
 /**
  * Store comment into popup comment field.
@@ -256,7 +256,7 @@ exports.setFeatures = function setFeatures(sw, driver, index, shape, size,
 
   // Click the Edit button for the layer to open the popup.
   driver.findElement(sw.By.xpath(
-    "//*[name()='svg']/*[name()='g']/*[name()='g']" +
+    "//*[name()='svg']/*[name()='g']/*[name()='g']/*[name()='g']/*[name()='g']" +
       "[@class='snow_profile_button Edit'][" + (index + 1) + "]"))
   .click();
 
@@ -316,7 +316,7 @@ exports.moveHandle = function moveHandle(sw, driver, index,
     xNow,
     yNow;
 
-  var handleXpath = "//*[name()='svg']/*[name()='g']/*[name()='rect']" +
+  var handleXpath = "//*[name()='svg']/*[name()='g']/*[name()='g']/*[name()='g']/*[name()='rect']" +
     "[@class='snow_profile_handle'][" + String(index + 1) + "]";
 
   // Wait for the handle to appear

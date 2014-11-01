@@ -59,23 +59,6 @@ SnowProfile.Layer = function(depthArg) {
   var handleTouched = false;
 
   /**
-   * Horizontal line below the features description
-   *
-   * [SVG.Line]{@link http://documentup.com/wout/svg.js#line}
-   * object for a horizontal line below the text description of this snow
-   * layer.  This line visually separates the descriptions of the various
-   * snow layers.
-   * @type {Object}
-   */
-  var lineBelow = SnowProfile.drawing.line(0, 0, 0, 0)
-    .addClass('snow_profile_line_below')
-    .stroke({
-      color: SnowProfile.Cfg.GRID_COLOR,
-      width: 1
-    });
-  SnowProfile.mainGroup.add(lineBelow);
-
-  /**
    * Handle for the line at the top of the layer.
    *
    * The user drags and drops this handle to adjust depth and hardness.
@@ -86,7 +69,6 @@ SnowProfile.Layer = function(depthArg) {
     .x(SnowProfile.Cfg.HANDLE_INIT_X)
     .y(SnowProfile.depth2y(depthVal))
     .addClass("snow_profile_handle");
-  SnowProfile.mainGroup.add(handle);
 
   /**
    * Process handle drag
@@ -170,23 +152,17 @@ SnowProfile.Layer = function(depthArg) {
     handleLoc.text( '(' + mm + ', ' +
       SnowProfile.x2code(newX) + ')');
     handleLoc.y(newY);
-    // var saveY = handleLoc.y();
-    // var diff = Math.abs(newY - saveY);
-    // if (diff > 1) {
-    //   console.debug('newY=%d  handleLoc.y()=%d', newY, saveY);
-    // }
 
     // Adjust the rectangle that outlines this layer
     self.setLayerOutline();
 
-    // Adjust the diagonal line to the description area
-    self.setDiagLine();
-
     // If this is not the top snow layer, update the snow layer above.
     if (i !== 0) {
-      SnowProfile.snowLayers[i - 1].setDiagLine();
       SnowProfile.snowLayers[i - 1].setLayerOutline();
     }
+
+    // Lay out the features
+    SnowProfile.layout();
 
     return {
       x: newX,
@@ -231,7 +207,7 @@ SnowProfile.Layer = function(depthArg) {
    * is inserted below this layer.
    * @type {Object}
    */
-  var insertButton = new SnowProfile.Button("Insert");
+  this.insertButton = new SnowProfile.Button("Insert");
 
   /**
    * Define a diagonal line from the bottom of this layer right to the
@@ -315,9 +291,8 @@ SnowProfile.Layer = function(depthArg) {
     handleLoc.remove();
     layerOutline.remove();
     diagLine.remove();
-    lineBelow.remove();
     featObj.destroy();
-    insertButton.destroy();
+    self.insertButton.destroy();
     SnowProfile.setDrawingHeight();
   }
 
@@ -352,7 +327,7 @@ SnowProfile.Layer = function(depthArg) {
 
     // Y dimension of the right end is the Y of the line below the
     // description of this snow layer.
-    yRight = SnowProfile.lineBelowY(i);
+    yRight = featObj.lineBelowY();
 
     // X dimension of the left end is the right edge of the graph
     xLeft = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 + SnowProfile.Cfg.GRAPH_WIDTH;
@@ -455,13 +430,13 @@ SnowProfile.Layer = function(depthArg) {
   };
 
   /**
-   * Draw this layer from depth and hardness values and adjacent layers.
+   * Draw this layer's handle and outline from depth and hardness values.
    *
-   * Redraw as necessary to respond to movement of the handle at the
-   *   top of this layer.
+   * Sets the layer outline of this layer and the layer above, if any.
    */
   this.draw = function() {
     var i = self.getIndex();
+
     // Set handle X from hardness
     if (handleTouched) {
       handle.x(SnowProfile.code2x(featObj.hardness()));
@@ -475,9 +450,6 @@ SnowProfile.Layer = function(depthArg) {
 
     // Adjust the rectangle that outlines this layer
     self.setLayerOutline();
-
-    // Adjust the diagonal line to the description area
-    self.setDiagLine();
 
     // Adjust the outline of the layer above, if any
     if (i !== 0) {
@@ -529,40 +501,39 @@ SnowProfile.Layer = function(depthArg) {
    */
   this.setIndexPosition = function() {
     var i = self.getIndex();
+
     featObj.y(SnowProfile.Cfg.HANDLE_MIN_Y +
       (i * SnowProfile.Cfg.DESCR_HEIGHT) +
       (SnowProfile.Cfg.HANDLE_SIZE / 2));
-    lineBelow.plot(
-      SnowProfile.Cfg.FEAT_DESCR_LEFT - 3,
-      SnowProfile.lineBelowY(i),
-      SnowProfile.Cfg.FEAT_DESCR_LEFT +SnowProfile.Cfg.FEAT_DESCR_WD,
-      SnowProfile.lineBelowY(i)
-    );
-    diagLine.plot.apply(diagLine, diagLinePts());
-    insertButton.setY(SnowProfile.lineBelowY(i));
+//    diagLine.plot.apply(diagLine, diagLinePts());
     // If this is not the top snow layer, update the diagonal line
     // owned by the snow layer above.
     if (i !== 0) {
-      SnowProfile.snowLayers[i - 1].setDiagLine();
+//      SnowProfile.snowLayers[i - 1].setDiagLine();
     }
-
-    // Move handle closest to user
-    handle.front();
+    self.insertButton.setCy(featObj.lineBelowY());
   };
 
   // Main line of constructor
   // Insert this Layer in the appropriate place in the snow pack.
   var i,
     numLayers = SnowProfile.snowLayers.length,
-    inserted = false;
+    inserted = false,
+    thisHandle,
+    thisInsert,
+    children = SnowProfile.handlesGroup.children();
 
   // Insert this snow layer above the first snow layer that is
   // at the same depth or deeper.
   for (i = 0; i < numLayers; i++) {
+    thisHandle = SnowProfile.handlesGroup.get(i);
+    thisInsert = SnowProfile.insertGroup.get(i);
     if (SnowProfile.snowLayers[i].depth() >= depthVal) {
 
       // Insertion point found, we need to insert above snowLayers[i].
       SnowProfile.snowLayers.splice(i, 0, this);
+      thisHandle.before(handle);
+      thisInsert.before(self.insertButton.getButtonGroup());
       inserted = true;
       break;
     }
@@ -572,6 +543,8 @@ SnowProfile.Layer = function(depthArg) {
   // This also handles the initial case where there were no snow layers.
   if (!inserted) {
     SnowProfile.snowLayers.push(this);
+    SnowProfile.handlesGroup.add(handle);
+    SnowProfile.insertGroup.add(self.insertButton.getButtonGroup());
   }
 
   // Listen for "SnowProfileHideControls" events
@@ -626,7 +599,7 @@ SnowProfile.Layer = function(depthArg) {
 
   // When Insert button clicked, insert a snow layer below this one.
   $(document).bind("SnowProfileButtonClick", function(evt, extra) {
-    if (extra.buttonObj === insertButton) {
+    if (extra.buttonObj === self.insertButton) {
       var i = self.getIndex();
       var numLayers = SnowProfile.snowLayers.length;
 
@@ -658,12 +631,6 @@ SnowProfile.Layer = function(depthArg) {
       SnowProfile.newLayer(depthVal + SnowProfile.Cfg.INS_INCR);
     }
   });
-
-  // Draw the layer
-  self.draw();
-
-  // Set the location of SVG objects dependent on index of layer
-  // for all layers, since inserting a layer disarranged those objects.
 }; // function SnowProfile.Layer()
 
 // Configure Emacs for Drupal JavaScript coding standards

@@ -26,7 +26,13 @@ SnowProfile.Button = function(textArg) {
    */
   var buttonGroup = SnowProfile.drawing.group()
     .addClass('snow_profile_button ' + textArg);
-  SnowProfile.mainGroup.add(buttonGroup);
+
+  /**
+   * Return a reference to buttonGroup
+   */
+  function getButtonGroup() {
+    return buttonGroup;
+  };
 
   /**
    * Define the text of the button
@@ -40,13 +46,15 @@ SnowProfile.Button = function(textArg) {
       fill: "#000",
       stroke: 1
     })
-    .cx(SnowProfile.Cfg.BUTTON_X);
+    .cx((textArg === 'Edit') ?
+      SnowProfile.Cfg.EDIT_BUTTON_X : SnowProfile.Cfg.INS_BUTTON_X);
   buttonGroup.add(text);
 
   // Draw a rectangle around the text
   var button = SnowProfile.drawing.rect(text.bbox().width + 4,
     text.bbox().height + 4)
-    .cx(SnowProfile.Cfg.BUTTON_X)
+    .cx((textArg === 'Edit') ?
+      SnowProfile.Cfg.EDIT_BUTTON_X : SnowProfile.Cfg.INS_BUTTON_X)
     .style({
       "stroke-width": 1,
       stroke: "#000",
@@ -78,8 +86,17 @@ SnowProfile.Button = function(textArg) {
    * @param {number} y - New vertical position of the center of the button
    * @public
    */
-  function setY(y) {
+  function setCy(y) {
     buttonGroup.cy(y);
+  }
+
+  /**
+   * Reposition the button on the Y axis
+   * @param {number} y - New vertical position of the top of the button
+   * @public
+   */
+  function setY(y) {
+    buttonGroup.y(y);
   }
 
   /**
@@ -98,7 +115,9 @@ SnowProfile.Button = function(textArg) {
    */
   var newObj = {
     destroy: destroy,
-    setY: setY
+    setCy: setCy,
+    setY: setY,
+    getButtonGroup: getButtonGroup
   };
 
   // Listen for "SnowProfileHideControls" events

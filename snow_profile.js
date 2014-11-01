@@ -183,6 +183,11 @@ var SnowProfile = {};
     DEPTH_SCALE: 5,
 
     /**
+     * Minimum number of pixels of padding above and below features desc.
+     */
+    MIN_FEAT_PAD: 2,
+
+    /**
      * Number of layers initially shown on a fresh copy of the page.
      */
     NUM_INIT_LAYERS: 3,
@@ -322,8 +327,14 @@ var SnowProfile = {};
   /**
    * X position of the center line of the buttons in the control area
    */
-  SnowProfile.Cfg.BUTTON_X = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
-    SnowProfile.Cfg.GRAPH_WIDTH + 150;
+  SnowProfile.Cfg.INS_BUTTON_X = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
+    SnowProfile.Cfg.GRAPH_WIDTH + 140;
+
+  /**
+   * X position of the center line of the buttons in the control area
+   */
+  SnowProfile.Cfg.EDIT_BUTTON_X = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
+    SnowProfile.Cfg.GRAPH_WIDTH + 180;
 
   /**
    * X position of the left edge of the layer description
@@ -406,8 +417,9 @@ var SnowProfile = {};
    * @returns {number} Drawing height in pixels.
    */
   SnowProfile.gridHeight = function() {
-    return  SnowProfile.Cfg.TOP_LABEL_HT + 1 + (SnowProfile.pitDepth *
+    var height = SnowProfile.Cfg.TOP_LABEL_HT + 1 + (SnowProfile.pitDepth *
       SnowProfile.Cfg.DEPTH_SCALE) + 1 + SnowProfile.Cfg.HARD_LABEL_HT;
+    return height;
   };
 
   /**
@@ -437,7 +449,19 @@ var SnowProfile = {};
    * @returns {number} Drawing height in pixels.
    */
   SnowProfile.setDrawingHeight = function() {
-    var max = Math.max(SnowProfile.gridHeight(), SnowProfile.featuresHeight());
+    var max,
+      numLayers = SnowProfile.snowLayers.length;
+
+    if (numLayers === 0) {
+      // No snow layers so drawing height set by configuration constants
+      max = SnowProfile.gridHeight();
+    }
+    else {
+      // Drawing height is max of configuration constants and space
+      // needed to store feature descriptions
+      max = Math.max(SnowProfile.gridHeight(),
+        SnowProfile.snowLayers[numLayers - 1].features().lineBelowY());
+    }
     SnowProfile.drawing.size(SnowProfile.Cfg.DRAWING_WD, max);
     SnowProfile.diagram.setAttribute('height', max + 10);
   };
@@ -462,6 +486,59 @@ var SnowProfile = {};
   //      stroke: 'red'
   //   });
   // SnowProfile.mainGroup.add(SnowProfile.drawingBox);
+
+  /**
+   * SnowProfile drawing controls group
+   *
+   * This SVG group holds the controls which the user uses to manipulate the
+   * drawing.  SVG doesn't have a Z axis, and an element in front can block
+   * access to an element behind.  The only way to guarantee access to the
+   * controls is to re-order the elements in the document to bring the contols
+   * to the front without reordering individual controls, hence we put them
+   * all in a group that can be brought to the front as a unit.
+   * @see  {@link http://http://documentup.com/wout/svg.js#parent-elements/groups Groups}
+   * @type {object}
+   * @memberof SnowProfile
+   */
+  SnowProfile.ctrlsGroup = SnowProfile.drawing.group()
+    .addClass('snow_profile_ctrls');
+  SnowProfile.mainGroup.add(SnowProfile.ctrlsGroup);
+
+  /**
+   * SnowProfile drawing handles group
+   *
+   * Handles, ordered as the snow layers are.
+   * @see  {@link http://http://documentup.com/wout/svg.js#parent-elements/groups Groups}
+   * @type {object}
+   * @memberof SnowProfile
+   */
+  SnowProfile.handlesGroup = SnowProfile.drawing.group()
+    .addClass('snow_profile_ctrls_handles');
+  SnowProfile.ctrlsGroup.add(SnowProfile.handlesGroup);
+
+  /**
+   * SnowProfile drawing edit buttons group
+   *
+   * Edit buttons, ordered as the snow layers are.
+   * @see  {@link http://http://documentup.com/wout/svg.js#parent-elements/groups Groups}
+   * @type {object}
+   * @memberof SnowProfile
+   */
+  SnowProfile.editGroup = SnowProfile.drawing.group()
+    .addClass('snow_profile_ctrls_edit');
+  SnowProfile.ctrlsGroup.add(SnowProfile.editGroup);
+
+  /**
+   * SnowProfile drawing insert buttons group
+   *
+   * Insert buttons, ordered as the snow layers are.
+   * @see  {@link http://http://documentup.com/wout/svg.js#parent-elements/groups Groups}
+   * @type {object}
+   * @memberof SnowProfile
+   */
+  SnowProfile.insertGroup = SnowProfile.drawing.group()
+    .addClass('snow_profile_ctrls_insert');
+  SnowProfile.ctrlsGroup.add(SnowProfile.insertGroup);
 
   /**
    * SnowProfile drawing grid group
@@ -558,14 +635,79 @@ var SnowProfile = {};
   };
 
   /**
-   * Get the Y axis value for the line below the description of a layer.
+   * Position the feature description and connecting lines on the drawing.
    *
-   * @param {number} i Index of the layer.
-   * @returns {number} Y axis value of the line below the ith layer.
+   * Start at the snow surface (layer 0).  Position that layer based on the
+   * position of the handle and the size of the feature description.  With
+   * that fixed, iterate down the snowpack.
    */
-  SnowProfile.lineBelowY = function(i) {
-    return SnowProfile.Cfg.HANDLE_MIN_Y + (SnowProfile.Cfg.HANDLE_SIZE / 2) +
-      ((i + 1) * SnowProfile.Cfg.DESCR_HEIGHT);
+  SnowProfile.layout = function() {
+    var i,
+      featureBottom,
+      featureTop,
+      layerBottom,
+      layerTop;
+
+    // Iterate through snow layers from top down
+    for (i=0; i < SnowProfile.snowLayers.length; i++) {
+
+      // Y value of the top of this layer
+      layerTop = SnowProfile.depth2y(SnowProfile.snowLayers[i].depth());
+
+      // Y value of the bottom of this layer
+      if (i === (SnowProfile.snowLayers.length - 1)) {
+        // This layer is the bottom layer, so the bottom
+        // of this layer is the bottom of the pit.
+        layerBottom = SnowProfile.depth2y(SnowProfile.pitDepth);
+      }
+      else {
+        // This layer is NOT the bottom layer, so the bottom
+        // of this layer is the top of the layer below.
+        layerBottom = SnowProfile.depth2y(SnowProfile.snowLayers[i+1].depth());
+      }
+
+      // Y value of the top of the layer feature description
+      if (i === 0) {
+        // This layer is the top layer, so the top of the feature
+        // description area is the top of the grid.
+        featureTop = SnowProfile.Cfg.TOP_LABEL_HT + 1;
+      }
+      else {
+        // This layer is NOT the top layer, so the top of the feature
+        // description area is the line below the feature description
+        // for the layer above.
+        featureTop = SnowProfile.snowLayers[i-1].features().lineBelowY();
+      }
+
+      // The bottom of the features description area is the lower of the
+      // bottom of the layer and the space needed for the features description
+      // bounding box (greater Y value is lower on the drawing).
+      if (i === 0) {
+        featureBottom = layerBottom;
+      }
+      else {
+        featureBottom = Math.max(layerBottom,
+          (featureTop + SnowProfile.snowLayers[i].features().height));
+      }
+
+      // Draw the line below the bottom of the features description.
+      SnowProfile.snowLayers[i].features().lineBelowY(
+        featureBottom + (SnowProfile.Cfg.HANDLE_SIZE / 2));
+
+      // Draw the diagonal line from layerBottom to lineBelow
+      SnowProfile.snowLayers[i].setDiagLine();
+
+      // It's possible that the bottom of the features description area is
+      // below the bottom of the SVG drawing area, in which case we need to
+      // expand the size of the drawing appropriately.
+      SnowProfile.setDrawingHeight();
+
+      // Position the features description in the center of its area.
+      SnowProfile.snowLayers[i].features().y(
+        featureTop + ((featureBottom - featureTop) / 2) -
+          (SnowProfile.snowLayers[i].features().height / 2)
+      );
+    }
   };
 
   /**
@@ -659,8 +801,10 @@ var SnowProfile = {};
     var layer = new SnowProfile.Layer(depth);
     var features = new SnowProfile.Features(layer);
     layer.features(features);
+    layer.draw();
     SnowProfile.setIndexPositions();
-    SnowProfile.setDrawingHeight();
+    SnowProfile.layout();
+    SnowProfile.ctrlsGroup.front();
   };
 
   /**
@@ -679,7 +823,7 @@ var SnowProfile = {};
     // Add an "Insert" button to allow the user to insert a snow layer
     // above the top snow layer.
     var insertButton = new SnowProfile.Button("Insert");
-    insertButton.setY(SnowProfile.Cfg.HANDLE_MIN_Y +
+    insertButton.setCy(SnowProfile.Cfg.HANDLE_MIN_Y +
       (SnowProfile.Cfg.HANDLE_SIZE / 2));
 
     // When Insert button clicked, insert a new snow layer at depth zero.
