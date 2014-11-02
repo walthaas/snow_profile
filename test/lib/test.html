@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Snow Profile Editor</title>
+    <style type="text/css">
+      body {
+	font-family: sans-serif;
+      }
+      #snow_profile_container {
+	position: relative;
+	display: inline-block;
+      }
+      g.snow_profile_feat_descr {
+/*        font-size: small;*/
+      }
+    </style>
+    <link rel="stylesheet" type="text/css" href="../../vendor/jquery.ui.theme.css" />
+    <link rel="stylesheet" type="text/css" href="../../vendor/jquery.ui.core.css" />
+    <link rel="stylesheet" type="text/css" href="../../vendor/jquery.ui.button.css" />
+    <link rel="stylesheet" type="text/css" href="../../vendor/jquery.ui.dialog.css" />
+    <link rel="stylesheet" type="text/css" href="../../vendor/jquery.ui.resizable.css" />
+  </head>
+
+  <body>
+    <div id="snow_profile_container">
+      <p>
+	<label for="snow_profile_total_depth">Total snow depth</label>
+	<input type="text" size="4" id="snow_profile_total_depth" value="200" /> cm&nbsp;&nbsp;
+	<label for="snow_profile_pit_depth">Snow pit depth</label>
+	<input type="text" size="4" id="snow_profile_pit_depth" value="200" /> cm&nbsp;&nbsp;
+	<div id="snow_profile_ref_depth" style="display: none">
+	  <label for="snow_profile_ref_select">Measure depth from</label>
+	  <select id="snow_profile_ref_select">
+	    <option value="s">snow surface</option>
+	    <option value="g">ground</option>
+	  </select>
+	</div>
+      </p>
+      <div id="snow_profile_diagram"></div>
+    </div>
+    <!--
+      Form to edit snow layer description.  Pops up as a modal window.
+    -->
+    <div id="snow_profile_popup" title="Snow Layer Description" class="ui-helper-hidden">
+      <form>
+	<label for="snow_profile_primary_grain_shape">Primary Grain Shape:</label>
+	<select id="snow_profile_primary_grain_shape" style="display: block;">
+	  <option value=""></option>
+	</select>
+	<div id="snow_profile_primary_grain_subshape"></div>
+	<div id="snow_profile_secondary_grain_shape" style="display: none;">
+          <label for="snow_profile_secondary_grain_select">Secondary Grain Shape:</label>
+          <select id="snow_profile_secondary_grain_select" style="display: block;">
+            <option value=""></option>
+	  </select>
+          <div id="snow_profile_secondary_grain_subshape"></div>
+        </div>
+        <label for="snow_profile_grain_size">Grain Size (mm):</label>
+        <div id="snow_profile_grain_size" style="display: block">
+          <input type="text" size="3" id="snow_profile_grain_size_min" /> -
+          <input type="text" size="3" id="snow_profile_grain_size_max" />
+        </div>
+        <label for="snow_profile_comment">Comment:</label><br />
+	<textarea id="snow_profile_comment" columns="30" rows="5"></textarea>
+      </form>
+    </div>
+    <script src="../../vendor/svg.js"></script>
+    <script src="../../vendor/svg.draggable.js"></script>
+    <script src="../../vendor/svg.easing.js"></script>
+    <script src="../../vendor/svg.foreignobject.js"></script>
+    <script src="../../vendor/svg_todataurl.js"></script>
+    <script src="../../vendor/gistfile1.js"></script>
+    <script src="../../vendor/jquery.js"></script>
+    <script src="../../vendor/jquery.ui.core.min.js"></script>
+    <script src="../../vendor/jquery.ui.widget.min.js"></script>
+    <script src="../../vendor/jquery.ui.mouse.min.js"></script>
+    <script src="../../vendor/jquery.ui.button.min.js"></script>
+    <script src="../../vendor/jquery.ui.dialog.min.js"></script>
+    <script src="../../vendor/jquery.ui.draggable.min.js"></script>
+    <script src="../../vendor/jquery.ui.position.min.js"></script>
+    <script src="../../vendor/jquery.ui.resizable.min.js"></script>
+    <script src="../../snow_profile.js"></script>
+    <script src="../../snow_profile_std.js"></script>
+    <script src="../../snow_profile_button.js"></script>
+    <script src="../../snow_profile_popup.js"></script>
+    <script src="../../snow_profile_feat.js"></script>
+    <script src="../../snow_profile_layer.js"></script>
+    <script src="../../snow_profile_grid.js"></script>
+    <script src="../../snow_profile_main.js"></script>
+    <button id="snow_profile_preview" style="display: block;">Preview</button>
+
+  </body>
+</html>

@@ -1,14 +1,15 @@
 /**
- @file Define the singleton object that describes the reference grid
- @copyright Walt Haas <haas@xmission.com>
- @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPLv2}
+ * @file Define the singleton object that describes the reference grid
+ * @copyright Walt Haas <haas@xmission.com>
+ * @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPLv2}
  */
 
 /* global SnowProfile */
 
 /**
- * @summary Singleton object describing the reference grid
- * @desc The reference grid is the collection of vertical and horizontal
+ * Singleton object describing the reference grid
+ *
+ * The reference grid is the collection of vertical and horizontal
  *   lines and associated letters and numbers that indicate the location of
  *   a data point in the snow profile.  The depth of a point is indicated by
  *   depth numbers along the left edge of the grid and their associated
@@ -20,11 +21,7 @@
  *   or ground.  When this happens, the hardness scale does not change but
  *   its location on the chart must be adjusted to the new bottom.  However
  *   no change to the grid is made when the user moves a data point inside
- *   the snow pack or changes the description of that point.  For this reason
- *   the grid is handled as its own KineticJS layer.
- *
- *   Since the reference grid is changed much less frequently than the other
- *   snow profile information, the grid is cached to improve performance.
+ *   the snow pack or changes the description of that point.
  *
  *   This object is designed to be a singleton, but there is currently no
  *   mechanism in the constructor to enforce that.
@@ -37,65 +34,36 @@
 SnowProfile.Grid = function() {
   "use strict";
 
-  var i, x;
-
-  // Set controls to default values
-  $("#snow_profile_pit_depth").val(SnowProfile.pitDepth);
-  $("#snow_profile_total_depth").val(SnowProfile.totalDepth);
-  $("#snow_profile_ref_depth").val(SnowProfile.depthRef);
-
   /**
-   * {@link http://kineticjs.com/docs/Kinetic.Layer.html KineticJS Layer} to
-   *   hold the reference grid
-   * @type {Object}
-   */
-  var gridLayer = new Kinetic.Layer();
-
-  var backGround = new Kinetic.Rect({
-    x: 0,
-    y: 0,
-    width: SnowProfile.stage.width(),
-    height: 10,
-    fill: SnowProfile.BACKGROUND_COLOR,
-    opacity: 1
-  });
-  gridLayer.add(backGround);
-
-  /**
-   * @summary Create the depth scale group
-   * @desc Generate the label and numbers for snow depth along the left edge
+   * Draw the depth scale
+   *
+   * Generate the label and numbers for snow depth along the left edge
    *   of the graph and the horizontal depth lines across the graph.  This
-   *   must all be adjusted whenever the user changes pit depth or total snow
-   *   depth or sets the reference to ground or snow surface.  The approach
-   *   we use is to destroy the label and numbers and horizontal lines, then
-   *   re-create them all with the new parameters.  This method does the
-   *   re-creation part of the job.  The destroy part is done in
-   *   {@link SnowProfile.Grid~adjustGrid}.
-   * @returns {Object} Kinetic.Group object with the adjusted depth scale.
+   *   depends on the user setting of pit depth, total snow depth and
+   *   reference to ground or snow surface.
+   * @see SnowProfile.gridGroup
    */
-  function depthScaleGrp() {
-    var group = new Kinetic.Group({
-      x: 0,
-      y: SnowProfile.TOP_LABEL_HT
-    });
-    var cm;
+  function drawDepthScale() {
 
-    /**
-     * Add a text label for "Depth"
-     * @type {Object}
-     */
-    var depthText = new Kinetic.Text({
-      text: "Depth (cm)",
-      rotationDeg: 270,
-      fontSize: 18,
-      fontStyle: 'bold',
-      fontFamily: 'sans-serif',
-      fill: SnowProfile.LABEL_COLOR,
-      x: 10,
-      y: (SnowProfile.pitDepth * SnowProfile.DEPTH_SCALE) / 2
-    });
-    depthText.setOffsetX(depthText.getWidth() / 2);
-    group.add(depthText);
+    var cm,
+      x0 = SnowProfile.Cfg.DEPTH_LABEL_WD + 1,
+      x1 = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 + SnowProfile.Cfg.GRAPH_WIDTH,
+      y;
+
+    // Add a Depth label on the left side of the diagram
+    SnowProfile.depthGroup.add(SnowProfile.drawing.text("Depth (cm)")
+      .addClass("snow_profile_depth")
+      .font({
+        family: 'sans-serif',
+        fill: SnowProfile.Cfg.LABEL_COLOR,
+        size: 18,
+        style: 'bold'
+      })
+      .transform({
+        x: -30,
+        y: (SnowProfile.pitDepth * SnowProfile.Cfg.DEPTH_SCALE) / 2,
+        rotation: 270
+      }));
 
     // Referenced to snow surface or ground?
     // Start drawing lines/labels at zero.  Continue to depth of pit.
@@ -107,30 +75,26 @@ SnowProfile.Grid = function() {
       // Numbers and horizontal reference lines are generated from the
       // snow surface down every HORIZ_INT cm to the bottom of the pit.
       for (cm = 0; cm <= SnowProfile.pitDepth;
-        cm += SnowProfile.DEPTH_LINE_INT) {
-        group.add(new Kinetic.Text({
-          x: 40,
-          y: cm * SnowProfile.DEPTH_SCALE,
-          text: cm,
-          fontSize: 12,
-          fontStyle: 'bold',
-          fontFamily: 'sans-serif',
-          fill: SnowProfile.LABEL_COLOR,
-          align: 'right'
-        }));
+        cm += SnowProfile.Cfg.DEPTH_LINE_INT) {
+        y = SnowProfile.Cfg.TOP_LABEL_HT +
+          (SnowProfile.Cfg.HANDLE_SIZE / 2) +
+          (cm * SnowProfile.Cfg.DEPTH_SCALE);
+        SnowProfile.depthGroup.add(SnowProfile.drawing.text(String(cm))
+          .addClass("snow_profile_depth")
+          .font({
+            size: 12,
+            style: 'bold',
+            family: 'sans-serif',
+            fill: SnowProfile.Cfg.LABEL_COLOR})
+          .move(40, y - 8));
 
         // Draw a horizontal line every DEPTH_LINE_INT cm as a depth scale
         if (cm !== SnowProfile.pitDepth) {
-          group.add(new Kinetic.Line({
-            points: [SnowProfile.DEPTH_LABEL_WD + 1,
-                (SnowProfile.HANDLE_SIZE / 2) +
-                  (cm * SnowProfile.DEPTH_SCALE),
-                SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH -
-                  SnowProfile.HANDLE_SIZE / 2,
-                (SnowProfile.HANDLE_SIZE / 2) +
-                   (cm * SnowProfile.DEPTH_SCALE)],
-            stroke: SnowProfile.GRID_COLOR,
-            strokeWidth: 1
+          SnowProfile.depthGroup.add(SnowProfile.drawing.line(x0, y, x1, y)
+            .addClass("snow_profile_depth")
+            .stroke({
+              color: SnowProfile.Cfg.GRID_COLOR,
+              width: 1
           }));
         }
       }
@@ -141,146 +105,244 @@ SnowProfile.Grid = function() {
       // The bottom of the grid is shown as (totalDepth - pitDepth).  The
       // lowest grid line is at the next integer multiple of DEPTH_LINE_INT cm.
       var bottom = SnowProfile.totalDepth - SnowProfile.pitDepth;
-      var lowestLine = Math.ceil(bottom / SnowProfile.DEPTH_LINE_INT) *
-        SnowProfile.DEPTH_LINE_INT;
+      var lowestLine = Math.ceil(bottom / SnowProfile.Cfg.DEPTH_LINE_INT) *
+        SnowProfile.Cfg.DEPTH_LINE_INT;
       for (cm = lowestLine; cm <= SnowProfile.totalDepth;
-        cm += SnowProfile.DEPTH_LINE_INT) {
-        group.add(new Kinetic.Text({
-          x: 40,
-          y: (SnowProfile.totalDepth - cm) * SnowProfile.DEPTH_SCALE,
-          text: cm,
-          fontSize: 12,
-          fontStyle: 'bold',
-          fontFamily: 'sans-serif',
-          fill: SnowProfile.LABEL_COLOR,
-          align: 'right'
-        }));
+        cm += SnowProfile.Cfg.DEPTH_LINE_INT) {
+        y = SnowProfile.Cfg.TOP_LABEL_HT + (SnowProfile.Cfg.HANDLE_SIZE / 2) +
+          ((SnowProfile.totalDepth - cm) * SnowProfile.Cfg.DEPTH_SCALE);
+        SnowProfile.depthGroup.add(SnowProfile.drawing.text(String(cm))
+          .addClass("snow_profile_depth")
+          .font({
+            size: 12,
+            style: 'bold',
+            family: 'sans-serif',
+            fill: SnowProfile.Cfg.LABEL_COLOR})
+          .move(40, y - 8));
 
         // Draw a horizontal line every DEPTH_LINE_INT cm as a depth scale
         if (cm !== SnowProfile.totalDepth) {
-          group.add(new Kinetic.Line({
-            points: [SnowProfile.DEPTH_LABEL_WD + 1,
-              (SnowProfile.HANDLE_SIZE / 2) +
-                ((SnowProfile.totalDepth - cm) * SnowProfile.DEPTH_SCALE),
-              SnowProfile.DEPTH_LABEL_WD + 1 + SnowProfile.GRAPH_WIDTH -
-                SnowProfile.HANDLE_SIZE / 2,
-              (SnowProfile.HANDLE_SIZE / 2) +
-                ((SnowProfile.totalDepth - cm) * SnowProfile.DEPTH_SCALE)],
-            stroke: SnowProfile.GRID_COLOR,
-            strokeWidth: 1
+          SnowProfile.depthGroup.add(SnowProfile.drawing.line(x0, y, x1, y)
+            .addClass("snow_profile_depth")
+            .stroke({
+              color: SnowProfile.Cfg.GRID_COLOR,
+              width: 1
           }));
         }
       }
     }
-    return group;
-  } // function depthScaleGrp()
+  } // function drawDepthScale()
 
   /**
-   * @summary Depth scale
-   * @desc Holds the depth label and horizontal reference lines.  These
-   *   are all held in one group so that when it is time to adjust the
-   *   snow pit depth we can destroy the group and create it again with
-   *   the new values.
-   * @type {Object}
+   * Draw the hardness scale
+   *
+   * Draw the vertical lines indicating snow hardness
+   * @see SnowProfile.gridGroup
    */
-  var depthScale = depthScaleGrp();
-  gridLayer.add(depthScale);
+  function drawHardnessScale() {
 
-  /**
-   * @summary Vertical lines of the grid.
-   * @desc The first vertical line is the left edge of the graph, and
-   *   the remaining lines are references for hardness values.  We need
-   *   to adjust the bottom Y of each line when the snow pit depth changes
-   *   so we keep the KineticJS Line objects in an array for convenience.
-   * @type {KineticJS.Line[]}
-   */
-  var verticalLines = [];
+    var i, x;
 
-  // Add a vertical line along the left edge
-  verticalLines.push(new Kinetic.Line({
-    points: [SnowProfile.DEPTH_LABEL_WD,
-      SnowProfile.HANDLE_MIN_Y - 1 +
-       (SnowProfile.HANDLE_SIZE / 2),
-      SnowProfile.DEPTH_LABEL_WD,
+    // Add a vertical line along the left edge
+    SnowProfile.hardnessGroup.add(SnowProfile.drawing.line(
+      SnowProfile.Cfg.DEPTH_LABEL_WD,
+      SnowProfile.Cfg.HANDLE_MIN_Y - 1 + (SnowProfile.Cfg.HANDLE_SIZE / 2),
+      SnowProfile.Cfg.DEPTH_LABEL_WD,
       SnowProfile.depth2y(SnowProfile.pitDepth) +
-        (SnowProfile.HANDLE_SIZE / 2)],
-    stroke: SnowProfile.LABEL_COLOR,
-    strokeWidth: 1
-  }));
-
-  /**
-   * @summary Group to hold the hardness scale at bottom of grid
-   * @desc KineticJS group to hold all the elements of the hardness
-   *   scale.  We do this so we can reposition the group as a single
-   *   unit when it must be adjusted to a new snow pit depth.
-   * @type {Object}
-   */
-  var hardScaleGrp = new Kinetic.Group({
-    x: SnowProfile.DEPTH_LABEL_WD,
-    y: SnowProfile.depth2y(SnowProfile.pitDepth) +
-      (SnowProfile.HANDLE_SIZE / 2)
-  });
-
-  // Draw and label the hardness (horizontal) axis
-  hardScaleGrp.add(new Kinetic.Line({
-    points: [0, 0,
-      SnowProfile.GRAPH_WIDTH + 1 - SnowProfile.HANDLE_SIZE / 2, 0],
-    stroke: SnowProfile.LABEL_COLOR,
-    strokeWidth: 1
-  }));
-
-  // Iterate through the table of CAAML hardness codes to
-  // build the hardness (horizontal) scale for the graph area
-  for (i = 0; i < SnowProfile.CAAML_HARD.length; i++) {
-    x = SnowProfile.DEPTH_LABEL_WD + 1 + (SnowProfile.HARD_BAND_WD * i) +
-      (SnowProfile.HANDLE_SIZE / 2);
-    if (SnowProfile.CAAML_HARD[i][1]) {
-
-      // Add a vertical line to show SnowProfile hardness value
-      verticalLines.push(new Kinetic.Line({
-        points: [x, SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2),
-          x, SnowProfile.handleMaxY + (SnowProfile.HANDLE_SIZE / 2)],
-        stroke: SnowProfile.GRID_COLOR,
-        strokeWidth: 1
+        (SnowProfile.Cfg.HANDLE_SIZE / 2))
+        .addClass("snow_profile_hardness")
+        .stroke({
+          color: SnowProfile.Cfg.LABEL_COLOR,
+          width: 1
       }));
-      hardScaleGrp.add(new Kinetic.Text({
-        x: x - SnowProfile.DEPTH_LABEL_WD - 1,
-        y: 3,
-        text: SnowProfile.CAAML_HARD[i][0],
-        fontSize: 12,
-        fontStyle: 'bold',
-        fontFamily: 'sans-serif',
-        fill: SnowProfile.LABEL_COLOR,
-        align: 'center'
-      }));
+
+    // Draw and label the hardness (horizontal) axis
+    SnowProfile.hardnessGroup.add(SnowProfile.drawing.line(
+      SnowProfile.Cfg.DEPTH_LABEL_WD,
+      SnowProfile.depth2y(SnowProfile.pitDepth) +
+        (SnowProfile.Cfg.HANDLE_SIZE / 2),
+      SnowProfile.Cfg.DEPTH_LABEL_WD + SnowProfile.Cfg.GRAPH_WIDTH + 1 -
+        SnowProfile.Cfg.HANDLE_SIZE / 2,
+      SnowProfile.depth2y(SnowProfile.pitDepth) +
+        (SnowProfile.Cfg.HANDLE_SIZE / 2)
+      )
+      .addClass("snow_profile_hardness")
+      .stroke({
+        color: SnowProfile.Cfg.LABEL_COLOR,
+        width: 1
+    }));
+
+    // Iterate through the table of CAAML hardness codes to
+    // build the hardness (horizontal) scale for the graph area
+    for (i = 0; i < SnowProfile.CAAML_HARD.length; i++) {
+      x = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
+        (SnowProfile.Cfg.HARD_BAND_WD * i) +
+        SnowProfile.Cfg.HANDLE_SIZE;
+      if (SnowProfile.CAAML_HARD[i][1]) {
+
+        // Add a vertical line to show SnowProfile hardness value
+        SnowProfile.hardnessGroup.add(SnowProfile.drawing.line(
+          x, SnowProfile.Cfg.HANDLE_MIN_Y + (SnowProfile.Cfg.HANDLE_SIZE / 2),
+          x, SnowProfile.handleMaxY + (SnowProfile.Cfg.HANDLE_SIZE / 2))
+          .addClass("snow_profile_hardness")
+          .stroke({
+          color: SnowProfile.Cfg.GRID_COLOR,
+          width: 1
+        }));
+        SnowProfile.hardnessGroup.add(SnowProfile.drawing.text(
+          SnowProfile.CAAML_HARD[i][0])
+          .addClass("snow_profile_hardness")
+          .font({
+            size: 12,
+            style: 'bold',
+            family: 'sans-serif',
+            fill: SnowProfile.Cfg.LABEL_COLOR
+          })
+          .move(x - 1, SnowProfile.depth2y(SnowProfile.pitDepth) +
+            (SnowProfile.Cfg.HANDLE_SIZE / 2) + 3));
+      }
     }
-  }
 
-  // Add all vertical lines to gridLayer
-  verticalLines.forEach(function(line) {
-    gridLayer.add(line);
-  });
+    // Add 'Hand Hardness' label at bottom
+    SnowProfile.hardnessGroup.add(SnowProfile.drawing.text('Hand Hardness')
+      .addClass("snow_profile_hardness")
+      .font({
+        size: 18,
+        style: 'bold',
+        family: 'sans-serif',
+        fill: SnowProfile.Cfg.LABEL_COLOR})
+      .move(SnowProfile.Cfg.GRAPH_WIDTH / 2,
+        SnowProfile.depth2y(SnowProfile.pitDepth) +
+        (SnowProfile.Cfg.HANDLE_SIZE / 2) + 19));
+  } // function drawHardnessScale()
 
   /**
-   * @type {Object}
-   * @see SnowProfile.Grid~adjustGrid
+   * Draw the labels for the observation columns
+   *
+   * @see SnowProfile.gridGroup
+   * @todo Column headings don't fit
    */
-  var hardnessText = new Kinetic.Text({
-    x: SnowProfile.GRAPH_WIDTH / 2,
-    y: 16,
-    text: 'Hand Hardness',
-    fontSize: 18,
-    fontStyle: 'bold',
-    fontFamily: 'sans-serif',
-    fill: SnowProfile.LABEL_COLOR,
-    align: "center"
-  });
-  hardnessText.setOffsetX(hardnessText.getWidth() / 2);
-  hardScaleGrp.add(hardnessText);
-  gridLayer.add(hardScaleGrp);
+  function drawLabels() {
+
+    // Draw a horizontal line across the top of graph and description areas
+    SnowProfile.gridGroup.add(SnowProfile.drawing.line(
+      SnowProfile.Cfg.DEPTH_LABEL_WD + 1,
+      SnowProfile.Cfg.HANDLE_MIN_Y + (SnowProfile.Cfg.HANDLE_SIZE / 2),
+      SnowProfile.Cfg.DRAWING_WD,
+      SnowProfile.Cfg.HANDLE_MIN_Y + (SnowProfile.Cfg.HANDLE_SIZE / 2))
+    .stroke({
+      color: SnowProfile.Cfg.GRID_COLOR,
+      width: 1
+    }));
+
+    // Add the label to the Grain Shape column
+    SnowProfile.gridGroup.add(SnowProfile.drawing.text('Grain\nShape')
+    .font({
+      size: 14,
+      leading: 1.1,
+      style: 'bold',
+      family: 'sans-serif',
+      fill: SnowProfile.Cfg.LABEL_COLOR
+    })
+    .move(SnowProfile.Cfg.FEAT_DESCR_LEFT, 10));
+
+    // Add the label to the Grain Size column
+    SnowProfile.gridGroup.add(SnowProfile.drawing.text('Size\n(mm)')
+    .font({
+      size: 14,
+      leading: 1.1,
+      style: 'bold',
+      family: 'sans-serif',
+      fill: SnowProfile.Cfg.LABEL_COLOR
+    })
+    .move(SnowProfile.Cfg.FEAT_DESCR_LEFT + SnowProfile.Cfg.GRAIN_SIZE_LEFT,
+      10));
+
+    // Add the label to the Comment column
+    var commentHeading = SnowProfile.drawing.text('Comment')
+      .font({
+        size: 14,
+        style: 'bold',
+        family: 'sans-serif',
+        fill: SnowProfile.Cfg.LABEL_COLOR
+      })
+      .move(SnowProfile.Cfg.FEAT_DESCR_LEFT + SnowProfile.Cfg.COMMENT_LEFT,
+        25);
+    SnowProfile.gridGroup.add(commentHeading);
+
+    // // For debugging show the bounding box
+    // var chBbox = commentHeading.bbox();
+    // var commentBox = SnowProfile.drawing.rect(chBbox.width, chBbox.height)
+    //   .x(chBbox.x)
+    //   .y(chBbox.y)
+    //   .style({
+    //      "fill-opacity": 0,
+    //      stroke: 'red'
+    //   });
+    // SnowProfile.gridGroup.add(commentBox);
+  } // function drawLabels()
 
   /**
-   * @summary Respond to change in total snow depth value.
+   * Draw the reference grid
+   *
+   * Throw away existing grid if any, then set the drawing size and draw
+   * the reference grid.
+   * @see SnowProfile.gridGroup
+   * @fires SnowProfileDrawGrid
+   */
+  function drawGrid() {
+
+    // Throw away the existing grid
+    SnowProfile.gridGroup.clear();
+
+    // Define background behind the reference grid
+    // NB: We must define the background fill in code not in the stylesheet
+    //   because the code to convert SVG to PNG doesn't interpret the
+    //   stylesheet.
+    SnowProfile.gridGroup.add(
+      SnowProfile.drawing.rect(
+        SnowProfile.Cfg.GRAPH_WIDTH,
+        SnowProfile.pitDepth * SnowProfile.Cfg.DEPTH_SCALE)
+        .dmove(SnowProfile.Cfg.DEPTH_LABEL_WD,
+          SnowProfile.Cfg.TOP_LABEL_HT + (SnowProfile.Cfg.HANDLE_SIZE / 2) + 1)
+        .style({fill: '#eef'})
+    );
+
+    // Create inner groups for depth and hardness scales
+    SnowProfile.depthGroup = SnowProfile.gridGroup.group()
+      .addClass("snow_profile_depth");
+    SnowProfile.hardnessGroup = SnowProfile.gridGroup.group()
+      .addClass("snow_profile_hardness");
+
+    // Set size of drawing
+    SnowProfile.setDrawingHeight();
+
+    // Set the maximum Y value to which a handle may be dragged
+    SnowProfile.handleMaxY = SnowProfile.Cfg.TOP_LABEL_HT + 1 +
+      (SnowProfile.Cfg.DEPTH_SCALE * SnowProfile.pitDepth);
+
+    // Draw the depth scale
+    drawDepthScale();
+
+    // Draw the hardness scale
+    drawHardnessScale();
+
+    // Draw labels
+    drawLabels();
+
+    // For debugging, show the bounding box
+    // var drawingBbox = SnowProfile.drawing.bbox();
+    // SnowProfile.drawingBox.width(drawingBbox.width);
+    // SnowProfile.drawingBox.height(drawingBbox.height);
+    // SnowProfile.drawingBox.x(drawingBbox.x);
+    // SnowProfile.drawingBox.y(drawingBbox.y);
+
+    // Trigger a custom event to let the rest of the code know
+    $.event.trigger("SnowProfileDrawGrid");
+  } // function drawGrid()
+
+  /**
+   * Respond to change in total snow depth value.
    */
   function totalDepthChange() {
     var totalDepth = $("#snow_profile_total_depth").val();
@@ -293,15 +355,48 @@ SnowProfile.Grid = function() {
       SnowProfile.depthRef = "s";
       $("#snow_profile_ref_select option").attr("selected", false);
       $("#snow_profile_ref_select option[value='s']").attr("selected", true);
-      adjustGrid();
+      drawGrid();
       return;
     }
     if ((totalDepth.search(/^\d+$/) < 0) ||
-      (totalDepth < SnowProfile.MIN_DEPTH)) {
+      (totalDepth < SnowProfile.Cfg.MIN_DEPTH)) {
       alert("Total snow depth must be a number >= " +
-        SnowProfile.MIN_DEPTH);
+        SnowProfile.Cfg.MIN_DEPTH);
       $("#snow_profile_total_depth").val(SnowProfile.totalDepth);
       return;
+    }
+
+    // If reducing total depth and that will cause bottom layer(s) to be lost,
+    // get user confirmation.
+    if ((Number(totalDepth) < SnowProfile.totalDepth) ||
+      (Number(totalDepth) < SnowProfile.pitDepth)) {
+
+      // User is reducing the total snow depth, check lower layers
+      if (SnowProfile.snowLayers[SnowProfile.snowLayers.length - 1]
+        .depth() > Number(totalDepth)) {
+        if (confirm('New total depth will cause lower layer(s) to be discarded')) {
+          // Remove snow layers from the bottom of the pit until we get to a
+          // layer that is above the new total depth.  That could potentially
+          // be the top layer of the pit.
+          do {
+            SnowProfile.snowLayers[SnowProfile.snowLayers.length - 1]
+              .deleteLayer();
+          } while (SnowProfile.snowLayers[SnowProfile.snowLayers.length - 1]
+             .depth() > Number(totalDepth));
+         }
+        else {
+          $("#snow_profile_total_depth").val(SnowProfile.totalDepth);
+          return;
+        }
+      }
+    }
+
+    // If this is the first time total snow depth is provided,
+    // then set the depth reference to "ground"
+    if (SnowProfile.totalDepth === null) {
+      SnowProfile.depthRef = "g";
+      $("#snow_profile_ref_select option").attr("selected", false);
+      $("#snow_profile_ref_select option[value='g']").attr("selected", true);
     }
     SnowProfile.totalDepth = Number(totalDepth);
 
@@ -315,31 +410,39 @@ SnowProfile.Grid = function() {
       SnowProfile.pitDepth = Number(totalDepth);
     }
 
-    // Adjust the grid for the new total snow depth
-    adjustGrid();
+    SnowProfile.handleMaxY = SnowProfile.Cfg.TOP_LABEL_HT + 1 +
+      (SnowProfile.Cfg.DEPTH_SCALE * SnowProfile.pitDepth);
+
+    // Redraw the grid with new dimensions
+    drawGrid();
+
+   // Redraw the new bottom layer
+   SnowProfile.snowLayers[SnowProfile.snowLayers.length - 1]
+     .draw();
   } // function totalDepthChange()
 
   /**
-   * @summary Respond to a change in the depth of the pit
-   * @desc Input the value set by the user in the "Snow pit depth" box.
-   *   Check that it is a number in the range MIN_DEPTH .. MAX_DEPTH not
-   *   greater than total snow depth.  If checks pass, save this pit depth.
-   *   If the checks fail, put the previous value back in the input box.
+   * Respond to a change in the depth of the pit
+   *
+   * Input the value set by the user in the "Snow pit depth" box.
+   * Check that it is a number in the range MIN_DEPTH .. MAX_DEPTH not
+   * greater than total snow depth.  If checks pass, save this pit depth.
+   * If the checks fail, put the previous value back in the input box.
    */
   function pitDepthChange() {
 
     var pitDepth = $("#snow_profile_pit_depth").val();
     var totalDepth = SnowProfile.totalDepth;
     if ((pitDepth.search(/^\d+$/) < 0) ||
-      (pitDepth < SnowProfile.MIN_DEPTH)) {
+      (pitDepth < SnowProfile.Cfg.MIN_DEPTH)) {
       alert("Snow pit depth must be a number >= " +
-        SnowProfile.MIN_DEPTH);
+        SnowProfile.Cfg.MIN_DEPTH);
       $("#snow_profile_pit_depth").val(SnowProfile.pitDepth);
       return;
     }
-    if (pitDepth > SnowProfile.MAX_DEPTH) {
+    if (pitDepth > SnowProfile.Cfg.MAX_DEPTH) {
       alert("Snow pit depth must be less than or equal to " +
-        SnowProfile.MAX_DEPTH + " cm");
+        SnowProfile.Cfg.MAX_DEPTH + " cm");
       $("#snow_profile_pit_depth").val(SnowProfile.pitDepth);
       return;
     }
@@ -348,60 +451,46 @@ SnowProfile.Grid = function() {
       $("#snow_profile_pit_depth").val(SnowProfile.pitDepth);
       return;
     }
+
+    // If reducing pit depth and that will cause bottom layer(s) to be lost,
+    // get user confirmation.
+    if (Number(pitDepth) < SnowProfile.pitDepth) {
+      // User is reducing the depth of the pit, check lower layers
+      if (SnowProfile.snowLayers[SnowProfile.snowLayers.length - 1]
+        .depth() > Number(pitDepth)) {
+        if (confirm('New pit depth will cause lower layer(s) to be discarded')) {
+          // Remove snow layers from the bottom of the pit until we get to a
+          // layer that is above the new pit depth.  That could potentially be
+          // the top layer of the pit.
+          do {
+            SnowProfile.snowLayers[SnowProfile.snowLayers.length - 1]
+              .deleteLayer();
+          } while (SnowProfile.snowLayers[SnowProfile.snowLayers.length - 1]
+             .depth() > Number(pitDepth));
+         }
+        else {
+          $("#snow_profile_pit_depth").val(SnowProfile.pitDepth);
+          return;
+        }
+      }
+    }
+
     SnowProfile.pitDepth = Number(pitDepth);
-    adjustGrid();
+    SnowProfile.handleMaxY = SnowProfile.Cfg.TOP_LABEL_HT + 1 +
+      (SnowProfile.Cfg.DEPTH_SCALE * SnowProfile.pitDepth);
+
+    // Redraw the grid with new dimensions
+    drawGrid();
+
+   // Redraw the new bottom layer
+   SnowProfile.snowLayers[SnowProfile.snowLayers.length - 1]
+     .draw();
   } // function pitDepthChange()
 
-  /**
-   * @summary Adjust grid for change in depth or reference
-   * @desc Set the height of the KineticJS stage and vertical lines.  Set the
-   *   Y position of the hand hardness scale.  Destroy and re-create the
-   *   vertical depth depth scale group.
-   * @fires SnowProfileAdjustGrid
-   */
-  function adjustGrid() {
-
-    // Adjust height of stage
-    SnowProfile.stage.height(SnowProfile.stageHeight());
-
-    // Adjust height of background to match
-    backGround.height(SnowProfile.stageHeight());
-
-    // Adust lengths of vertical lines
-    var points;
-    verticalLines.forEach(function(line) {
-      points = line.points();
-      points[3] = SnowProfile.depth2y(SnowProfile.pitDepth) +
-        (SnowProfile.HANDLE_SIZE / 2);
-      line.points(points);
-    });
-
-    // Adjust position of hardness scale group
-    hardScaleGrp.setPosition({
-      x: SnowProfile.DEPTH_LABEL_WD,
-      y: SnowProfile.depth2y(SnowProfile.pitDepth) +
-        (SnowProfile.HANDLE_SIZE / 2)
-    });
-
-    // Destroy and re-create the depth scale
-    depthScale.destroy();
-    depthScale = depthScaleGrp();
-    gridLayer.add(depthScale);
-
-    // Set the maximum Y value to which a handle may be dragged
-    SnowProfile.handleMaxY = SnowProfile.TOP_LABEL_HT + 1 +
-      (SnowProfile.DEPTH_SCALE * SnowProfile.pitDepth);
-
-    gridLayer.draw(); //.cache({
-    //   x: 0,
-    //   y: 0,
-    //   width: SnowProfile.stage.width(),
-    //   height: SnowProfile.stage.height()
-    // });
-
-    // Trigger a custom event to let the rest of the code know
-    $.event.trigger("SnowProfileAdjustGrid");
-  } // function adjustGrid()
+  // Set controls to default values
+  $("#snow_profile_pit_depth").val(SnowProfile.pitDepth);
+  $("#snow_profile_total_depth").val(SnowProfile.totalDepth);
+  $("#snow_profile_ref_depth").val(SnowProfile.depthRef);
 
   // Listen for a change to the "Total snow depth" input
   $("#snow_profile_total_depth").change(totalDepthChange);
@@ -412,59 +501,9 @@ SnowProfile.Grid = function() {
   // Listen for a change to the "Measure depth from" select
   $("#snow_profile_ref_select").change(function() {
     SnowProfile.depthRef = $("#snow_profile_ref_select").val();
-    adjustGrid();
+    drawGrid();
   });
-
-  // Draw a horizontal line across the top of graph and description areas
-  gridLayer.add(new Kinetic.Line({
-    points: [SnowProfile.DEPTH_LABEL_WD + 1,
-      SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2),
-      SnowProfile.STAGE_WD - 3,
-      SnowProfile.HANDLE_MIN_Y + (SnowProfile.HANDLE_SIZE / 2)],
-    stroke: SnowProfile.GRID_COLOR,
-    strokeWidth: 1
-  }));
-
-  // Add the label to the Grain Type column
-  var grainText = new Kinetic.Text({
-    x: SnowProfile.GRAIN_LEFT,
-    y: 12,
-    text: 'Grain\nForm    Size',
-    fontSize: 14,
-    fontStyle: 'bold',
-    fontFamily: 'sans-serif',
-    fill: SnowProfile.LABEL_COLOR,
-    align: "center"
-  });
-  gridLayer.add(grainText);
-
-  // // Add the label to the Water column
-  // var waterText = new Kinetic.Text({
-  //   x: SnowProfile.LWC_LEFT,
-  //   y: 25,
-  //   text: 'Water',
-  //   fontSize: 18,
-  //   fontStyle: 'bold',
-  //   fontFamily: 'sans-serif',
-  //   fill: SnowProfile.LABEL_COLOR,
-  //   align: "left"
-  // });
-  // gridLayer.add(waterText);
-
-  // Add the label to the Comment column
-  var commentText = new Kinetic.Text({
-    x: SnowProfile.COMMENT_LEFT,
-    y: 25,
-    text: 'Comment',
-    fontSize: 14,
-    fontStyle: 'bold',
-    fontFamily: 'sans-serif',
-    fill: SnowProfile.LABEL_COLOR,
-    align: "left"
-  });
-  gridLayer.add(commentText);
-  adjustGrid();
-  return gridLayer;
+  drawGrid();
 };
 
 // Configure Emacs for Drupal JavaScript coding standards
