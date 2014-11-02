@@ -32,7 +32,7 @@ SnowProfile.Button = function(textArg) {
    */
   function getButtonGroup() {
     return buttonGroup;
-  };
+  }
 
   /**
    * Define the text of the button

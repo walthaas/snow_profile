@@ -520,8 +520,7 @@ SnowProfile.Layer = function(depthArg) {
     numLayers = SnowProfile.snowLayers.length,
     inserted = false,
     thisHandle,
-    thisInsert,
-    children = SnowProfile.handlesGroup.children();
+    thisInsert;
 
   // Insert this snow layer above the first snow layer that is
   // at the same depth or deeper.
