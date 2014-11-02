@@ -56,39 +56,6 @@ function clickInsert(index) {
     .click();
 }
 
-/**
- * Click last Insert button, wait until layer is created.
- */
-function clickLastInsert() {
-
-  var numButtons,
-    insertStarted = false,
-    insertDone = false;
-
-  driver.wait(function() {
-    if (!insertStarted) {
-      insertStarted = true;
-      driver.findElements(sw.By.xpath(
-        "//*[name()='svg']/*[name()='g']/*[name()='g']/*[name()='g']/*[name()='g']" +
-        "[@class='snow_profile_button Insert']"))
-        .then(function(buttons) {
-          numButtons = buttons.length;
-          driver.findElement(sw.By.xpath(
-            "//*[name()='svg']/*[name()='g']/*[name()='g']/*[name()='g']/*[name()='g']" +
-            "[@class='snow_profile_button Insert'][" + numButtons + "]"))
-          .click();
-        });
-    }
-    driver.isElementPresent(sw.By.xpath(
-      "//*[name()='svg']/*[name()='g']/*[name()='g']/*[name()='g']/*[name()='g']" +
-      "[@class='snow_profile_button Edit'][" + numButtons + "]"))
-      .then(function(done) {
-        insertDone = done;
-      });
-    return insertDone;
-    }, 2000, "clickLastInsert didn't finish");
-}
-
 //
 test.describe('Square Top Feb 13, 2014:', function() {
 
@@ -178,56 +145,56 @@ test.describe('Square Top Feb 13, 2014:', function() {
     });
 
     test.it('fourth layer 149 cm F PPgp, 2.0 - 4.0', function() {
-      clickLastInsert();
+      com.clickLastInsert(sw, driver);
       com.moveHandle(sw, driver, 3, 180 - 149, 'F');
 //      testHandle(3, 180 - 149, 'F');
       com.setFeatures(sw, driver, 3, 'PPgp', [2.0, 4.0]);
     });
 
     test.it('fifth layer 148 cm F-4F DFdc, 0.3 - 0.5', function() {
-      clickLastInsert();
+      com.clickLastInsert(sw, driver);
       com.moveHandle(sw, driver, 4, 180 - 148, 'F-4F');
 //      testHandle(4, 180 - 148, 'F-4F');
       com.setFeatures(sw, driver, 4, 'DFdc', [0.3, 0.5]);
     });
 
     test.it('sixth layer 133 cm 4F DFdc (RGlr), 0.3 - 0.5', function() {
-      clickLastInsert();
+      com.clickLastInsert(sw, driver);
       com.moveHandle(sw, driver, 5, 180 - 133, '4F');
 //      testHandle(5, 180 - 133, '4F');
       com.setFeatures(sw, driver, 5, ['DFdc', 'RGlr'], [0.3, 0.5]);
     });
 
     test.it('seventh layer 121 cm 1F DFdc (RGlr)', function() {
-      clickLastInsert();
+      com.clickLastInsert(sw, driver);
       com.moveHandle(sw, driver, 6, 180 - 121, '1F');
 //      testHandle(6, 180 - 121, '1F');
       com.setFeatures(sw, driver, 6, ['DFdc', 'RGlr']);
     });
 
     test.it('eighth layer 106 cm P RGlr, 0.3', function() {
-      clickLastInsert();
+      com.clickLastInsert(sw, driver);
       com.moveHandle(sw, driver, 7, 180 - 106, 'P');
 //      testHandle(7, 180 - 106, 'P');
       com.setFeatures(sw, driver, 7, 'RGlr', 0.3);
     });
 
     test.it('ninth layer 100 cm 1F FCxr (RGlr), 0.5 - 1.0', function() {
-      clickLastInsert();
+      com.clickLastInsert(sw, driver);
       com.moveHandle(sw, driver, 8, 180 - 100, '1F');
 //      testHandle(8, 180 - 100, '1F');
       com.setFeatures(sw, driver, 8, ['FCxr', 'RGlr'], [0.5, 1.0]);
     });
 
     test.it('tenth layer 88 cm P+ IF', function() {
-      clickLastInsert();
+      com.clickLastInsert(sw, driver);
       com.moveHandle(sw, driver, 9, 180 - 88, 'P+');
 //      testHandle(9, 180 - 88, 'P+');
       com.setFeatures(sw, driver, 9, 'IF');
     });
 
     test.it('eleventh layer 87 cm 4F FCxr, 0.5 - 1.0', function() {
-      clickLastInsert();
+      com.clickLastInsert(sw, driver);
       com.moveHandle(sw, driver, 10, 180 - 87, '4F');
 //      testHandle(10, 180 - 87, '4F');
       com.setFeatures(sw, driver, 10, 'FCxr', [0.5, 1.0],
@@ -235,21 +202,21 @@ test.describe('Square Top Feb 13, 2014:', function() {
     });
 
     test.it('twelfth layer 81 cm P+ IFrc', function() {
-      clickLastInsert();
+      com.clickLastInsert(sw, driver);
       com.moveHandle(sw, driver, 11, 180 - 81, 'P+');
 //      testHandle(11, 180 - 81, 'P+');
       com.setFeatures(sw, driver, 11, 'IFrc');
     });
 
     test.it('thirteenth layer 80 cm F FC, 1.0 - 2.0', function() {
-      clickLastInsert();
+      com.clickLastInsert(sw, driver);
       com.moveHandle(sw, driver, 12, 180 - 80, 'F');
 //      testHandle(12, 180 - 80, 'F');
       com.setFeatures(sw, driver, 12, 'FC', [1.0, 2.0]);
     });
 
     test.it('fourteenth layer 69 cm 4F FC, 1.0 - 3.0', function() {
-      clickLastInsert();
+      com.clickLastInsert(sw, driver);
       com.moveHandle(sw, driver, 13, 180 - 69, '4F');
 //      testHandle(13, 180 - 69, '4F');
       com.setFeatures(sw, driver, 13, 'FC', [1.0, 3.0],
@@ -257,7 +224,7 @@ test.describe('Square Top Feb 13, 2014:', function() {
     });
 
     test.it('fifteenth layer 55 cm F FC, 2.0 - 3.0', function() {
-      clickLastInsert();
+      com.clickLastInsert(sw, driver);
       com.moveHandle(sw, driver, 14, 180 - 55, 'F');
 //      testHandle(14, 180 - 55, 'F');
       com.setFeatures(sw, driver, 14, 'FC', [2.0, 3.0],
@@ -265,7 +232,7 @@ test.describe('Square Top Feb 13, 2014:', function() {
     });
 
     test.it('sixteenth layer 25 cm 4F FC (DH), 2.0 - 3.0', function() {
-      clickLastInsert();
+      com.clickLastInsert(sw, driver);
       com.moveHandle(sw, driver, 15, 180 - 25, '4F');
 //      testHandle(15, 180 - 25, '4F');
       com.setFeatures(sw, driver, 15, ['FC', 'DH'], [2.0, 3.0]);

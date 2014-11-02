@@ -3,8 +3,43 @@
  * @copyright Walt Haas <haas@xmission.com>
  * @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPLv2}
  */
-//exports.testURL = 'file://' + process.cwd() + '/test/lib/test.html';
-exports.testURL = 'file://' + process.cwd() + '/snow_profile.html';
+exports.testURL = 'file://' + process.cwd() + '/test/lib/test.html';
+//exports.testURL = 'file://' + process.cwd() + '/snow_profile.html';
+//exports.testURL = 'http://sandbox.utahavalanchecenter.org/snow_profile/snow_profile.html';
+
+
+/**
+ * Click last Insert button, wait until layer is created.
+ */
+exports.clickLastInsert = function(sw, driver) {
+
+  var numButtons,
+    insertStarted = false,
+    insertDone = false;
+
+  driver.wait(function() {
+    if (!insertStarted) {
+      insertStarted = true;
+      driver.findElements(sw.By.xpath(
+        "//*[name()='svg']/*[name()='g']/*[name()='g']/*[name()='g']/*[name()='g']" +
+        "[@class='snow_profile_button Insert']"))
+        .then(function(buttons) {
+          numButtons = buttons.length;
+          driver.findElement(sw.By.xpath(
+            "//*[name()='svg']/*[name()='g']/*[name()='g']/*[name()='g']/*[name()='g']" +
+            "[@class='snow_profile_button Insert'][" + numButtons + "]"))
+          .click();
+        });
+    }
+    driver.isElementPresent(sw.By.xpath(
+      "//*[name()='svg']/*[name()='g']/*[name()='g']/*[name()='g']/*[name()='g']" +
+      "[@class='snow_profile_button Edit'][" + numButtons + "]"))
+      .then(function(done) {
+        insertDone = done;
+      });
+    return insertDone;
+    }, 2000, "clickLastInsert didn't finish");
+}
 
 /**
  * Store comment into popup comment field.

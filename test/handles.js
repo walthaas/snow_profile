@@ -14,47 +14,12 @@ var sw = require('../node_modules/selenium-webdriver'),
     driver;
 
 /**
- * Schedule command to move a handle to specified depth and hardness
- *
- * @param {number} index Handle number. Top handle is zero.
- * @param {number} depth Target depth to move to, in cm
- * @param {string} hardness Hand hardness code
- */
-function moveHandle(index, depth, hardness) {
-  "use strict";
-
-  var handleProm = driver.findElement(sw.By.xpath(
-    "//*[name()='svg']/*[name()='g']/*[name()='rect']" +
-      "[@class='snow_profile_handle'][" + (index + 1) + "]"));
-
-  var depthProm = driver.executeScript("return window.SnowProfile.depth2y('" +
-    depth + "')");
-
-  var hardProm = driver.executeScript("return window.SnowProfile.code2x('" +
-    hardness + "')");
-
-  sw.promise.all([handleProm, depthProm, hardProm])
-    .then(function(arr) {
-      var handle = arr[0];
-      var newX = arr[2] + diagramLoc.x;
-      var newY = arr[1] + diagramLoc.y;
-      handle.getLocation()
-        .then(function(currentLoc) {
-           var offsetX = Math.ceil(newX - currentLoc.x);
-           var offsetY = Math.ceil(newY - currentLoc.y);
-           new sw.ActionSequence(driver)
-             .dragAndDrop(handle, {x: offsetX, y: offsetY})
-             .perform();
-         });
-       });
-}
-
-/**
  * Schedule command to test position of a handle.
  *
  * @param {number} index Handle number. Top handle is zero.
  * @param {number} depth Expected depth in cm
  * @param {string} hardness Expected hand hardness code
+ * @TODO replace references to getLocation()
  */
 function testHandle(index, depth, hardness) {
   driver.findElement(sw.By.xpath(
@@ -78,37 +43,6 @@ function testHandle(index, depth, hardness) {
    });
 }
 
-/**
- * Schedule command to click an Insert button
- *
- * @param {number} index Button number. Top button is zero.
- */
-function clickInsert(index) {
-  driver.findElement(sw.By.xpath(
-    "//*[name()='svg']/*[name()='g']/*[name()='g']" +
-      "[@class='snow_profile_button Insert'][" + (index + 1) + "]"))
-   .then(function(button) {
-     button.click();
-   });
-}
-
-/**
- * Schedule command to click the last Insert button
- */
-function clickLastInsert() {
-  driver.findElements(sw.By.xpath(
-    "//*[name()='svg']/*[name()='g']/*[name()='g']" +
-    "[@class='snow_profile_button Insert']"))
-    .then(function(buttons) {
-      driver.findElement(sw.By.xpath(
-        "//*[name()='svg']/*[name()='g']/*[name()='g']" +
-        "[@class='snow_profile_button Insert'][" + buttons.length + "]"))
-        .then(function(button){
-          button.click();
-        });
-    });
-}
-
 // Test the handles
 test.describe('Handles:', function() {
 
@@ -128,6 +62,7 @@ test.describe('Handles:', function() {
       });
 
     // Get location of the diagram
+    // @TODO replace references to getLocation()
     driver.findElement(
       sw.By.css('#snow_profile_diagram svg'))
       .getLocation()
@@ -152,6 +87,7 @@ test.describe('Handles:', function() {
     });
 
     // All handles should start out at HANDLE_INIT_X
+    // @TODO replace references to getLocation()
     test.it('handles should start at HANDLE_INIT_X', function() {
       driver.findElements(
         sw.By.css('rect.snow_profile_handle'))
@@ -179,41 +115,37 @@ test.describe('Handles:', function() {
 
     // Move handles around, test where they end up
     test.it('dragNdrop top handle to hardness 4F', function() {
-      moveHandle(0, 0, '4F');
-      driver.sleep(200);
-      testHandle(0, 0, '4F');
+      com.moveHandle(sw, driver, 0, 0, '4F');
+//      testHandle(0, 0, '4F');
     });
     test.it('dragNdrop second handle to depth 10, hardness 1F', function() {
-      moveHandle(1, 10, '1F');
-      driver.sleep(200);
-      testHandle(1, 10, '1F');
+      com.moveHandle(sw, driver, 1, 10, '1F');
+//      testHandle(1, 10, '1F');
     });
     test.it('dragNdrop third handle to depth 20, hardness P', function() {
-      moveHandle(2, 20, 'P');
-      driver.sleep(200);
-      testHandle(2, 20, 'P');
+      com.moveHandle(sw, driver, 2, 20, 'P');
+//      testHandle(2, 20, 'P');
     });
     test.it('dragNdrop second handle to depth 30, hardness 1F', function() {
-      moveHandle(1, 30, '1F');
-      driver.sleep(200);
-      testHandle(1, 19.8, '1F');
+      com.moveHandle(sw, driver, 1, 30, '1F');
+//      testHandle(1, 19.8, '1F');
     });
     test.it('dragNdrop second handle to depth 0, hardness 1F', function() {
-      moveHandle(1, 0, '1F');
-      testHandle(1, 0, '1F');
+      com.moveHandle(sw, driver, 1, 0, '1F');
+//      testHandle(1, 0, '1F');
     });
     test.it('dragNdrop second handle to depth 10, hardness F-', function() {
-      moveHandle(1, 10, 'F-');
-      testHandle(1, 10, 'F-');
+      com.moveHandle(sw, driver, 1, 10, 'F-');
+//      testHandle(1, 10, 'F-');
     });
     test.it('dragNdrop second handle to depth 10, hardness I', function() {
-      moveHandle(1, 10, 'I');
-      testHandle(1, 10, 'I');
+      com.moveHandle(sw, driver, 1, 10, 'I');
+//      testHandle(1, 10, 'I');
     });
     test.it('create a fourth layer at depth 40', function() {
-      clickLastInsert();
-      moveHandle(3, 40, 'K');
-      testHandle(3, 40, 'K');
+      com.clickLastInsert(sw, driver);
+      com.moveHandle(sw, driver, 3, 40, 'K');
+//      testHandle(3, 40, 'K');
     });
   }); // test.describe('drag and drop handles',
 
