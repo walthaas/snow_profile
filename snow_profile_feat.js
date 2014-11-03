@@ -119,7 +119,7 @@ SnowProfile.Features = function(layerArg) {
   var commentDescr = SnowProfile.drawing.text("")
     .addClass('snow_profile_comment_descr')
     .font({
-      size: 12,
+      size: SnowProfile.Cfg.FEAT_DESCR_FONT_SIZE,
       family: 'sans-serif',
       fill: '#000'
     })
@@ -156,7 +156,7 @@ SnowProfile.Features = function(layerArg) {
   var grainSizeText = SnowProfile.drawing.text("")
     .addClass('snow_profile_grain_size')
     .font({
-      size: 12,
+      size: SnowProfile.Cfg.FEAT_DESCR_FONT_SIZE,
       family: 'sans-serif',
       fill: '#000'
     })
@@ -214,7 +214,6 @@ SnowProfile.Features = function(layerArg) {
    * Get or set Y value of the feature description.
    *
    * @param {number} yArg Y value of the top of the bounding box of features.
-   * @TODO move edit button to center line of description.
    */
   this.y = function(yArg) {
     if (yArg === undefined) {
@@ -765,7 +764,6 @@ SnowProfile.Features = function(layerArg) {
         yArg,
         SnowProfile.Cfg.FEAT_DESCR_LEFT + SnowProfile.Cfg.FEAT_DESCR_WD,
         yArg);
-      layerObj.insertButton.setCy(yArg);
     }
   };
 

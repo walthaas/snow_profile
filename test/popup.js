@@ -48,7 +48,7 @@ test.describe('Popup:', function() {
     test.it('right initial number of buttons', function() {
       driver.findElements(sw.By.css('g.snow_profile_button'))
         .then(function(done) {
-          chai.expect(done.length).to.equal((2 * SnowProfile.Cfg.NUM_INIT_LAYERS) + 1);
+          chai.expect(done.length).to.equal(2 * SnowProfile.Cfg.NUM_INIT_LAYERS);
         });
     });
 

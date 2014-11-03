@@ -293,7 +293,7 @@ SnowProfile.Layer = function(depthArg) {
     diagLine.remove();
     featObj.destroy();
     self.insertButton.destroy();
-    SnowProfile.setDrawingHeight();
+    SnowProfile.layout();
   }
 
   /**
@@ -371,10 +371,6 @@ SnowProfile.Layer = function(depthArg) {
       SnowProfile.snowLayers[i].draw();
     }
     numLayers--;
-
-    // Update location of SVG objects whose position
-    // depends on the index of the layer
-    SnowProfile.setIndexPositions();
   }; // this.deleteLayer = function();
 
   /**
@@ -494,26 +490,6 @@ SnowProfile.Layer = function(depthArg) {
     return true;
   };
 
-  /**
-   * Set the Y position of those parts of the layer whose Y position
-   * depends on the index of the snow layer in snowpack not its depth.
-   * This is needed when a layer is inserted or deleted.
-   */
-  this.setIndexPosition = function() {
-    var i = self.getIndex();
-
-    featObj.y(SnowProfile.Cfg.HANDLE_MIN_Y +
-      (i * SnowProfile.Cfg.DESCR_HEIGHT) +
-      (SnowProfile.Cfg.HANDLE_SIZE / 2));
-//    diagLine.plot.apply(diagLine, diagLinePts());
-    // If this is not the top snow layer, update the diagonal line
-    // owned by the snow layer above.
-    if (i !== 0) {
-//      SnowProfile.snowLayers[i - 1].setDiagLine();
-    }
-    self.insertButton.setCy(featObj.lineBelowY());
-  };
-
   // Main line of constructor
   // Insert this Layer in the appropriate place in the snow pack.
   var i,
@@ -598,9 +574,11 @@ SnowProfile.Layer = function(depthArg) {
 
   // When Insert button clicked, insert a snow layer below this one.
   $(document).bind("SnowProfileButtonClick", function(evt, extra) {
+
     if (extra.buttonObj === self.insertButton) {
       var i = self.getIndex();
       var numLayers = SnowProfile.snowLayers.length;
+      var spaceBelow;
 
       // Is this the bottom layer?
       if (i === (numLayers - 1)) {
@@ -611,12 +589,13 @@ SnowProfile.Layer = function(depthArg) {
           alert('No room to insert another layer!');
           return;
         }
+        spaceBelow = SnowProfile.pitDepth - depthVal;
       }
       else {
 
         // We need space for a layer below this one.  Calculate the space
         // available between this layer and the layer below it.
-        var spaceBelow = SnowProfile.snowLayers[i + 1].depth() - depthVal;
+        spaceBelow = SnowProfile.snowLayers[i + 1].depth() - depthVal;
         if (spaceBelow < ( 2 * SnowProfile.Cfg.INS_INCR)) {
 
           // Not enough so we need to make space below this snow layer.
@@ -627,7 +606,7 @@ SnowProfile.Layer = function(depthArg) {
           }
         }
       }
-      SnowProfile.newLayer(depthVal + SnowProfile.Cfg.INS_INCR);
+      SnowProfile.newLayer(depthVal + (spaceBelow / 2));
     }
   });
 }; // function SnowProfile.Layer()

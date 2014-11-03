@@ -419,6 +419,7 @@ SnowProfile.Grid = function() {
    // Redraw the new bottom layer
    SnowProfile.snowLayers[SnowProfile.snowLayers.length - 1]
      .draw();
+   SnowProfile.layout();
   } // function totalDepthChange()
 
   /**
@@ -485,6 +486,7 @@ SnowProfile.Grid = function() {
    // Redraw the new bottom layer
    SnowProfile.snowLayers[SnowProfile.snowLayers.length - 1]
      .draw();
+   SnowProfile.layout();
   } // function pitDepthChange()
 
   // Set controls to default values
