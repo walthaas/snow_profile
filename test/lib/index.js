@@ -6,6 +6,8 @@
 exports.testURL = 'file://' + process.cwd() + '/test/lib/test.html';
 //exports.testURL = 'file://' + process.cwd() + '/snow_profile.html';
 //exports.testURL = 'http://sandbox.utahavalanchecenter.org/snow_profile/snow_profile.html';
+exports.buttonsXpath = "//*[name()='svg']/*[name()='g']/*[name()='g']" +
+      "/*[name()='g']/*[name()='g']";
 
 
 /**
@@ -21,18 +23,17 @@ exports.clickLastInsert = function(sw, driver) {
     if (!insertStarted) {
       insertStarted = true;
       driver.findElements(sw.By.xpath(
-        "//*[name()='svg']/*[name()='g']/*[name()='g']/*[name()='g']/*[name()='g']" +
-        "[@class='snow_profile_button Insert']"))
+        exports.buttonsXpath + "[@class='snow_profile_button Insert']"))
         .then(function(buttons) {
           numButtons = buttons.length;
           driver.findElement(sw.By.xpath(
-            "//*[name()='svg']/*[name()='g']/*[name()='g']/*[name()='g']/*[name()='g']" +
+            exports.buttonsXpath +
             "[@class='snow_profile_button Insert'][" + numButtons + "]"))
           .click();
         });
     }
     driver.isElementPresent(sw.By.xpath(
-      "//*[name()='svg']/*[name()='g']/*[name()='g']/*[name()='g']/*[name()='g']" +
+      exports.buttonsXpath +
       "[@class='snow_profile_button Edit'][" + numButtons + "]"))
       .then(function(done) {
         insertDone = done;

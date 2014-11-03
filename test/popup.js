@@ -76,7 +76,7 @@ test.describe('Popup:', function() {
 
     test.it('click on edit button creates popup', function() {
       driver.findElement(sw.By.xpath(
-        "//*[name()='svg']/*[name()='g']/*[name()='g']/*[name()='g']/*[name()='g'][@class='snow_profile_button Edit'][1]"
+        com.buttonsXpath + "[@class='snow_profile_button Edit'][1]"
         ))
         .then(function(elmt) {
           elmt.click();
@@ -157,7 +157,7 @@ test.describe('Popup:', function() {
 
     test.it('click on edit button creates popup', function() {
       driver.findElement(sw.By.xpath(
-        "//*[name()='svg']/*[name()='g']/*[name()='g']/*[name()='g']/*[name()='g'][@class='snow_profile_button Edit'][1]"
+        com.buttonsXpath + "[@class='snow_profile_button Edit'][1]"
         ))
         .then(function(elmt) {
           elmt.click();
@@ -199,7 +199,7 @@ test.describe('Popup:', function() {
 
     test.it('Select Primary Grain Shape PP displays PP icon', function() {
       driver.findElement(sw.By.xpath(
-        "//*[name()='svg']/*[name()='g']/*[name()='g']/*[name()='g']/*[name()='g'][@class='snow_profile_button Edit'][1]"
+        com.buttonsXpath + "[@class='snow_profile_button Edit'][1]"
         ))
         .then(function(elmt) {
           elmt.click();
@@ -248,7 +248,7 @@ test.describe('Popup:', function() {
 
     test.it('Select stellar displays PPsd icon', function() {
       driver.findElement(sw.By.xpath(
-        "//*[name()='svg']/*[name()='g']/*[name()='g']/*[name()='g']/*[name()='g'][@class='snow_profile_button Edit'][1]"
+        com.buttonsXpath + "[@class='snow_profile_button Edit'][1]"
         ))
         .then(function(elmt) {
           elmt.click();

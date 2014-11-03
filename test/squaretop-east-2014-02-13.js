@@ -51,7 +51,7 @@ function testHandle(index, depth, hardness) {
  */
 function clickInsert(index) {
   driver.findElement(sw.By.xpath(
-    "//*[name()='svg']/*[name()='g']/*[name()='g']" +
+    com.buttonsXpath +
       "[@class='snow_profile_button Insert'][" + (index + 1) + "]"))
     .click();
 }
