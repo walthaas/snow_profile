@@ -89,7 +89,7 @@ var SnowProfile = {};
      * @memberof SnowProfile
      * @const {number}
      */
-    CTRLS_WD: 200,
+    CTRLS_WD: 160,
 
     /**
      * Width in pixels of the area used by snow grain shape
@@ -113,6 +113,11 @@ var SnowProfile = {};
     GRAIN_SIZE_WD: 70,
 
     /**
+     * Font size for feature description text
+     */
+    FEAT_DESCR_FONT_SIZE: 14,
+
+    /**
      * Width in pixels of the space between grain size and comment
      * @memberof SnowProfile
      * @const {number}
@@ -124,7 +129,7 @@ var SnowProfile = {};
      * @memberof SnowProfile
       @const {number}
      */
-    COMMENT_WD: 200,
+    COMMENT_WD: 240,
 
     /**
      * Vertical height in pixels of the temperature (horizontal) axis label.
@@ -328,13 +333,13 @@ var SnowProfile = {};
    * X position of the center line of the buttons in the control area
    */
   SnowProfile.Cfg.INS_BUTTON_X = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
-    SnowProfile.Cfg.GRAPH_WIDTH + 140;
+    SnowProfile.Cfg.GRAPH_WIDTH + 100;
 
   /**
    * X position of the center line of the buttons in the control area
    */
   SnowProfile.Cfg.EDIT_BUTTON_X = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
-    SnowProfile.Cfg.GRAPH_WIDTH + 180;
+    SnowProfile.Cfg.GRAPH_WIDTH + 140;
 
   /**
    * X position of the left edge of the layer description
@@ -555,22 +560,6 @@ var SnowProfile = {};
   SnowProfile.mainGroup.add(SnowProfile.gridGroup);
 
   /**
-   * Recalculate the Y axis positions of all SVG objects whose
-   * position depends on the index of the layer in the snowpack.
-   *
-   * @method
-   * @memberof SnowProfile
-   */
-  SnowProfile.setIndexPositions = function() {
-    var i,
-      numLayers = SnowProfile.snowLayers.length;
-
-    for (i = 0; i < numLayers; i++) {
-      SnowProfile.snowLayers[i].setIndexPosition();
-    }
-  };
-
-  /**
    * Convert a hardness code to an X axis position.
    * @param {string} code A CAAML hardness code from the CAAML_HARD table.
    * @returns {number} X axis position
@@ -682,13 +671,12 @@ var SnowProfile = {};
       // The bottom of the features description area is the lower of the
       // bottom of the layer and the space needed for the features description
       // bounding box (greater Y value is lower on the drawing).
-      if (i === 0) {
-        featureBottom = layerBottom;
-      }
-      else {
         featureBottom = Math.max(layerBottom,
           (featureTop + SnowProfile.snowLayers[i].features().height));
-      }
+
+      // Center the layer's insert button on the top line
+      SnowProfile.snowLayers[i].insertButton.setCy(
+        Math.max(layerTop, featureTop));
 
       // Draw the line below the bottom of the features description.
       SnowProfile.snowLayers[i].features().lineBelowY(
@@ -802,7 +790,6 @@ var SnowProfile = {};
     var features = new SnowProfile.Features(layer);
     layer.features(features);
     layer.draw();
-    SnowProfile.setIndexPositions();
     SnowProfile.layout();
     SnowProfile.ctrlsGroup.front();
   };
@@ -820,19 +807,19 @@ var SnowProfile = {};
     // Add the reference grid to the SVG drawing
     new SnowProfile.Grid();
 
-    // Add an "Insert" button to allow the user to insert a snow layer
-    // above the top snow layer.
-    var insertButton = new SnowProfile.Button("Insert");
-    insertButton.setCy(SnowProfile.Cfg.HANDLE_MIN_Y +
-      (SnowProfile.Cfg.HANDLE_SIZE / 2));
+    // // Add an "Insert" button to allow the user to insert a snow layer
+    // // above the top snow layer.
+    // var insertButton = new SnowProfile.Button("Insert");
+    // insertButton.setCy(SnowProfile.Cfg.HANDLE_MIN_Y +
+    //   (SnowProfile.Cfg.HANDLE_SIZE / 2));
 
-    // When Insert button clicked, insert a new snow layer at depth zero.
-    $(document).bind("SnowProfileButtonClick", function(evt, extra) {
-      if (extra.buttonObj === insertButton) {
-        SnowProfile.newLayer(0);
-        evt.stopImmediatePropagation();
-      }
-    });
+    // // When Insert button clicked, insert a new snow layer at depth zero.
+    // $(document).bind("SnowProfileButtonClick", function(evt, extra) {
+    //   if (extra.buttonObj === insertButton) {
+    //     SnowProfile.newLayer(0);
+    //     evt.stopImmediatePropagation();
+    //   }
+    // });
 
     // When the "Preview" button is clicked, generate a preview
     $(document).ready(function() {
