@@ -13,36 +13,6 @@ var sw = require('../node_modules/selenium-webdriver'),
     diagramLoc,
     driver;
 
-/**
- * Schedule command to test position of a handle.
- *
- * @param {number} index Handle number. Top handle is zero.
- * @param {number} depth Expected depth in cm
- * @param {string} hardness Expected hand hardness code
- * @TODO replace references to getLocation()
- */
-function testHandle(index, depth, hardness) {
-  driver.findElement(sw.By.xpath(
-    "//*[name()='svg']/*[name()='g']/*[name()='rect']" +
-      "[@class='snow_profile_handle'][" + (index + 1) + "]"))
-   .then(function(handle) {
-     handle.getLocation()
-       .then(function(currentLoc) {
-         var depthPromise =
-           driver.executeScript("return window.SnowProfile.y2depth('" +
-           (currentLoc.y - diagramLoc.y) + "')");
-         var hardnessPromise =
-           driver.executeScript("return window.SnowProfile.x2code('" +
-             Math.ceil(currentLoc.x - diagramLoc.x) + "')");
-         sw.promise.all([depthPromise, hardnessPromise])
-           .then(function(arr) {
-             chai.expect(arr[0]).to.equal(depth);
-             chai.expect(arr[1]).to.equal(hardness);
-           });
-         });
-   });
-}
-
 // Test the handles
 test.describe('Handles:', function() {
 
@@ -116,36 +86,36 @@ test.describe('Handles:', function() {
     // Move handles around, test where they end up
     test.it('dragNdrop top handle to hardness 4F', function() {
       com.moveHandle(sw, driver, 0, 0, '4F');
-//      testHandle(0, 0, '4F');
+      com.testHandle(sw, driver, chai, 0, 0, '4F');
     });
     test.it('dragNdrop second handle to depth 10, hardness 1F', function() {
       com.moveHandle(sw, driver, 1, 10, '1F');
-//      testHandle(1, 10, '1F');
+      com.testHandle(sw, driver, chai, 1, 10, '1F');
     });
     test.it('dragNdrop third handle to depth 20, hardness P', function() {
       com.moveHandle(sw, driver, 2, 20, 'P');
-//      testHandle(2, 20, 'P');
+      com.testHandle(sw, driver, chai, 2, 20, 'P');
     });
     test.it('dragNdrop second handle to depth 30, hardness 1F', function() {
       com.moveHandle(sw, driver, 1, 30, '1F');
-//      testHandle(1, 19.8, '1F');
+      com.testHandle(sw, driver, chai, 1, 19.8, '1F');
     });
     test.it('dragNdrop second handle to depth 0, hardness 1F', function() {
       com.moveHandle(sw, driver, 1, 0, '1F');
-//      testHandle(1, 0, '1F');
+      com.testHandle(sw, driver, chai, 1, 0, '1F');
     });
     test.it('dragNdrop second handle to depth 10, hardness F-', function() {
       com.moveHandle(sw, driver, 1, 10, 'F-');
-//      testHandle(1, 10, 'F-');
+      com.testHandle(sw, driver, chai, 1, 10, 'F-');
     });
     test.it('dragNdrop second handle to depth 10, hardness I', function() {
       com.moveHandle(sw, driver, 1, 10, 'I');
-//      testHandle(1, 10, 'I');
+      com.testHandle(sw, driver, chai, 1, 10, 'I');
     });
-    test.it('create a fourth layer at depth 40', function() {
+    test.it('create a fourth layer at depth 40, hardness K', function() {
       com.clickLastInsert(sw, driver);
       com.moveHandle(sw, driver, 3, 40, 'K');
-//      testHandle(3, 40, 'K');
+      com.testHandle(sw, driver, chai, 3, 40, 'K');
     });
   }); // test.describe('drag and drop handles',
 

@@ -2,6 +2,13 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- This ought to stop cacheing -->
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+    <meta http-equiv="cache-control" content="max-age=0" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-store" />
     <title>Snow Profile Editor</title>
     <style type="text/css">
       body {
@@ -31,13 +38,13 @@
 
   <body>
     <div id="snow_profile_container">
-      <p style="text-align: right;">Release 0.1.1-alpha1</p>
+      <p style="text-align: right;">Release 0.1.2-alpha1</p>
       <h1>Snow Profile Editor</h1>
       <p>
 	INSTRUCTIONS:<br>
 	  1) Type in the total snow depth at the pit location and hit ENTER <br>
 	  2) Type in the depth of the pit if it is different than the total depth (300cm max currently)<br>
-	  3) Choose whether if you are measuring from the surface or ground
+	  3) Choose whether you are measuring from the surface or ground.
       </p>
       <p>
 	-- Use your mouse to drag the handle (black square) to indicate the depth
@@ -98,7 +105,6 @@
     <script src="vendor/svg.js"></script>
     <script src="vendor/svg.draggable.js"></script>
     <script src="vendor/svg.easing.js"></script>
-    <script src="vendor/svg.foreignobject.js"></script>
     <script src="vendor/svg_todataurl.js"></script>
     <script src="vendor/jquery.js"></script>
     <script src="vendor/jquery.ui.core.min.js"></script>
@@ -109,14 +115,14 @@
     <script src="vendor/jquery.ui.draggable.min.js"></script>
     <script src="vendor/jquery.ui.position.min.js"></script>
     <script src="vendor/jquery.ui.resizable.min.js"></script>
-    <script src="snow_profile.js"></script>
-    <script src="snow_profile_std.js"></script>
-    <script src="snow_profile_button.js"></script>
-    <script src="snow_profile_popup.js"></script>
-    <script src="snow_profile_feat.js"></script>
-    <script src="snow_profile_layer.js"></script>
-    <script src="snow_profile_grid.js"></script>
-    <script src="snow_profile_main.js"></script>
+    <script src="snow_profile.js?md5=8095ee2912192d3269d3c007306734c2"></script>
+    <script src="snow_profile_std.js?md5=940a3b569400914d80cf990e4ab010dd"></script>
+    <script src="snow_profile_button.js?md5=b4d92b870b64f15f3bf189f70e9b9250"></script>
+    <script src="snow_profile_popup.js?md5=29d44131743645f4dc0028e37eaa3377"></script>
+    <script src="snow_profile_feat.js?md5=22098a75fdbd5f494bce8f865d4da3c9"></script>
+    <script src="snow_profile_layer.js?f060a9c99284d7cb7af60c2d14096b5c"></script>
+    <script src="snow_profile_grid.js?md5=fe47534f7833a95811f8eb3249a2b2db"></script>
+    <script src="snow_profile_main.js?b4bd8aa6ab6189451e586117ad4fc5c8"></script>
     <button id="snow_profile_preview" style="display: block;">Preview</button>
     <p>Terminology is from the
       <a href="http://www.cryosphericsciences.org/products/snowClassification/snowclass_2009-11-23-tagged-highres.pdf">IACS 2009 standard</a>

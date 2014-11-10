@@ -6,6 +6,10 @@
 exports.testURL = 'file://' + process.cwd() + '/test/lib/test.html';
 //exports.testURL = 'file://' + process.cwd() + '/snow_profile.html';
 //exports.testURL = 'http://sandbox.utahavalanchecenter.org/snow_profile/snow_profile.html';
+exports.buttonsXpath = "//*[name()='svg']/*[name()='g']/*[name()='g']" +
+  "/*[name()='g']/*[name()='g']";
+exports.handleXpath = "//*[name()='svg']/*[name()='g']/*[name()='g']" +
+  "/*[name()='g']/*[name()='rect'][@class='snow_profile_handle']";
 
 
 /**
@@ -21,18 +25,17 @@ exports.clickLastInsert = function(sw, driver) {
     if (!insertStarted) {
       insertStarted = true;
       driver.findElements(sw.By.xpath(
-        "//*[name()='svg']/*[name()='g']/*[name()='g']/*[name()='g']/*[name()='g']" +
-        "[@class='snow_profile_button Insert']"))
+        exports.buttonsXpath + "[@class='snow_profile_button Insert']"))
         .then(function(buttons) {
           numButtons = buttons.length;
           driver.findElement(sw.By.xpath(
-            "//*[name()='svg']/*[name()='g']/*[name()='g']/*[name()='g']/*[name()='g']" +
+            exports.buttonsXpath +
             "[@class='snow_profile_button Insert'][" + numButtons + "]"))
           .click();
         });
     }
     driver.isElementPresent(sw.By.xpath(
-      "//*[name()='svg']/*[name()='g']/*[name()='g']/*[name()='g']/*[name()='g']" +
+      exports.buttonsXpath +
       "[@class='snow_profile_button Edit'][" + numButtons + "]"))
       .then(function(done) {
         insertDone = done;
@@ -351,17 +354,17 @@ exports.moveHandle = function moveHandle(sw, driver, index,
     xNow,
     yNow;
 
-  var handleXpath = "//*[name()='svg']/*[name()='g']/*[name()='g']/*[name()='g']/*[name()='rect']" +
-    "[@class='snow_profile_handle'][" + String(index + 1) + "]";
 
   // Wait for the handle to appear
   driver.wait(function() {
-    return driver.isElementPresent(sw.By.xpath(handleXpath));
+    return driver.isElementPresent(sw.By.xpath(
+      exports.handleXpath + "[" + String(index + 1) + "]"));
   }, 2000, "handle " + index + " didn't appear")
     .then(function() {
       driver.wait(function() {
         if (!moveStarted) {
-          handleProm = driver.findElement(sw.By.xpath(handleXpath));
+          handleProm = driver.findElement(sw.By.xpath(
+            exports.handleXpath + "[" + String(index + 1) + "]"));
           depthProm = driver.executeScript(
             "return window.SnowProfile.depth2y(" + depth + ");");
           hardProm = driver.executeScript(
@@ -394,6 +397,51 @@ exports.moveHandle = function moveHandle(sw, driver, index,
         return moveDone;
       }, 2000, "handle didn't move");
     });
+}
+
+/**
+ * Schedule command to test position of a handle.
+ *
+ * @param {Object} sw
+ * @param {Object} driver
+ * @param {number} index Handle number. Top handle is zero.
+ * @param {number} depth Expected depth in cm
+ * @param {string} hardness Expected hand hardness code
+ */
+exports.testHandle = function testHandle(sw, driver, chai, index,
+  depth, hardness) {
+
+  var depthPromise,
+    hardnessPromise,
+    xNow,
+    yNow;
+
+  driver.findElement(sw.By.xpath(
+    exports.handleXpath + "[" + (index + 1) + "]"))
+    .then(function(handle) {
+      handle.getAttribute('x')
+        .then(function(x) {
+          xNow = x;
+        })
+        .then(function() {
+          handle.getAttribute('y')
+           .then(function(y) {
+              yNow = y;
+              depthPromise =
+                driver.executeScript("return window.SnowProfile.y2depth('" +
+                yNow + "')");
+              hardnessPromise =
+                driver.executeScript("return window.SnowProfile.x2code('" +
+                Math.ceil(xNow) + "')");
+              sw.promise.all([depthPromise, hardnessPromise])
+                .then(function(arr) {
+                  chai.expect(arr[0]).to.be.within(depth - 1, depth + 1,
+                    "wrong depth");
+                  chai.expect(arr[1]).to.equal(hardness, "wrong hardness");
+                });
+           });
+        });
+   });
 }
 
 // Configure Emacs for Drupal JavaScript coding standards
