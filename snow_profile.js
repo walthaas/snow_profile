@@ -585,14 +585,19 @@ var SnowProfile = {};
    * @returns {string} CAAML hardness code.
    */
   SnowProfile.x2code = function(x) {
-    var code = 'I';
+    var code = 'I',
+      leftSide,
+      bandLeft,
+      bandRight;
 
     for (var i = 0; i < SnowProfile.CAAML_HARD.length - 1; i++) {
-      if ((x >= (SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
-          (SnowProfile.Cfg.HARD_BAND_WD * i) + (SnowProfile.Cfg.HANDLE_SIZE / 2)) &&
-         (x < (SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
-          (SnowProfile.Cfg.HARD_BAND_WD * (i + 1)) +
-          (SnowProfile.Cfg.HANDLE_SIZE / 2))))) {
+      leftSide = SnowProfile.Cfg.DEPTH_LABEL_WD + 1;
+      bandLeft = leftSide + (SnowProfile.Cfg.HARD_BAND_WD * i) +
+          (SnowProfile.Cfg.HANDLE_SIZE / 2);
+      bandRight = leftSide + (SnowProfile.Cfg.HARD_BAND_WD * (i + 1)) +
+          (SnowProfile.Cfg.HANDLE_SIZE / 2);
+      if ((x >= (bandLeft- (SnowProfile.Cfg.HARD_BAND_WD / 2))) &&
+         (x < (bandRight - (SnowProfile.Cfg.HARD_BAND_WD / 2)))) {
         code = SnowProfile.CAAML_HARD[i][0];
         break;
       }

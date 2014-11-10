@@ -110,12 +110,12 @@ test.describe('Handles:', function() {
     });
     test.it('dragNdrop second handle to depth 10, hardness I', function() {
       com.moveHandle(sw, driver, 1, 10, 'I');
-      com.testHandle(sw, driver, 1, chai, 10, 'I');
+      com.testHandle(sw, driver, chai, 1, 10, 'I');
     });
-    test.it('create a fourth layer at depth 40', function() {
+    test.it('create a fourth layer at depth 40, hardness K', function() {
       com.clickLastInsert(sw, driver);
       com.moveHandle(sw, driver, 3, 40, 'K');
-//      com.testHandle(sw, driver, chai, 3, 40, 'K');
+      com.testHandle(sw, driver, chai, 3, 40, 'K');
     });
   }); // test.describe('drag and drop handles',
 

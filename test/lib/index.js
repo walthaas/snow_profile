@@ -432,11 +432,12 @@ exports.testHandle = function testHandle(sw, driver, chai, index,
                 yNow + "')");
               hardnessPromise =
                 driver.executeScript("return window.SnowProfile.x2code('" +
-                xNow + "')");
+                Math.ceil(xNow) + "')");
               sw.promise.all([depthPromise, hardnessPromise])
                 .then(function(arr) {
-                  chai.expect(arr[0]).to.equal(depth);
-                  chai.expect(arr[1]).to.equal(hardness);
+                  chai.expect(arr[0]).to.be.within(depth - 1, depth + 1,
+                    "wrong depth");
+                  chai.expect(arr[1]).to.equal(hardness, "wrong hardness");
                 });
            });
         });

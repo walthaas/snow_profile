@@ -99,63 +99,63 @@ test.describe('Square Top Feb 13, 2014:', function() {
 
     test.it('third layer 165 cm F DFdc (PP), 0.5 - 1.0', function() {
       com.moveHandle(sw, driver, 2, 180 - 165, 'F');
-//      com.testHandle(sw, driver, chai, 2, 180 - 165, 'F');
+      com.testHandle(sw, driver, chai, 2, 180 - 165, 'F');
       com.setFeatures(sw, driver, 2, ['DFdc', 'PP'], [0.5, 1.0]);
     });
 
     test.it('fourth layer 149 cm F PPgp, 2.0 - 4.0', function() {
       com.clickLastInsert(sw, driver);
       com.moveHandle(sw, driver, 3, 180 - 149, 'F');
-//      com.testHandle(sw, driver, chai, 3, 180 - 149, 'F');
+      com.testHandle(sw, driver, chai, 3, 180 - 149, 'F');
       com.setFeatures(sw, driver, 3, 'PPgp', [2.0, 4.0]);
     });
 
     test.it('fifth layer 148 cm F-4F DFdc, 0.3 - 0.5', function() {
       com.clickLastInsert(sw, driver);
       com.moveHandle(sw, driver, 4, 180 - 148, 'F-4F');
-//      com.testHandle(sw, driver, chai, 4, 180 - 148, 'F-4F');
+      com.testHandle(sw, driver, chai, 4, 180 - 148, 'F-4F');
       com.setFeatures(sw, driver, 4, 'DFdc', [0.3, 0.5]);
     });
 
     test.it('sixth layer 133 cm 4F DFdc (RGlr), 0.3 - 0.5', function() {
       com.clickLastInsert(sw, driver);
       com.moveHandle(sw, driver, 5, 180 - 133, '4F');
-//      com.testHandle(sw, driver, chai, 5, 180 - 133, '4F');
+      com.testHandle(sw, driver, chai, 5, 180 - 133, '4F');
       com.setFeatures(sw, driver, 5, ['DFdc', 'RGlr'], [0.3, 0.5]);
     });
 
     test.it('seventh layer 121 cm 1F DFdc (RGlr)', function() {
       com.clickLastInsert(sw, driver);
       com.moveHandle(sw, driver, 6, 180 - 121, '1F');
-//      com.testHandle(sw, driver, chai, 6, 180 - 121, '1F');
+      com.testHandle(sw, driver, chai, 6, 180 - 121, '1F');
       com.setFeatures(sw, driver, 6, ['DFdc', 'RGlr']);
     });
 
     test.it('eighth layer 106 cm P RGlr, 0.3', function() {
       com.clickLastInsert(sw, driver);
       com.moveHandle(sw, driver, 7, 180 - 106, 'P');
-//      com.testHandle(sw, driver, chai, 7, 180 - 106, 'P');
+      com.testHandle(sw, driver, chai, 7, 180 - 106, 'P');
       com.setFeatures(sw, driver, 7, 'RGlr', 0.3);
     });
 
     test.it('ninth layer 100 cm 1F FCxr (RGlr), 0.5 - 1.0', function() {
       com.clickLastInsert(sw, driver);
       com.moveHandle(sw, driver, 8, 180 - 100, '1F');
-//      com.testHandle(sw, driver, chai, 8, 180 - 100, '1F');
+      com.testHandle(sw, driver, chai, 8, 180 - 100, '1F');
       com.setFeatures(sw, driver, 8, ['FCxr', 'RGlr'], [0.5, 1.0]);
     });
 
     test.it('tenth layer 88 cm P+ IF', function() {
       com.clickLastInsert(sw, driver);
       com.moveHandle(sw, driver, 9, 180 - 88, 'P+');
-//      com.testHandle(sw, driver, chai, 9, 180 - 88, 'P+');
+      com.testHandle(sw, driver, chai, 9, 180 - 88, 'P+');
       com.setFeatures(sw, driver, 9, 'IF');
     });
 
     test.it('eleventh layer 87 cm 4F FCxr, 0.5 - 1.0', function() {
       com.clickLastInsert(sw, driver);
       com.moveHandle(sw, driver, 10, 180 - 87, '4F');
-//      com.testHandle(sw, driver, chai, 10, 180 - 87, '4F');
+      com.testHandle(sw, driver, chai, 10, 180 - 87, '4F');
       com.setFeatures(sw, driver, 10, 'FCxr', [0.5, 1.0],
         "ECTP30 Q1 Depth: (cm) 81");
     });
@@ -163,21 +163,21 @@ test.describe('Square Top Feb 13, 2014:', function() {
     test.it('twelfth layer 81 cm P+ IFrc', function() {
       com.clickLastInsert(sw, driver);
       com.moveHandle(sw, driver, 11, 180 - 81, 'P+');
-//      com.testHandle(sw, driver, chai, 11, 180 - 81, 'P+');
+      com.testHandle(sw, driver, chai, 11, 180 - 81, 'P+');
       com.setFeatures(sw, driver, 11, 'IFrc');
     });
 
     test.it('thirteenth layer 80 cm F FC, 1.0 - 2.0', function() {
       com.clickLastInsert(sw, driver);
       com.moveHandle(sw, driver, 12, 180 - 80, 'F');
-//      com.testHandle(sw, driver, chai, 12, 180 - 80, 'F');
+      com.testHandle(sw, driver, chai, 12, 180 - 80, 'F');
       com.setFeatures(sw, driver, 12, 'FC', [1.0, 2.0]);
     });
 
     test.it('fourteenth layer 69 cm 4F FC, 1.0 - 3.0', function() {
       com.clickLastInsert(sw, driver);
       com.moveHandle(sw, driver, 13, 180 - 69, '4F');
-//      com.testHandle(sw, driver, chai, 13, 180 - 69, '4F');
+      com.testHandle(sw, driver, chai, 13, 180 - 69, '4F');
       com.setFeatures(sw, driver, 13, 'FC', [1.0, 3.0],
         "ECTP30 Q1 Depth: (cm) 55");
     });
@@ -185,7 +185,7 @@ test.describe('Square Top Feb 13, 2014:', function() {
     test.it('fifteenth layer 55 cm F FC, 2.0 - 3.0', function() {
       com.clickLastInsert(sw, driver);
       com.moveHandle(sw, driver, 14, 180 - 55, 'F');
-//      com.testHandle(sw, driver, chai, 14, 180 - 55, 'F');
+      com.testHandle(sw, driver, chai, 14, 180 - 55, 'F');
       com.setFeatures(sw, driver, 14, 'FC', [2.0, 3.0],
         "CTM Q1 Depth (cm) 55 CT score: 15");
     });
@@ -193,7 +193,7 @@ test.describe('Square Top Feb 13, 2014:', function() {
     test.it('sixteenth layer 25 cm 4F FC (DH), 2.0 - 3.0', function() {
       com.clickLastInsert(sw, driver);
       com.moveHandle(sw, driver, 15, 180 - 25, '4F');
-//      com.testHandle(sw, driver, chai, 15, 180 - 25, '4F');
+      com.testHandle(sw, driver, chai, 15, 180 - 25, '4F');
       com.setFeatures(sw, driver, 15, ['FC', 'DH'], [2.0, 3.0]);
     });
 
