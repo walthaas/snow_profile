@@ -51,7 +51,7 @@ var SnowProfile = {};
      * @memberof SnowProfile
      * @see SnowProfile.Grid~depthScaleGrp
      */
-    MIN_DEPTH: 50,
+    MIN_DEPTH: 10,
 
     /**
      * Default snow pit depth in cm
