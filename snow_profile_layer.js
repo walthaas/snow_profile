@@ -85,8 +85,8 @@ SnowProfile.Layer = function(depthArg) {
   handle.draggable(function(x, y) {
     var newX = x;
     var newY = y;
-    var i = self.getIndex();
-    var numLayers = SnowProfile.snowLayers.length;
+    i = self.getIndex();
+    numLayers = SnowProfile.snowLayers.length;
     var mm;
 
     // Stop the animation
@@ -193,7 +193,7 @@ SnowProfile.Layer = function(depthArg) {
       size: 12,
       style: 'bold',
       family: 'sans-serif',
-      fill: SnowProfile.Cfg.LABEL_COLOR,
+      fill: SnowProfile.Cfg.LABEL_COLOR
     })
     .x(SnowProfile.Cfg.DEPTH_LABEL_WD + 1 + SnowProfile.Cfg.GRAPH_WIDTH + 10)
     .y(SnowProfile.depth2y(depthVal))
@@ -225,7 +225,7 @@ SnowProfile.Layer = function(depthArg) {
    * Define a rectangle to outline the layer
    * @type {Object}
    */
-  var layerOutline = SnowProfile.drawing.rect(0,0)
+  var layerOutline = SnowProfile.drawing.rect(0, 0)
     .addClass('snow_profile_layer_outline')
     .style({
       fill: 'white',
@@ -255,8 +255,8 @@ SnowProfile.Layer = function(depthArg) {
    * @returns {number} Integer index into snowLayers[]
    */
   this.getIndex = function() {
-    var i;
-    var numLayers = SnowProfile.snowLayers.length;
+    i;
+    numLayers = SnowProfile.snowLayers.length;
     for (i = 0; i < numLayers; i++) {
       if (SnowProfile.snowLayers[i] === self) {
         return i;
@@ -303,8 +303,8 @@ SnowProfile.Layer = function(depthArg) {
    * and ending points for the diagonal line.
    */
   function diagLinePts() {
-    var i = self.getIndex();
-    var numLayers = SnowProfile.snowLayers.length;
+    i = self.getIndex();
+    numLayers = SnowProfile.snowLayers.length;
     var xLeft,
     yLeft,
     xRight,
@@ -344,8 +344,8 @@ SnowProfile.Layer = function(depthArg) {
    * Delete this layer and make necessary adjustments
    */
   this.deleteLayer = function() {
-    var i = self.getIndex();
-    var numLayers = SnowProfile.snowLayers.length;
+    i = self.getIndex();
+    numLayers = SnowProfile.snowLayers.length;
 
     // Remove this Layer from the snowLayers array
     SnowProfile.snowLayers.splice(i, 1);
@@ -356,7 +356,7 @@ SnowProfile.Layer = function(depthArg) {
     // If the layer we just removed was not the top layer,
     // tell the layer above to adjust itself.
     if (i > 0) {
-      SnowProfile.snowLayers[i-1].draw();
+      SnowProfile.snowLayers[i - 1].draw();
     }
     else {
 
@@ -402,9 +402,9 @@ SnowProfile.Layer = function(depthArg) {
    * This is a rectangle that shows the layer against the reference grid.
    */
   this.setLayerOutline = function() {
-    var i = self.getIndex();
-    var numLayers = SnowProfile.snowLayers.length;
-    var yTop = handle.y() +  (SnowProfile.Cfg.HANDLE_SIZE / 2);
+    i = self.getIndex();
+    numLayers = SnowProfile.snowLayers.length;
+    var yTop = handle.y() + (SnowProfile.Cfg.HANDLE_SIZE / 2);
     var yBottom = SnowProfile.Cfg.HANDLE_SIZE / 2;
     if (i === (numLayers - 1)) {
 
@@ -414,7 +414,7 @@ SnowProfile.Layer = function(depthArg) {
     else {
 
       // Not the bottom layer so bottom Y is top of next lower layer
-      yBottom += SnowProfile.snowLayers[i+1].handleGetY();
+      yBottom += SnowProfile.snowLayers[i + 1].handleGetY();
     }
 
     if (handle.x() !== SnowProfile.Cfg.HANDLE_INIT_X) {
@@ -431,7 +431,7 @@ SnowProfile.Layer = function(depthArg) {
    * Sets the layer outline of this layer and the layer above, if any.
    */
   this.draw = function() {
-    var i = self.getIndex();
+    i = self.getIndex();
 
     // Set handle X from hardness
     if (handleTouched) {
@@ -461,8 +461,8 @@ SnowProfile.Layer = function(depthArg) {
    * @return {boolean} Insert successful?
    */
   this.pushDown = function() {
-    var i = self.getIndex();
-    var numLayers = SnowProfile.snowLayers.length;
+    i = self.getIndex();
+    numLayers = SnowProfile.snowLayers.length;
     // Is this the bottom layer?
     if (i !== (numLayers - 1)) {
 
@@ -576,8 +576,8 @@ SnowProfile.Layer = function(depthArg) {
   $(document).bind("SnowProfileButtonClick", function(evt, extra) {
 
     if (extra.buttonObj === self.insertButton) {
-      var i = self.getIndex();
-      var numLayers = SnowProfile.snowLayers.length;
+      i = self.getIndex();
+      numLayers = SnowProfile.snowLayers.length;
       var spaceBelow;
 
       // Is this the bottom layer?

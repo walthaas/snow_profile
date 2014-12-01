@@ -569,8 +569,6 @@ SnowProfile.Features = function(layerArg) {
       //NB zero-length word for multiple spaces
       words.forEach(function(word, i) {
         if (word.length !== 0) {
-          if (i !== 0) {
-          }
           testLine.push(word);
           testLineDescr.text(testLine.join(' '));
           if (testLineDescr.bbox().width >= SnowProfile.Cfg.COMMENT_WD) {
@@ -671,7 +669,7 @@ SnowProfile.Features = function(layerArg) {
 
       // Comment description
       setCommentDescr(comment);
-      cdBbox = commentDescr.bbox() ;
+      cdBbox = commentDescr.bbox();
 
       // For debugging show the comment description bounding box
       // cdBox.width(cdBbox.width);
@@ -683,7 +681,7 @@ SnowProfile.Features = function(layerArg) {
       // (giBbox, gsBbox, cdBbox) that are not empty.
       fdBbox = null;
       var boxes = [giBbox, gsBbox, cdBbox];
-      for (var i in boxes) {
+      for (i in boxes) {
         if (boxes[i].height !== 0) {
           // This box must be merged
           if (fdBbox === null) {

@@ -10,12 +10,12 @@ module.exports = function(grunt) {
                 destination: './doc'
             }
         },
-        jshint: {
-            options: {
-                jshintrc: true
-            },
-            all: [ '<%= srcs %>' ]
-        },
+        eslint: {
+          options: {
+	    config: 'conf/eslint.json'
+	  },
+	  target: [ '<%= srcs %>' ]
+	},
         simplemocha: {
 	  options: {
 	       timeout: 20000,
@@ -29,12 +29,12 @@ module.exports = function(grunt) {
     });
 
     // Load plugins
-    grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-eslint');
     grunt.loadNpmTasks('grunt-jsdoc');
     grunt.loadNpmTasks('grunt-simple-mocha');
 
     // Task aliases
-    grunt.registerTask('default', ['jshint']);
+    grunt.registerTask('default', ['eslint']);
     grunt.registerTask('doc',     ['jsdoc']);
     grunt.registerTask('test',     ['simplemocha']);
 };

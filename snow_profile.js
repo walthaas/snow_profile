@@ -596,7 +596,7 @@ var SnowProfile = {};
           (SnowProfile.Cfg.HANDLE_SIZE / 2);
       bandRight = leftSide + (SnowProfile.Cfg.HARD_BAND_WD * (i + 1)) +
           (SnowProfile.Cfg.HANDLE_SIZE / 2);
-      if ((x >= (bandLeft- (SnowProfile.Cfg.HARD_BAND_WD / 2))) &&
+      if ((x >= (bandLeft - (SnowProfile.Cfg.HARD_BAND_WD / 2))) &&
          (x < (bandRight - (SnowProfile.Cfg.HARD_BAND_WD / 2)))) {
         code = SnowProfile.CAAML_HARD[i][0];
         break;
@@ -643,7 +643,7 @@ var SnowProfile = {};
       layerTop;
 
     // Iterate through snow layers from top down
-    for (i=0; i < SnowProfile.snowLayers.length; i++) {
+    for (i = 0; i < SnowProfile.snowLayers.length; i++) {
 
       // Y value of the top of this layer
       layerTop = SnowProfile.depth2y(SnowProfile.snowLayers[i].depth());
@@ -657,7 +657,7 @@ var SnowProfile = {};
       else {
         // This layer is NOT the bottom layer, so the bottom
         // of this layer is the top of the layer below.
-        layerBottom = SnowProfile.depth2y(SnowProfile.snowLayers[i+1].depth());
+        layerBottom = SnowProfile.depth2y(SnowProfile.snowLayers[i + 1].depth());
       }
 
       // Y value of the top of the layer feature description

@@ -126,7 +126,7 @@ test.describe('Reference grid:', function() {
     // type in the minimum pit depth
     driver.findElement(sw.By.css('#snow_profile_pit_depth'))
       .then(function(elmt) {
-        cmdStr.push(String(SnowProfile.Cfg.MIN_DEPTH));
+        cmdStr.push('50');
         elmt.sendKeys.apply(elmt, cmdStr);
       });
     // Navigate out of the input box to make new pit depth effective
@@ -147,7 +147,7 @@ test.describe('Reference grid:', function() {
         })
       .then(function() {
         expectLabels = ['Depth (cm)'];
-        for (var d = 0; d <= SnowProfile.Cfg.MIN_DEPTH;
+        for (var d = 0; d <= 50;
           d += SnowProfile.Cfg.DEPTH_LINE_INT) {
           expectLabels.push(String(d));
         }

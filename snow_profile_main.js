@@ -13,7 +13,7 @@
 if (SVG.supported) {
   var i;
   SnowProfile.init();
-  for (i=0; i < SnowProfile.Cfg.NUM_INIT_LAYERS; i++) {
+  for (i = 0; i < SnowProfile.Cfg.NUM_INIT_LAYERS; i++) {
     SnowProfile.newLayer(i * SnowProfile.Cfg.INT_INIT_LAYERS);
   }
 } else {
