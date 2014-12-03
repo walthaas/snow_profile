@@ -1,0 +1,13 @@
+{
+  "name": "snow_profile",
+  "version": "0.1.2-alpha4",
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-simple-mocha": "~0.4.0",
+    "grunt-eslint": "~2.1.0",
+    "selenium-webdriver": "~2.43.5",
+    "grunt-jsdoc": "~0.6.1",
+    "chai": "~1.10.0",
+    "chai-webdriver": "~0.9.4"
+  }
+}
