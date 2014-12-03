@@ -773,7 +773,7 @@ var SnowProfile = {};
 
         // Open a new window and show the PNG in it
         var newWin = window.open(data, "_blank");
-        if (newWin === undefined) {
+        if (newWin === null) {
           alert("You must enable pop-ups for this site to use" +
             " the Preview button");
         }
