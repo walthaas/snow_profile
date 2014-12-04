@@ -1,20 +1,6 @@
-# Ignore emacs temp files
+js/node_modules/
+js/doc/
 *~
 \#*\#
-TAGS
-
-# Ignore documents
-*.pdf
-docs/*
-NOTES
-TODO
-*.JPG
-AAA/*
-
-# Ignore XML
-*.xml
 *.xsd
-
-# Ignore libraries
-jquery.js
-kinetic*
+*.xml
