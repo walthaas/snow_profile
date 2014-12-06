@@ -306,7 +306,7 @@
           SnowProfile.pitDepth * SnowProfile.Cfg.DEPTH_SCALE)
           .dmove(SnowProfile.Cfg.DEPTH_LABEL_WD,
             SnowProfile.Cfg.TOP_LABEL_HT + (SnowProfile.Cfg.HANDLE_SIZE / 2) + 1)
-          .style({fill: '#eef'})
+          .style({fill: SnowProfile.Cfg.BACKGROUND_COLOR})
       );
 
       // Create inner groups for depth and hardness scales
