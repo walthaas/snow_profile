@@ -12,9 +12,7 @@ of such diagrams are defined in the
 href="http://www.cryosphericsciences.org/products/snowClassification/snowclass_2009-11-23-tagged-highres.pdf">IACS
  2009 Standard</a>. This module
 provides a drag-and-drop browser tool to create such a diagram, with
-the ability to save the finished diagram in the Drupal database as
-both a PNG file and a data set. The data can be loaded and updated in
-the browser after initial storage.
+the ability to save the finished diagram as a PNG file.
 
 The drawing tool provided by this module depends on browser support
 for
@@ -36,5 +34,6 @@ This module was written pro bono for the
 
 <a href="http://snowpilot.org/">SnowPilot</a> is a desktop application
 that produces a snow profile diagram.
+
 <a href="http://www.avatech.com/">AvaTech</a> is a company that
 provides a service which includes drawing snow profile diagrams.
