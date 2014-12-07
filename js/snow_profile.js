@@ -164,21 +164,42 @@ var SnowProfile = {};
      * @memberof SnowProfile
      * @const {string}
      */
-    BACKGROUND_COLOR: '#fdfdfd',
+    BACKGROUND_COLOR: '#FFF',
 
     /**
      * Color of the labels and axis lines
      * @memberof SnowProfile
      * @const {string}
      */
-     LABEL_COLOR: '#003390',
+     LABEL_COLOR: '#000',
 
     /**
      * Color of the chart grid
      * @memberof SnowProfile
      * @const {string}
      */
-    GRID_COLOR: '#69768C',
+    GRID_COLOR: '#000',
+
+    /**
+     * Color of the outlines of a snow layer
+     * @memberof SnowProfile
+     * @const {string}
+     */
+    LAYER_OUTLINE_COLOR: '#5A54AA',
+
+    /**
+     * Fill color inside a layer
+     * @memberof SnowProfile
+     * @const {string}
+     */
+    LAYER_FILL_COLOR: '#9A99D5',
+
+    /**
+     * Opacity of Fill color inside a layer
+     * @memberof SnowProfile
+     * @const {string}
+     */
+    LAYER_FILL_OPACITY: .85,
 
     /**
       Depth scale in pixels per cm

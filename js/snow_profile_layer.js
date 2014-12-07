@@ -230,9 +230,9 @@
     var layerOutline = SnowProfile.drawing.rect(0, 0)
       .addClass('snow_profile_layer_outline')
       .style({
-        fill: 'white',
-        opacity: 0.85,
-        stroke: '#000'
+        fill: SnowProfile.Cfg.LAYER_FILL_COLOR,
+        opacity: SnowProfile.Cfg.LAYER_FILL_OPACITY,
+        stroke: SnowProfile.Cfg.LAYER_OUTLINE_COLOR
        })
       .x(SnowProfile.Cfg.DEPTH_LABEL_WD + 1)
       .y(0);
