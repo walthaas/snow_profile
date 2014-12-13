@@ -30,6 +30,10 @@ described on pp. 175-180 of the second edition.
 This module was written pro bono for the
 <a href="http://utahavalanchecenter.org/">Utah Avalanche Center</a>.
 
+<h2>DOCUMENTATION</H2>
+
+<a href="https://docs.google.com/presentation/d/1ymNkf6GJataJT_PnTlH6wCVYllsk3RP9Rzj6jmZIrAE/edit?usp=sharing">Lecture slides</a>
+
 <h2>RELATED</h2>
 
 <a href="http://snowpilot.org/">SnowPilot</a> is a desktop application
