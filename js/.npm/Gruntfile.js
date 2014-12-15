@@ -25,7 +25,7 @@ module.exports = function(grunt) {
             src: ['test/**/*.js']
           }
         },
-        srcs: [ "snow_profile*.js", "!snow_profile.min.js" ]
+        srcs: [ "../snow_profile*.js", "!../snow_profile.min.js" ]
     });
 
     // Load plugins

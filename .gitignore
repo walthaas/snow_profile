@@ -1,5 +1,5 @@
-js/node_modules/
-js/doc/
+js/.npm/node_modules/
+js/.npm/doc/
 *~
 \#*\#
 *.xsd
