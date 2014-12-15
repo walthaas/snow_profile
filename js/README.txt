@@ -1,22 +1,23 @@
 DEVELOPING AND TESTING JAVASCRIPT
 
-1. Install the snow_profile_example Drupal module.
-
-2. Install npm for your platform:
+1. Install npm for your platform:
    http://nodejs.org/
 
-3. Install the Chrome browser for your platform:
+2. Install the Chrome browser for your platform:
    https://www.google.com/intl/en/chrome/browser
 
-4. Install ChromeDriver for your platform:
+3. Install ChromeDriver for your platform:
    https://sites.google.com/a/chromium.org/chromedriver/home
 
-5. Install the Grunt command-line interface:
+4. Install the Grunt command-line interface:
    npm install -g grunt-cli
    (this must be done as root on *nix systems)
 
-6. In this directory:
-   npm install
+5. cd .../snow_profile/js/.npm
+   Node software is kept in a hidden directory to prevent name collisions
+   with Drupal software.
+
+6. npm install
 
 7. You should now be able to use grunt to lint, document and test.
    lint: This is the default grunt task.  It uses ESLint.  The configuration is
