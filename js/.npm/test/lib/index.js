@@ -4,7 +4,7 @@
  * @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPLv2}
  */
 exports.testURL = 'file://' + process.cwd() + '/test/lib/test.html';
-//exports.testURL = 'file://' + process.cwd() + '/../snow_profile.html';
+//exports.testURL = 'file://' + process.cwd() + '/../../snow_profile.html';
 //exports.testURL = 'http://sandbox.utahavalanchecenter.org/snow_profile/snow_profile.html';
 exports.buttonsXpath = "//*[name()='svg']/*[name()='g']/*[name()='g']" +
   "/*[name()='g']/*[name()='g']";
