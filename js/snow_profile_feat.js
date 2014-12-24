@@ -333,8 +333,9 @@
           SnowProfile.CAAML_SUBSHAPE.MF.MFcr.icon.height,
           SnowProfile.CAAML_SUBSHAPE.MF.MFcr.icon.width)
           .y(-5)
-          .attr('alt', 'MFcr');
-
+          .attr('alt', 'MFcr')
+          .attr('title', SnowProfile.CAAML_SUBSHAPE.MF.MFcr.text);
+        $('#' + primaryIcon.node.id).tipsy();
         container.add(primaryIcon);
       }
       else {
@@ -343,7 +344,9 @@
         primaryIcon = SnowProfile.drawing.image(
           "data:image/png;base64," + image, 52, 29)
           .y(-5)
-          .attr('alt', 'MFcr');
+          .attr('alt', 'MFcr')
+          .attr('title', SnowProfile.CAAML_SUBSHAPE.MF.MFcr.text);
+        $('#' + primaryIcon.node.id).tipsy();
         container.add(primaryIcon);
         if (secondarySubShape === "") {
           // User did not specify a secondary subshape
@@ -352,6 +355,7 @@
             SnowProfile.CAAML_SHAPE[secondaryShape].icon.width,
             SnowProfile.CAAML_SHAPE[secondaryShape].icon.height)
             .attr('alt', secondaryShape)
+            .attr('title', SnowProfile.CAAML_SHAPE[secondaryShape].text)
             .cx(((SnowProfile.CAAML_SHAPE[secondaryShape]
               .icon.width) / 2) + 30)
             .cy(10);
@@ -366,10 +370,13 @@
             SnowProfile.CAAML_SUBSHAPE[secondaryShape][secondarySubShape].
             icon.height)
             .attr('alt', secondarySubShape)
+            .attr('title',
+              SnowProfile.CAAML_SUBSHAPE[secondaryShape][secondarySubShape].text)
             .cx(((SnowProfile.CAAML_SUBSHAPE[secondaryShape]
               [secondarySubShape].icon.width) / 2) + 30)
             .cy(10);
         }
+        $('#' + secondaryIcon.node.id).tipsy();
         container.add(secondaryIcon);
       }
     } // function sym2iconsMFcr()
@@ -412,7 +419,9 @@
             icon.width,
             SnowProfile.CAAML_SUBSHAPE[primaryShape][primarySubShape].
             icon.height)
-            .attr('alt', primarySubShape);
+            .attr('alt', primarySubShape)
+            .attr('title',
+              SnowProfile.CAAML_SUBSHAPE[primaryShape][primarySubShape].text);
           iconCursor += SnowProfile.CAAML_SUBSHAPE[primaryShape]
             [primarySubShape].icon.width;
         }
@@ -424,9 +433,12 @@
             SnowProfile.CAAML_SHAPE[primaryShape].icon.image,
             SnowProfile.CAAML_SHAPE[primaryShape].icon.width,
             SnowProfile.CAAML_SHAPE[primaryShape].icon.height)
-            .attr('alt', primaryShape);
+            .attr('alt', primaryShape)
+            .attr('title',
+              SnowProfile.CAAML_SHAPE[primaryShape].text);
           iconCursor += SnowProfile.CAAML_SHAPE[primaryShape].icon.width;
         }
+        $('#' + primaryIcon.node.id).tipsy();
         container.add(primaryIcon);
         if (secondaryShape !== "") {
 
@@ -456,7 +468,9 @@
               SnowProfile.CAAML_SUBSHAPE[secondaryShape][secondarySubShape].
               icon.height)
               .x(iconCursor)
-            .attr('alt', secondarySubShape);
+              .attr('alt', secondarySubShape)
+              .attr('title',
+                SnowProfile.CAAML_SUBSHAPE[secondaryShape][secondarySubShape].text);
             iconCursor += SnowProfile.CAAML_SUBSHAPE[secondaryShape]
               [secondarySubShape].icon.width;
           }
@@ -468,10 +482,13 @@
               SnowProfile.CAAML_SHAPE[secondaryShape].icon.image,
               SnowProfile.CAAML_SHAPE[secondaryShape].icon.width,
               SnowProfile.CAAML_SHAPE[secondaryShape].icon.height)
-            .x(iconCursor)
-            .attr('alt', secondaryShape);
+              .x(iconCursor)
+              .attr('alt', secondaryShape)
+              .attr('title',
+                SnowProfile.CAAML_SHAPE[secondaryShape].text);
             iconCursor += SnowProfile.CAAML_SHAPE[secondaryShape].icon.width;
           }
+          $('#' + secondaryIcon.node.id).tipsy();
           container.add(secondaryIcon);
 
           // Add right paren to the icons
