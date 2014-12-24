@@ -143,7 +143,7 @@
      */
     function drawHardnessScale() {
 
-      var i, x;
+      var i, id, x, textElmt;
 
       // Add a vertical line along the left edge
       SnowProfile.hardnessGroup.add(SnowProfile.drawing.line(
@@ -191,8 +191,8 @@
             color: SnowProfile.Cfg.GRID_COLOR,
             width: 1
           }));
-          SnowProfile.hardnessGroup.add(SnowProfile.drawing.text(
-            SnowProfile.CAAML_HARD[i][0])
+          textElmt = SnowProfile.drawing.text(SnowProfile.CAAML_HARD[i][0])
+            .attr('title', SnowProfile.CAAML_HARD[i][1])
             .addClass("snow_profile_hardness")
             .font({
               size: 12,
@@ -201,7 +201,9 @@
               fill: SnowProfile.Cfg.LABEL_COLOR
             })
             .move(x - 1, SnowProfile.depth2y(SnowProfile.pitDepth) +
-              (SnowProfile.Cfg.HANDLE_SIZE / 2) + 3));
+              (SnowProfile.Cfg.HANDLE_SIZE / 2) + 3);
+          SnowProfile.hardnessGroup.add(textElmt);
+          $('#' + textElmt.node.id).tipsy();
         }
       }
 
