@@ -17,6 +17,7 @@
     <link rel="stylesheet" type="text/css" href="../../../../vendor/jquery.ui.button.css" />
     <link rel="stylesheet" type="text/css" href="../../../../vendor/jquery.ui.dialog.css" />
     <link rel="stylesheet" type="text/css" href="../../../../vendor/jquery.ui.resizable.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../vendor/tipsy.css" />
   </head>
 
   <body onLoad="SnowProfile.main();">
@@ -77,6 +78,7 @@
     <script src="../../../../vendor/jquery.ui.draggable.min.js"></script>
     <script src="../../../../vendor/jquery.ui.position.min.js"></script>
     <script src="../../../../vendor/jquery.ui.resizable.min.js"></script>
+    <script src="../../../../vendor/jquery.tipsy.js"></script>
     <script src="../../../snow_profile.js"></script>
     <script src="../../../snow_profile_std.js"></script>
     <script src="../../../snow_profile_button.js"></script>
@@ -85,6 +87,11 @@
     <script src="../../../snow_profile_layer.js"></script>
     <script src="../../../snow_profile_grid.js"></script>
     <script src="../../../snow_profile_main.js"></script>
+    <script>
+      $(function() {
+        $('a[rel=tipsy]').tipsy({fade: true, gravity: 'n'});
+      });
+    </script>
     <button id="snow_profile_preview" style="display: block;">Preview</button>
 
   </body>

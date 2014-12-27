@@ -275,9 +275,126 @@ test.describe('Popup:', function() {
     });
   }); // test.describe('Select stellar displays PPsd icon
 
+  /**
+   * Test suite for initialization of second popup
+   */
+  test.describe('Second popup initialization:', function() {
+
+    test.before(function() {
+      // Load the test page
+      driver.get(com.testURL);
+    });
+
+    test.it('First popup selects a grain shape for layer 1', function() {
+      //  Popup 1 selects a primary grain shape
+      driver.findElement(sw.By.xpath(
+        com.buttonsXpath + "[@class='snow_profile_button Edit'][1]"
+        ))
+        .then(function(elmt) {
+          elmt.click();
+          });
+      driver.findElement(sw.By.xpath('//select[@id="snow_profile_primary_grain_shape"]/option[@value="PP"]'))
+        .then(function(elmt) {
+          elmt.click();
+        });
+      driver.findElement(sw.By.id('snow_profile_primary_grain_subshape_PP'))
+        .then(function(promise) {
+          promise.isDisplayed()
+          .then(function(displayed) {
+            chai.expect(displayed).to.be.true;
+          });
+        });
+      driver.findElement(sw.By.id('snow_profile_secondary_grain_shape'))
+        .then(function(promise) {
+          promise.isDisplayed()
+          .then(function(displayed) {
+            chai.expect(displayed).to.be.true;
+          });
+        });
+
+      //  Popup 1 done
+      driver.findElement(sw.By.xpath('//button[.="Done"]'))
+        .then(function(elmt) {
+          elmt.click();
+        });
+      driver.findElement(sw.By.css("g.snow_profile_grain_icons image"))
+        .then(function(image) {
+          image.getAttribute("alt")
+          .then(function(altAttr) {
+            chai.expect(altAttr).to.equal("PP");
+          });
+        });
+      });
+      test.it('Open second popup', function() {
+
+      //  Popup 2 is opened
+      driver.findElement(sw.By.xpath(
+        com.buttonsXpath + "[@class='snow_profile_button Edit'][2]"
+        ))
+        .then(function(elmt) {
+          elmt.click();
+          });
+    });
+    test.it('Primary Grain Shape selector is visible', function() {
+      //    Verify correct initialization
+      driver.findElement(sw.By.id('snow_profile_primary_grain_shape'))
+        .then(function(promise) {
+          promise.isDisplayed()
+          .then(function(displayed) {
+            chai.expect(displayed).to.be.true;
+          });
+        });
+    });
+    test.it('Primary Grain Subshape selector not visible', function() {
+      driver.findElement(sw.By.id('snow_profile_primary_grain_subshape_PP'))
+        .then(function(promise) {
+          promise.isDisplayed()
+          .then(function(displayed) {
+            chai.expect(displayed).to.be.false;
+          });
+        });
+    });
+    test.it('Secondary Grain Shape selector is not visible', function() {
+      driver.findElement(sw.By.id('snow_profile_secondary_grain_shape'))
+        .then(function(promise) {
+          promise.isDisplayed()
+          .then(function(displayed) {
+            chai.expect(displayed).to.be.false;
+          });
+        });
+    });
+    test.it('Secondary Grain Subshape selector not visible', function() {
+      driver.findElement(sw.By.id('snow_profile_secondary_grain_subshape_PP'))
+        .then(function(promise) {
+          promise.isDisplayed()
+          .then(function(displayed) {
+            chai.expect(displayed).to.be.false;
+          });
+        });
+    });
+    test.it('Grain Size selector is visible', function() {
+      driver.findElement(sw.By.id('snow_profile_grain_size'))
+        .then(function(promise) {
+          promise.isDisplayed()
+          .then(function(displayed) {
+            chai.expect(displayed).to.be.true;
+          });
+        });
+    });
+    test.it('Comment field is visible', function() {
+      driver.findElement(sw.By.id('snow_profile_comment'))
+        .then(function(promise) {
+          promise.isDisplayed()
+          .then(function(displayed) {
+            chai.expect(displayed).to.be.true;
+          });
+        });
+    });
+  })
+
   // When done, kill the browser
   test.after(function() {
-    driver.quit();
+//    driver.quit();
   }); // test.after(
 
 }); // test.decribe('Snow Profile diagram popups'
