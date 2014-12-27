@@ -1,6 +1,6 @@
 {
   "name": "snow_profile",
-  "version": "0.1.2-alpha4",
+  "version": "0.2.0-beta3",
   "devDependencies": {
     "chai": "~1.10.0",
     "chai-webdriver": "~0.9.4",

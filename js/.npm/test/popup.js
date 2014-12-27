@@ -394,7 +394,7 @@ test.describe('Popup:', function() {
 
   // When done, kill the browser
   test.after(function() {
-//    driver.quit();
+    driver.quit();
   }); // test.after(
 
 }); // test.decribe('Snow Profile diagram popups'

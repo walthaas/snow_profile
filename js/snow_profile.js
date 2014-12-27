@@ -171,14 +171,21 @@ var SnowProfile = {};
      * @memberof SnowProfile
      * @const {string}
      */
-     LABEL_COLOR: '#000',
+    LABEL_COLOR: '#000',
 
     /**
-     * Color of the chart grid
+     * Color of the outline of the chart grid
      * @memberof SnowProfile
      * @const {string}
      */
-    GRID_COLOR: '#000',
+    OUTLINE_GRID_COLOR: '#000',
+
+    /**
+     * Color of the inside lines of the chart grid
+     * @memberof SnowProfile
+     * @const {string}
+     */
+    INSIDE_GRID_COLOR: '#AAA',
 
     /**
      * Color of the outlines of a snow layer

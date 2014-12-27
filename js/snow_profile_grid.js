@@ -95,7 +95,7 @@
             SnowProfile.depthGroup.add(SnowProfile.drawing.line(x0, y, x1, y)
               .addClass("snow_profile_depth")
               .stroke({
-                color: SnowProfile.Cfg.GRID_COLOR,
+                color: SnowProfile.Cfg.INSIDE_GRID_COLOR,
                 width: 1
             }));
           }
@@ -127,7 +127,7 @@
             SnowProfile.depthGroup.add(SnowProfile.drawing.line(x0, y, x1, y)
               .addClass("snow_profile_depth")
               .stroke({
-                color: SnowProfile.Cfg.GRID_COLOR,
+                color: SnowProfile.Cfg.INSIDE_GRID_COLOR,
                 width: 1
             }));
           }
@@ -188,7 +188,7 @@
             x, SnowProfile.handleMaxY + (SnowProfile.Cfg.HANDLE_SIZE / 2))
             .addClass("snow_profile_hardness")
             .stroke({
-            color: SnowProfile.Cfg.GRID_COLOR,
+            color: SnowProfile.Cfg.INSIDE_GRID_COLOR,
             width: 1
           }));
           textElmt = SnowProfile.drawing.text(SnowProfile.CAAML_HARD[i][0])
@@ -234,7 +234,7 @@
         SnowProfile.Cfg.DRAWING_WD,
         SnowProfile.Cfg.HANDLE_MIN_Y + (SnowProfile.Cfg.HANDLE_SIZE / 2))
       .stroke({
-        color: SnowProfile.Cfg.GRID_COLOR,
+        color: SnowProfile.Cfg.OUTLINE_GRID_COLOR,
         width: 1
       }));
 
