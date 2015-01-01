@@ -7,7 +7,7 @@ exports.testURL = 'file://' + process.cwd() + '/test/lib/test.html';
 //exports.testURL = 'file://' + process.cwd() + '/../../snow_profile.html';
 //exports.testURL = 'http://sandbox.utahavalanchecenter.org/snow_profile/snow_profile.html';
 exports.buttonsXpath = "//*[name()='svg']/*[name()='g']/*[name()='g']" +
-  "/*[name()='g']/*[name()='g']";
+  "/*[name()='g']";
 exports.handleXpath = "//*[name()='svg']/*[name()='g']/*[name()='g']" +
   "/*[name()='g']/*[name()='rect'][@class='snow_profile_handle']";
 
@@ -21,27 +21,48 @@ exports.clickLastInsert = function(sw, driver) {
     insertStarted = false,
     insertDone = false;
 
-  driver.wait(function() {
-    if (!insertStarted) {
-      insertStarted = true;
-      driver.findElements(sw.By.xpath(
-        exports.buttonsXpath + "[@class='snow_profile_button Insert']"))
-        .then(function(buttons) {
-          numButtons = buttons.length;
-          driver.findElement(sw.By.xpath(
-            exports.buttonsXpath +
-            "[@class='snow_profile_button Insert'][" + numButtons + "]"))
-          .click();
-        });
-    }
-    driver.isElementPresent(sw.By.xpath(
-      exports.buttonsXpath +
-      "[@class='snow_profile_button Edit'][" + numButtons + "]"))
-      .then(function(done) {
-        insertDone = done;
-      });
-    return insertDone;
-    }, 2000, "clickLastInsert didn't finish");
+  driver.findElements(sw.By.css("use.snow_profile_button_insert"))
+    .then(function(buttons) {
+      numButtons = buttons.length;
+    })
+    .then(function() {
+      driver.wait(function() {
+        if (!insertStarted) {
+          driver.executeScript(
+            "$('use.snow_profile_button_insert:nth-of-type(" +
+            numButtons + ")').click()")
+          insertStarted = true;
+        }
+        driver.isElementPresent(sw.By.css(
+          "use.snow_profile_button_edit:nth-of-type(" +
+          (numButtons + 1) + ")"))
+          .then(function(done) {
+            insertDone = done;
+          });
+        return insertDone;
+      }, 2000, "clickLastInsert didn't finish")
+    });
+}
+
+/**
+ * Click Done, then wait until modal popup goes away
+ */
+exports.clickDone = function(sw, driver, chai) {
+
+  var overlayPresent = true;
+
+  driver.findElement(sw.By.xpath('//button[.="Done"]'))
+    .then(function(elmt) {
+      elmt.click();
+     })
+    .then(function() {driver.wait(function() {
+      driver.isElementPresent(sw.By.css('div.ui-widget-overlay'))
+        .then(function(done) {
+            overlayPresent = done;
+        })
+        return !overlayPresent;
+      }, 2000, "overlay didn't go away");
+    })
 }
 
 /**
@@ -291,17 +312,15 @@ exports.setFeatures = function setFeatures(sw, driver, index, shape, size,
 
   var popupDisplayed;
 
-
   // Click the Edit button for the layer to open the popup.
-  driver.findElement(sw.By.xpath(
-    "//*[name()='svg']/*[name()='g']/*[name()='g']/*[name()='g']/*[name()='g']" +
-      "[@class='snow_profile_button Edit'][" + (index + 1) + "]"))
-  .click();
-
-  driver.wait(function() {
-    return driver.findElement(sw.By.css('div#snow_profile_popup'))
-      .isDisplayed();
-    }, 2000, 'div#snow_profile_popup not found')
+  driver.executeScript("$('use.snow_profile_button_edit:nth-of-type(" +
+    (index + 1) + ")').click()")
+    .then(function() {
+      driver.wait(function() {
+        return driver.findElement(sw.By.css('div#snow_profile_popup'))
+         .isDisplayed();
+       }, 2000, 'div#snow_profile_popup not found')
+    })
     .then(function() {
 
       // Set grain shape

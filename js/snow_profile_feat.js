@@ -40,14 +40,14 @@
      * the user to describe the features of this layer.
      * @type {Object}
      */
-    var editButton = new SnowProfile.Button("Edit");
+    var editButton = new SnowProfile.Button("edit");
     var i = layerObj.getIndex();
     var thisEdit = SnowProfile.editGroup.get(i);
     if (thisEdit === undefined) {
-      SnowProfile.editGroup.add(editButton.getButtonGroup());
+      SnowProfile.editGroup.add(editButton.getButton());
     }
     else {
-      thisEdit.before(editButton.getButtonGroup());
+      thisEdit.before(editButton.getButton());
     }
 
     /**

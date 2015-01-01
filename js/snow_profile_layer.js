@@ -209,7 +209,7 @@
      * is inserted below this layer.
      * @type {Object}
      */
-    this.insertButton = new SnowProfile.Button("Insert");
+    this.insertButton = new SnowProfile.Button("insert");
 
     /**
      * Define a diagonal line from the bottom of this layer right to the
@@ -263,7 +263,7 @@
           return i;
         }
       }
-      console.error("Object not found in snowLayers[]");
+      throw new Error("Object not found in snowLayers[]");
     };
 
     /**
@@ -509,7 +509,7 @@
         // Insertion point found, we need to insert above snowLayers[i].
         SnowProfile.snowLayers.splice(i, 0, this);
         thisHandle.before(handle);
-        thisInsert.before(self.insertButton.getButtonGroup());
+        thisInsert.before(self.insertButton.getButton());
         inserted = true;
         break;
       }
@@ -520,7 +520,7 @@
     if (!inserted) {
       SnowProfile.snowLayers.push(this);
       SnowProfile.handlesGroup.add(handle);
-      SnowProfile.insertGroup.add(self.insertButton.getButtonGroup());
+      SnowProfile.insertGroup.add(self.insertButton.getButton());
     }
 
     // Listen for "SnowProfileHideControls" events

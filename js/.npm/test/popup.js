@@ -46,7 +46,7 @@ test.describe('Popup:', function() {
     });
 
     test.it('right initial number of buttons', function() {
-      driver.findElements(sw.By.css('g.snow_profile_button'))
+      driver.findElements(sw.By.css('use'))
         .then(function(done) {
           chai.expect(done.length).to.equal(2 * SnowProfile.Cfg.NUM_INIT_LAYERS);
         });
@@ -75,17 +75,15 @@ test.describe('Popup:', function() {
     });
 
     test.it('click on edit button creates popup', function() {
-      driver.findElement(sw.By.xpath(
-        com.buttonsXpath + "[@class='snow_profile_button Edit'][1]"
-        ))
-        .then(function(elmt) {
-          elmt.click();
-          });
-      driver.findElement(sw.By.id('snow_profile_popup'))
-        .then(function(promise) {
-          promise.isDisplayed()
-          .then(function(displayed) {
-            chai.expect(displayed).to.be.true;
+      driver.executeScript(
+        "$('use.snow_profile_button_edit:nth-of-type(2)').click()")
+        .then(function() {
+          driver.findElement(sw.By.id('snow_profile_popup'))
+            .then(function(promise) {
+              promise.isDisplayed()
+              .then(function(displayed) {
+                chai.expect(displayed).to.be.true;
+            });
           });
         });
     });
@@ -156,9 +154,8 @@ test.describe('Popup:', function() {
     });
 
     test.it('click on edit button creates popup', function() {
-      driver.findElement(sw.By.xpath(
-        com.buttonsXpath + "[@class='snow_profile_button Edit'][1]"
-        ))
+      driver.findElement(sw.By.css(
+        'use.snow_profile_button_edit:nth-of-type(1)'))
         .then(function(elmt) {
           elmt.click();
           });
@@ -198,9 +195,8 @@ test.describe('Popup:', function() {
     });
 
     test.it('Select Primary Grain Shape PP displays PP icon', function() {
-      driver.findElement(sw.By.xpath(
-        com.buttonsXpath + "[@class='snow_profile_button Edit'][1]"
-        ))
+      driver.findElement(sw.By.css(
+        'use.snow_profile_button_edit:nth-of-type(1)'))
         .then(function(elmt) {
           elmt.click();
           });
@@ -222,10 +218,7 @@ test.describe('Popup:', function() {
             chai.expect(displayed).to.be.true;
           });
         });
-      driver.findElement(sw.By.xpath('//button[.="Done"]'))
-        .then(function(elmt) {
-          elmt.click();
-        });
+      com.clickDone(sw, driver, chai);
       driver.findElement(sw.By.css("g.snow_profile_grain_icons image"))
         .then(function(image) {
           image.getAttribute("alt")
@@ -247,9 +240,8 @@ test.describe('Popup:', function() {
     });
 
     test.it('Select stellar displays PPsd icon', function() {
-      driver.findElement(sw.By.xpath(
-        com.buttonsXpath + "[@class='snow_profile_button Edit'][1]"
-        ))
+      driver.findElement(sw.By.css(
+        'use.snow_profile_button_edit:nth-of-type(1)'))
         .then(function(elmt) {
           elmt.click();
           });
@@ -261,10 +253,7 @@ test.describe('Popup:', function() {
         .then(function(elmt) {
           elmt.click();
         });
-      driver.findElement(sw.By.xpath('//button[.="Done"]'))
-        .then(function(elmt) {
-          elmt.click();
-        });
+      com.clickDone(sw, driver, chai);
       driver.findElement(sw.By.css("g.snow_profile_grain_icons image"))
         .then(function(image) {
           image.getAttribute("alt")
@@ -287,9 +276,8 @@ test.describe('Popup:', function() {
 
     test.it('First popup selects a grain shape for layer 1', function() {
       //  Popup 1 selects a primary grain shape
-      driver.findElement(sw.By.xpath(
-        com.buttonsXpath + "[@class='snow_profile_button Edit'][1]"
-        ))
+      driver.findElement(sw.By.css(
+        'use.snow_profile_button_edit:nth-of-type(1)'))
         .then(function(elmt) {
           elmt.click();
           });
@@ -313,10 +301,7 @@ test.describe('Popup:', function() {
         });
 
       //  Popup 1 done
-      driver.findElement(sw.By.xpath('//button[.="Done"]'))
-        .then(function(elmt) {
-          elmt.click();
-        });
+      com.clickDone(sw, driver, chai);
       driver.findElement(sw.By.css("g.snow_profile_grain_icons image"))
         .then(function(image) {
           image.getAttribute("alt")
@@ -324,16 +309,20 @@ test.describe('Popup:', function() {
             chai.expect(altAttr).to.equal("PP");
           });
         });
-      });
-      test.it('Open second popup', function() {
+    });
 
-      //  Popup 2 is opened
-      driver.findElement(sw.By.xpath(
-        com.buttonsXpath + "[@class='snow_profile_button Edit'][2]"
-        ))
-        .then(function(elmt) {
-          elmt.click();
+    test.it('Open second popup', function() {
+      driver.executeScript(
+        "$('use.snow_profile_button_edit:nth-of-type(2)').click()")
+        .then(function() {
+          driver.findElement(sw.By.id('snow_profile_popup'))
+            .then(function(promise) {
+              promise.isDisplayed()
+              .then(function(displayed) {
+                chai.expect(displayed).to.be.true;
+            });
           });
+        });
     });
     test.it('Primary Grain Shape selector is visible', function() {
       //    Verify correct initialization

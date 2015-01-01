@@ -89,7 +89,7 @@ var SnowProfile = {};
      * @memberof SnowProfile
      * @const {number}
      */
-    CTRLS_WD: 160,
+    CTRLS_WD: 130,
 
     /**
      * Width in pixels of the area used by snow grain shape
@@ -207,6 +207,20 @@ var SnowProfile = {};
      * @const {string}
      */
     LAYER_FILL_OPACITY: .85,
+
+    /**
+     * Color of a button that is not under the mouse
+     * @memberof SnowProfile
+     * @const {string}
+     */
+    BUTTON_BLUR_COLOR: "#AAA",
+
+    /**
+     * Color of a button that is under the mouse
+     * @memberof SnowProfile
+     * @const {string}
+     */
+    BUTTON_FOCUS_COLOR: "#000",
 
     /**
       Depth scale in pixels per cm
@@ -361,13 +375,13 @@ var SnowProfile = {};
    * X position of the center line of the buttons in the control area
    */
   SnowProfile.Cfg.INS_BUTTON_X = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
-    SnowProfile.Cfg.GRAPH_WIDTH + 100;
+    SnowProfile.Cfg.GRAPH_WIDTH + 80;
 
   /**
    * X position of the center line of the buttons in the control area
    */
   SnowProfile.Cfg.EDIT_BUTTON_X = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
-    SnowProfile.Cfg.GRAPH_WIDTH + 140;
+    SnowProfile.Cfg.GRAPH_WIDTH + 105;
 
   /**
    * X position of the left edge of the layer description
@@ -810,6 +824,22 @@ var SnowProfile = {};
     SnowProfile.editGroup = SnowProfile.drawing.group()
       .addClass('snow_profile_ctrls_edit');
     SnowProfile.ctrlsGroup.add(SnowProfile.editGroup);
+
+    /**
+     * Pencil symbol used by the edit button.
+     * @memberof SnowProfile
+     */
+    SnowProfile.pencil = SnowProfile.drawing.defs()
+      .path("M 16.875,4.4 C 18.60063,4.4 20,5.7993755 20,7.525 20,8.2287506 19.7675,8.8774995 19.375,9.4 L 18.125,10.65 13.75,6.275 15,5.025 C 15.5225,4.6325 16.171251,4.4 16.875,4.4 z M 1.25,18.775 0,24.4 5.625,23.15 17.1875,11.587506 12.8125,7.2125 1.25,18.775 z m 12.726251,-7.273755 -8.750001,8.75 -1.0775,-1.07749 8.749999,-8.750001 1.077502,1.077491 z")
+      .addClass('snow_profile_ctrls_edit');
+
+    /**
+     * Plus symbol used by the insert button.
+     * @memberof SnowProfile
+     */
+    SnowProfile.plus = SnowProfile.drawing.defs()
+      .path("M 19.375,13.805085 H 12.5 v -6.875 c 0,-0.345 -0.28,-0.625 -0.625,-0.625 H 8.1249998 c -0.3449999,0 -0.6249999,0.28 -0.6249999,0.625 v 6.875 H 0.62499999 c -0.345,0 -0.62499999,0.28 -0.62499999,0.625 v 3.75 c 0,0.345 0.27999999,0.625 0.62499999,0.625 H 7.4999999 v 6.875 c 0,0.344999 0.28,0.625 0.6249999,0.625 H 11.875 c 0.345,0 0.625,-0.280001 0.625,-0.625 v -6.875 h 6.875 c 0.344999,0 0.625,-0.28 0.625,-0.625 v -3.75 c 0,-0.345 -0.280001,-0.625 -0.625,-0.625 z")
+      .addClass('snow_profile_ctrls_insert');
 
     /**
      * SnowProfile drawing insert buttons group
