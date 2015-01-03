@@ -328,7 +328,7 @@
 
       // Y dimension of the right end is the Y of the line below the
       // description of this snow layer.
-      yRight = featObj.lineBelowY();
+      yRight = featObj.lineBelowY() + (SnowProfile.Cfg.HANDLE_SIZE / 2);
 
       // X dimension of the left end is the right edge of the graph
       xLeft = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 + SnowProfile.Cfg.GRAPH_WIDTH;

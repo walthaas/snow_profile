@@ -134,7 +134,12 @@
      * @public
      */
     function setCy(y) {
-      button.cy(y);
+
+      // It seems that button.y() and button.cy() produce the same Y position
+      // of the button, at least using Chrome and Firefox.  This ugly hack
+      // relies on the 22px height of the button to acheive the effect desired
+      // by calling button.cy().
+      button.y(y  - 11);
     }
 
     /**

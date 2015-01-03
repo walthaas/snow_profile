@@ -230,7 +230,19 @@ var SnowProfile = {};
     DEPTH_SCALE: 5,
 
     /**
+     * Minimum height of the feature description area in pixels.
+     *
+     * The minimum height is in effect when the feature description is
+     * empty or has a height less than the minimum.
+     * @const {number}
+     * @memberof SnowProfile
+     */
+    MIN_FEAT_HEIGHT: 25,
+
+    /**
      * Minimum number of pixels of padding above and below features desc.
+     * @const {number}
+     * @memberof SnowProfile
      */
     MIN_FEAT_PAD: 2,
 
@@ -598,7 +610,6 @@ var SnowProfile = {};
 
     // Iterate through snow layers from top down
     for (i = 0; i < SnowProfile.snowLayers.length; i++) {
-
       // Y value of the top of this layer
       layerTop = SnowProfile.depth2y(SnowProfile.snowLayers[i].depth());
 
@@ -611,7 +622,8 @@ var SnowProfile = {};
       else {
         // This layer is NOT the bottom layer, so the bottom
         // of this layer is the top of the layer below.
-        layerBottom = SnowProfile.depth2y(SnowProfile.snowLayers[i + 1].depth());
+        layerBottom = SnowProfile.depth2y(
+          SnowProfile.snowLayers[i + 1].depth());
       }
 
       // Y value of the top of the layer feature description
@@ -638,8 +650,7 @@ var SnowProfile = {};
         Math.max(layerTop, featureTop));
 
       // Draw the line below the bottom of the features description.
-      SnowProfile.snowLayers[i].features().lineBelowY(
-        featureBottom + (SnowProfile.Cfg.HANDLE_SIZE / 2));
+      SnowProfile.snowLayers[i].features().lineBelowY(featureBottom);
 
       // Draw the diagonal line from layerBottom to lineBelow
       SnowProfile.snowLayers[i].setDiagLine();

@@ -210,7 +210,7 @@
      * Based on the bounding box of the description plus padding.
      * @type {number}
      */
-    this.height = 2 * SnowProfile.Cfg.MIN_FEAT_PAD;
+    this.height = SnowProfile.Cfg.MIN_FEAT_HEIGHT;
 
     /**
      * Get or set Y value of the feature description.
@@ -714,10 +714,12 @@
 
         // Make height of the feature description bounding box public
         if (fdBbox === null) {
-          self.height = 2 * SnowProfile.Cfg.MIN_FEAT_PAD;
+          self.height = SnowProfile.Cfg.MIN_FEAT_HEIGHT;
         }
         else {
-          self.height = fdBbox.height + (2 * SnowProfile.Cfg.MIN_FEAT_PAD);
+          self.height = Math.max(
+            fdBbox.height + (2 * SnowProfile.Cfg.MIN_FEAT_PAD),
+            SnowProfile.Cfg.MIN_FEAT_HEIGHT);
         }
 
         // For debugging, make bounding box visible
@@ -778,9 +780,9 @@
         lineBelowYvalue = yArg;
         lineBelow.plot(
           SnowProfile.Cfg.FEAT_DESCR_LEFT - 3,
-          yArg,
+          yArg + (SnowProfile.Cfg.HANDLE_SIZE / 2),
           SnowProfile.Cfg.FEAT_DESCR_LEFT + SnowProfile.Cfg.FEAT_DESCR_WD,
-          yArg);
+          yArg + (SnowProfile.Cfg.HANDLE_SIZE / 2));
       }
     };
 
