@@ -602,7 +602,8 @@ var SnowProfile = {};
    * that fixed, iterate down the snowpack.
    */
   SnowProfile.layout = function() {
-    var i,
+    var height,
+      i,
       featureBottom,
       featureTop,
       layerBottom,
@@ -642,8 +643,16 @@ var SnowProfile = {};
       // The bottom of the features description area is the lower of the
       // bottom of the layer and the space needed for the features description
       // bounding box (greater Y value is lower on the drawing).
-        featureBottom = Math.max(layerBottom,
-          (featureTop + SnowProfile.snowLayers[i].features().height));
+      height = SnowProfile.snowLayers[i].features().height;
+      if ((height + (2 * SnowProfile.Cfg.MIN_FEAT_PAD)) <
+        SnowProfile.Cfg.MIN_FEAT_HEIGHT) {
+        height = SnowProfile.Cfg.MIN_FEAT_HEIGHT;
+      }
+      else {
+        height += 2 * SnowProfile.Cfg.MIN_FEAT_PAD;
+      }
+      // height is the number of pixels to allocate for feature description
+      featureBottom = Math.max(layerBottom, (featureTop + height));
 
       // Center the layer's insert button on the top line
       SnowProfile.snowLayers[i].insertButton.setCy(
@@ -661,10 +670,7 @@ var SnowProfile = {};
       SnowProfile.setDrawingHeight();
 
       // Position the features description in the center of its area.
-      SnowProfile.snowLayers[i].features().y(
-        featureTop + ((featureBottom - featureTop) / 2) -
-          (SnowProfile.snowLayers[i].features().height / 2)
-      );
+      SnowProfile.snowLayers[i].features().layout(featureTop, featureBottom);
     }
   };
 

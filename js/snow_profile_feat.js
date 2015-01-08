@@ -205,28 +205,30 @@
     var yPos;
 
     /**
-     * Height needed by the feature description, in pixels
+     * Height needed by the feature description, in pixels.
      *
-     * Based on the bounding box of the description plus padding.
+     * Based on the bounding box of the description.
+     * Zero if the description is empty.
      * @type {number}
      */
-    this.height = SnowProfile.Cfg.MIN_FEAT_HEIGHT;
+    this.height = 0;
 
     /**
      * Get or set Y value of the feature description.
      *
      * @param {number} yArg Y value of the top of the bounding box of features.
      */
-    this.y = function(yArg) {
-      if (yArg === undefined) {
-        return yPos;
-      }
-      else {
-        yPos = yArg;
-        editButton.setY(yArg + SnowProfile.Cfg.MIN_FEAT_PAD);
-        featDescr.y(yArg + SnowProfile.Cfg.MIN_FEAT_PAD);
-      }
-    };
+    // this.y = function(yArg) {
+    //   if (yArg === undefined) {
+    //     return yPos;
+    //   }
+    //   else {
+    //     console.log('y =', yArg);
+    //     yPos = yArg;
+    //     editButton.setY(yArg + SnowProfile.Cfg.MIN_FEAT_PAD);
+    //     featDescr.y(yArg + SnowProfile.Cfg.MIN_FEAT_PAD);
+    //  }
+    //};
 
     /**
      * Get or set the layer hardness
@@ -714,12 +716,10 @@
 
         // Make height of the feature description bounding box public
         if (fdBbox === null) {
-          self.height = SnowProfile.Cfg.MIN_FEAT_HEIGHT;
+          self.height = 0;
         }
         else {
-          self.height = Math.max(
-            fdBbox.height + (2 * SnowProfile.Cfg.MIN_FEAT_PAD),
-            SnowProfile.Cfg.MIN_FEAT_HEIGHT);
+          self.height = fdBbox.height;
         }
 
         // For debugging, make bounding box visible
@@ -742,6 +742,27 @@
 
     }; // this.describe = function(data) {
 
+    /**
+     * Lay out the feature description in its area
+     *
+     * @param {number} top Y value of top of area
+     * @param {number} bottom Y value of bottom of area
+     */
+    this.layout = function(top, bottom) {
+
+      // Midpoint of space for description
+      var spaceMidY = top + ((bottom - top) / 2);
+
+      // Edit button straddles midpoint
+      editButton.setY(spaceMidY - 11);
+
+      if (self.height === 0) {
+        // No feature description to lay out, forget it
+        return;
+      }
+      featDescr.y(spaceMidY - (self.height / 2) +
+        (3 * SnowProfile.Cfg.MIN_FEAT_PAD));
+    }
 
     /**
      * Horizontal line below the features description
