@@ -33,11 +33,12 @@
     <link rel="stylesheet" type="text/css" href="vendor/jquery.ui.button.css" />
     <link rel="stylesheet" type="text/css" href="vendor/jquery.ui.dialog.css" />
     <link rel="stylesheet" type="text/css" href="vendor/jquery.ui.resizable.css" />
+    <link rel="stylesheet" type="text/css" href="vendor/opentip.css" />
   </head>
 
   <body onLoad="SnowProfile.main();">
     <div id="snow_profile_container">
-      <p style="text-align: right;">Release 0.2.0-beta2</p>
+      <p style="text-align: right;">Release 0.2.0-beta3</p>
       <h1>Snow Profile Editor</h1>
       <noscript>
         <p style="font-size: large; font-weight: bold;">
@@ -96,7 +97,6 @@
 	  </select>
           <div id="snow_profile_secondary_grain_subshape"></div>
         </div>
-	<div id="snow_profile_secondary_grain_subshape"></div>
 	<label for="snow_profile_grain_size">Grain Size (mm):</label>
         <div id="snow_profile_grain_size" style="display: block">
           <input type="text" size="3" id="snow_profile_grain_size_min" /> -
@@ -122,13 +122,14 @@
     <script src="vendor/jquery.ui.draggable.min.js"></script>
     <script src="vendor/jquery.ui.position.min.js"></script>
     <script src="vendor/jquery.ui.resizable.min.js"></script>
-    <script src="js/snow_profile.js?md5=70b33e6810ba569ce4da609c96a4c40b"></script>
-    <script src="js/snow_profile_std.js?md5=9d24f9743e17832f3b05eac97a59f026"></script>
-    <script src="js/snow_profile_button.js?md5=6efa05fab6f5a08b409b7e25f073732e"></script>
-    <script src="js/snow_profile_popup.js?md5=87d3238379ac34197cfc97c4c259b458"></script>
-    <script src="js/snow_profile_feat.js?md5=ca11b4718a1a5af6dd24616bbcd46af3"></script>
-    <script src="js/snow_profile_layer.js?md5=24de26a6f9f2bcb3a2ea4e0115ea12e3"></script>
-    <script src="js/snow_profile_grid.js?md5=b4c7535430733055009492b9c2228959"></script>
+    <script src="vendor/opentip-jquery.js"></script>
+    <script src="js/snow_profile.js?md5=c0258441dda31f1454da82303940c0e2"></script>
+    <script src="js/snow_profile_std.js?md5=33bc187efa959da5675736179b874527"></script>
+    <script src="js/snow_profile_button.js?md5=7fa1ac39a916b8115a97b05906e2d426"></script>
+    <script src="js/snow_profile_popup.js?md5=a8334d3d9ff936b89ad44286920e167a"></script>
+    <script src="js/snow_profile_feat.js?md5=31947c8bb583bafc9b52203842cac2a2"></script>
+    <script src="js/snow_profile_layer.js?md5=f44e00b90f622dc2ee1b44434a6e3785"></script>
+    <script src="js/snow_profile_grid.js?md5=edb43f16f790eaa4f9ecaeeeb80d4a3b"></script>
     <script src="js/snow_profile_main.js?md5=a479abd54c0ee65e44dbc89a0f20d53e"></script>
     <button id="snow_profile_preview" style="display: block;">Preview</button>
     <p>Terminology is from the

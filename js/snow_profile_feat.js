@@ -40,14 +40,14 @@
      * the user to describe the features of this layer.
      * @type {Object}
      */
-    var editButton = new SnowProfile.Button("Edit");
+    var editButton = new SnowProfile.Button("edit");
     var i = layerObj.getIndex();
     var thisEdit = SnowProfile.editGroup.get(i);
     if (thisEdit === undefined) {
-      SnowProfile.editGroup.add(editButton.getButtonGroup());
+      SnowProfile.editGroup.add(editButton.getButton());
     }
     else {
-      thisEdit.before(editButton.getButtonGroup());
+      thisEdit.before(editButton.getButton());
     }
 
     /**
@@ -205,28 +205,30 @@
     var yPos;
 
     /**
-     * Height needed by the feature description, in pixels
+     * Height needed by the feature description, in pixels.
      *
-     * Based on the bounding box of the description plus padding.
+     * Based on the bounding box of the description.
+     * Zero if the description is empty.
      * @type {number}
      */
-    this.height = 2 * SnowProfile.Cfg.MIN_FEAT_PAD;
+    this.height = 0;
 
     /**
      * Get or set Y value of the feature description.
      *
      * @param {number} yArg Y value of the top of the bounding box of features.
      */
-    this.y = function(yArg) {
-      if (yArg === undefined) {
-        return yPos;
-      }
-      else {
-        yPos = yArg;
-        editButton.setY(yArg + SnowProfile.Cfg.MIN_FEAT_PAD);
-        featDescr.y(yArg + SnowProfile.Cfg.MIN_FEAT_PAD);
-      }
-    };
+    // this.y = function(yArg) {
+    //   if (yArg === undefined) {
+    //     return yPos;
+    //   }
+    //   else {
+    //     console.log('y =', yArg);
+    //     yPos = yArg;
+    //     editButton.setY(yArg + SnowProfile.Cfg.MIN_FEAT_PAD);
+    //     featDescr.y(yArg + SnowProfile.Cfg.MIN_FEAT_PAD);
+    //  }
+    //};
 
     /**
      * Get or set the layer hardness
@@ -334,7 +336,8 @@
           SnowProfile.CAAML_SUBSHAPE.MF.MFcr.icon.width)
           .y(-5)
           .attr('alt', 'MFcr');
-
+        new Opentip('#' + primaryIcon.node.id,
+          SnowProfile.CAAML_SUBSHAPE.MF.MFcr.text, "", {target: true});
         container.add(primaryIcon);
       }
       else {
@@ -344,6 +347,8 @@
           "data:image/png;base64," + image, 52, 29)
           .y(-5)
           .attr('alt', 'MFcr');
+        new Opentip('#' + primaryIcon.node.id,
+          SnowProfile.CAAML_SUBSHAPE.MF.MFcr.text, "", {target: true});
         container.add(primaryIcon);
         if (secondarySubShape === "") {
           // User did not specify a secondary subshape
@@ -355,6 +360,9 @@
             .cx(((SnowProfile.CAAML_SHAPE[secondaryShape]
               .icon.width) / 2) + 30)
             .cy(10);
+        new Opentip('#' + secondaryIcon.node.id,
+          SnowProfile.CAAML_SHAPE[secondaryShape].text,
+          "", {target: true});
         }
         else {
           // User specified a secondary subshape
@@ -369,6 +377,9 @@
             .cx(((SnowProfile.CAAML_SUBSHAPE[secondaryShape]
               [secondarySubShape].icon.width) / 2) + 30)
             .cy(10);
+          new Opentip('#' + secondaryIcon.node.id,
+            SnowProfile.CAAML_SUBSHAPE[secondaryShape][secondarySubShape].text,
+            "", {target: true});
         }
         container.add(secondaryIcon);
       }
@@ -415,6 +426,9 @@
             .attr('alt', primarySubShape);
           iconCursor += SnowProfile.CAAML_SUBSHAPE[primaryShape]
             [primarySubShape].icon.width;
+          new Opentip('#' + primaryIcon.node.id,
+            SnowProfile.CAAML_SUBSHAPE[primaryShape][primarySubShape].text,
+            "", {target: true});
         }
         else {
 
@@ -426,6 +440,8 @@
             SnowProfile.CAAML_SHAPE[primaryShape].icon.height)
             .attr('alt', primaryShape);
           iconCursor += SnowProfile.CAAML_SHAPE[primaryShape].icon.width;
+          new Opentip('#' + primaryIcon.node.id,
+            SnowProfile.CAAML_SHAPE[primaryShape].text, "", {target: true});
         }
         container.add(primaryIcon);
         if (secondaryShape !== "") {
@@ -456,9 +472,12 @@
               SnowProfile.CAAML_SUBSHAPE[secondaryShape][secondarySubShape].
               icon.height)
               .x(iconCursor)
-            .attr('alt', secondarySubShape);
+              .attr('alt', secondarySubShape);
             iconCursor += SnowProfile.CAAML_SUBSHAPE[secondaryShape]
               [secondarySubShape].icon.width;
+            new Opentip('#' + secondaryIcon.node.id,
+              SnowProfile.CAAML_SUBSHAPE[secondaryShape][secondarySubShape].text,
+              "", {target: true});
           }
           else {
 
@@ -468,9 +487,12 @@
               SnowProfile.CAAML_SHAPE[secondaryShape].icon.image,
               SnowProfile.CAAML_SHAPE[secondaryShape].icon.width,
               SnowProfile.CAAML_SHAPE[secondaryShape].icon.height)
-            .x(iconCursor)
-            .attr('alt', secondaryShape);
+              .x(iconCursor)
+              .attr('alt', secondaryShape)
             iconCursor += SnowProfile.CAAML_SHAPE[secondaryShape].icon.width;
+            new Opentip('#' + secondaryIcon.node.id,
+              SnowProfile.CAAML_SHAPE[secondaryShape].text,
+              "", {target: true});
           }
           container.add(secondaryIcon);
 
@@ -697,10 +719,10 @@
 
         // Make height of the feature description bounding box public
         if (fdBbox === null) {
-          self.height = 2 * SnowProfile.Cfg.MIN_FEAT_PAD;
+          self.height = 0;
         }
         else {
-          self.height = fdBbox.height + (2 * SnowProfile.Cfg.MIN_FEAT_PAD);
+          self.height = fdBbox.height;
         }
 
         // For debugging, make bounding box visible
@@ -723,6 +745,27 @@
 
     }; // this.describe = function(data) {
 
+    /**
+     * Lay out the feature description in its area
+     *
+     * @param {number} top Y value of top of area
+     * @param {number} bottom Y value of bottom of area
+     */
+    this.layout = function(top, bottom) {
+
+      // Midpoint of space for description
+      var spaceMidY = top + ((bottom - top) / 2);
+
+      // Edit button straddles midpoint
+      editButton.setY(spaceMidY - 11);
+
+      if (self.height === 0) {
+        // No feature description to lay out, forget it
+        return;
+      }
+      featDescr.y(spaceMidY - (self.height / 2) +
+        (3 * SnowProfile.Cfg.MIN_FEAT_PAD));
+    };
 
     /**
      * Horizontal line below the features description
@@ -761,9 +804,9 @@
         lineBelowYvalue = yArg;
         lineBelow.plot(
           SnowProfile.Cfg.FEAT_DESCR_LEFT - 3,
-          yArg,
+          yArg + (SnowProfile.Cfg.HANDLE_SIZE / 2),
           SnowProfile.Cfg.FEAT_DESCR_LEFT + SnowProfile.Cfg.FEAT_DESCR_WD,
-          yArg);
+          yArg + (SnowProfile.Cfg.HANDLE_SIZE / 2));
       }
     };
 

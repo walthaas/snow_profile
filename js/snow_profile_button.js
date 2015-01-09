@@ -14,65 +14,111 @@
   /**
    * @classdesc Define a button constructed from SVG shapes.
    * @constructor
-   * @param {string} textArg - Text to appear inside the button.
+   * @param {string} type "edit" or "insert"
    * @listens SnowProfileHideControls
    * @listens SnowProfileShowControls
    * @fires SnowProfileButtonClick
   */
-  SnowProfile.Button = function(textArg) {
+  SnowProfile.Button = function(type) {
 
     /**
-     * Group holding button text and rectangle around it
+     * Button symbol
      * @type {Object}
      * @private
      */
-    var buttonGroup = SnowProfile.drawing.group()
-      .addClass('snow_profile_button ' + textArg);
+    var button;
 
     /**
-     * Return a reference to buttonGroup
+     * Return a reference to button
      */
-    function getButtonGroup() {
-      return buttonGroup;
+    function getButton() {
+      return button;
     }
 
-    /**
-     * Define the text of the button
-     * @type {Object}
-     * @private
-     */
-    var text = SnowProfile.drawing.text(textArg)
-      .font({
-        family: "sans-serif",
-        size: 12,
-        fill: "#000",
-        stroke: 1
-      })
-      .cx((textArg === 'Edit') ?
-        SnowProfile.Cfg.EDIT_BUTTON_X : SnowProfile.Cfg.INS_BUTTON_X);
-    buttonGroup.add(text);
+    // /**
+    //  * Define the text of the button
+    //  * @type {Object}
+    //  * @private
+    //  */
+    // var text = SnowProfile.drawing.text(textArg)
+    //   .font({
+    //     family: "sans-serif",
+    //     size: 12,
+    //     fill: "#000",
+    //     stroke: 1
+    //   })
+    //   .cx((textArg === 'Edit') ?
+    //     SnowProfile.Cfg.EDIT_BUTTON_X : SnowProfile.Cfg.INS_BUTTON_X);
+    // buttonGroup.add(text);
 
-    // Draw a rectangle around the text
-    var button = SnowProfile.drawing.rect(text.bbox().width + 4,
-      text.bbox().height + 4)
-      .cx((textArg === 'Edit') ?
-        SnowProfile.Cfg.EDIT_BUTTON_X : SnowProfile.Cfg.INS_BUTTON_X)
-      .style({
-        "stroke-width": 1,
-        stroke: "#000",
-        "stroke-opacity": 1,
-        fill: "#fff",
-        "fill-opacity": 0
-      })
-      .radius(4);
-    buttonGroup.add(button);
+    // // Draw a rectangle around the text
+    // var button = SnowProfile.drawing.rect(text.bbox().width + 4,
+    //   text.bbox().height + 4)
+    //   .cx((textArg === 'Edit') ?
+    //     SnowProfile.Cfg.EDIT_BUTTON_X : SnowProfile.Cfg.INS_BUTTON_X)
+    //   .style({
+    //     "stroke-width": 1,
+    //     stroke: "#000",
+    //     "stroke-opacity": 1,
+    //     fill: "#fff",
+    //     "fill-opacity": 0
+    //   })
+    //   .radius(4);
+
+    switch (type) {
+      case 'edit':
+        button = SnowProfile.drawing.use(SnowProfile.pencil)
+          .addClass('snow_profile_button')
+          .addClass('snow_profile_button_edit')
+          .cx(SnowProfile.Cfg.EDIT_BUTTON_X);
+          new Opentip('#' + button.node.id, "Edit description",
+            "", {target: true, tipJoint: "right"});
+          break;
+
+      case 'insert':
+        button = SnowProfile.drawing.use(SnowProfile.plus)
+          .addClass('snow_profile_button')
+          .addClass('snow_profile_button_insert')
+          .cx(SnowProfile.Cfg.INS_BUTTON_X);
+          new Opentip('#' + button.node.id, "Insert layer",
+            "", {target: true, tipJoint: "right"});
+        break;
+
+      default:
+        throw new Error('unknown button type ' + type);
+    }
+    button.style({
+      "stroke-width": 1,
+      stroke: SnowProfile.Cfg.BUTTON_BLUR_COLOR,
+      fill: SnowProfile.Cfg.BUTTON_BLUR_COLOR,
+      "fill-opacity": 1
+    });
+
+    /**
+     * When mouse hovers over button, change cursor to pointer
+     *
+     * @callback
+     */
+    button.mouseover(function() {
+      button.style({
+        cursor: 'pointer',
+        stroke: SnowProfile.Cfg.BUTTON_FOCUS_COLOR,
+        fill: SnowProfile.Cfg.BUTTON_FOCUS_COLOR
+      });
+    });
+    button.mouseout(function() {
+      button.style({
+        stroke: SnowProfile.Cfg.BUTTON_BLUR_COLOR,
+        fill: SnowProfile.Cfg.BUTTON_BLUR_COLOR
+      });
+    });
 
     /**
      * Hide this button.
      * @private
      */
     function hideButton() {
-      buttonGroup.hide();
+      button.hide();
     }
 
     /**
@@ -80,7 +126,7 @@
      * @private
      */
     function showButton() {
-      buttonGroup.show();
+      button.show();
     }
 
     /**
@@ -89,7 +135,12 @@
      * @public
      */
     function setCy(y) {
-      buttonGroup.cy(y);
+
+      // It seems that button.y() and button.cy() produce the same Y position
+      // of the button, at least using Chrome and Firefox.  This ugly hack
+      // relies on the 22px height of the button to acheive the effect desired
+      // by calling button.cy().
+      button.y(y - 11);
     }
 
     /**
@@ -98,7 +149,7 @@
      * @public
      */
     function setY(y) {
-      buttonGroup.y(y);
+      button.y(y);
     }
 
     /**
@@ -109,7 +160,7 @@
       button.off('click');
       $(document).unbind("SnowProfileHideControls", hideButton);
       $(document).unbind("SnowProfileShowControls", showButton);
-      buttonGroup.remove();
+      button.remove();
     }
 
     /**
@@ -119,7 +170,7 @@
       destroy: destroy,
       setCy: setCy,
       setY: setY,
-      getButtonGroup: getButtonGroup
+      getButton: getButton
     };
 
     // Listen for "SnowProfileHideControls" events

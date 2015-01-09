@@ -89,7 +89,7 @@ var SnowProfile = {};
      * @memberof SnowProfile
      * @const {number}
      */
-    CTRLS_WD: 160,
+    CTRLS_WD: 130,
 
     /**
      * Width in pixels of the area used by snow grain shape
@@ -171,14 +171,21 @@ var SnowProfile = {};
      * @memberof SnowProfile
      * @const {string}
      */
-     LABEL_COLOR: '#000',
+    LABEL_COLOR: '#000',
 
     /**
-     * Color of the chart grid
+     * Color of the outline of the chart grid
      * @memberof SnowProfile
      * @const {string}
      */
-    GRID_COLOR: '#000',
+    OUTLINE_GRID_COLOR: '#000',
+
+    /**
+     * Color of the inside lines of the chart grid
+     * @memberof SnowProfile
+     * @const {string}
+     */
+    INSIDE_GRID_COLOR: '#AAA',
 
     /**
      * Color of the outlines of a snow layer
@@ -202,6 +209,20 @@ var SnowProfile = {};
     LAYER_FILL_OPACITY: .85,
 
     /**
+     * Color of a button that is not under the mouse
+     * @memberof SnowProfile
+     * @const {string}
+     */
+    BUTTON_BLUR_COLOR: "#AAA",
+
+    /**
+     * Color of a button that is under the mouse
+     * @memberof SnowProfile
+     * @const {string}
+     */
+    BUTTON_FOCUS_COLOR: "#000",
+
+    /**
       Depth scale in pixels per cm
       @const {number}
       @memberof SnowProfile
@@ -209,7 +230,19 @@ var SnowProfile = {};
     DEPTH_SCALE: 5,
 
     /**
+     * Minimum height of the feature description area in pixels.
+     *
+     * The minimum height is in effect when the feature description is
+     * empty or has a height less than the minimum.
+     * @const {number}
+     * @memberof SnowProfile
+     */
+    MIN_FEAT_HEIGHT: 25,
+
+    /**
      * Minimum number of pixels of padding above and below features desc.
+     * @const {number}
+     * @memberof SnowProfile
      */
     MIN_FEAT_PAD: 2,
 
@@ -351,16 +384,16 @@ var SnowProfile = {};
     (SnowProfile.Cfg.HANDLE_SIZE / 2);
 
   /**
-   * X position of the center line of the buttons in the control area
+   * X position of the center line of the insert buttons in the control area
    */
   SnowProfile.Cfg.INS_BUTTON_X = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
-    SnowProfile.Cfg.GRAPH_WIDTH + 100;
+    SnowProfile.Cfg.GRAPH_WIDTH + 65;
 
   /**
-   * X position of the center line of the buttons in the control area
+   * X position of the center line of the edit buttons in the control area
    */
   SnowProfile.Cfg.EDIT_BUTTON_X = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
-    SnowProfile.Cfg.GRAPH_WIDTH + 140;
+    SnowProfile.Cfg.GRAPH_WIDTH + 90;
 
   /**
    * X position of the left edge of the layer description
@@ -569,7 +602,8 @@ var SnowProfile = {};
    * that fixed, iterate down the snowpack.
    */
   SnowProfile.layout = function() {
-    var i,
+    var height,
+      i,
       featureBottom,
       featureTop,
       layerBottom,
@@ -577,7 +611,6 @@ var SnowProfile = {};
 
     // Iterate through snow layers from top down
     for (i = 0; i < SnowProfile.snowLayers.length; i++) {
-
       // Y value of the top of this layer
       layerTop = SnowProfile.depth2y(SnowProfile.snowLayers[i].depth());
 
@@ -590,7 +623,8 @@ var SnowProfile = {};
       else {
         // This layer is NOT the bottom layer, so the bottom
         // of this layer is the top of the layer below.
-        layerBottom = SnowProfile.depth2y(SnowProfile.snowLayers[i + 1].depth());
+        layerBottom = SnowProfile.depth2y(
+          SnowProfile.snowLayers[i + 1].depth());
       }
 
       // Y value of the top of the layer feature description
@@ -609,16 +643,23 @@ var SnowProfile = {};
       // The bottom of the features description area is the lower of the
       // bottom of the layer and the space needed for the features description
       // bounding box (greater Y value is lower on the drawing).
-        featureBottom = Math.max(layerBottom,
-          (featureTop + SnowProfile.snowLayers[i].features().height));
+      height = SnowProfile.snowLayers[i].features().height;
+      if ((height + (2 * SnowProfile.Cfg.MIN_FEAT_PAD)) <
+        SnowProfile.Cfg.MIN_FEAT_HEIGHT) {
+        height = SnowProfile.Cfg.MIN_FEAT_HEIGHT;
+      }
+      else {
+        height += 2 * SnowProfile.Cfg.MIN_FEAT_PAD;
+      }
+      // height is the number of pixels to allocate for feature description
+      featureBottom = Math.max(layerBottom, (featureTop + height));
 
       // Center the layer's insert button on the top line
       SnowProfile.snowLayers[i].insertButton.setCy(
         Math.max(layerTop, featureTop));
 
       // Draw the line below the bottom of the features description.
-      SnowProfile.snowLayers[i].features().lineBelowY(
-        featureBottom + (SnowProfile.Cfg.HANDLE_SIZE / 2));
+      SnowProfile.snowLayers[i].features().lineBelowY(featureBottom);
 
       // Draw the diagonal line from layerBottom to lineBelow
       SnowProfile.snowLayers[i].setDiagLine();
@@ -629,10 +670,7 @@ var SnowProfile = {};
       SnowProfile.setDrawingHeight();
 
       // Position the features description in the center of its area.
-      SnowProfile.snowLayers[i].features().y(
-        featureTop + ((featureBottom - featureTop) / 2) -
-          (SnowProfile.snowLayers[i].features().height / 2)
-      );
+      SnowProfile.snowLayers[i].features().layout(featureTop, featureBottom);
     }
   };
 
@@ -743,6 +781,11 @@ var SnowProfile = {};
   SnowProfile.init = function() {
 
     /**
+     * Default tooltip style
+     */
+    Opentip.defaultStyle = "glass";
+
+    /**
      * SVG drawing
      *
      * @see  {@link http://http://documentup.com/wout/svg.js#usage/create-a-svg-document Create a SVG document}
@@ -803,6 +846,22 @@ var SnowProfile = {};
     SnowProfile.editGroup = SnowProfile.drawing.group()
       .addClass('snow_profile_ctrls_edit');
     SnowProfile.ctrlsGroup.add(SnowProfile.editGroup);
+
+    /**
+     * Pencil symbol used by the edit button.
+     * @memberof SnowProfile
+     */
+    SnowProfile.pencil = SnowProfile.drawing.defs()
+      .path("M 16.875,4.4 C 18.60063,4.4 20,5.7993755 20,7.525 20,8.2287506 19.7675,8.8774995 19.375,9.4 L 18.125,10.65 13.75,6.275 15,5.025 C 15.5225,4.6325 16.171251,4.4 16.875,4.4 z M 1.25,18.775 0,24.4 5.625,23.15 17.1875,11.587506 12.8125,7.2125 1.25,18.775 z m 12.726251,-7.273755 -8.750001,8.75 -1.0775,-1.07749 8.749999,-8.750001 1.077502,1.077491 z")
+      .addClass('snow_profile_ctrls_edit');
+
+    /**
+     * Plus symbol used by the insert button.
+     * @memberof SnowProfile
+     */
+    SnowProfile.plus = SnowProfile.drawing.defs()
+      .path("M 19.375,13.805085 H 12.5 v -6.875 c 0,-0.345 -0.28,-0.625 -0.625,-0.625 H 8.1249998 c -0.3449999,0 -0.6249999,0.28 -0.6249999,0.625 v 6.875 H 0.62499999 c -0.345,0 -0.62499999,0.28 -0.62499999,0.625 v 3.75 c 0,0.345 0.27999999,0.625 0.62499999,0.625 H 7.4999999 v 6.875 c 0,0.344999 0.28,0.625 0.6249999,0.625 H 11.875 c 0.345,0 0.625,-0.280001 0.625,-0.625 v -6.875 h 6.875 c 0.344999,0 0.625,-0.28 0.625,-0.625 v -3.75 c 0,-0.345 -0.280001,-0.625 -0.625,-0.625 z")
+      .addClass('snow_profile_ctrls_insert');
 
     /**
      * SnowProfile drawing insert buttons group
@@ -877,20 +936,6 @@ var SnowProfile = {};
 
     // Add the reference grid to the SVG drawing
     new SnowProfile.Grid();
-
-    // // Add an "Insert" button to allow the user to insert a snow layer
-    // // above the top snow layer.
-    // var insertButton = new SnowProfile.Button("Insert");
-    // insertButton.setCy(SnowProfile.Cfg.HANDLE_MIN_Y +
-    //   (SnowProfile.Cfg.HANDLE_SIZE / 2));
-
-    // // When Insert button clicked, insert a new snow layer at depth zero.
-    // $(document).bind("SnowProfileButtonClick", function(evt, extra) {
-    //   if (extra.buttonObj === insertButton) {
-    //     SnowProfile.newLayer(0);
-    //     evt.stopImmediatePropagation();
-    //   }
-    // });
 
     // When the "Preview" button is clicked, generate a preview
     $(document).ready(function() {

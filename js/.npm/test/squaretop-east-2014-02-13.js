@@ -20,7 +20,7 @@ var sw = require('../node_modules/selenium-webdriver'),
 function clickInsert(index) {
   driver.findElement(sw.By.xpath(
     com.buttonsXpath +
-      "[@class='snow_profile_button Insert'][" + (index + 1) + "]"))
+      "[@class='snow_profile_button_insert'][" + (index + 1) + "]"))
     .click();
 }
 

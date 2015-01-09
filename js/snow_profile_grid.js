@@ -95,7 +95,7 @@
             SnowProfile.depthGroup.add(SnowProfile.drawing.line(x0, y, x1, y)
               .addClass("snow_profile_depth")
               .stroke({
-                color: SnowProfile.Cfg.GRID_COLOR,
+                color: SnowProfile.Cfg.INSIDE_GRID_COLOR,
                 width: 1
             }));
           }
@@ -127,7 +127,7 @@
             SnowProfile.depthGroup.add(SnowProfile.drawing.line(x0, y, x1, y)
               .addClass("snow_profile_depth")
               .stroke({
-                color: SnowProfile.Cfg.GRID_COLOR,
+                color: SnowProfile.Cfg.INSIDE_GRID_COLOR,
                 width: 1
             }));
           }
@@ -143,7 +143,7 @@
      */
     function drawHardnessScale() {
 
-      var i, x;
+      var i, id, x, textElmt;
 
       // Add a vertical line along the left edge
       SnowProfile.hardnessGroup.add(SnowProfile.drawing.line(
@@ -188,11 +188,10 @@
             x, SnowProfile.handleMaxY + (SnowProfile.Cfg.HANDLE_SIZE / 2))
             .addClass("snow_profile_hardness")
             .stroke({
-            color: SnowProfile.Cfg.GRID_COLOR,
+            color: SnowProfile.Cfg.INSIDE_GRID_COLOR,
             width: 1
           }));
-          SnowProfile.hardnessGroup.add(SnowProfile.drawing.text(
-            SnowProfile.CAAML_HARD[i][0])
+          textElmt = SnowProfile.drawing.text(SnowProfile.CAAML_HARD[i][0])
             .addClass("snow_profile_hardness")
             .font({
               size: 12,
@@ -201,7 +200,10 @@
               fill: SnowProfile.Cfg.LABEL_COLOR
             })
             .move(x - 1, SnowProfile.depth2y(SnowProfile.pitDepth) +
-              (SnowProfile.Cfg.HANDLE_SIZE / 2) + 3));
+              (SnowProfile.Cfg.HANDLE_SIZE / 2) + 3);
+          SnowProfile.hardnessGroup.add(textElmt);
+          new Opentip('#' + textElmt.node.id,
+            SnowProfile.CAAML_HARD[i][1], "", {target: true});
         }
       }
 
@@ -232,7 +234,7 @@
         SnowProfile.Cfg.DRAWING_WD,
         SnowProfile.Cfg.HANDLE_MIN_Y + (SnowProfile.Cfg.HANDLE_SIZE / 2))
       .stroke({
-        color: SnowProfile.Cfg.GRID_COLOR,
+        color: SnowProfile.Cfg.OUTLINE_GRID_COLOR,
         width: 1
       }));
 

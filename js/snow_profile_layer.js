@@ -15,7 +15,7 @@
    * @param {number} depthArg Initial depth in cm of this layer from the top
    * of the snow pack.
    * @constructor
-   * @listens SnowProfileAdjustGrid
+   * @listens SnowProfileDrawGrid
    * @listens SnowProfileButtonClick
    * @listens SnowProfileHideControls
    * @listens SnowProfileShowControls
@@ -29,7 +29,10 @@
      * Depth of the top of this snow layer in cm from the snow surface.
      *
      * Initialized to the argument passed to the constructor and adjusted
-     * whenever the user moves the handle for this snow layer.
+     * whenever the user moves the handle for this snow layer.  Note that this
+     * number is always expressed in cm from the surface.  When the user
+     * switches to ground reference, this doesn't change; the visible change
+     * occurs when the number is displayed.
      * @type {number}
      */
     var depthVal = depthArg;
@@ -71,6 +74,34 @@
       .x(SnowProfile.Cfg.HANDLE_INIT_X)
       .y(SnowProfile.depth2y(depthVal))
       .addClass("snow_profile_handle");
+
+    /**
+     * Tooltip that follows the handle and displays when mouse over handle.
+     */
+    var handleTip = new Opentip('#' + handle.node.id, "uninitialized",
+        "", {tipJoint: "bottom left"});
+
+    /**
+     * Set the text information in the handle tooltip.
+     *
+     * @param {number} x X coordinate of the mouse
+     */
+    function handleTipSet(x) {
+
+      var mm;
+
+      if (SnowProfile.depthRef === "s") {
+
+         // Depth is referred to the snow surface
+         mm = Math.round(depthVal * 10) / 10;
+      }
+      else {
+
+        // Depth is referred to the ground
+        mm = Math.round((SnowProfile.totalDepth - depthVal) * 10) / 10;
+      }
+      handleTip.setContent( mm + ', ' + SnowProfile.x2code(x));
+    }
 
     /**
      * Process handle drag
@@ -140,20 +171,19 @@
       // Adjust the vertical (depth) position
       depthVal = SnowProfile.y2depth(newY);
 
-      // Set the text information floating to the right of the graph
-      if (SnowProfile.depthRef === "s") {
+      // Set the text information in the handle tooltip
+      // if (SnowProfile.depthRef === "s") {
 
-         // Depth is referred to the snow surface
-         mm = Math.round(depthVal * 10) / 10;
-      }
-      else {
+      //    // Depth is referred to the snow surface
+      //    mm = Math.round(depthVal * 10) / 10;
+      // }
+      // else {
 
-        // Depth is referred to the ground
-        mm = Math.round((SnowProfile.totalDepth - depthVal) * 10) / 10;
-      }
-      handleLoc.text( '(' + mm + ', ' +
-        SnowProfile.x2code(newX) + ')');
-      handleLoc.y(newY);
+      //   // Depth is referred to the ground
+      //   mm = Math.round((SnowProfile.totalDepth - depthVal) * 10) / 10;
+      // }
+      // handleTip.setContent( mm + ', ' + SnowProfile.x2code(newX));
+      handleTipSet(newX);
 
       // Adjust the rectangle that outlines this layer
       self.setLayerOutline();
@@ -182,34 +212,13 @@
      .loop();
 
     /**
-     * Text to show current handle location.
-     *
-     * The text appears to the right of the grid, at the same Y position as the
-     * handle.  The depth value is in cm and tenths referenced according to the
-     * grid scale.  This text is normally hidden, and shows when the mouse is
-     * over the handle.
-     * @type {Object}
-     */
-    var handleLoc = SnowProfile.drawing.text("")
-      .font({
-        size: 12,
-        style: 'bold',
-        family: 'sans-serif',
-        fill: SnowProfile.Cfg.LABEL_COLOR
-      })
-      .x(SnowProfile.Cfg.DEPTH_LABEL_WD + 1 + SnowProfile.Cfg.GRAPH_WIDTH + 10)
-      .y(SnowProfile.depth2y(depthVal))
-      .hide();
-    SnowProfile.mainGroup.add(handleLoc);
-
-    /**
      * "Insert" button
      *
      * Insert button at the bottom of this layer.  When clicked, another layer
      * is inserted below this layer.
      * @type {Object}
      */
-    this.insertButton = new SnowProfile.Button("Insert");
+    this.insertButton = new SnowProfile.Button("insert");
 
     /**
      * Define a diagonal line from the bottom of this layer right to the
@@ -263,7 +272,7 @@
           return i;
         }
       }
-      console.error("Object not found in snowLayers[]");
+      throw new Error("Object not found in snowLayers[]");
     };
 
     /**
@@ -287,9 +296,8 @@
       handle.off('mouseup mousedown mouseover mouseout');
       $(document).unbind("SnowProfileHideControls", handleInvisible);
       $(document).unbind("SnowProfileShowControls", handleVisible);
-      $(document).unbind("SnowProfileAdjustGrid", self.draw);
+      $(document).unbind("SnowProfileDrawGrid", self.draw);
       handle.remove();
-      handleLoc.remove();
       layerOutline.remove();
       diagLine.remove();
       featObj.destroy();
@@ -328,7 +336,7 @@
 
       // Y dimension of the right end is the Y of the line below the
       // description of this snow layer.
-      yRight = featObj.lineBelowY();
+      yRight = featObj.lineBelowY() + (SnowProfile.Cfg.HANDLE_SIZE / 2);
 
       // X dimension of the left end is the right edge of the graph
       xLeft = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 + SnowProfile.Cfg.GRAPH_WIDTH;
@@ -445,6 +453,9 @@
       // Set handle Y from depth
       handle.y(SnowProfile.depth2y(depthVal));
 
+      // Set handle tooltip contents
+      handleTipSet(handle.x());
+
       // Adjust the rectangle that outlines this layer
       self.setLayerOutline();
 
@@ -509,7 +520,7 @@
         // Insertion point found, we need to insert above snowLayers[i].
         SnowProfile.snowLayers.splice(i, 0, this);
         thisHandle.before(handle);
-        thisInsert.before(self.insertButton.getButtonGroup());
+        thisInsert.before(self.insertButton.getButton());
         inserted = true;
         break;
       }
@@ -520,7 +531,7 @@
     if (!inserted) {
       SnowProfile.snowLayers.push(this);
       SnowProfile.handlesGroup.add(handle);
-      SnowProfile.insertGroup.add(self.insertButton.getButtonGroup());
+      SnowProfile.insertGroup.add(self.insertButton.getButton());
     }
 
     // Listen for "SnowProfileHideControls" events
@@ -529,8 +540,8 @@
     // Listen for "SnowProfileShowControls" events
     $(document).bind("SnowProfileShowControls", handleVisible);
 
-    // Listen for "SnowProfileAdjustGrid" events
-    $(document).bind("SnowProfileAdjustGrid", self.draw);
+    // Listen for "SnowProfileDrawGrid" events
+    $(document).bind("SnowProfileDrawGrid", self.draw);
 
     /**
      * When mouse hovers over handle, show handle location
@@ -539,17 +550,6 @@
      */
     handle.mouseover(function() {
       handle.style('cursor', 'pointer');
-      if (handleTouched) {
-        handleLoc.show();
-      }
-    });
-
-    /**
-     Style the cursor for the handle
-     @callback
-     */
-    handle.mouseout(function() {
-      handleLoc.hide();
     });
 
     /**
@@ -568,7 +568,6 @@
      * @callback
      */
     handle.mouseup(function() {
-      handleLoc.hide();
       handle.x(SnowProfile.code2x(featObj.hardness()));
       self.draw();
     });
