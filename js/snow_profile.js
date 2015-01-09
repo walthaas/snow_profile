@@ -384,16 +384,16 @@ var SnowProfile = {};
     (SnowProfile.Cfg.HANDLE_SIZE / 2);
 
   /**
-   * X position of the center line of the buttons in the control area
+   * X position of the center line of the insert buttons in the control area
    */
   SnowProfile.Cfg.INS_BUTTON_X = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
-    SnowProfile.Cfg.GRAPH_WIDTH + 80;
+    SnowProfile.Cfg.GRAPH_WIDTH + 65;
 
   /**
-   * X position of the center line of the buttons in the control area
+   * X position of the center line of the edit buttons in the control area
    */
   SnowProfile.Cfg.EDIT_BUTTON_X = SnowProfile.Cfg.DEPTH_LABEL_WD + 1 +
-    SnowProfile.Cfg.GRAPH_WIDTH + 105;
+    SnowProfile.Cfg.GRAPH_WIDTH + 90;
 
   /**
    * X position of the left edge of the layer description
@@ -781,6 +781,11 @@ var SnowProfile = {};
   SnowProfile.init = function() {
 
     /**
+     * Default tooltip style
+     */
+    Opentip.defaultStyle = "glass";
+
+    /**
      * SVG drawing
      *
      * @see  {@link http://http://documentup.com/wout/svg.js#usage/create-a-svg-document Create a SVG document}
@@ -931,20 +936,6 @@ var SnowProfile = {};
 
     // Add the reference grid to the SVG drawing
     new SnowProfile.Grid();
-
-    // // Add an "Insert" button to allow the user to insert a snow layer
-    // // above the top snow layer.
-    // var insertButton = new SnowProfile.Button("Insert");
-    // insertButton.setCy(SnowProfile.Cfg.HANDLE_MIN_Y +
-    //   (SnowProfile.Cfg.HANDLE_SIZE / 2));
-
-    // // When Insert button clicked, insert a new snow layer at depth zero.
-    // $(document).bind("SnowProfileButtonClick", function(evt, extra) {
-    //   if (extra.buttonObj === insertButton) {
-    //     SnowProfile.newLayer(0);
-    //     evt.stopImmediatePropagation();
-    //   }
-    // });
 
     // When the "Preview" button is clicked, generate a preview
     $(document).ready(function() {

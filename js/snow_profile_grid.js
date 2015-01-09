@@ -192,7 +192,6 @@
             width: 1
           }));
           textElmt = SnowProfile.drawing.text(SnowProfile.CAAML_HARD[i][0])
-            .attr('title', SnowProfile.CAAML_HARD[i][1])
             .addClass("snow_profile_hardness")
             .font({
               size: 12,
@@ -203,7 +202,8 @@
             .move(x - 1, SnowProfile.depth2y(SnowProfile.pitDepth) +
               (SnowProfile.Cfg.HANDLE_SIZE / 2) + 3);
           SnowProfile.hardnessGroup.add(textElmt);
-          $('#' + textElmt.node.id).tipsy();
+          new Opentip('#' + textElmt.node.id,
+            SnowProfile.CAAML_HARD[i][1], "", {target: true});
         }
       }
 

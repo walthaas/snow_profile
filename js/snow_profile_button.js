@@ -70,16 +70,18 @@
         button = SnowProfile.drawing.use(SnowProfile.pencil)
           .addClass('snow_profile_button')
           .addClass('snow_profile_button_edit')
-          .cx(SnowProfile.Cfg.EDIT_BUTTON_X)
-          .attr('title', 'Edit description');
+          .cx(SnowProfile.Cfg.EDIT_BUTTON_X);
+          new Opentip('#' + button.node.id, "Edit description",
+            "", {target: true, tipJoint: "right"});
           break;
 
       case 'insert':
         button = SnowProfile.drawing.use(SnowProfile.plus)
           .addClass('snow_profile_button')
           .addClass('snow_profile_button_insert')
-          .cx(SnowProfile.Cfg.INS_BUTTON_X)
-          .attr('title', 'Insert layer');
+          .cx(SnowProfile.Cfg.INS_BUTTON_X);
+          new Opentip('#' + button.node.id, "Insert layer",
+            "", {target: true, tipJoint: "right"});
         break;
 
       default:
@@ -91,7 +93,6 @@
       fill: SnowProfile.Cfg.BUTTON_BLUR_COLOR,
       "fill-opacity": 1
     });
-    $('#' + button.node.id).tipsy();
 
     /**
      * When mouse hovers over button, change cursor to pointer
@@ -139,7 +140,7 @@
       // of the button, at least using Chrome and Firefox.  This ugly hack
       // relies on the 22px height of the button to acheive the effect desired
       // by calling button.cy().
-      button.y(y  - 11);
+      button.y(y - 11);
     }
 
     /**
