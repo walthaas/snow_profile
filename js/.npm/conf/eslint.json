@@ -14,7 +14,8 @@
     "matchMedia": true,
     "Backbone": true,
     "Modernizr": true,
-    "CKEDITOR": true
+    "CKEDITOR": true,
+    "Opentip": true
   },
   "rules": {
     "eqeqeq": [2, "smart"],

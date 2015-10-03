@@ -4,3 +4,4 @@ js/.npm/doc/
 \#*\#
 *.xsd
 *.xml
+/nbproject/private/

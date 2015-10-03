@@ -43,7 +43,12 @@
     var featObj;
 
     /**
-     * Features object describing the features of this Layer.
+     * Get or set the features object describing the features of this Layer.
+     *
+     * @param [object] featArg If present, a reference to the features
+     *   object to be stored.
+     * @returns {Object} Reference to the saved features object if
+     *   featArg omitted.
      */
     this.features = function(featArg) {
       if (featArg === undefined) {
@@ -77,6 +82,8 @@
 
     /**
      * Tooltip that follows the handle and displays when mouse over handle.
+     *
+     * @type {object}
      */
     var handleTip = new Opentip('#' + handle.node.id, "uninitialized",
         "", {tipJoint: "bottom left"});
@@ -171,18 +178,6 @@
       // Adjust the vertical (depth) position
       depthVal = SnowProfile.y2depth(newY);
 
-      // Set the text information in the handle tooltip
-      // if (SnowProfile.depthRef === "s") {
-
-      //    // Depth is referred to the snow surface
-      //    mm = Math.round(depthVal * 10) / 10;
-      // }
-      // else {
-
-      //   // Depth is referred to the ground
-      //   mm = Math.round((SnowProfile.totalDepth - depthVal) * 10) / 10;
-      // }
-      // handleTip.setContent( mm + ', ' + SnowProfile.x2code(newX));
       handleTipSet(newX);
 
       // Adjust the rectangle that outlines this layer
@@ -206,6 +201,7 @@
      * Animate the uninitialized handle to draw the user's attention
      *
      * For some reason this must be done after handle.draggable() not before.
+     * @memberof handle
      */
     handle.animate({ease: SVG.easing.backInOut, duration: '1000'})
      .size(SnowProfile.Cfg.HANDLE_SIZE / 1.4, SnowProfile.Cfg.HANDLE_SIZE / 1.4)
@@ -547,14 +543,16 @@
      * When mouse hovers over handle, show handle location
      *
      * @callback
+     * @memberof handle
      */
     handle.mouseover(function() {
       handle.style('cursor', 'pointer');
     });
 
     /**
-     When the handle is in use, show its location to the right.
-     @callback
+     * When the handle is in use, show its location to the right.
+     * @callback
+     * @memberof handle
      */
     handle.mousedown(function() {
       handleTouched = true;
@@ -566,6 +564,7 @@
      * This has the effect of causing the handle and layer outline X values
      * to snap to the next lowest discrete hardness code.
      * @callback
+     * @memberof handle
      */
     handle.mouseup(function() {
       handle.x(SnowProfile.code2x(featObj.hardness()));

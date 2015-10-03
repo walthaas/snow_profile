@@ -67,7 +67,7 @@
     /**
      * Grain size of this snow layer in mm.
      *
-     * A single grain size is stored in grainSizeMin.  A rane of grain sizes
+     * A single grain size is stored in grainSizeMin.  A range of grain sizes
      * is stored in grainSizeMin and grainSizeMax.
      * @type {string}
      */
@@ -488,7 +488,7 @@
               SnowProfile.CAAML_SHAPE[secondaryShape].icon.width,
               SnowProfile.CAAML_SHAPE[secondaryShape].icon.height)
               .x(iconCursor)
-              .attr('alt', secondaryShape)
+              .attr('alt', secondaryShape);
             iconCursor += SnowProfile.CAAML_SHAPE[secondaryShape].icon.width;
             new Opentip('#' + secondaryIcon.node.id,
               SnowProfile.CAAML_SHAPE[secondaryShape].text,
@@ -548,6 +548,17 @@
 
     /**
      * Set the grain description.
+     *
+     * Accept grain shape symbols selected by the user, if any, and
+     * describe the shape in text and icons.  The description is
+     * constructed by looking up the symbols in
+     * {@link SnowProfile.CAAML_SHAPE} and
+     * {@link SnowProfile.CAAML_SUBSHAPE} to find the equivalent icons.
+     *
+     * @param {string} primaryShape Primary grain shape symbol
+     * @param {string} primarySubShape Primary grain subshape symbol
+     * @param {string} secondaryShape Secondary grain shape symbol
+     * @param {string} secondarySubShape Secondary grain subshape symbol
      */
     function setGrainDescr(primaryShape, primarySubShape, secondaryShape,
       secondarySubShape) {
