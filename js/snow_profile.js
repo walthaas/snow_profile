@@ -756,6 +756,9 @@ var SnowProfile = {};
         $.event.trigger("SnowProfileShowControls");
       }
     });
+
+    // Prevent bubbling of this event.
+    return false;
   };
 
   /**
@@ -769,6 +772,60 @@ var SnowProfile = {};
     SnowProfile.layout();
     SnowProfile.ctrlsGroup.front();
   };
+
+  /**
+   * Export the snow profile data into the form.
+   *
+   * Called when the "Save" button is clicked.
+   * FIXME deal with other than 3 layers
+   */
+  SnowProfile.export = function() {
+    var i;
+    $("input[name='pit_depth']").val(SnowProfile.pitDepth);
+    $("input[name='total_depth']").val(SnowProfile.totalDepth);
+    $("input[name='depth_ref']").val(SnowProfile.depthRef);
+    $("input[name='num_layers']").val(3);
+    for (i = 0; i < 3; i++) {
+      $("input[name='layer[" + i +"][depth]']").val(SnowProfile.snowLayers[i].depth());
+      var describe = SnowProfile.snowLayers[i].features().describe();
+      $("input[name='layer[" + i +"][hardness]']")
+        .val(SnowProfile.snowLayers[i].features().hardness());
+      var describe = SnowProfile.snowLayers[i].features().describe();
+      $("input[name='layer[" + i +"][primaryGrainShape]']")
+        .val(describe.primaryGrainShape);
+      $("input[name='layer[" + i +"][primaryGrainSubShape]']")
+        .val(describe.primaryGrainSubShape);
+      $("input[name='layer[" + i +"][secondaryGrainShape]']")
+        .val(describe.secondaryGrainShape);
+      $("input[name='layer[" + i +"][secondaryGrainSubShape]']")
+        .val(describe.secondaryGrainSubShape);
+      $("input[name='layer[" + i +"][grainSizeMin]']")
+        .val(describe.grainSizeMin);
+      $("input[name='layer[" + i +"][grainSizeMax]']")
+        .val(describe.grainSizeMax);
+      $("input[name='layer[" + i +"][comment]']").val(describe.comment);
+    }
+  };
+
+  /**
+   * Intercept an ENTER key and replace SUBMIT with a change event
+   *
+   * This is used to prevent the ENTER key in certain text input fields
+   * from submitting the form.  The change event causes whatever was typed
+   * in the input field to take effect.
+   *
+   * @method
+   * @memberof SnowProfile
+   * @fires change
+   * @param {object} event Event representing what was entered in the
+   *   input field.
+   */
+  SnowProfile.blockSubmit = function(event) {
+    if (event.type == "keydown" && event.which == 13) {
+      event.preventDefault();
+      $(event.target).trigger("change");
+    }
+  }
 
   /**
    * Initialize the SVG drawing and the grid group
@@ -937,10 +994,35 @@ var SnowProfile = {};
     // Add the reference grid to the SVG drawing
     new SnowProfile.Grid();
 
-    // When the "Preview" button is clicked, generate a preview
     $(document).ready(function() {
-      $("#snow_profile_preview").click(SnowProfile.preview);
+
+      // When a character is entered into the snow profile total depth
+      // field, replace ENTER with a change event.
+      $("#snow_profile_total_depth")
+        .bind("keydown", function(event) {SnowProfile.blockSubmit(event)});
+
+      // When a character is entered into the snow profile pit depth
+      // field, replace ENTER with a change event.
+      $("#snow_profile_pit_depth")
+        .bind("keydown", function(event) {SnowProfile.blockSubmit(event)});
+
+      // When the "Preview" button is clicked, generate a preview.
+      $("#snow_profile_preview").click(function(event) {
+        SnowProfile.preview(event);
+
+        // Prevent this event from bubbling up the stack.
+        return false;
+      });
+
+      // When the "Save" button is clicked, call SnowProfile.export()
+      // to copy data to the form before submission.
+      $("#edit-submit").click(function() {
+        SnowProfile.export();
+      });
+
     });
+
+
   };  // function SnowProfile.init();
 })(jQuery);
 
