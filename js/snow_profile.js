@@ -467,6 +467,52 @@ var SnowProfile = {};
   SnowProfile.oldShowHandle = null;
 
   /**
+   * Image of the diagram as a PNG
+   */
+  SnowProfile.image = null;
+
+  /**
+   * Image map for SnowProfile.image
+   */
+  SnowProfile.imageMap = null;
+
+  /**
+   * Convert the SVG drawing to an image and save it.
+   *
+   * @param cb {function} Callback function, called when image stored.
+   */
+  SnowProfile.makeImage = function(cb) {
+
+    var saveWidth, saveHeight;
+
+    // Hide the controls so they won't show in the PNG
+    $.event.trigger("SnowProfileHideControls");
+
+    // Scale the drawing to desired image size.
+    var scaleFactor = SnowProfile.Cfg.IMAGE_WD / SnowProfile.drawing.width();
+    saveWidth = SnowProfile.drawing.width();
+    saveHeight = SnowProfile.drawing.height();
+    SnowProfile.mainGroup.scale(scaleFactor);
+    SnowProfile.drawing.size(SnowProfile.Cfg.DRAWING_WD * scaleFactor,
+      SnowProfile.drawing.height() * scaleFactor);
+    var svg = SnowProfile.diagram.firstChild;
+    svg.toDataURL("image/png", {
+      callback: function(data) {
+
+        // Save the PNG image
+        SnowProfile.image = data;
+
+        // Restore normal drawing scale.
+        SnowProfile.drawing.width(saveWidth);
+        SnowProfile.drawing.height(saveHeight);
+        SnowProfile.mainGroup.scale(1);
+        $.event.trigger("SnowProfileShowControls");
+        cb();
+      }
+    });
+  };
+
+  /**
    * Vertical height in pixels of the grid (left side) of the SVG drawing.
    *
    * This height is the pixel equivalent of the pit depth set by the user,
@@ -726,34 +772,13 @@ var SnowProfile = {};
    */
   SnowProfile.preview = function() {
 
-    var saveWidth, saveHeight;
-
-    // Hide the controls so they won't show in the PNG
-    $.event.trigger("SnowProfileHideControls");
-
-    // Scale the drawing to desired image size.
-    var scaleFactor = SnowProfile.Cfg.IMAGE_WD / SnowProfile.drawing.width();
-    saveWidth = SnowProfile.drawing.width();
-    saveHeight = SnowProfile.drawing.height();
-    SnowProfile.mainGroup.scale(scaleFactor);
-    SnowProfile.drawing.size(SnowProfile.Cfg.DRAWING_WD * scaleFactor,
-      SnowProfile.drawing.height() * scaleFactor);
-    var svg = SnowProfile.diagram.firstChild;
-    svg.toDataURL("image/png", {
-      callback: function(data) {
-
-        // Open a new window and show the PNG in it
-        var newWin = window.open(data, "_blank");
-        if (newWin === null) {
-          alert("You must enable pop-ups for this site to use" +
-            " the Preview button");
-        }
-
-        // Restore normal drawing scale.
-        SnowProfile.drawing.width(saveWidth);
-        SnowProfile.drawing.height(saveHeight);
-        SnowProfile.mainGroup.scale(1);
-        $.event.trigger("SnowProfileShowControls");
+    // Make a PNG image and save it
+    SnowProfile.makeImage(function () {
+      // Open a new window and show the PNG in it
+      var newWin = window.open(SnowProfile.image, "_blank");
+      if (newWin === null) {
+        alert("You must enable pop-ups for this site to use" +
+          " the Preview button");
       }
     });
 
