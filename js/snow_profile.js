@@ -9,7 +9,7 @@
 /**
  * The svg.js library
  * @external SVG
- * @see {@link http://http://documentup.com/wout/svg.js svg.js}
+ * @see {@link http://documentup.com/wout/svg.js svg.js}
  */
 
 /**
