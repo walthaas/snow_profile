@@ -130,13 +130,13 @@
     featDescr.add(commentDescr);
 
     // For debugging, show the bounding box
-    var cdBox = SnowProfile.drawing.rect(0, 0)
-      .addClass('snow_profile_cdbox')
-      .style({
-         "fill-opacity": 0,
-         stroke: 'red'
-      });
-    featDescr.add(cdBox);
+    // var cdBox = SnowProfile.drawing.rect(0, 0)
+    //   .addClass('snow_profile_cdbox')
+    //   .style({
+    //      "fill-opacity": 0,
+    //      stroke: 'red'
+    //   });
+    // featDescr.add(cdBox);
 
     /**
      * Hardness of this snow layer.
@@ -167,13 +167,13 @@
     featDescr.add(grainSizeText);
 
     // For debugging, show the bounding box
-    var gsBox = SnowProfile.drawing.rect(0, 0)
-      .addClass('snow_profile_gsbox')
-      .style({
-         "fill-opacity": 0,
-         stroke: 'red'
-      });
-    featDescr.add(gsBox);
+    // var gsBox = SnowProfile.drawing.rect(0, 0)
+    //   .addClass('snow_profile_gsbox')
+    //   .style({
+    //      "fill-opacity": 0,
+    //      stroke: 'red'
+    //   });
+    // featDescr.add(gsBox);
 
     /**
      * Group to hold the icons describing this layer's grains.
@@ -191,13 +191,13 @@
       .y(5);
 
     // For debugging, show the bounding box
-    var giBox = SnowProfile.drawing.rect(0, 0)
-      .addClass('snow_profile_gibox')
-      .style({
-         "fill-opacity": 0,
-         stroke: 'red'
-      });
-    featDescr.add(giBox);
+    // var giBox = SnowProfile.drawing.rect(0, 0)
+    //   .addClass('snow_profile_gibox')
+    //   .style({
+    //      "fill-opacity": 0,
+    //      stroke: 'red'
+    //   });
+    // featDescr.add(giBox);
 
     /**
      * Y position of top of bounding box

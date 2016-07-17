@@ -53,19 +53,29 @@
         y;
 
       // Add a Depth label on the left side of the diagram
-      SnowProfile.depthGroup.add(SnowProfile.drawing.text("Depth (cm)")
+      var depthText = SnowProfile.drawing.text("Depth (cm)")
         .addClass("snow_profile_depth")
         .font({
           family: 'sans-serif',
           fill: SnowProfile.Cfg.LABEL_COLOR,
           size: 18,
           style: 'bold'
-        })
-        .transform({
-          x: -30,
-          y: (SnowProfile.pitDepth * SnowProfile.Cfg.DEPTH_SCALE) / 2,
-          rotation: 270
-        }));
+        });
+      depthText.translate(-30,
+        (SnowProfile.pitDepth * SnowProfile.Cfg.DEPTH_SCALE) / 2);
+      depthText.rotate(270);
+      SnowProfile.depthGroup.add(depthText);
+
+      // For debugging show the bounding box
+      // var dtBbox = depthText.rbox();
+      // var depthTextBox = SnowProfile.drawing.rect(dtBbox.width, dtBbox.height)
+      //   .x(dtBbox.x)
+      //   .y(dtBbox.y)
+      //   .style({
+      //      "fill-opacity": 0,
+      //      stroke: 'orange'
+      //   });
+      // SnowProfile.depthGroup.add(depthTextBox);
 
       // Referenced to snow surface or ground?
       // Start drawing lines/labels at zero.  Continue to depth of pit.
@@ -273,14 +283,15 @@
           25);
       SnowProfile.gridGroup.add(commentHeading);
 
-      // // For debugging show the bounding box
-      // var chBbox = commentHeading.bbox();
+      // For debugging show the bounding box
+      // var chBbox = commentHeading.rbox();
       // var commentBox = SnowProfile.drawing.rect(chBbox.width, chBbox.height)
       //   .x(chBbox.x)
       //   .y(chBbox.y)
       //   .style({
-      //      "fill-opacity": 0,
-      //      stroke: 'red'
+      //      "fill-opacity": 0.5,
+      //     stroke: 'red',
+      //     fill: 'red'
       //   });
       // SnowProfile.gridGroup.add(commentBox);
     } // function drawLabels()
@@ -332,13 +343,6 @@
 
       // Draw labels
       drawLabels();
-
-      // For debugging, show the bounding box
-      // var drawingBbox = SnowProfile.drawing.bbox();
-      // SnowProfile.drawingBox.width(drawingBbox.width);
-      // SnowProfile.drawingBox.height(drawingBbox.height);
-      // SnowProfile.drawingBox.x(drawingBbox.x);
-      // SnowProfile.drawingBox.y(drawingBbox.y);
 
       // Trigger a custom event to let the rest of the code know
       $.event.trigger("SnowProfileDrawGrid");
