@@ -815,24 +815,23 @@ var SnowProfile = {};
     $("input[name='depth_ref']").val(SnowProfile.depthRef);
     $("input[name='num_layers']").val(3);
     for (i = 0; i < 3; i++) {
-      $("input[name='layer[" + i +"][depth]']").val(SnowProfile.snowLayers[i].depth());
+      $("input[name='layer[" + i + "][depth]']").val(SnowProfile.snowLayers[i].depth());
       var describe = SnowProfile.snowLayers[i].features().describe();
-      $("input[name='layer[" + i +"][hardness]']")
+      $("input[name='layer[" + i + "][hardness]']")
         .val(SnowProfile.snowLayers[i].features().hardness());
-      var describe = SnowProfile.snowLayers[i].features().describe();
-      $("input[name='layer[" + i +"][primaryGrainShape]']")
+      $("input[name='layer[" + i + "][primaryGrainShape]']")
         .val(describe.primaryGrainShape);
-      $("input[name='layer[" + i +"][primaryGrainSubShape]']")
+      $("input[name='layer[" + i + "][primaryGrainSubShape]']")
         .val(describe.primaryGrainSubShape);
-      $("input[name='layer[" + i +"][secondaryGrainShape]']")
+      $("input[name='layer[" + i + "][secondaryGrainShape]']")
         .val(describe.secondaryGrainShape);
-      $("input[name='layer[" + i +"][secondaryGrainSubShape]']")
+      $("input[name='layer[" + i + "][secondaryGrainSubShape]']")
         .val(describe.secondaryGrainSubShape);
-      $("input[name='layer[" + i +"][grainSizeMin]']")
+      $("input[name='layer[" + i + "][grainSizeMin]']")
         .val(describe.grainSizeMin);
-      $("input[name='layer[" + i +"][grainSizeMax]']")
+      $("input[name='layer[" + i + "][grainSizeMax]']")
         .val(describe.grainSizeMax);
-      $("input[name='layer[" + i +"][comment]']").val(describe.comment);
+      $("input[name='layer[" + i + "][comment]']").val(describe.comment);
     }
   };
 
@@ -850,11 +849,11 @@ var SnowProfile = {};
    *   input field.
    */
   SnowProfile.blockSubmit = function(event) {
-    if (event.type == "keydown" && event.which == 13) {
+    if (event.type === "keydown" && event.which === 13) {
       event.preventDefault();
       $(event.target).trigger("change");
     }
-  }
+  };
 
   /**
    * Initialize the SVG drawing and the grid group
@@ -1020,12 +1019,12 @@ var SnowProfile = {};
       // When a character is entered into the snow profile total depth
       // field, replace ENTER with a change event.
       $("#snow_profile_total_depth")
-        .bind("keydown", function(event) {SnowProfile.blockSubmit(event)});
+        .bind("keydown", function(event) {SnowProfile.blockSubmit(event);});
 
       // When a character is entered into the snow profile pit depth
       // field, replace ENTER with a change event.
       $("#snow_profile_pit_depth")
-        .bind("keydown", function(event) {SnowProfile.blockSubmit(event)});
+        .bind("keydown", function(event) {SnowProfile.blockSubmit(event);});
 
       // When the "Preview" button is clicked, generate a preview.
       $("#snow_profile_preview").click(function(event) {
