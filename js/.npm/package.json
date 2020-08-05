@@ -1,18 +1,19 @@
 {
   "name": "snow_profile",
-  "version": "0.2.0-beta3",
+  "version": "0.2.0-beta4",
   "description": "Drag and drop drawing tool for snow profile diagrams",
   "repository": {
     "type": "git",
     "url": "https://github.com/walthaas/snow_profile"
   },
   "devDependencies": {
-    "chai": "~1.10.0",
-    "chai-webdriver": "~0.9.4",
-    "grunt": "~0.4.2",
-    "grunt-eslint": "~2.1.0",
-    "grunt-jsdoc": "^0.6.3",
-    "grunt-simple-mocha": "~0.4.0",
-    "selenium-webdriver": "~2.43.5"
+    "chai": "",
+    "chai-webdriver": "",
+    "grunt": "",
+    "grunt-eslint": "",
+    "grunt-jsdoc": "",
+    "grunt-contrib-jshint": "",
+    "grunt-simple-mocha": "",
+    "selenium-webdriver": ""
   }
 }

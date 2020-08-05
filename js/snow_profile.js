@@ -206,7 +206,7 @@ var SnowProfile = {};
      * @memberof SnowProfile
      * @const {string}
      */
-    LAYER_FILL_OPACITY: .85,
+    LAYER_FILL_OPACITY: 0.85,
 
     /**
      * Color of a button that is not under the mouse

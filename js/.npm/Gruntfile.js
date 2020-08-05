@@ -12,8 +12,11 @@ module.exports = function(grunt) {
         },
         eslint: {
           options: {
-	    config: 'conf/eslint.json'
+	    configFile: 'conf/eslint.json'
 	  },
+	  target: [ '<%= srcs %>' ]
+	},
+        jshint: {
 	  target: [ '<%= srcs %>' ]
 	},
         simplemocha: {
@@ -30,6 +33,7 @@ module.exports = function(grunt) {
 
     // Load plugins
     grunt.loadNpmTasks('grunt-eslint');
+    grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-jsdoc');
     grunt.loadNpmTasks('grunt-simple-mocha');
 
