@@ -6,28 +6,23 @@
 
 "use strict";
 
-const {Builder, By, Key, until} = require('selenium-webdriver');
-let com = require('./lib');
+let com = require('./lib/common.js');
+let Builder = com.Builder;
+let By = com.By;
+let Key = com.Key;
+let until = com.until;
+let driver = com.driver;
+let loadPage = com.loadPage;
 
-var SnowProfile = {};
-var driver;
+// Snow profile configuration read from web page
+let SnowProfile = com.SnowProfile;
 
 // Test the reference grid
 describe('Reference grid:', function() {
 
-  // Store info read from the page being tested
-  let hardnessLabels = [];
-
   beforeAll(async () => {
-    driver = new Builder().forBrowser("chrome").build();
-
-    // Load the test page
-    await driver.get(com.testURL);
-
-    // Get configuration SnowProfile.Cfg from the page JS
-    SnowProfile.Cfg = await driver.executeScript(
-      'return window.SnowProfile.Cfg');
-  });  // beforeAll(
+    loadPage();
+  });
 
   test('title shall be Snow Profile Editor', async () => {
     const title = await driver.getTitle();
@@ -44,8 +39,8 @@ describe('Reference grid:', function() {
   });
 
   /*
-   *  Check that there is no selector to choose between surface and ground
-   *  reference now since snow depth is unknown
+   *  Check that the selector to choose between surface and ground
+   *  reference is not visible now since snow depth is unknown
    */
   test('the reference depth selector shall not be displayed',  async () => {
     let selector = await driver.findElement(By.id('snow_profile_ref_depth'));
@@ -69,8 +64,8 @@ describe('Reference grid:', function() {
    *  Check the default depth reference
    */
   test('depth reference shall default to surface', async () => {
-    let depthRef = await
-      driver.executeScript('return window.SnowProfile.depthRef');
+    let depthRef = await driver.executeScript(
+            'return window.SnowProfile.depthRef');
     expect(depthRef).toBe('s');
   });
 
@@ -135,6 +130,7 @@ describe('Reference grid:', function() {
    * Setting total depth changes reference, pit depth
    */
   test('Setting total depth changes reference, pit depth', async () => {
+
     // Set total depth 200
     setSnowDepth(200);
 
@@ -143,8 +139,8 @@ describe('Reference grid:', function() {
     await driver.wait(until.elementIsVisible(select));
 
     // Verify that the reference is now 'ground'
-    let depthRef = await
-      driver.executeScript('return window.SnowProfile.depthRef');
+    let depthRef = await driver.executeScript(
+            'return window.SnowProfile.depthRef');
     expect(depthRef).toBe('g');
   });
 
@@ -152,7 +148,7 @@ describe('Reference grid:', function() {
    * Setting pit depth changes labels
    */
   test('Setting pit depth changes labels', async () => {
-
+    // FIXME apparent race condition, sometimes alerts depth must be >10
     // Set pit depth 100, then verify depth labels
     setPitDepth(100);
     //FIXME wait until JS on page updates the labels
@@ -168,6 +164,7 @@ describe('Reference grid:', function() {
     // Compare the depth labels now on the diagram to what is expected
     expect(depthLabels).toEqual(expectedLabels);
   })
+  // @todo convert
  //    // Change reference to 's'
  //    driver.findElement(sw.By.xpath(
  //      '//select[@id="snow_profile_ref_select"]/option[@value="s"]'))
@@ -242,6 +239,7 @@ async function setPitDepth(depth) {
   // Clear the pit depth text box
   let element =  await driver.findElement(By.id('snow_profile_pit_depth'));
   await element.sendKeys(Key.CONTROL + 'a' + Key.DELETE);
+  await driver.wait(until.elementTextIs(element, ''));
 
   // Enter new depth, then navigate away from text box
   await element.sendKeys(depthText + Key.TAB);
