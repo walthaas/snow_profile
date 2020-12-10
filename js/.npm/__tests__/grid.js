@@ -6,6 +6,8 @@
 
 "use strict";
 
+/* global expect, beforeAll, beforeEach, afterAll, afterEach */
+
 let com = require('./lib/common.js');
 let Builder = com.Builder;
 let By = com.By;
@@ -22,6 +24,11 @@ describe('Reference grid:', function() {
 
   beforeAll(async () => {
     loadPage();
+  });
+
+  // When done, kill the browser
+  afterAll(async () => {
+    await driver.quit();
   });
 
   test('title shall be Snow Profile Editor', async () => {
@@ -49,6 +56,15 @@ describe('Reference grid:', function() {
   });
 
   /*
+   *  Check the default depth reference
+   */
+  test('depth reference shall default to surface', async () => {
+    let depthRef = await driver.executeScript(
+            'return window.SnowProfile.depthRef');
+    expect(depthRef).toBe('s');
+  });
+
+  /*
    *  Check the hardness scale labels
    */
   test('verify hardness scale labels', async () => {
@@ -61,22 +77,13 @@ describe('Reference grid:', function() {
   });
 
   /*
-   *  Check the default depth reference
-   */
-  test('depth reference shall default to surface', async () => {
-    let depthRef = await driver.executeScript(
-            'return window.SnowProfile.depthRef');
-    expect(depthRef).toBe('s');
-  });
-
-  /*
    *  Check the depth labels at default pit depth
    */
   test('Depth labels shall match default', async () => {
 
     //Read the depth scale text elements now on the diagram into depthLabels[]
     let expectedLabels = calcDepthLabels(
-          SnowProfile.Cfg.DEFAULT_PIT_DEPTH, 's');
+      SnowProfile.Cfg.DEFAULT_PIT_DEPTH, null, 's');
     let elements = await driver.findElements(
       By.css('#snow_profile_diagram svg text.snow_profile_depth'));
     let texts = elements.map(element => element.getText());
@@ -87,52 +94,12 @@ describe('Reference grid:', function() {
   });
 
   /*
-   *  Check the depth labels at minimum pit depth.  Setting a pit depth
-   *  should change the reference from Surface to Ground.
+   * Setting snow depth changes reference, pit depth
    */
-  test('Depth labels should adjust for minimum pit depth', async () => {
-    await setPitDepth(50);
-
-    // Wait until the new value verifies
-    let pitDepthElem = await driver.findElement(By.id('snow_profile_pit_depth'));
-    let pitDepthText = await pitDepthElem.getAttribute('value');
-    expect(pitDepthText).toBe('50');
-
-    //Read the depth scale text elements now on the diagram into depthLabels[]
-    let expectedLabels = calcDepthLabels(50, 'g');
-    let elements = await driver.findElements(
-      By.css('#snow_profile_diagram svg text.snow_profile_depth'));
-    let texts = elements.map(element => element.getText());
-    let depthLabels = await Promise.all(texts);
-
-    // Compare the depth labels now on the diagram to what is expected
-    expect(depthLabels).toEqual(expectedLabels);
- });
-
-  /*
-   * Check the depth labels at maximum pit depth
-   */
-  test('Depth labels should adjust for maximum pit depth', async () => {
-    await setPitDepth(SnowProfile.Cfg.MAX_DEPTH);
-
-    //Read the depth scale text elements now on the diagram into depthLabels[]
-    let expectedLabels = calcDepthLabels(SnowProfile.Cfg.MAX_DEPTH, 'g');
-    let elements = await driver.findElements(
-      By.css('#snow_profile_diagram svg text.snow_profile_depth'));
-    let texts = elements.map(element => element.getText());
-    let depthLabels = await Promise.all(texts);
-
-    // Compare the depth labels now on the diagram to what is expected
-    expect(depthLabels).toEqual(expectedLabels);
-  });
-
-  /*
-   * Setting total depth changes reference, pit depth
-   */
-  test('Setting total depth changes reference, pit depth', async () => {
+  test('Setting snow depth changes reference, pit depth', async () => {
 
     // Set total depth 200
-    setSnowDepth(200);
+    await setSnowDepth(200);
 
     // Verify that reference select is now visible
     let select = await driver.findElement(By.id('snow_profile_ref_select'));
@@ -145,84 +112,95 @@ describe('Reference grid:', function() {
   });
 
   /*
-   * Setting pit depth changes labels
+   *  Check the depth labels at a shallow pit depth with snow depth set.
    */
-  test('Setting pit depth changes labels', async () => {
-    // FIXME apparent race condition, sometimes alerts depth must be >10
-    // Set pit depth 100, then verify depth labels
-    setPitDepth(100);
-    //FIXME wait until JS on page updates the labels
-    // Two bugs cancel out: labels calculated incorrectly because pit
-    // depth not taken into account, and the JS hasn't had time to change.
+  test('Depth labels should adjust for shallow pit depth', async () => {
+    let snowDepth = 173
+    await setSnowDepth(snowDepth);
+    let pitDepth = 17;
+    await setPitDepth(pitDepth);
+
     //Read the depth scale text elements now on the diagram into depthLabels[]
-    let expectedLabels = calcDepthLabels(200, 'g');
+    let expectedLabels = calcDepthLabels(pitDepth, snowDepth, 'g');
     let elements = await driver.findElements(
       By.css('#snow_profile_diagram svg text.snow_profile_depth'));
     let texts = elements.map(element => element.getText());
     let depthLabels = await Promise.all(texts);
 
     // Compare the depth labels now on the diagram to what is expected
-    expect(depthLabels).toEqual(expectedLabels);
-  })
-  // @todo convert
- //    // Change reference to 's'
- //    driver.findElement(sw.By.xpath(
- //      '//select[@id="snow_profile_ref_select"]/option[@value="s"]'))
- //      .then(function(elmt) {
- //        elmt.click();
- //      });
- //    // Verify depth labels
- //    driver.findElements(sw.By.css(
- //      '#snow_profile_diagram svg text.snow_profile_depth'))
- //      .then(function(done) {
- //        depthLabels = [];
- //        done.forEach(function(promise) {
- //          promise.getText()
- //            .then(function(done) {
- //              depthLabels.push(done);
- //            });
- //          });
- //        })
- //      .then(function() {
- //        expectLabels = ['Depth (cm)'];
- //        for (var d = 0; d <= 100; d += SnowProfile.Cfg.DEPTH_LINE_INT) {
- //          expectLabels.push(String(d));
- //        }
- //        depthLabels.sort();
- //        expectLabels.sort();
- //        chai.expect(depthLabels.length).to.equal(expectLabels.length);
- //        // Depth increment labels should match default from '0'
- //        // to '100' by increments of DEPTH_LINE_INT
- //        expectLabels.forEach(function(v, i) {
- //          chai.expect(depthLabels[i]).to.equal(v);
- //        });
- //      });
- // });
+    expect(depthLabels.sort()).toEqual(expectedLabels.sort());
+ });
 
-  // When done, kill the browser
-  afterAll(async () => {
-    await driver.quit();
-  })
+  /*
+   * Check the depth labels at a deep pit depth
+   */
+  test('Depth labels should adjust for deep pit depth', async () => {
+    let snowDepth = SnowProfile.Cfg.MAX_DEPTH;
+    await setSnowDepth(snowDepth);
+    let pitDepth = SnowProfile.Cfg.MAX_DEPTH - 17;
+    await setPitDepth(pitDepth);
+
+    //Read the depth scale text elements now on the diagram into depthLabels[]
+    let expectedLabels = calcDepthLabels(pitDepth, snowDepth, 'g');
+    let elements = await driver.findElements(
+      By.css('#snow_profile_diagram svg text.snow_profile_depth'));
+    let texts = elements.map(element => element.getText());
+    let depthLabels = await Promise.all(texts);
+
+    // Compare the depth labels now on the diagram to what is expected
+    expect(depthLabels.sort()).toEqual(expectedLabels.sort());
+  });
+
+  /*
+   * Check depth labels reference to surface
+   */
+  test('Depth labels should adjust for surface reference', async () => {
+
+    // Define a pit
+    let snowDepth = 142
+    await setSnowDepth(snowDepth);
+    let pitDepth = 63;
+    await setPitDepth(pitDepth);
+
+    // Change reference to 's'
+    let reference = await driver.findElement(By.css(
+      '#snow_profile_ref_select option[value="s"]'));
+    await reference.click();
+    let value = await reference.getAttribute('value');
+    expect(value).toEqual('s');
+
+    //Read the depth scale text elements now on the diagram into depthLabels[]
+    let expectedLabels = calcDepthLabels(63, null, 's');
+    let elements = await driver.findElements(
+      By.css('#snow_profile_diagram svg text.snow_profile_depth'));
+    let texts = elements.map(element => element.getText());
+    let depthLabels = await Promise.all(texts);
+
+    // Compare the depth labels now on the diagram to what is expected
+    expect(depthLabels.sort()).toEqual(expectedLabels.sort());
+  });
 
 }); // decribe('reference grid
 
 /*
  *  Calculate the depth labels we expect to see on the diagram
- *  The labels depend on pit depth and whether reference is surface or ground
- *  FIXME the depth labels depend on both total snow depth and pit depth
+ *  The labels depend on pit depth, snow depth and whether reference is
+ *  surface or ground.  If the reference is surface then the snow depth is
+ *  not used.
  */
-function calcDepthLabels(depth, reference) {
+function calcDepthLabels(pitDepth, snowDepth, reference) {
   let depthLabels = ['Depth (cm)'];
-  if (reference = 's') {
+  if (reference === 's') {
     // Labels start at the surface
-    for (let d = 0; d <= depth; d += SnowProfile.Cfg.DEPTH_LINE_INT) {
+    for (let d = 0; d <= pitDepth; d += SnowProfile.Cfg.DEPTH_LINE_INT) {
       depthLabels.push(String(d));
     }
   } else {
     // Labels start at the ground
     // Calculate the top label as a multiple of SnowProfile.Cfg.DEPTH_LINE_INT
-    let top = depth - (depth % SnowProfile.Cfg.DEPTH_LINE_INT);
-    for (let d = top; d >= 0; d -= SnowProfile.Cfg.DEPTH_LINE_INT) {
+    let top = snowDepth - (snowDepth % SnowProfile.Cfg.DEPTH_LINE_INT);
+    for (let d = top; d >= snowDepth - pitDepth;
+      d -= SnowProfile.Cfg.DEPTH_LINE_INT) {
       depthLabels.push(String(d));
     }
   }
@@ -233,16 +211,12 @@ function calcDepthLabels(depth, reference) {
  * Set the pit depth
  */
 async function setPitDepth(depth) {
-
   let depthText = depth.toString();
 
   // Clear the pit depth text box
   let element =  await driver.findElement(By.id('snow_profile_pit_depth'));
-  await element.sendKeys(Key.CONTROL + 'a' + Key.DELETE);
-  await driver.wait(until.elementTextIs(element, ''));
-
-  // Enter new depth, then navigate away from text box
-  await element.sendKeys(depthText + Key.TAB);
+  await element.sendKeys(Key.HOME, Key.chord(Key.SHIFT, Key.END),
+    depthText + Key.ENTER);
 
   // Wait until the new value verifies
   let text = await element.getAttribute('value');
@@ -258,10 +232,11 @@ async function setSnowDepth(depth) {
 
   // Clear the snow depth text box
   let element =  await driver.findElement(By.id('snow_profile_total_depth'));
-  await element.sendKeys(Key.CONTROL + 'a' + Key.DELETE);
+  await element.clear()
 
   // Enter new depth, then navigate away from text box
-  await element.sendKeys(depth.toString() + Key.TAB);
+  await element.sendKeys(Key.HOME, Key.chord(Key.SHIFT, Key.END),
+    depthText + Key.ENTER);
 
   // Wait until the new value verifies
   let text = await element.getAttribute('value');
