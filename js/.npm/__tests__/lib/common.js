@@ -13,11 +13,6 @@ let testURL = 'file://' + process.cwd() + '/__tests__/lib/test.html';
 //let testURL = 'http://sandbox.utahavalanchecenter.org/snow_profile/snow_profile.html';
 exports.testURL = testURL;
 
-// How to find buttons on the page
-let buttonsXpath = "//*[name()='svg']/*[name()='g']/*[name()='g']" +
-  "/*[name()='g']";
-exports.buttonsXpath = buttonsXpath;
-
 // How to find handles on the page
 let handleXpath = "//*[name()='rect'][@class='snow_profile_handle']";
 exports.handleXpath = handleXpath;
@@ -31,7 +26,7 @@ exports.Builder = Builder;
 exports.By = By;
 exports.Key = Key;
 exports.until = until;
-let driver = new Builder().forBrowser("chrome").build();
+let driver = new Builder().forBrowser("chrome").setAlertBehavior('accept').build();
 exports.driver = driver;
 
 /**
@@ -56,262 +51,157 @@ exports.loadPage = async () => {
 
   // Get configuration SnowProfile.Cfg from the page JS
   SnowProfile.Cfg = await driver.executeScript(
-      'return window.SnowProfile.Cfg');
-}
+    'return window.SnowProfile.Cfg');
+};
 
 /**
  * Click last Insert button, wait until layer is created.
  */
-exports.clickLastInsert = () => {
-  // @todo convert
-  // let numButtons,
-  //     insertStarted = false,
-  //     insertDone = false;
-
-  // driver.findElements(By.css("use.snow_profile_button_insert"))
-  //   .then(function(buttons) {
-  //     numButtons = buttons.length;
-  //   })
-  //   .then(function() {
-  //     driver.wait(function() {
-  //       if (!insertStarted) {
-  //         driver.executeScript(
-  //           "$('use.snow_profile_button_insert:nth-of-type(" +
-  //           numButtons + ")').click()")
-  //         insertStarted = true;
-  //       }
-  //       driver.isElementPresent(By.css(
-  //         "use.snow_profile_button_edit:nth-of-type(" +
-  //         (numButtons + 1) + ")"))
-  //         .then(function(done) {
-  //           insertDone = done;
-  //         });
-  //       return insertDone;
-  //     }, 2000, "clickLastInsert didn't finish")
-  //   });
-}
-
-/**
- * Click Done, then wait until modal popup goes away
- */
-exports.clickDone = () => {
-  // @todo convert
-  // let overlayPresent = true;
-
-  // driver.findElement(By.xpath('//button[.="Done"]'))
-  //   .then(function(elmt) {
-  //     elmt.click();
-  //    })
-  //   .then(function() {driver.wait(function() {
-  //     driver.isElementPresent(By.css('div.ui-widget-overlay'))
-  //       .then(function(done) {
-  //           overlayPresent = done;
-  //       })
-  //       return !overlayPresent;
-  //     }, 2000, "overlay didn't go away");
-  //   })
-}
+exports.clickLastInsert = async () => {
+  let lastButton = await driver.findElement(
+    By.css("use.snow_profile_button_insert:last-of-type"));
+  let buttons = await driver.findElements(
+    By.css("use.snow_profile_button_insert"));
+  let Obuttons = buttons.length;
+  await lastButton.click();
+  buttons = await driver.findElements(
+    By.css("use.snow_profile_button_insert"));
+  let Nbuttons = buttons.length;
+  expect(Nbuttons).toEqual(Obuttons + 1);
+  let editButton = await driver.findElement(
+    By.css('use.snow_profile_button_edit:nth-of-type(' + Nbuttons + ')'));
+  let displayed = await editButton.isDisplayed();
+  expect(displayed).toBeTruthy();
+};
 
 /**
  * Store comment into popup comment field.
  */
 async function setFeaturesComment(comment) {
-  // @todo convert
 
-  // if ((comment === null) || (comment === undefined)) {
-  //   return;
-  // }
+  if ((comment === null) || (comment === undefined)) {
+    comment = '';
+  }
 
-  // // If there is existing comment text, erase it
-  // let element =  await driver.findElement(By.id('snow_profile_comment'));
-  // await element.sendKeys(Key.CONTROL + 'a' + Key.DELETE);
 
-  // // type in the comment
-  // await element.sendKeys(comment + Key.TAB);
+  // Store new value in the grain size min text box
+  let element =  await driver.findElement(By.id('snow_profile_comment'));
+  await element.sendKeys(Key.HOME, Key.chord(Key.SHIFT, Key.END),
+   comment + Key.TAB);
+
+  // Wait until the new value verifies
+  let text = await element.getAttribute('value');
+  expect(text).toBe(comment);
 }
 
 /**
  * Set grain shape in Snow Layer Description
  */
-function setFeaturesShape(shape) {
-  // @todo convert
-  // var primaryShape,
-  //   primarySubShape,
-  //   secondaryShape,
-  //   secondarySubShape;
+async function setFeaturesShape(shape) {
+  let primaryShape,
+    primarySubShape,
+    secondaryShape,
+    secondarySubShape;
 
-  // // Shape is a string specifying primary shape, or an array of two
-  // // strings specifying primary or seconday shape.  May be null.
-  // if ((shape === null) && (shape === undefined)) {
-  //   return;
-  // }
+  // Shape is a string specifying primary shape, or an array of two
+  // strings specifying primary or seconday shape.  May be null.
+  if ((shape === null) && (shape === undefined)) {
+    //FIXME should blank shape field
+    return;
+  }
 
-  // // If shape info was supplied, parse the info into
-  // // primary and secondary shape and subshape
-  // if (Object.prototype.toString.call(shape) === '[object Array]') {
-  //   if (shape[0].length === 4) {
-  //     primaryShape = shape[0].substr(0,2);
-  //     primarySubShape = shape[0];
-  //   }
-  //   else {
-  //     primaryShape = shape[0];
-  //   }
-  //   if (shape[1].length === 4) {
-  //     secondaryShape = shape[1].substr(0,2);
-  //     secondarySubShape = shape[1];
-  //   }
-  //   else {
-  //     secondaryShape = shape[1];
-  //   }
-  // }
-  // else {
-  //   if (shape.length === 4) {
-  //     primaryShape = shape.substr(0,2);
-  //     primarySubShape = shape;
-  //   }
-  //   else {
-  //     primaryShape = shape;
-  //   }
-  // }
+  // If shape info was supplied, parse the info into
+  // primary and secondary shape and subshape
+  if (Object.prototype.toString.call(shape) === '[object Array]') {
+    if (shape[0].length === 4) {
+      primaryShape = shape[0].substr(0,2);
+      primarySubShape = shape[0];
+    }
+    else {
+      primaryShape = shape[0];
+    }
+    if (shape[1].length === 4) {
+      secondaryShape = shape[1].substr(0,2);
+      secondarySubShape = shape[1];
+    }
+    else {
+      secondaryShape = shape[1];
+    }
+  }
+  else {
+    if (shape.length === 4) {
+      primaryShape = shape.substr(0,2);
+      primarySubShape = shape;
+    }
+    else {
+      primaryShape = shape;
+    }
+  }
 
-  // // Store primary shape info
-  // driver.findElement(By.xpath(
-  //   '//select[@id="snow_profile_primary_grain_shape"]/option[@value="' +
-  //   primaryShape + '"]'))
-  //   .click();
+  // Store primary shape info
+  await driver.findElement(By.xpath(
+    '//select[@id="snow_profile_primary_grain_shape"]/option[@value="' +
+    primaryShape + '"]'))
+    .click();
 
-  // // If primary subshape info found, store that
-  // if (primarySubShape !== undefined) {
-  //   driver.wait(function() {
-  //     return driver.isElementPresent(By.xpath(
-  //       '//select[@id="snow_profile_primary_grain_subshape_' + primaryShape +
-  //       '"]'));
-  //     }, 2000, 'subselect for ' + primaryShape + ' not found')
-  //     .then(function() {
-  //        driver.findElement(By.xpath(
-  //         '//select[@id="snow_profile_primary_grain_subshape_' +
-  //         primaryShape + '"]/option[@value="' + primarySubShape + '"]'))
-  //         .click();
-  //     });
-  // }
+  // If primary subshape info found, store that
+  if (primarySubShape !== undefined) {
+    await driver.findElement(By.xpath(
+      '//select[@id="snow_profile_primary_grain_subshape_' + primaryShape +
+        '"]/option[@value="' + primarySubShape + '"]')).click();
+  }
 
-  // // If secondary shape info found, store that
-  // if (secondaryShape !== undefined) {
-  //   driver.wait(function() {
-  //     return driver.isElementPresent(By.xpath(
-  //       '//select[@id="snow_profile_secondary_grain_select"]'));
-  //     }, 2000, 'snow_profile_secondary_grain_select not found')
-  //     .then(function() {
-  //       driver.findElement(By.xpath(
-  //         '//select[@id="snow_profile_secondary_grain_select"]/option[@value="'
-  //         + secondaryShape + '"]'))
-  //         .click();
-  //     });
-  //   if (secondarySubShape !== undefined) {
-  //     driver.wait(function() {
-  //       return driver.isElementPresent(By.xpath(
-  //         '//select[@id="snow_profile_secondary_grain_subshape_' +
-  //         secondaryShape + '"]'));
-  //     }, 2000, 'snow_profile_secondary_grain_subshape select not found')
-  //     .then(function() {
-  //       driver.findElement(By.xpath(
-  //         '//select[@id="snow_profile_secondary_grain_subshape_' +
-  //         secondaryShape +'"]/option[@value="' + secondarySubShape +
-  //         '"]'))
-  //         .click();
-  //     });
-  //   }
-  // }
+  // If secondary shape info found, store that
+  if (secondaryShape !== undefined) {
+    await driver.findElement(By.xpath(
+      '//select[@id="snow_profile_secondary_grain_select"]/option[@value="' +
+      secondaryShape + '"]')).click();
+    if (secondarySubShape !== undefined) {
+      await driver.findElement(By.xpath(
+        '//select[@id="snow_profile_secondary_grain_subshape_' +
+        secondaryShape +'"]/option[@value="' +
+        secondarySubShape + '"]')).click();
+    }
+  }
 }
 
 /**
  * Set grain size.
  */
-function setFeaturesSize(size) {
-  // @todo convert
-  // var cmdStrMin = [],
-  //   cmdStrMax = [],
-  //   i,
-  //   minDone = false,
-  //   maxDone = false,
-  //   sizeMin,
-  //   sizeMax;
+async function setFeaturesSize(size) {
+  let sizeMin, sizeMax;
 
-  // // Size is a number specifying grain size, or an array of two
-  // // numbers specifying a range of sizes.  May be null.
-  // if ((size === null) || (size === undefined)) {
-  //   return;
-  // }
+  // Size is a number specifying grain size, or an array of two
+  // numbers specifying a range of sizes.  May be null.
+  if ((size === null) || (size === undefined)) {
+    sizeMin = '';
+    sizeMax = '';
+  } else if (Object.prototype.toString.call(size) === '[object Array]') {
+    sizeMin = String(size[0]);
+    sizeMax = String(size[1]);
+  }
+  else {
+    sizeMin = String(size);
+    sizeMax = '';
+  }
 
-  // if (Object.prototype.toString.call(size) === '[object Array]') {
-  //   sizeMin = String(size[0]);
-  //   sizeMax = String(size[1]);
-  // }
-  // else {
-  //   sizeMin = String(size);
-  // }
+  // Store new value in the grain size min text box
+  let element =  await driver.findElement(By.id('snow_profile_grain_size_min'));
+  await element.sendKeys(Key.HOME, Key.chord(Key.SHIFT, Key.END),
+   sizeMin + Key.ENTER);
 
-  // // If there is existing minimum grain size, erase it
-  // driver.executeScript('return $("#snow_profile_grain_size_min").val()')
-  //   .then(function(val) {
-  //     if (val.length > 0) {
-  //       for (i = 0; i < val.length; i++) {
-  //         cmdStrMin.push(Key.BACK_SPACE);
-  //       }
-  //       cmdStrMin.push(Key.NULL);
-  //     }
-  //   });
+  // Wait until the new value verifies
+  let text = await element.getAttribute('value');
+  expect(text).toBe(sizeMin);
 
-  // // After backspacing over existing contents of input box,
-  // // type in the minimum grain size
-  // driver.findElement(By.css('#snow_profile_grain_size_min'))
-  //   .then(function(elmt) {
-  //     cmdStrMin.push(sizeMin);
-  //     elmt.sendKeys.apply(elmt, cmdStrMin);
-  //   });
+  // Store new value in the grain size max text box
+  element =  await driver.findElement(By.id('snow_profile_grain_size_max'));
+  await element.sendKeys(Key.HOME, Key.chord(Key.SHIFT, Key.END),
+   sizeMax + Key.ENTER);
 
-  // // Wait until new minimum size is stored
-  // driver.wait(function() {
-  //   driver.executeScript('return $("#snow_profile_grain_size_min").val()')
-  //     .then(function(val) {
-  //       if (val === sizeMin) {
-  //         minDone = true;
-  //       }
-  //   });
-  //   return minDone;
-  // }, 2000, "minimum grain size wasn't stored");
-
-  // if (sizeMax !== undefined) {
-  //   // If there is existing maximum grain size, erase it
-  //   driver.executeScript('return $("#snow_profile_grain_size_max").val()')
-  //     .then(function(val) {
-  //       if (val.length > 0) {
-  //         for (i = 0; i < val.length; i++) {
-  //           cmdStrMax.push(Key.BACK_SPACE);
-  //         }
-  //         cmdStrMax.push(Key.NULL);
-  //       }
-  //     });
-
-  //   // After backspacing over existing contents of input box,
-  //   // type in the maximum grain size
-  //   driver.findElement(By.css('#snow_profile_grain_size_max'))
-  //     .then(function(elmt) {
-  //       cmdStrMax.push(sizeMax);
-  //       elmt.sendKeys.apply(elmt, cmdStrMax);
-  //     });
-
-  //   // Wait until new maximum size is stored
-  //   driver.wait(function() {
-  //     driver.executeScript('return $("#snow_profile_grain_size_max").val()')
-  //       .then(function(val) {
-  //         if (val === sizeMax) {
-  //           maxDone = true;
-  //         }
-  //     });
-  //     return maxDone;
-  //   }, 2000, "maximum grain size wasn't stored");
-  // }
+  // Wait until the new value verifies
+  text = await element.getAttribute('value');
+  expect(text).toBe(sizeMax);
 }
 
 /**
@@ -323,43 +213,36 @@ function setFeaturesSize(size) {
  * @param {string} comment
  */
 exports.setFeatures = async (index, shape, size, comment) => {
-  console.log('setFeatures(%d, %s, %d, %s)', index, shape, size, comment);;
-  // @todo convert
-  // var popupDisplayed;
+  //console.log('setFeatures(', index, shape, size, comment, ')');
 
-  // // Click the Edit button for the layer to open the popup.
-  // driver.executeScript("$('use.snow_profile_button_edit:nth-of-type(" +
-  //   (index + 1) + ")').click()")
-  //   .then(function() {
-  //     driver.wait(function() {
-  //       return driver.findElement(By.css('div#snow_profile_popup'))
-  //        .isDisplayed();
-  //      }, 2000, 'div#snow_profile_popup not found')
-  //   })
-  //   .then(function() {
+  // Click the Edit button for the layer to open the popup.
+  let button = await driver.findElement(By.css(
+    'use.snow_profile_button_edit:nth-of-type(' + (index + 1) + ')'));
+  await driver.wait(until.elementIsVisible(button));
+  //console.log('button at x=%d, y=%d',
+  //            await button.getAttribute('x'), await button.getAttribute('y'));
+  await button.click();
+  let popup = await driver.findElement(By.id('snow_profile_popup'));
+  await driver.wait(until.elementIsVisible(popup));
+  let displayed = await popup.isDisplayed();
+  expect(displayed).toBeTruthy();
 
-  //     // Set grain shape
-  //     setFeaturesShape(shape);
+  // Set grain shape
+  await setFeaturesShape(shape);
 
-  //     // Set grain size
-  //     setFeaturesSize(size);
+  // Set grain size
+  await setFeaturesSize(size);
 
-  //     // Set comment
-  //     setFeaturesComment(comment);
+  // Set comment
+  setFeaturesComment(comment);
 
-  //     // Click the Done button to save the features
-  //     driver.findElement(By.xpath('//button[.="Done"]')).click();
-
-  //     // Wait for the popup to disappear
-  //     driver.wait(function() {
-  //       driver.findElement(By.css('div#snow_profile_popup'))
-  //         .then(function(popup) {
-  //           popupDisplayed = popup.isDisplayed();
-  //         });
-  //       return !popupDisplayed;
-  //     }, 2000, "popup didn't go away");
-  //   });
-}
+  //  Click "Done", verify popup no longer displayed
+  await driver.findElement(By.xpath(
+    '//button/span[text()="Done"]')).click();
+  await driver.wait(until.elementIsNotVisible(popup));
+  displayed = await popup.isDisplayed();
+  expect(displayed).toBeFalsy();
+};
 
 /**
  * Move a handle to specified depth and hardness
@@ -382,10 +265,10 @@ exports.moveHandle = async function moveHandle(index, depth, hardness) {
     "return window.SnowProfile.code2x('" + hardness + "')");
   let offsetX = Math.ceil(newX - x);
   let offsetY = Math.ceil(newY - y);
-  const actions = driver.actions({async: true});
+  //const actions = driver.actions({async: true});
+  const actions = driver.actions();
   await actions.dragAndDrop(handle, {x: offsetX, y: offsetY}).perform();
-  handles = await driver.findElements(By.css('rect.snow_profile_handle'));
-}
+};
 
 /**
  * Test position of a handle.
@@ -408,14 +291,50 @@ exports.testHandle = async function testHandle(index, depth, hardness) {
   // Get the expected location
   let expectedY = await driver.executeScript(
     "return window.SnowProfile.depth2y(" + depth + ");");
-  console.log('depth=%d y=%d', depth, expectedY);
+  //console.log('depth=%d y=%d', depth, expectedY);
   let expectedX = await driver.executeScript(
     "return window.SnowProfile.code2x('" + hardness + "')");
 
   // Expected and actual should be close
   expect(Math.abs(attrX - expectedX)).toBeLessThan(1);
   expect(Math.abs(attrY - expectedY)).toBeLessThan(1);
-}
+};
+
+/*
+ * Set the pit depth
+ */
+exports.setPitDepth = async function(depth) {
+  let depthText = depth.toString();
+
+  // Store new value in the pit depth text box
+  let element =  await driver.findElement(By.id('snow_profile_pit_depth'));
+  await element.sendKeys(Key.HOME, Key.chord(Key.SHIFT, Key.END),
+    depthText + Key.ENTER);
+
+  // Wait until the new value verifies
+  let text = await element.getAttribute('value');
+  expect(text).toBe(depthText);
+};
+
+/*
+ * Set the total snow depth
+ */
+exports.setSnowDepth = async function(depth) {
+
+  let depthText = depth.toString();
+
+  // Clear the snow depth text box
+  let element =  await driver.findElement(By.id('snow_profile_total_depth'));
+  await element.clear();
+
+  // Enter new depth, then navigate away from text box
+  await element.sendKeys(Key.HOME, Key.chord(Key.SHIFT, Key.END),
+    depthText + Key.ENTER);
+
+  // Wait until the new value verifies
+  let text = await element.getAttribute('value');
+  expect(text).toBe(depthText);
+};
 
 // Local Variables:
 // js2-basic-offset: 2

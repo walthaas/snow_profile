@@ -1,21 +1,11 @@
 {
   "env": {
-    "browser": true
+    "es2020": true,
+    "node": true,
+    "jest" : true
   },
-  "globals": {
-    "alert": true,
-    "confirm": true,
-    "console": true,
-    "Drupal": true,
-    "drupalSettings": true,
-    "domready": true,
-    "jQuery": true,
-    "_": true,
-    "matchMedia": true,
-    "Backbone": true,
-    "Modernizr": true,
-    "CKEDITOR": true,
-    "Opentip": true
+  "parserOptions": {
+    "ecmaVersion": 2020
   },
   "rules": {
     "no-tabs": 1,

@@ -6,14 +6,18 @@
     "type": "git",
     "url": "https://github.com/walthaas/snow_profile"
   },
+  "jest": {
+    "errorOnDeprecated": true,
+    "slowTestThreshold": 60,
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/lib/"
+    ],
+    "testTimeout": 60000
+  },
   "devDependencies": {
-    "chai": "",
-    "chai-webdriver": "",
     "grunt": "",
-    "grunt-eslint": "",
-    "grunt-jsdoc": "",
-    "grunt-contrib-jshint": "",
-    "grunt-simple-mocha": "",
+    "grunt-run": "",
     "selenium-webdriver": ""
   }
 }

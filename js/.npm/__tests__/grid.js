@@ -15,15 +15,18 @@ let Key = com.Key;
 let until = com.until;
 let driver = com.driver;
 let loadPage = com.loadPage;
+let setSnowDepth = com.setSnowDepth;
+let setPitDepth = com.setPitDepth;
 
 // Snow profile configuration read from web page
-let SnowProfile = com.SnowProfile;
+let SnowProfile;
 
 // Test the reference grid
 describe('Reference grid:', function() {
 
   beforeAll(async () => {
-    loadPage();
+    await loadPage();
+    SnowProfile = com.SnowProfile;
   });
 
   // When done, kill the browser
@@ -115,7 +118,7 @@ describe('Reference grid:', function() {
    *  Check the depth labels at a shallow pit depth with snow depth set.
    */
   test('Depth labels should adjust for shallow pit depth', async () => {
-    let snowDepth = 173
+    let snowDepth = 173;
     await setSnowDepth(snowDepth);
     let pitDepth = 17;
     await setPitDepth(pitDepth);
@@ -157,7 +160,7 @@ describe('Reference grid:', function() {
   test('Depth labels should adjust for surface reference', async () => {
 
     // Define a pit
-    let snowDepth = 142
+    let snowDepth = 142;
     await setSnowDepth(snowDepth);
     let pitDepth = 63;
     await setPitDepth(pitDepth);
@@ -205,42 +208,6 @@ function calcDepthLabels(pitDepth, snowDepth, reference) {
     }
   }
   return depthLabels;
-}
-
-/*
- * Set the pit depth
- */
-async function setPitDepth(depth) {
-  let depthText = depth.toString();
-
-  // Clear the pit depth text box
-  let element =  await driver.findElement(By.id('snow_profile_pit_depth'));
-  await element.sendKeys(Key.HOME, Key.chord(Key.SHIFT, Key.END),
-    depthText + Key.ENTER);
-
-  // Wait until the new value verifies
-  let text = await element.getAttribute('value');
-  expect(text).toBe(depthText);
-}
-
-/*
- * Set the total snow depth
- */
-async function setSnowDepth(depth) {
-
-  let depthText = depth.toString();
-
-  // Clear the snow depth text box
-  let element =  await driver.findElement(By.id('snow_profile_total_depth'));
-  await element.clear()
-
-  // Enter new depth, then navigate away from text box
-  await element.sendKeys(Key.HOME, Key.chord(Key.SHIFT, Key.END),
-    depthText + Key.ENTER);
-
-  // Wait until the new value verifies
-  let text = await element.getAttribute('value');
-  expect(text).toBe(depthText);
 }
 
 // Local Variables:

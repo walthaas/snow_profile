@@ -14,7 +14,10 @@ let By = com.By;
 let Key = com.Key;
 let until = com.until;
 let driver = com.driver;
-let SnowProfile = {};
+let loadPage = com.loadPage;
+
+// Snow profile configuration read from web page
+let SnowProfile;
 
 // Test the popups
 describe('Popup:', function() {
@@ -26,12 +29,8 @@ describe('Popup:', function() {
   beforeAll(async () => {
 
     // Load the test page
-    await driver.get(com.testURL);
-
-    // Get configuration SnowProfile.Cfg from the page JS
-    SnowProfile.Cfg = await driver.executeScript(
-      'return window.SnowProfile.Cfg');
-
+    await loadPage();
+    SnowProfile = com.SnowProfile;
   });  // beforeAll(
 
   // When done, kill the browser
@@ -45,7 +44,7 @@ describe('Popup:', function() {
   describe('popup page initial conditions:', function() {
 
     test('right initial number of buttons', async () => {
-      let numButtons = await driver.findElements(By.css('use'))
+      let numButtons = await driver.findElements(By.css('use'));
       expect(numButtons.length).toEqual(2 * SnowProfile.Cfg.NUM_INIT_LAYERS);
       //   });
     });
@@ -78,7 +77,7 @@ describe('Popup:', function() {
     test('Cancel button dismisses popup', async () => {
       let popup = await driver.findElement(By.id('snow_profile_popup'));
       await driver.findElement(By.xpath(
-        '//button/span[text()="Cancel"]')).click()
+        '//button/span[text()="Cancel"]')).click();
       await driver.wait(until.elementIsNotVisible(popup));
       let displayed = await popup.isDisplayed();
       expect(displayed).toBeFalsy();
@@ -106,7 +105,7 @@ describe('Popup:', function() {
 
       //  Verify that Primary Subshape, Secondary Grain Shape are displayed
       let primarySubshape = await driver.findElement(By.id(
-        'snow_profile_primary_grain_subshape_PP'))
+        'snow_profile_primary_grain_subshape_PP'));
       displayed = await primarySubshape.isDisplayed();
       expect(displayed).toBeTruthy();
       let secondaryShape = await driver.findElement(By.id(
@@ -116,7 +115,7 @@ describe('Popup:', function() {
 
       //  Click "Done", verify popup no longer displayed
       await driver.findElement(By.xpath(
-        '//button/span[text()="Done"]')).click()
+        '//button/span[text()="Done"]')).click();
       await driver.wait(until.elementIsNotVisible(popup));
       displayed = await popup.isDisplayed();
       expect(displayed).toBeFalsy();
@@ -149,7 +148,7 @@ describe('Popup:', function() {
         '//select[@id="snow_profile_primary_grain_shape"]/option[@value="PP"]')).click();
       //  Verify that Primary Subshape is displayed
       let primarySubshape = await driver.findElement(By.id(
-        'snow_profile_primary_grain_subshape_PP'))
+        'snow_profile_primary_grain_subshape_PP'));
       displayed = await primarySubshape.isDisplayed();
       expect(displayed).toBeTruthy();
 
@@ -159,7 +158,7 @@ describe('Popup:', function() {
 
       //  Click "Done", verify popup no longer displayed
       await driver.findElement(By.xpath(
-        '//button/span[text()="Done"]')).click()
+        '//button/span[text()="Done"]')).click();
       await driver.wait(until.elementIsNotVisible(popup));
       displayed = await popup.isDisplayed();
       expect(displayed).toBeFalsy();
@@ -190,7 +189,7 @@ describe('Popup:', function() {
       //  Previous grain shape/subshape will be used.
       //  Click "Done", verify popup no longer displayed
       await driver.findElement(By.xpath(
-        '//button/span[text()="Done"]')).click()
+        '//button/span[text()="Done"]')).click();
       await driver.wait(until.elementIsNotVisible(popup));
       displayed = await popup.isDisplayed();
       expect(displayed).toBeFalsy();
@@ -214,7 +213,7 @@ describe('Popup:', function() {
     test('Cancel button dismisses popup', async () => {
       let popup = await driver.findElement(By.id('snow_profile_popup'));
       await driver.findElement(By.xpath(
-        '//button/span[text()="Cancel"]')).click()
+        '//button/span[text()="Cancel"]')).click();
       await driver.wait(until.elementIsNotVisible(popup));
       let displayed = await popup.isDisplayed();
       expect(displayed).toBeFalsy();
@@ -237,7 +236,7 @@ async function testPopupInit() {
   // FIXME: should test that none of the subshape selectors visible
   test('Primary Grain Subshape selector not visible', async () => {
     let primarySubshape = await driver.findElement(By.id(
-      'snow_profile_primary_grain_subshape_PP'))
+      'snow_profile_primary_grain_subshape_PP'));
     let displayed = await primarySubshape.isDisplayed();
     expect(displayed).toBeFalsy();
   });

@@ -1,0 +1,8 @@
+{
+  "esversion": 8,
+  "mocha":     true,
+  "globals":   {
+               "expect": true
+               },
+  "node":      true
+}

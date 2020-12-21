@@ -1,10 +1,12 @@
 /**
- * @file Mocha test for real pit on Square Top Feb 13, 2014
+ * @file Jest test for real pit on Square Top Feb 13, 2014
  * @copyright Walt Haas <haas@xmission.com>
  * @license {@link http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPLv2}
  */
 
 "use strict";
+
+/* global expect, beforeAll, beforeEach, afterAll, afterEach */
 
 let com = require('./lib/common.js');
 let Builder = com.Builder;
@@ -17,188 +19,139 @@ let testHandle = com.testHandle;
 let setFeatures = com.setFeatures;
 let clickLastInsert = com.clickLastInsert;
 
-/**
- * Schedule command to click an Insert button
- *
- * @param {number} index Button number. Top button is zero.
- */
-function clickInsert(index) {
-  // @todo convert
-  // driver.findElement(sw.By.xpath(
-  //   com.buttonsXpath +
-  //     "[@class='snow_profile_button_insert'][" + (index + 1) + "]"))
-  //   .click();
-}
-
-//
 describe('Square Top Feb 13, 2014:', function() {
 
   beforeAll(async () => {
 
     // Load the test page
-    await driver.get(com.testURL);
+    await com.loadPage();
+    await com.setSnowDepth(180);
+    await com.setPitDepth(180);
   });
+
+    // When done, kill the browser
+    afterAll( async() => {
+      //    await driver.quit();
+    }); // afterAll(
 
   /**
    * Test suite for
    */
   describe('make a realistic pit', function() {
 
-    // Profile with 180 cm total, 180 cm pit depth, reference ground
-    beforeEach(function() {
-      // @todo convert
-      // // Load the test page
-      // driver.get(com.testURL);
-
-      // // Set total depth to 180 cm
-      // driver.findElement(sw.By.css('#snow_profile_total_depth'))
-      //   .then(function(elmt) {
-      //     elmt.sendKeys('180');
-      //   });
-
-      // // Set pit depth to the same
-      // var cmdStr = [];
-      // driver.executeScript('return $("#snow_profile_pit_depth").val()')
-      //   .then(function(val) {
-      //     for (var i = 0; i < val.length; i++) {
-      //       cmdStr.push(sw.Key.BACK_SPACE);
-      //     }
-      //     cmdStr.push(sw.Key.NULL);
-      //   });
-
-      // // After backspacing over existing contents of input box,
-      // // type in '180'
-      // driver.findElement(sw.By.css('#snow_profile_pit_depth'))
-      //   .then(function(elmt) {
-      //     cmdStr.push('180');
-      //     elmt.sendKeys.apply(elmt, cmdStr);
-      //   });
-
-      // // Navigate out of the input box to make new pit depth effective
-      // driver.findElement(sw.By.css('#snow_profile_diagram'))
-      //   .then(function(elmt) {
-      //      elmt.click();
-      //   });
-    });
-
-    test('top layer 180cm, F-, PP (PPgp), 1.0-3.0', function() {
+    test('top layer 180cm, F-, PP (PPgp), 1.0-3.0', async () => {
       await moveHandle(0, 180 - 180, 'F-');
-      testHandle(0, 180 - 180, 'F-');
-      setFeatures(0, ['PP', 'PPgp'], [1.0, 3.0]);
+      await testHandle(0, 180 - 180, 'F-');
+      await setFeatures(0, ['PP', 'PPgp'], [1.0, 3.0]);
     });
 
-    test('second layer 172cm, F-, PP, 0.5', function() {
+    test('second layer 172cm, F-, PP, 0.5', async () => {
       await moveHandle(1, 180 - 172, 'F-');
-      testHandle(1, 180 - 172, 'F-');
-      setFeatures(1, 'PP', 0.5);
+      await testHandle(1, 180 - 172, 'F-');
+      await setFeatures(1, 'PP', 0.5);
     });
 
-    test('third layer 165 cm F DFdc (PP), 0.5 - 1.0', function() {
+    test('third layer 165 cm F DFdc (PP), 0.5 - 1.0', async () => {
       await moveHandle(2, 180 - 165, 'F');
-      testHandle(2, 180 - 165, 'F');
-      setFeatures(2, ['DFdc', 'PP'], [0.5, 1.0]);
+      await testHandle(2, 180 - 165, 'F');
+      await setFeatures(2, ['DFdc', 'PP'], [0.5, 1.0]);
     });
 
-    test('fourth layer 149 cm F PPgp, 2.0 - 4.0', function() {
-      clickLastInsert();
+    test('fourth layer 149 cm F PPgp, 2.0 - 4.0', async () => {
+      await clickLastInsert();
       await moveHandle(3, 180 - 149, 'F');
-      testHandle(3, 180 - 149, 'F');
-      setFeatures(3, 'PPgp', [2.0, 4.0]);
+      await testHandle(3, 180 - 149, 'F');
+      await setFeatures(3, 'PPgp', [2.0, 4.0]);
     });
 
-    test('fifth layer 148 cm F-4F DFdc, 0.3 - 0.5', function() {
-      clickLastInsert();
+    test('fifth layer 148 cm F-4F DFdc, 0.3 - 0.5', async () => {
+      await clickLastInsert();
       await moveHandle(4, 180 - 148, 'F-4F');
-      testHandle(4, 180 - 148, 'F-4F');
-      setFeatures(4, 'DFdc', [0.3, 0.5]);
+      await testHandle(4, 180 - 148, 'F-4F');
+      await setFeatures(4, 'DFdc', [0.3, 0.5]);
     });
 
-    test('sixth layer 133 cm 4F DFdc (RGlr), 0.3 - 0.5', function() {
-      clickLastInsert();
+    test('sixth layer 133 cm 4F DFdc (RGlr), 0.3 - 0.5', async () => {
+      await clickLastInsert();
       await moveHandle(5, 180 - 133, '4F');
-      testHandle(5, 180 - 133, '4F');
-      setFeatures(5, ['DFdc', 'RGlr'], [0.3, 0.5]);
+      await testHandle(5, 180 - 133, '4F');
+      await setFeatures(5, ['DFdc', 'RGlr'], [0.3, 0.5]);
     });
 
-    test('seventh layer 121 cm 1F DFdc (RGlr)', function() {
-      clickLastInsert();
+    test('seventh layer 121 cm 1F DFdc (RGlr)', async () => {
+      await clickLastInsert();
       await moveHandle(6, 180 - 121, '1F');
-      testHandle(6, 180 - 121, '1F');
-      setFeatures(6, ['DFdc', 'RGlr']);
+      await testHandle(6, 180 - 121, '1F');
+      await setFeatures(6, ['DFdc', 'RGlr']);
     });
 
-    test('eighth layer 106 cm P RGlr, 0.3', function() {
-      clickLastInsert();
+    test('eighth layer 106 cm P RGlr, 0.3', async () => {
+      await clickLastInsert();
       await moveHandle(7, 180 - 106, 'P');
-      testHandle(7, 180 - 106, 'P');
-      setFeatures(7, 'RGlr', 0.3);
+      await testHandle(7, 180 - 106, 'P');
+      await setFeatures(7, 'RGlr', 0.3);
     });
 
-    test('ninth layer 100 cm 1F FCxr (RGlr), 0.5 - 1.0', function() {
-      clickLastInsert();
+    test('ninth layer 100 cm 1F FCxr (RGlr), 0.5 - 1.0', async () => {
+      await clickLastInsert();
       await moveHandle(8, 180 - 100, '1F');
-      testHandle(8, 180 - 100, '1F');
-      setFeatures(8, ['FCxr', 'RGlr'], [0.5, 1.0]);
+      await testHandle(8, 180 - 100, '1F');
+      await setFeatures(8, ['FCxr', 'RGlr'], [0.5, 1.0]);
     });
 
-    test('tenth layer 88 cm P+ IF', function() {
-      clickLastInsert();
+    test('tenth layer 88 cm P+ IF', async () => {
+      await clickLastInsert();
       await moveHandle(9, 180 - 88, 'P+');
-      testHandle(9, 180 - 88, 'P+');
-      setFeatures(9, 'IF');
+      await testHandle(9, 180 - 88, 'P+');
+      await setFeatures(9, 'IF');
     });
 
-    test('eleventh layer 87 cm 4F FCxr, 0.5 - 1.0', function() {
-      clickLastInsert();
+    test('eleventh layer 87 cm 4F FCxr, 0.5 - 1.0', async () => {
+      await clickLastInsert();
       await moveHandle(10, 180 - 87, '4F');
-      testHandle(10, 180 - 87, '4F');
-      setFeatures(10, 'FCxr', [0.5, 1.0],
+      await testHandle(10, 180 - 87, '4F');
+      await setFeatures(10, 'FCxr', [0.5, 1.0],
         "ECTP30 Q1 Depth: (cm) 81");
     });
 
-    test('twelfth layer 81 cm P+ IFrc', function() {
-      clickLastInsert();
+    test('twelfth layer 81 cm P+ IFrc', async () => {
+      await clickLastInsert();
       await moveHandle(11, 180 - 81, 'P+');
-      testHandle(11, 180 - 81, 'P+');
-      setFeatures(11, 'IFrc');
+      await testHandle(11, 180 - 81, 'P+');
+      await setFeatures(11, 'IFrc');
     });
 
-    test('thirteenth layer 80 cm F FC, 1.0 - 2.0', function() {
-      clickLastInsert();
+    test('thirteenth layer 80 cm F FC, 1.0 - 2.0', async () => {
+      await clickLastInsert();
       await moveHandle(12, 180 - 80, 'F');
-      testHandle(12, 180 - 80, 'F');
-      setFeatures(12, 'FC', [1.0, 2.0]);
+      await testHandle(12, 180 - 80, 'F');
+      await setFeatures(12, 'FC', [1.0, 2.0]);
     });
 
-    test('fourteenth layer 69 cm 4F FC, 1.0 - 3.0', function() {
-      clickLastInsert();
+    test('fourteenth layer 69 cm 4F FC, 1.0 - 3.0', async () => {
+      await clickLastInsert();
       await moveHandle(13, 180 - 69, '4F');
-      testHandle(13, 180 - 69, '4F');
-      setFeatures(13, 'FC', [1.0, 3.0],
+      await testHandle(13, 180 - 69, '4F');
+      await setFeatures(13, 'FC', [1.0, 3.0],
         "ECTP30 Q1 Depth: (cm) 55");
     });
 
-    test('fifteenth layer 55 cm F FC, 2.0 - 3.0', function() {
-      clickLastInsert();
+    test('fifteenth layer 55 cm F FC, 2.0 - 3.0', async () => {
+      await clickLastInsert();
       await moveHandle(14, 180 - 55, 'F');
-      testHandle(14, 180 - 55, 'F');
-      setFeatures(14, 'FC', [2.0, 3.0],
+      await testHandle(14, 180 - 55, 'F');
+      await setFeatures(14, 'FC', [2.0, 3.0],
         "CTM Q1 Depth (cm) 55 CT score: 15");
     });
 
-    test('sixteenth layer 25 cm 4F FC (DH), 2.0 - 3.0', function() {
-      clickLastInsert();
+    test('sixteenth layer 25 cm 4F FC (DH), 2.0 - 3.0', async () => {
+      await clickLastInsert();
       await moveHandle(15, 180 - 25, '4F');
-      testHandle(15, 180 - 25, '4F');
-      setFeatures(15, ['FC', 'DH'], [2.0, 3.0]);
+      await testHandle(15, 180 - 25, '4F');
+      await setFeatures(15, ['FC', 'DH'], [2.0, 3.0]);
     });
 
   });
-
-  // When done, kill the browser
-  afterAll( async() => {
-    await driver.quit();
-  }); // afterAll(
 
 }); // decribe('
 

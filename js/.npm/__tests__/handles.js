@@ -16,7 +16,7 @@ let until = com.until;
 let driver = com.driver;
 let moveHandle = com.moveHandle;
 let testHandle = com.testHandle;
-let loadPage = com.loadPage
+let loadPage = com.loadPage;
 
 // Snow profile configuration read from web page
 let SnowProfile = {};
@@ -32,11 +32,6 @@ describe('Handles:', function() {
       // Load the test page
       await loadPage();
       SnowProfile = com.SnowProfile;
-
-      // Get location of the diagram
-      let elmt = await driver.findElement(By.css('#snow_profile_diagram svg'));
-      diagramLoc = await elmt.getRect();
-
     });
 
     // When done, kill the browser
